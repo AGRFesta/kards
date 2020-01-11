@@ -4,26 +4,39 @@ import agrfesta.kcards.playingcards.cards.Card
 import java.util.*
 
 
-class DeckShuffleEngine : DeckEngine {
-    private val cards = Stack<Card>()
+class DeckShuffleEngine(private val shufflingService: ShufflingService) : DeckEngine {
+    private var cards = Stack<Card>()
 
     override fun size() = cards.size
 
-    override fun add(card: Card) {
-        cards.add(card)
-        cards.shuffle()
+    override fun add(vararg cards: Card) {
+        this.cards.addAll(cards)
+        this.cards = shufflingService.shuffle(this.cards)
     }
 
     override fun add(cards: Collection<Card>) {
         this.cards.addAll(cards)
-        this.cards.shuffle()
+        //this.cards.shuffle()
+        this.cards = shufflingService.shuffle(this.cards)
     }
 
-    override fun draw() =
+    override fun draw(): Card {
         if (cards.isEmpty()) {
-            Optional.empty()
-        } else {
-            Optional.of(cards.pop())
+            throw EmptyDeckException()
         }
+        return cards.pop()
+    }
 
+
+}
+
+interface ShufflingService {
+    fun shuffle(cards: Stack<Card>): Stack<Card>
+}
+
+class SimpleStackShufflingService : ShufflingService {
+    override fun shuffle(cards: Stack<Card>): Stack<Card> {
+        cards.shuffle()
+        return cards
+    }
 }
