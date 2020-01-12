@@ -4,6 +4,7 @@ import agrfesta.kcards.playingcards.cards.Card
 
 interface Deck {
     fun draw(num: Int): List<Card>
+    fun draw(): Card
     fun isEmpty(): Boolean
     fun size(): Int
     fun add(vararg cards: Card)
