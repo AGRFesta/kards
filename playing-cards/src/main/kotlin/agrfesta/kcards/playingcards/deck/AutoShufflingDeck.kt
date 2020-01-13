@@ -3,22 +3,8 @@ package agrfesta.kcards.playingcards.deck
 import agrfesta.kcards.playingcards.cards.Card
 import java.util.*
 
-
-class DeckShuffleEngine(private val shufflingService: ShufflingService) : DeckEngine {
+class AutoShufflingDeck(private val shufflingService: ShufflingService) : Deck {
     private var cards = Stack<Card>()
-
-    override fun size() = cards.size
-
-    override fun add(vararg cards: Card) {
-        this.cards.addAll(cards)
-        this.cards = shufflingService.shuffle(this.cards)
-    }
-
-    override fun add(cards: Collection<Card>) {
-        this.cards.addAll(cards)
-        //this.cards.shuffle()
-        this.cards = shufflingService.shuffle(this.cards)
-    }
 
     override fun draw(): Card {
         if (cards.isEmpty()) {
@@ -27,6 +13,17 @@ class DeckShuffleEngine(private val shufflingService: ShufflingService) : DeckEn
         return cards.pop()
     }
 
+    override fun isEmpty() = cards.isEmpty()
+    override fun size() = cards.size
+
+    override fun add(vararg cards: Card) {
+        this.cards.addAll(cards)
+        this.cards = shufflingService.shuffle(this.cards)
+    }
+    override fun add(cards: Collection<Card>) {
+        this.cards.addAll(cards)
+        this.cards = shufflingService.shuffle(this.cards)
+    }
 
 }
 

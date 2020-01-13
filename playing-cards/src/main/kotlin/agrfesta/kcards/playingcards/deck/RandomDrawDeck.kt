@@ -5,9 +5,6 @@ import agrfesta.kcards.playingcards.cards.Card
 class RandomDrawDeck : Deck {
     private val cards = ArrayList<Card>()
 
-    override fun draw(num: Int): List<Card> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
     override fun draw(): Card {
         if (cards.isEmpty()) {
             throw EmptyDeckException()

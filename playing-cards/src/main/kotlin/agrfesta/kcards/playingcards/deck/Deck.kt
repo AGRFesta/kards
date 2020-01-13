@@ -1,9 +1,15 @@
 package agrfesta.kcards.playingcards.deck
 
 import agrfesta.kcards.playingcards.cards.Card
+import java.util.stream.Collectors
+import java.util.stream.IntStream
 
 interface Deck {
-    fun draw(num: Int): List<Card>
+    fun draw(num: Int): List<Card> {
+        return IntStream.range(0, num)
+                .mapToObj {_ -> draw()}
+                .collect(Collectors.toList())
+    }
     fun draw(): Card
     fun isEmpty(): Boolean
     fun size(): Int

@@ -1,5 +1,5 @@
 package agrfesta.kcards.playingcards.deck
 
 class RandomDrawDeckTestSuite : DeckTestSuite {
-    override fun deckUnderTest() = RandomDrawDeck()
+    override fun testingDeck() = RandomDrawDeck()
 }
