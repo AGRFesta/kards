@@ -1,10 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    // Apply the Kotlin JVM plugin to add support for Kotlin.
+    // Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.61"
+	
+	// Dokka is a popular documentation engine for Kotlin projects
+	id("org.jetbrains.dokka") version "0.10.0"
 
-    // Apply the java-library plugin for API and implementation separation.
+    // java-library plugin for API and implementation separation.
     `java-library`
 }
 
@@ -23,6 +26,11 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.1")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.1")
 	testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.20")
+}
+
+tasks.dokka {    
+    outputFormat = "html"
+    outputDirectory = "$buildDir/javadoc"
 }
 
 tasks.withType<Test> {
