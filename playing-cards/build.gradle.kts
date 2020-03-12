@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.jvm.tasks.Jar
 
 plugins {
     // Kotlin JVM plugin to add support for Kotlin.
@@ -9,7 +10,10 @@ plugins {
 
     // java-library plugin for API and implementation separation.
     `java-library`
+	`maven-publish`
 }
+
+val myMavenRepoWriteUrl: String by project
 
 group = "agrfesta.kcards"
 version = "0.0.1-SNAPSHOT"
@@ -41,5 +45,26 @@ tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
 		jvmTarget = "1.8"
+	}
+}
+
+val dokkaJar by tasks.creating(Jar::class) {
+	group = JavaBasePlugin.DOCUMENTATION_GROUP
+	description = "Assembles Kotlin docs with Dokka"
+	classifier = "javadoc"
+	from(tasks.dokka)
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("default") {
+			from(components["java"])
+			artifact(dokkaJar)
+		}
+	}
+	repositories {
+		maven {
+			url = uri(myMavenRepoWriteUrl)
+		}
 	}
 }
