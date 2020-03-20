@@ -2,7 +2,7 @@ package agrfesta.k.cards.texasholdem.rules.hands
 
 enum class THPokerHand {
     HIGH_CARD,
-    ONE_PAIR,
+    PAIR,
     TWO_PAIR,
     THREE_OF_A_KIND,
     STRAIGHT,

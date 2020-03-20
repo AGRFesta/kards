@@ -7,10 +7,10 @@ import agrfesta.kcards.playingcards.cards.Rank
 import kotlinx.collections.immutable.toImmutableList
 
 //TODO doc
-class OnePairHand (
+class PairHand (
         private val pairRank: Rank,
         firstKicker: Rank, secondKicker: Rank, thirdKicker: Rank)
-    : AbstractTHHand(THPokerHand.ONE_PAIR) {
+    : AbstractTHHand(THPokerHand.PAIR) {
 
     init {
         val set = setOf(firstKicker, secondKicker, thirdKicker)
@@ -27,15 +27,15 @@ class OnePairHand (
             .toImmutableList()
 
     override fun innerCompareTo(he: CardsEvaluation): Int {
-        if (he !is OnePairHand) {
+        if (he !is PairHand) {
             throw IllegalArgumentException("Comparable only to an instance of OnePairEvaluation")
         }
         return rawCompareTo(he)
     }
 
-    private fun rawCompareTo(ope: OnePairHand): Int {
-        return compareBy(RANK_COMPARATOR, OnePairHand::pairRank)
-                .thenBy(OrderedRankListComparator(), OnePairHand::kickers)
+    private fun rawCompareTo(ope: PairHand): Int {
+        return compareBy(RANK_COMPARATOR, PairHand::pairRank)
+                .thenBy(OrderedRankListComparator(), PairHand::kickers)
                 .compare(this, ope)
     }
 
