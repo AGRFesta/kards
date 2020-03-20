@@ -5,7 +5,7 @@ import kotlinx.collections.immutable.toImmutableList
 
 //TODO doc
 class OnePairHand (
-        private val tokRank: Rank,
+        private val pairRank: Rank,
         firstKicker: Rank, secondKicker: Rank, thirdKicker: Rank)
     : AbstractTHHand(THPokerHand.ONE_PAIR) {
 
@@ -14,8 +14,8 @@ class OnePairHand (
         if (set.size != 3) {
             throw IllegalArgumentException("Multiple kickers with same Rank: $firstKicker,$secondKicker,$thirdKicker")
         }
-        if (set.contains(tokRank)) {
-            throw IllegalArgumentException("Rank of kickers can't be equal to tokRank: $tokRank")
+        if (set.contains(pairRank)) {
+            throw IllegalArgumentException("Rank of kickers can't be equal to pairRank: $pairRank")
         }
     }
 
@@ -31,12 +31,12 @@ class OnePairHand (
     }
 
     private fun rawCompareTo(ope: OnePairHand): Int {
-        return compareBy(RANK_COMPARATOR, OnePairHand::tokRank)
+        return compareBy(RANK_COMPARATOR, OnePairHand::pairRank)
                 .thenBy(OrderedRankListComparator(), OnePairHand::kickers)
                 .compare(this, ope)
     }
 
     override fun toString(): String {
-        return "${getHandValue()}:{$tokRank $kickers}"
+        return "${getHandValue()}:{$pairRank $kickers}"
     }
 }

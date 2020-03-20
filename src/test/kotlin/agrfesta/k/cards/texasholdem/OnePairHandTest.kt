@@ -65,7 +65,7 @@ class OnePairHandTest {
             OnePairHand(ACE,   ACE,KING,JACK)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Rank of kickers can't be equal to tokRank: ACE")
+        failure.hasMessage("Rank of kickers can't be equal to pairRank: ACE")
     }
     @Test
     @DisplayName("Second kicker is equals to tokRank -> raises an Exception")
@@ -74,7 +74,7 @@ class OnePairHandTest {
             OnePairHand(KING,   ACE,KING,JACK)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Rank of kickers can't be equal to tokRank: KING")
+        failure.hasMessage("Rank of kickers can't be equal to pairRank: KING")
     }
     @Test
     @DisplayName("Third kicker is equals to tokRank -> raises an Exception")
@@ -83,7 +83,7 @@ class OnePairHandTest {
             OnePairHand(JACK,   ACE,KING,JACK)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Rank of kickers can't be equal to tokRank: JACK")
+        failure.hasMessage("Rank of kickers can't be equal to pairRank: JACK")
     }
 
     @Test
