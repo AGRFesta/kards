@@ -1,5 +1,8 @@
 package agrfesta.k.cards.texasholdem
 
+import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
+import agrfesta.k.cards.texasholdem.rules.hands.OnePairHand
+import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand
 import agrfesta.kcards.playingcards.suits.FrenchRank.*
 import assertk.assertThat
 import assertk.assertions.containsExactly
@@ -18,24 +21,24 @@ class OnePairHandTest {
     @DisplayName("comparisons")
     fun sameEvaluationTypesCompareOnRankAndKickers() = listOf(
             HECompareAssertionData(
-                    OnePairHand(THREE,    ACE,JACK,TEN),
-                    OnePairHand(QUEEN,    KING,JACK,FIVE),
+                    OnePairHand(THREE, ACE, JACK, TEN),
+                    OnePairHand(QUEEN, KING, JACK, FIVE),
                     -1),
             HECompareAssertionData(
-                    OnePairHand(NINE,     ACE,TWO,THREE),
-                    OnePairHand(NINE,     KING,JACK,TEN),
+                    OnePairHand(NINE, ACE, TWO, THREE),
+                    OnePairHand(NINE, KING, JACK, TEN),
                     1),
             HECompareAssertionData(
-                    OnePairHand(FIVE,     ACE,KING,JACK),
-                    OnePairHand(FIVE,     ACE,KING,JACK),
+                    OnePairHand(FIVE, ACE, KING, JACK),
+                    OnePairHand(FIVE, ACE, KING, JACK),
                     0),
             HECompareAssertionData(
-                    OnePairHand(NINE,     ACE,KING,JACK),
-                    OnePairHand(NINE,     ACE,JACK,TEN),
+                    OnePairHand(NINE, ACE, KING, JACK),
+                    OnePairHand(NINE, ACE, JACK, TEN),
                     1),
             HECompareAssertionData(
-                    OnePairHand(NINE,     ACE,KING,JACK),
-                    OnePairHand(NINE,     ACE,KING,TEN),
+                    OnePairHand(NINE, ACE, KING, JACK),
+                    OnePairHand(NINE, ACE, KING, TEN),
                     1)
     )
         .map { data ->
@@ -45,7 +48,7 @@ class OnePairHandTest {
     @Test
     @DisplayName("comparing to a different evaluation -> raises an Exception")
     fun compareToADifferentHandEvaluationImplementationRaiseAnException() {
-        val hcet = OnePairHand(ACE,   SEVEN,KING,JACK)
+        val hcet = OnePairHand(ACE, SEVEN, KING, JACK)
         val he: CardsEvaluation = object : CardsEvaluation {
             override fun compareTo(other: CardsEvaluation): Int = 0
             override fun getHandValue(): THPokerHand = THPokerHand.ONE_PAIR
@@ -62,7 +65,7 @@ class OnePairHandTest {
     @DisplayName("First kicker is equals to tokRank -> raises an Exception")
     fun firstKickerIsEqualsToTokRankRaisesAnException() {
         val failure = assertThat {
-            OnePairHand(ACE,   ACE,KING,JACK)
+            OnePairHand(ACE, ACE, KING, JACK)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Rank of kickers can't be equal to pairRank: ACE")
@@ -71,7 +74,7 @@ class OnePairHandTest {
     @DisplayName("Second kicker is equals to tokRank -> raises an Exception")
     fun secondKickerIsEqualsToTokRankRaisesAnException() {
         val failure = assertThat {
-            OnePairHand(KING,   ACE,KING,JACK)
+            OnePairHand(KING, ACE, KING, JACK)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Rank of kickers can't be equal to pairRank: KING")
@@ -80,7 +83,7 @@ class OnePairHandTest {
     @DisplayName("Third kicker is equals to tokRank -> raises an Exception")
     fun thirdKickerIsEqualsToTokRankRaisesAnException() {
         val failure = assertThat {
-            OnePairHand(JACK,   ACE,KING,JACK)
+            OnePairHand(JACK, ACE, KING, JACK)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Rank of kickers can't be equal to pairRank: JACK")
@@ -89,7 +92,7 @@ class OnePairHandTest {
     @Test
     @DisplayName("Create from not sorted kickers -> kickers are sorted")
     fun createFromUnorderedKickersResultInOrderedKickers() {
-        val eval = OnePairHand(JACK,   TWO,KING,ACE)
+        val eval = OnePairHand(JACK, TWO, KING, ACE)
         assertThat(eval.kickers).containsExactly(ACE,KING,TWO)
     }
 
@@ -97,7 +100,7 @@ class OnePairHandTest {
     @DisplayName("Two kickers have the same Rank -> raises an Exception")
     fun twoKickersHaveTheSameRankRaisesAnException() {
         val failure = assertThat {
-            OnePairHand(JACK,   ACE,KING,ACE)
+            OnePairHand(JACK, ACE, KING, ACE)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Multiple kickers with same Rank: ACE,KING,ACE")
@@ -106,7 +109,7 @@ class OnePairHandTest {
     @DisplayName("All kickers have the same Rank -> raises an Exception")
     fun allKickersHaveTheSameRankRaisesAnException() {
         val failure = assertThat {
-            OnePairHand(JACK,   ACE,ACE,ACE)
+            OnePairHand(JACK, ACE, ACE, ACE)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Multiple kickers with same Rank: ACE,ACE,ACE")

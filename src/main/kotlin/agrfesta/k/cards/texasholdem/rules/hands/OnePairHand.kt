@@ -1,5 +1,8 @@
-package agrfesta.k.cards.texasholdem
+package agrfesta.k.cards.texasholdem.rules.hands
 
+import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
+import agrfesta.k.cards.texasholdem.rules.OrderedRankListComparator
+import agrfesta.k.cards.texasholdem.rules.RANK_COMPARATOR
 import agrfesta.kcards.playingcards.cards.Rank
 import kotlinx.collections.immutable.toImmutableList
 

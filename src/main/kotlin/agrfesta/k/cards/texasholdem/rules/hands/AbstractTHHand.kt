@@ -1,4 +1,6 @@
-package agrfesta.k.cards.texasholdem
+package agrfesta.k.cards.texasholdem.rules.hands
+
+import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 
 abstract class AbstractTHHand(private val handValue: THPokerHand) : CardsEvaluation {
 

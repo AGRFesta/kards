@@ -1,4 +1,4 @@
-package agrfesta.k.cards.texasholdem
+package agrfesta.k.cards.texasholdem.rules
 
 import agrfesta.kcards.playingcards.cards.Rank
 

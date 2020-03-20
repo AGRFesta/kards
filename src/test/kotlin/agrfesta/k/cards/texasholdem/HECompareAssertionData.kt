@@ -1,5 +1,6 @@
 package agrfesta.k.cards.texasholdem
 
+import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThan

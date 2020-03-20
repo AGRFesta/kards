@@ -1,4 +1,4 @@
-package agrfesta.k.cards.texasholdem
+package agrfesta.k.cards.texasholdem.rules.hands
 
 enum class THPokerHand {
     HIGH_CARD,
