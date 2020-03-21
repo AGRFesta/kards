@@ -28,7 +28,7 @@ class PairHand (
 
     override fun innerCompareTo(he: CardsEvaluation): Int {
         if (he !is PairHand) {
-            throw IllegalArgumentException("Comparable only to an instance of OnePairEvaluation")
+            throw IllegalArgumentException("Comparable only to an instance of PairHand")
         }
         return rawCompareTo(he)
     }

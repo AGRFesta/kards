@@ -10,7 +10,6 @@ import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
 import assertk.assertions.isFailure
 import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -44,10 +43,7 @@ class HighCardHandTest {
                 HighCardHand(NINE, ACE, KING, JACK, SEVEN),
                 HighCardHand(NINE, ACE, KING, JACK, SEVEN),
                 0)
-    )
-        .map { data ->
-            DynamicTest.dynamicTest(data.getTitle(), data::assertComparison)
-        }
+    ).map { createDynamicTest(it) }
 
     @Test
     @DisplayName("comparing to a different evaluation -> raises an Exception")
