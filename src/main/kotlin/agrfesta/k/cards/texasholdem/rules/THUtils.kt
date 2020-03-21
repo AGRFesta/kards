@@ -2,7 +2,7 @@ package agrfesta.k.cards.texasholdem.rules
 
 import agrfesta.kcards.playingcards.cards.Rank
 
-val RANK_COMPARATOR: Comparator<Rank> = compareBy(Rank::ord).reversed()
+val RANK_COMPARATOR: Comparator<Rank> = compareBy(Rank::ord).reversed() //TODO make Rank comparable and remove this comparator
 
 //TODO test
 //TODO doc
