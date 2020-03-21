@@ -14,7 +14,7 @@ class OrderedRankListComparator: Comparator<List<Rank>> {
         if (o1.size != o2.size) {
             throw IllegalArgumentException("Unable to compare list of Rank with different size")
         }
-        return (0 .. o1.size)
+        return o1.indices
                 .map { i -> RANK_COMPARATOR.compare(o1[i],o2[i]) }
                 .find { c -> c != 0 } ?: 0
     }
