@@ -17,7 +17,7 @@ class HighCardHand (
     }
 
     val kickers = listOf(firstKicker, secondKicker, thirdKicker, fourthKicker, fifthKicker)
-            .sortedWith(compareBy(Rank::ord))
+            .sorted().reversed()
             .toImmutableList()
 
     override fun innerCompareTo(he: CardsEvaluation): Int {

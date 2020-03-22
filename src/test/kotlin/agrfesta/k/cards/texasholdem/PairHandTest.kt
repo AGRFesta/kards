@@ -3,7 +3,7 @@ package agrfesta.k.cards.texasholdem
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.hands.PairHand
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand
-import agrfesta.kcards.playingcards.suits.FrenchRank.*
+import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.hasClass
@@ -88,7 +88,7 @@ class PairHandTest {
     @Test
     @DisplayName("Create from not sorted kickers -> kickers are sorted")
     fun createFromUnorderedKickersResultInOrderedKickers() {
-        val hand = PairHand(JACK,   TWO, KING, ACE)
+        val hand = PairHand(JACK,   KING, TWO, ACE)
         assertThat(hand.kickers).containsExactly(ACE,KING,TWO)
     }
 

@@ -2,7 +2,7 @@ package agrfesta.k.cards.texasholdem.rules
 
 import agrfesta.kcards.playingcards.cards.Rank
 
-val RANK_COMPARATOR: Comparator<Rank> = compareBy(Rank::ord).reversed() //TODO make Rank comparable and remove this comparator
+//val RANK_COMPARATOR: Comparator<Rank> = compareBy { it } //TODO make Rank comparable and remove this comparator
 
 //TODO test
 //TODO doc
@@ -15,7 +15,7 @@ class OrderedRankListComparator: Comparator<List<Rank>> {
             throw IllegalArgumentException("Unable to compare list of Rank with different size")
         }
         return o1.indices
-                .map { i -> RANK_COMPARATOR.compare(o1[i],o2[i]) }
+                .map { i -> o1[i].compareTo(o2[i]) }
                 .find { c -> c != 0 } ?: 0
     }
 

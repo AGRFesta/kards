@@ -3,7 +3,7 @@ package agrfesta.k.cards.texasholdem
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand
 import agrfesta.k.cards.texasholdem.rules.hands.TwoPairHand
-import agrfesta.kcards.playingcards.suits.FrenchRank.*
+import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
