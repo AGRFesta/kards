@@ -1,9 +1,9 @@
 package agrfesta.kcards.playingcards.suits
 
 import agrfesta.kcards.playingcards.cards.Card
-import agrfesta.kcards.playingcards.cards.rankOf
 import agrfesta.kcards.playingcards.deck.Deck
 import agrfesta.kcards.playingcards.deck.RandomDrawDeck
+import agrfesta.kcards.playingcards.deck.rankOf
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName

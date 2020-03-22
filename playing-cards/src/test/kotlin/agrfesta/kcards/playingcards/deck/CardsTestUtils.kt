@@ -2,8 +2,6 @@ package agrfesta.kcards.playingcards.deck
 
 import agrfesta.kcards.playingcards.cards.Card
 import agrfesta.kcards.playingcards.cards.cardOf
-import agrfesta.kcards.playingcards.cards.rankOf
-import agrfesta.kcards.playingcards.cards.seedOf
 import java.util.*
 
 fun aCard() = cardOf(aRank(), aSeed())

@@ -1,7 +1,6 @@
 package agrfesta.kcards.playingcards.deck
 
 import agrfesta.kcards.playingcards.cards.cardOf
-import agrfesta.kcards.playingcards.cards.rankOf
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.hasMessage
