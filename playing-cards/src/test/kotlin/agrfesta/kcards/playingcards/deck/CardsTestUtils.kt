@@ -7,7 +7,7 @@ import agrfesta.kcards.playingcards.cards.seedOf
 import java.util.*
 
 fun aCard() = cardOf(aRank(), aSeed())
-fun aRank() = rankOf('R',1)
+fun aRank() = rankOf('R')
 fun aSeed() = seedOf('s',1)
 
 fun deckContent(deck: Deck): Collection<Card> {

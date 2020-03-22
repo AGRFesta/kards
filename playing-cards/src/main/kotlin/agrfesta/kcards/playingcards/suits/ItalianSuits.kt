@@ -9,9 +9,10 @@ import agrfesta.kcards.playingcards.deck.Deck
 import agrfesta.kcards.playingcards.deck.SimpleStackShufflingService
 import java.util.*
 
-fun getItalianRankFromSymbol(symbol: Char): ItalianRank {
+fun getItalianRankFromSymbol(symbol: Char): Rank {
     return Arrays.stream(ItalianRank.values())
             .filter { s -> s.symbol() == symbol }
+            .map(ItalianRank::adapter)
             .findFirst()
             .orElseThrow { IllegalArgumentException("Symbol '$symbol' is not an Italian Rank") }
 }
@@ -25,7 +26,7 @@ fun italianCards(): Set<Card> {
     val allCards = HashSet<Card>()
     for (s in ItalianSeed.values()) {
         for (v in ItalianRank.values()) {
-            allCards.add(cardOf(v, s))
+            allCards.add(cardOf(v.adapter, s))
         }
     }
     return allCards
@@ -57,7 +58,31 @@ fun createItalianDeck(init: ()-> Deck): Deck {
     return deck
 }
 
-enum class ItalianRank(private val symbol: Char) : Rank {
+class ItalianRankAdapter(private val ir: ItalianRank): Rank {
+    override fun symbol(): Char = ir.symbol()
+
+    override fun compareTo(other: Rank): Int {
+        if (other !is ItalianRankAdapter) {
+            throw IllegalArgumentException("Comparable only to an instance of ItalianRankAdapter")
+        }
+        return other.ir.compareTo(ir)
+    }
+
+    override fun toString(): String = ir.toString()
+}
+
+val ASSO = ItalianRank.ASSO.adapter
+val RE = ItalianRank.RE.adapter
+val CAVALLO = ItalianRank.CAVALLO.adapter
+val FANTE = ItalianRank.FANTE.adapter
+val SETTE = ItalianRank.SETTE.adapter
+val SEI = ItalianRank.SEI.adapter
+val CINQUE = ItalianRank.CINQUE.adapter
+val QUATTRO = ItalianRank.QUATTRO.adapter
+val TRE = ItalianRank.TRE.adapter
+val DUE = ItalianRank.DUE.adapter
+
+enum class ItalianRank(private val symbol: Char) {
 
     ASSO('A'),
     RE('K'),
@@ -70,8 +95,10 @@ enum class ItalianRank(private val symbol: Char) : Rank {
     TRE('3'),
     DUE('2');
 
-    override fun symbol() = symbol
-    override fun ord() = ordinal
+    val adapter = ItalianRankAdapter(this)
+
+    fun symbol() = symbol
+    fun ord() = ordinal
 }
 
 enum class ItalianSeed(private val symbol: Char) : Seed {

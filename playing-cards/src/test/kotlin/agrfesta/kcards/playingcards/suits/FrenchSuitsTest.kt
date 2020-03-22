@@ -1,12 +1,16 @@
 package agrfesta.kcards.playingcards.suits
 
 import agrfesta.kcards.playingcards.cards.Card
+import agrfesta.kcards.playingcards.cards.rankOf
 import agrfesta.kcards.playingcards.deck.Deck
 import agrfesta.kcards.playingcards.deck.RandomDrawDeck
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import agrfesta.kcards.playingcards.suits.FrenchSeed.*
+import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.TestFactory
 
 @DisplayName("French Suits Tests")
 class FrenchSuitsTest {
@@ -51,8 +55,8 @@ class FrenchSuitsTest {
         val hand = createFrenchHand("Ah")
         assertThat(hand).hasSize(1)
         val card = hand[0]
-        assertThat(card.rank()).isEqualTo(FrenchRank.ACE)
-        assertThat(card.seed()).isEqualTo(FrenchSeed.HEARTS)
+        assertThat(card.rank()).isEqualTo(ACE)
+        assertThat(card.seed()).isEqualTo(HEARTS)
     }
     @Test
     @DisplayName("Build hand from two valid string -> a two card hand")
@@ -60,8 +64,8 @@ class FrenchSuitsTest {
         val hand = createFrenchHand("Ah","5s")
         assertThat(hand).extracting(Card::rank, Card::seed)
                 .containsOnly(
-                        Pair(FrenchRank.FIVE,FrenchSeed.SPADES),
-                        Pair(FrenchRank.ACE,FrenchSeed.HEARTS)
+                        Pair(FIVE,SPADES),
+                        Pair(ACE,HEARTS)
                 )
     }
 
@@ -70,61 +74,61 @@ class FrenchSuitsTest {
         val cards = deck.draw(52)
         assertThat(cards).extracting(Card::rank, Card::seed)
                 .containsOnly(
-                        Pair(FrenchRank.ACE, FrenchSeed.HEARTS),
-                        Pair(FrenchRank.KING, FrenchSeed.HEARTS),
-                        Pair(FrenchRank.QUEEN, FrenchSeed.HEARTS),
-                        Pair(FrenchRank.JACK, FrenchSeed.HEARTS),
-                        Pair(FrenchRank.TEN, FrenchSeed.HEARTS),
-                        Pair(FrenchRank.NINE, FrenchSeed.HEARTS),
-                        Pair(FrenchRank.EIGHT, FrenchSeed.HEARTS),
-                        Pair(FrenchRank.SEVEN, FrenchSeed.HEARTS),
-                        Pair(FrenchRank.SIX, FrenchSeed.HEARTS),
-                        Pair(FrenchRank.FIVE, FrenchSeed.HEARTS),
-                        Pair(FrenchRank.FOUR, FrenchSeed.HEARTS),
-                        Pair(FrenchRank.THREE, FrenchSeed.HEARTS),
-                        Pair(FrenchRank.TWO, FrenchSeed.HEARTS),
+                        Pair(ACE, HEARTS),
+                        Pair(KING, HEARTS),
+                        Pair(QUEEN, HEARTS),
+                        Pair(JACK, HEARTS),
+                        Pair(TEN, HEARTS),
+                        Pair(NINE, HEARTS),
+                        Pair(EIGHT, HEARTS),
+                        Pair(SEVEN, HEARTS),
+                        Pair(SIX, HEARTS),
+                        Pair(FIVE, HEARTS),
+                        Pair(FOUR, HEARTS),
+                        Pair(THREE, HEARTS),
+                        Pair(TWO, HEARTS),
 
-                        Pair(FrenchRank.ACE, FrenchSeed.SPADES),
-                        Pair(FrenchRank.KING, FrenchSeed.SPADES),
-                        Pair(FrenchRank.QUEEN, FrenchSeed.SPADES),
-                        Pair(FrenchRank.JACK, FrenchSeed.SPADES),
-                        Pair(FrenchRank.TEN, FrenchSeed.SPADES),
-                        Pair(FrenchRank.NINE, FrenchSeed.SPADES),
-                        Pair(FrenchRank.EIGHT, FrenchSeed.SPADES),
-                        Pair(FrenchRank.SEVEN, FrenchSeed.SPADES),
-                        Pair(FrenchRank.SIX, FrenchSeed.SPADES),
-                        Pair(FrenchRank.FIVE, FrenchSeed.SPADES),
-                        Pair(FrenchRank.FOUR, FrenchSeed.SPADES),
-                        Pair(FrenchRank.THREE, FrenchSeed.SPADES),
-                        Pair(FrenchRank.TWO, FrenchSeed.SPADES),
+                        Pair(ACE, SPADES),
+                        Pair(KING, SPADES),
+                        Pair(QUEEN, SPADES),
+                        Pair(JACK, SPADES),
+                        Pair(TEN, SPADES),
+                        Pair(NINE, SPADES),
+                        Pair(EIGHT, SPADES),
+                        Pair(SEVEN, SPADES),
+                        Pair(SIX, SPADES),
+                        Pair(FIVE, SPADES),
+                        Pair(FOUR, SPADES),
+                        Pair(THREE, SPADES),
+                        Pair(TWO, SPADES),
 
-                        Pair(FrenchRank.ACE, FrenchSeed.CLUBS),
-                        Pair(FrenchRank.KING, FrenchSeed.CLUBS),
-                        Pair(FrenchRank.QUEEN, FrenchSeed.CLUBS),
-                        Pair(FrenchRank.JACK, FrenchSeed.CLUBS),
-                        Pair(FrenchRank.TEN, FrenchSeed.CLUBS),
-                        Pair(FrenchRank.NINE, FrenchSeed.CLUBS),
-                        Pair(FrenchRank.EIGHT, FrenchSeed.CLUBS),
-                        Pair(FrenchRank.SEVEN, FrenchSeed.CLUBS),
-                        Pair(FrenchRank.SIX, FrenchSeed.CLUBS),
-                        Pair(FrenchRank.FIVE, FrenchSeed.CLUBS),
-                        Pair(FrenchRank.FOUR, FrenchSeed.CLUBS),
-                        Pair(FrenchRank.THREE, FrenchSeed.CLUBS),
-                        Pair(FrenchRank.TWO, FrenchSeed.CLUBS),
+                        Pair(ACE, CLUBS),
+                        Pair(KING, CLUBS),
+                        Pair(QUEEN, CLUBS),
+                        Pair(JACK, CLUBS),
+                        Pair(TEN, CLUBS),
+                        Pair(NINE, CLUBS),
+                        Pair(EIGHT, CLUBS),
+                        Pair(SEVEN, CLUBS),
+                        Pair(SIX, CLUBS),
+                        Pair(FIVE, CLUBS),
+                        Pair(FOUR, CLUBS),
+                        Pair(THREE, CLUBS),
+                        Pair(TWO, CLUBS),
 
-                        Pair(FrenchRank.ACE, FrenchSeed.DIAMONDS),
-                        Pair(FrenchRank.KING, FrenchSeed.DIAMONDS),
-                        Pair(FrenchRank.QUEEN, FrenchSeed.DIAMONDS),
-                        Pair(FrenchRank.JACK, FrenchSeed.DIAMONDS),
-                        Pair(FrenchRank.TEN, FrenchSeed.DIAMONDS),
-                        Pair(FrenchRank.NINE, FrenchSeed.DIAMONDS),
-                        Pair(FrenchRank.EIGHT, FrenchSeed.DIAMONDS),
-                        Pair(FrenchRank.SEVEN, FrenchSeed.DIAMONDS),
-                        Pair(FrenchRank.SIX, FrenchSeed.DIAMONDS),
-                        Pair(FrenchRank.FIVE, FrenchSeed.DIAMONDS),
-                        Pair(FrenchRank.FOUR, FrenchSeed.DIAMONDS),
-                        Pair(FrenchRank.THREE, FrenchSeed.DIAMONDS),
-                        Pair(FrenchRank.TWO, FrenchSeed.DIAMONDS)
+                        Pair(ACE, DIAMONDS),
+                        Pair(KING, DIAMONDS),
+                        Pair(QUEEN, DIAMONDS),
+                        Pair(JACK, DIAMONDS),
+                        Pair(TEN, DIAMONDS),
+                        Pair(NINE, DIAMONDS),
+                        Pair(EIGHT, DIAMONDS),
+                        Pair(SEVEN, DIAMONDS),
+                        Pair(SIX, DIAMONDS),
+                        Pair(FIVE, DIAMONDS),
+                        Pair(FOUR, DIAMONDS),
+                        Pair(THREE, DIAMONDS),
+                        Pair(TWO, DIAMONDS)
                 )
     }
     @Test
@@ -138,5 +142,37 @@ class FrenchSuitsTest {
     fun createDeckWithSpecificSettings() {
         val deck = createFrenchDeck() { RandomDrawDeck() }
         assertIsFullDeck(deck)
+    }
+
+    @TestFactory
+    @DisplayName("comparisons")
+    fun comparisons() = listOf(
+            Pair(ACE, KING),
+            Pair(KING, QUEEN),
+            Pair(QUEEN, JACK),
+            Pair(JACK, TEN),
+            Pair(TEN, NINE),
+            Pair(NINE, EIGHT),
+            Pair(EIGHT, SEVEN),
+            Pair(SEVEN, SIX),
+            Pair(SIX, FIVE),
+            Pair(FIVE, FOUR),
+            Pair(FOUR, THREE),
+            Pair(THREE, TWO)
+    ).map { pair ->
+        DynamicTest.dynamicTest(
+                "${pair.first} is greater than ${pair.second}")
+                { assertThat(pair.first).isGreaterThan(pair.second) }
+    }
+
+    @Test
+    @DisplayName("Compare FrenchRankAdapter with a different Rank implementation -> throws IllegalArgumentException")
+    fun compareWithADifferentRankImplThrowsException() {
+        val difImplRank = rankOf('x')
+        val failure = assertThat {
+            ACE.compareTo(difImplRank)
+        }.isFailure()
+        failure.hasClass(IllegalArgumentException::class)
+        failure.hasMessage("Comparable only to an instance of FrenchRankAdapter")
     }
 }

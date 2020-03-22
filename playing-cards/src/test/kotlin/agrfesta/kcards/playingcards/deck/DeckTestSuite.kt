@@ -46,17 +46,17 @@ interface DeckTestSuite {
         assertThat(deck.size()).isEqualTo(0)
 
         // Add first card
-        val cardA = cardOf(rankOf('A',1), aSeed())
+        val cardA = cardOf(rankOf('A'), aSeed())
         deck.add(cardA)
         assertThat(deck.size()).isEqualTo(1)
 
         // Add second card
-        val cardB = cardOf(rankOf('B',1), aSeed())
+        val cardB = cardOf(rankOf('B'), aSeed())
         deck.add(cardB)
         assertThat(deck.size()).isEqualTo(2)
 
         // Add third card
-        val cardC = cardOf(rankOf('C',1), aSeed())
+        val cardC = cardOf(rankOf('C'), aSeed())
         deck.add(cardC)
         assertThat(deck.size()).isEqualTo(3)
 
@@ -69,9 +69,9 @@ interface DeckTestSuite {
         val deck = testingDeck()
         assertThat(deck.size()).isEqualTo(0)
 
-        val cardA = cardOf(rankOf('A',1), aSeed())
-        val cardB = cardOf(rankOf('B',1), aSeed())
-        val cardC = cardOf(rankOf('C',1), aSeed())
+        val cardA = cardOf(rankOf('A'), aSeed())
+        val cardB = cardOf(rankOf('B'), aSeed())
+        val cardC = cardOf(rankOf('C'), aSeed())
         val cards = listOf(cardA, cardB, cardC)
         deck.add(cards)
         assertThat(deck.size()).isEqualTo(3)

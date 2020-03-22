@@ -1,12 +1,16 @@
 package agrfesta.kcards.playingcards.suits
 
 import agrfesta.kcards.playingcards.cards.Card
+import agrfesta.kcards.playingcards.cards.rankOf
 import agrfesta.kcards.playingcards.deck.Deck
 import agrfesta.kcards.playingcards.deck.RandomDrawDeck
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import agrfesta.kcards.playingcards.suits.ItalianSeed.*
+import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.TestFactory
 
 @DisplayName("Italian Suits Tests")
 class ItalianSuitsTest {
@@ -50,8 +54,8 @@ class ItalianSuitsTest {
         val hand = createItalianHand("Ab")
         assertThat(hand).hasSize(1)
         val card = hand[0]
-        assertThat(card.rank()).isEqualTo(ItalianRank.ASSO)
-        assertThat(card.seed()).isEqualTo(ItalianSeed.BASTONI)
+        assertThat(card.rank()).isEqualTo(ASSO)
+        assertThat(card.seed()).isEqualTo(BASTONI)
     }
     @Test
     @DisplayName("Build hand from two valid string -> a two card hand")
@@ -59,8 +63,8 @@ class ItalianSuitsTest {
         val hand = createItalianHand("Kc","3s")
         assertThat(hand).extracting(Card::rank, Card::seed)
                 .containsOnly(
-                        Pair(ItalianRank.RE,ItalianSeed.COPPE),
-                        Pair(ItalianRank.TRE,ItalianSeed.SPADE)
+                        Pair(RE,COPPE),
+                        Pair(TRE,SPADE)
                 )
     }
 
@@ -69,49 +73,49 @@ class ItalianSuitsTest {
         val cards = deck.draw(40)
         assertThat(cards).extracting(Card::rank, Card::seed)
                 .containsOnly(
-                        Pair(ItalianRank.ASSO, ItalianSeed.DENARI),
-                        Pair(ItalianRank.RE, ItalianSeed.DENARI),
-                        Pair(ItalianRank.CAVALLO, ItalianSeed.DENARI),
-                        Pair(ItalianRank.FANTE, ItalianSeed.DENARI),
-                        Pair(ItalianRank.SETTE, ItalianSeed.DENARI),
-                        Pair(ItalianRank.SEI, ItalianSeed.DENARI),
-                        Pair(ItalianRank.CINQUE, ItalianSeed.DENARI),
-                        Pair(ItalianRank.QUATTRO, ItalianSeed.DENARI),
-                        Pair(ItalianRank.TRE, ItalianSeed.DENARI),
-                        Pair(ItalianRank.DUE, ItalianSeed.DENARI),
+                        Pair(ASSO, DENARI),
+                        Pair(RE, DENARI),
+                        Pair(CAVALLO, DENARI),
+                        Pair(FANTE, DENARI),
+                        Pair(SETTE, DENARI),
+                        Pair(SEI, DENARI),
+                        Pair(CINQUE, DENARI),
+                        Pair(QUATTRO, DENARI),
+                        Pair(TRE, DENARI),
+                        Pair(DUE, DENARI),
 
-                        Pair(ItalianRank.ASSO, ItalianSeed.COPPE),
-                        Pair(ItalianRank.RE, ItalianSeed.COPPE),
-                        Pair(ItalianRank.CAVALLO, ItalianSeed.COPPE),
-                        Pair(ItalianRank.FANTE, ItalianSeed.COPPE),
-                        Pair(ItalianRank.SETTE, ItalianSeed.COPPE),
-                        Pair(ItalianRank.SEI, ItalianSeed.COPPE),
-                        Pair(ItalianRank.CINQUE, ItalianSeed.COPPE),
-                        Pair(ItalianRank.QUATTRO, ItalianSeed.COPPE),
-                        Pair(ItalianRank.TRE, ItalianSeed.COPPE),
-                        Pair(ItalianRank.DUE, ItalianSeed.COPPE),
+                        Pair(ASSO, COPPE),
+                        Pair(RE, COPPE),
+                        Pair(CAVALLO, COPPE),
+                        Pair(FANTE, COPPE),
+                        Pair(SETTE, COPPE),
+                        Pair(SEI, COPPE),
+                        Pair(CINQUE, COPPE),
+                        Pair(QUATTRO, COPPE),
+                        Pair(TRE, COPPE),
+                        Pair(DUE, COPPE),
 
-                        Pair(ItalianRank.ASSO, ItalianSeed.BASTONI),
-                        Pair(ItalianRank.RE, ItalianSeed.BASTONI),
-                        Pair(ItalianRank.CAVALLO, ItalianSeed.BASTONI),
-                        Pair(ItalianRank.FANTE, ItalianSeed.BASTONI),
-                        Pair(ItalianRank.SETTE, ItalianSeed.BASTONI),
-                        Pair(ItalianRank.SEI, ItalianSeed.BASTONI),
-                        Pair(ItalianRank.CINQUE, ItalianSeed.BASTONI),
-                        Pair(ItalianRank.QUATTRO, ItalianSeed.BASTONI),
-                        Pair(ItalianRank.TRE, ItalianSeed.BASTONI),
-                        Pair(ItalianRank.DUE, ItalianSeed.BASTONI),
+                        Pair(ASSO, BASTONI),
+                        Pair(RE, BASTONI),
+                        Pair(CAVALLO, BASTONI),
+                        Pair(FANTE, BASTONI),
+                        Pair(SETTE, BASTONI),
+                        Pair(SEI, BASTONI),
+                        Pair(CINQUE, BASTONI),
+                        Pair(QUATTRO, BASTONI),
+                        Pair(TRE, BASTONI),
+                        Pair(DUE, BASTONI),
 
-                        Pair(ItalianRank.ASSO, ItalianSeed.SPADE),
-                        Pair(ItalianRank.RE, ItalianSeed.SPADE),
-                        Pair(ItalianRank.CAVALLO, ItalianSeed.SPADE),
-                        Pair(ItalianRank.FANTE, ItalianSeed.SPADE),
-                        Pair(ItalianRank.SETTE, ItalianSeed.SPADE),
-                        Pair(ItalianRank.SEI, ItalianSeed.SPADE),
-                        Pair(ItalianRank.CINQUE, ItalianSeed.SPADE),
-                        Pair(ItalianRank.QUATTRO, ItalianSeed.SPADE),
-                        Pair(ItalianRank.TRE, ItalianSeed.SPADE),
-                        Pair(ItalianRank.DUE, ItalianSeed.SPADE)
+                        Pair(ASSO, SPADE),
+                        Pair(RE, SPADE),
+                        Pair(CAVALLO, SPADE),
+                        Pair(FANTE, SPADE),
+                        Pair(SETTE, SPADE),
+                        Pair(SEI, SPADE),
+                        Pair(CINQUE, SPADE),
+                        Pair(QUATTRO, SPADE),
+                        Pair(TRE, SPADE),
+                        Pair(DUE, SPADE)
                 )
     }
     @Test
@@ -125,5 +129,34 @@ class ItalianSuitsTest {
     fun createDeckWithSpecificSettings() {
         val deck = createItalianDeck() { RandomDrawDeck() }
         assertIsFullDeck(deck)
+    }
+
+    @TestFactory
+    @DisplayName("comparisons")
+    fun comparisons() = listOf(
+            Pair(ASSO, RE),
+            Pair(RE, CAVALLO),
+            Pair(CAVALLO, FANTE),
+            Pair(FANTE, SETTE),
+            Pair(SETTE, SEI),
+            Pair(SEI, CINQUE),
+            Pair(CINQUE, QUATTRO),
+            Pair(QUATTRO, TRE),
+            Pair(TRE, DUE)
+    ).map { pair ->
+        DynamicTest.dynamicTest(
+                "${pair.first} is greater than ${pair.second}")
+        { assertThat(pair.first).isGreaterThan(pair.second) }
+    }
+
+    @Test
+    @DisplayName("Compare ItalianRankAdapter with a different Rank implementation -> throws IllegalArgumentException")
+    fun compareWithADifferentRankImplThrowsException() {
+        val difImplRank = rankOf('x')
+        val failure = assertThat {
+            ASSO.compareTo(difImplRank)
+        }.isFailure()
+        failure.hasClass(IllegalArgumentException::class)
+        failure.hasMessage("Comparable only to an instance of ItalianRankAdapter")
     }
 }

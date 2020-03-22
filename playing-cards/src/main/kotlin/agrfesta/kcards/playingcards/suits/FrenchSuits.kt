@@ -9,9 +9,10 @@ import agrfesta.kcards.playingcards.deck.Deck
 import agrfesta.kcards.playingcards.deck.SimpleStackShufflingService
 import java.util.Arrays.stream
 
-fun getFrenchRankFromSymbol(symbol: Char): FrenchRank {
+fun getFrenchRankFromSymbol(symbol: Char): Rank {
     return stream(FrenchRank.values())
             .filter { s -> s.symbol() == symbol }
+            .map(FrenchRank::adapter)
         .findFirst()
             .orElseThrow { IllegalArgumentException("Symbol '$symbol' is not a French Rank") }
 }
@@ -25,7 +26,7 @@ fun frenchCards(): Set<Card> {
     val allCards = HashSet<Card>()
     for (s in FrenchSeed.values()) {
         for (v in FrenchRank.values()) {
-            allCards.add(cardOf(v, s))
+            allCards.add(cardOf(v.adapter, s))
         }
     }
     return allCards
@@ -57,7 +58,34 @@ fun createFrenchDeck(init: ()->Deck): Deck {
     return deck
 }
 
-enum class FrenchRank(private val symbol: Char) : Rank {
+class FrenchRankAdapter(private val fr: FrenchRank): Rank {
+    override fun symbol(): Char = fr.symbol()
+
+    override fun compareTo(other: Rank): Int {
+        if (other !is FrenchRankAdapter) {
+            throw IllegalArgumentException("Comparable only to an instance of FrenchRankAdapter")
+        }
+        return other.fr.compareTo(fr)
+    }
+
+    override fun toString(): String = fr.toString()
+}
+
+val ACE = FrenchRank.ACE.adapter
+val KING = FrenchRank.KING.adapter
+val QUEEN = FrenchRank.QUEEN.adapter
+val JACK = FrenchRank.JACK.adapter
+val TEN = FrenchRank.TEN.adapter
+val NINE = FrenchRank.NINE.adapter
+val EIGHT = FrenchRank.EIGHT.adapter
+val SEVEN = FrenchRank.SEVEN.adapter
+val SIX = FrenchRank.SIX.adapter
+val FIVE = FrenchRank.FIVE.adapter
+val FOUR = FrenchRank.FOUR.adapter
+val THREE = FrenchRank.THREE.adapter
+val TWO = FrenchRank.TWO.adapter
+
+enum class FrenchRank(private val symbol: Char) {
 
     ACE('A'),
     KING('K'),
@@ -73,8 +101,9 @@ enum class FrenchRank(private val symbol: Char) : Rank {
     THREE('3'),
     TWO('2');
 
-    override fun symbol() = symbol
-    override fun ord() = ordinal
+    val adapter = FrenchRankAdapter(this)
+
+    fun symbol() = symbol
 }
 
 enum class FrenchSeed(private val symbol: Char) : Seed {
