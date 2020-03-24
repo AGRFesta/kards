@@ -5,7 +5,6 @@ import agrfesta.k.cards.texasholdem.rules.OrderedRankListComparator
 import agrfesta.kcards.playingcards.cards.Rank
 import kotlinx.collections.immutable.toImmutableList
 
-//TODO doc
 class PairHand (
         private val pairRank: Rank,
         firstKicker: Rank, secondKicker: Rank, thirdKicker: Rank)
@@ -25,17 +24,17 @@ class PairHand (
             .sorted().reversed()
             .toImmutableList()
 
-    override fun innerCompareTo(he: CardsEvaluation): Int {
-        if (he !is PairHand) {
+    override fun innerCompareTo(ce: CardsEvaluation): Int {
+        if (ce !is PairHand) {
             throw IllegalArgumentException("Comparable only to an instance of PairHand")
         }
-        return rawCompareTo(he)
+        return rawCompareTo(ce)
     }
 
-    private fun rawCompareTo(ope: PairHand): Int {
+    private fun rawCompareTo(ph: PairHand): Int {
         return compareBy(PairHand::pairRank)
                 .thenBy(OrderedRankListComparator(), PairHand::kickers)
-                .compare(this, ope)
+                .compare(this, ph)
     }
 
     override fun toString(): String {

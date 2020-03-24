@@ -44,22 +44,22 @@ class PairHandTest {
     @Test
     @DisplayName("comparing to a different evaluation -> raises an Exception")
     fun compareToADifferentHandEvaluationImplementationRaiseAnException() {
-        val hcet = PairHand(ACE,   SEVEN, KING, JACK)
+        val ph = PairHand(ACE,   SEVEN, KING, JACK)
         val he: CardsEvaluation = object : CardsEvaluation {
             override fun compareTo(other: CardsEvaluation): Int = 0
             override fun getHandValue(): THPokerHand = THPokerHand.PAIR
         }
 
         val failure = assertThat {
-            hcet.compareTo(he)
+            ph.compareTo(he)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Comparable only to an instance of PairHand")
     }
 
     @Test
-    @DisplayName("First kicker is equals to tokRank -> raises an Exception")
-    fun firstKickerIsEqualsToTokRankRaisesAnException() {
+    @DisplayName("First kicker is equals to pairRank -> raises an Exception")
+    fun firstKickerIsEqualsToPairRankRaisesAnException() {
         val failure = assertThat {
             PairHand(ACE,   ACE, KING, JACK)
         }.isFailure()
@@ -67,8 +67,8 @@ class PairHandTest {
         failure.hasMessage("Rank of kickers can't be equal to pairRank: ACE")
     }
     @Test
-    @DisplayName("Second kicker is equals to tokRank -> raises an Exception")
-    fun secondKickerIsEqualsToTokRankRaisesAnException() {
+    @DisplayName("Second kicker is equals to pairRank -> raises an Exception")
+    fun secondKickerIsEqualsToPairRankRaisesAnException() {
         val failure = assertThat {
             PairHand(KING,   ACE, KING, JACK)
         }.isFailure()
@@ -76,8 +76,8 @@ class PairHandTest {
         failure.hasMessage("Rank of kickers can't be equal to pairRank: KING")
     }
     @Test
-    @DisplayName("Third kicker is equals to tokRank -> raises an Exception")
-    fun thirdKickerIsEqualsToTokRankRaisesAnException() {
+    @DisplayName("Third kicker is equals to pairRank -> raises an Exception")
+    fun thirdKickerIsEqualsToPairRankRaisesAnException() {
         val failure = assertThat {
             PairHand(JACK,   ACE, KING, JACK)
         }.isFailure()
@@ -88,8 +88,8 @@ class PairHandTest {
     @Test
     @DisplayName("Create from not sorted kickers -> kickers are sorted")
     fun createFromUnorderedKickersResultInOrderedKickers() {
-        val hand = PairHand(JACK,   KING, TWO, ACE)
-        assertThat(hand.kickers).containsExactly(ACE,KING,TWO)
+        val ph = PairHand(JACK,   KING, TWO, ACE)
+        assertThat(ph.kickers).containsExactly(ACE,KING,TWO)
     }
 
     @Test
