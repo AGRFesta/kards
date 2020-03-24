@@ -4,11 +4,12 @@ import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.OrderedRankListComparator
 import agrfesta.kcards.playingcards.cards.Rank
 import kotlinx.collections.immutable.toImmutableList
+import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.PAIR
 
 class PairHand (
         private val pairRank: Rank,
         firstKicker: Rank, secondKicker: Rank, thirdKicker: Rank)
-    : AbstractTHHand(THPokerHand.PAIR) {
+    : AbstractTHHand(PAIR) {
 
     init {
         val set = setOf(firstKicker, secondKicker, thirdKicker)

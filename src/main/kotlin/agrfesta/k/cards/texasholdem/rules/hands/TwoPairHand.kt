@@ -2,12 +2,13 @@ package agrfesta.k.cards.texasholdem.rules.hands
 
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.kcards.playingcards.cards.Rank
+import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.TWO_PAIR
 
 class TwoPairHand (
         private val majorPairRank: Rank,
         private val minorPairRank: Rank,
         private val kicker: Rank)
-    : AbstractTHHand(THPokerHand.TWO_PAIR) {
+    : AbstractTHHand(TWO_PAIR) {
 
     init {
         if (majorPairRank == minorPairRank) {
@@ -21,11 +22,11 @@ class TwoPairHand (
         }
     }
 
-    override fun innerCompareTo(he: CardsEvaluation): Int {
-        if (he !is TwoPairHand) {
+    override fun innerCompareTo(ce: CardsEvaluation): Int {
+        if (ce !is TwoPairHand) {
             throw IllegalArgumentException("Comparable only to an instance of TwoPairHand")
         }
-        return rawCompareTo(he)
+        return rawCompareTo(ce)
     }
 
     private fun rawCompareTo(tph: TwoPairHand): Int {

@@ -4,11 +4,12 @@ import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.OrderedRankListComparator
 import agrfesta.kcards.playingcards.cards.Rank
 import kotlinx.collections.immutable.toImmutableList
+import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.THREE_OF_A_KIND
 
 class ThreeOfAKindHand(
         private val tokRank: Rank,
         firstKicker: Rank, secondKicker: Rank)
-    : AbstractTHHand(THPokerHand.THREE_OF_A_KIND) {
+    : AbstractTHHand(THREE_OF_A_KIND) {
 
     init {
         if (firstKicker == secondKicker) {

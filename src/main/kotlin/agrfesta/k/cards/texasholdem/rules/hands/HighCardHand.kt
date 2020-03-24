@@ -4,10 +4,11 @@ import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.OrderedRankListComparator
 import agrfesta.kcards.playingcards.cards.Rank
 import kotlinx.collections.immutable.toImmutableList
+import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.HIGH_CARD
 
 class HighCardHand (
         firstKicker: Rank, secondKicker: Rank, thirdKicker: Rank, fourthKicker: Rank, fifthKicker: Rank)
-    : AbstractTHHand(THPokerHand.HIGH_CARD) {
+    : AbstractTHHand(HIGH_CARD) {
 
     init {
         val set = setOf(firstKicker, secondKicker, thirdKicker, fourthKicker, fifthKicker)
@@ -20,11 +21,11 @@ class HighCardHand (
             .sorted().reversed()
             .toImmutableList()
 
-    override fun innerCompareTo(he: CardsEvaluation): Int {
-        if (he !is HighCardHand) {
+    override fun innerCompareTo(ce: CardsEvaluation): Int {
+        if (ce !is HighCardHand) {
             throw IllegalArgumentException("Comparable only to an instance of HighCardHand")
         }
-        return rawCompareTo(he)
+        return rawCompareTo(ce)
     }
 
     private fun rawCompareTo(hcd: HighCardHand): Int {
