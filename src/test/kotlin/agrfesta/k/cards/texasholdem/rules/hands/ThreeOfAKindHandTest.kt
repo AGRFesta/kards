@@ -1,8 +1,7 @@
-package agrfesta.k.cards.texasholdem
+package agrfesta.k.cards.texasholdem.rules.hands
 
+import agrfesta.k.cards.texasholdem.createDynamicTest
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
-import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand
-import agrfesta.k.cards.texasholdem.rules.hands.ThreeOfAKindHand
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.containsExactly
@@ -20,20 +19,20 @@ class ThreeOfAKindHandTest {
     @DisplayName("comparisons")
     fun comparisons() = listOf(
             HECompareAssertionData(
-                    ThreeOfAKindHand(THREE,   ACE, JACK),
-                    ThreeOfAKindHand(QUEEN,   KING, JACK),
+                    ThreeOfAKindHand(THREE, ACE, JACK),
+                    ThreeOfAKindHand(QUEEN, KING, JACK),
                     -1),
             HECompareAssertionData(
-                    ThreeOfAKindHand(NINE,   ACE, TWO),
-                    ThreeOfAKindHand(NINE,   KING, JACK),
+                    ThreeOfAKindHand(NINE, ACE, TWO),
+                    ThreeOfAKindHand(NINE, KING, JACK),
                     1),
             HECompareAssertionData(
-                    ThreeOfAKindHand(FIVE,   ACE, KING),
-                    ThreeOfAKindHand(FIVE,   ACE, KING),
+                    ThreeOfAKindHand(FIVE, ACE, KING),
+                    ThreeOfAKindHand(FIVE, ACE, KING),
                     0),
             HECompareAssertionData(
-                    ThreeOfAKindHand(NINE,   ACE, KING),
-                    ThreeOfAKindHand(NINE,   ACE, JACK),
+                    ThreeOfAKindHand(NINE, ACE, KING),
+                    ThreeOfAKindHand(NINE, ACE, JACK),
                     1)
     ).map { createDynamicTest(it) }
 

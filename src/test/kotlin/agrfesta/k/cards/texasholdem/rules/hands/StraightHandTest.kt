@@ -1,9 +1,7 @@
-package agrfesta.k.cards.texasholdem
+package agrfesta.k.cards.texasholdem.rules.hands
 
+import agrfesta.k.cards.texasholdem.createDynamicTest
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
-import agrfesta.k.cards.texasholdem.rules.hands.StraightHand
-import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand
-import agrfesta.k.cards.texasholdem.rules.hands.ThreeOfAKindHand
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.hasClass

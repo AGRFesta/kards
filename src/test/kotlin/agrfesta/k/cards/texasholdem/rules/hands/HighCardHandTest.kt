@@ -1,8 +1,7 @@
-package agrfesta.k.cards.texasholdem
+package agrfesta.k.cards.texasholdem.rules.hands
 
+import agrfesta.k.cards.texasholdem.createDynamicTest
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
-import agrfesta.k.cards.texasholdem.rules.hands.HighCardHand
-import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.containsExactly
@@ -19,30 +18,30 @@ class HighCardHandTest {
     @TestFactory
     @DisplayName("comparisons")
     fun comparisons() = listOf(
-        HECompareAssertionData(
-                HighCardHand(THREE, ACE, JACK, TEN, TWO),
-                HighCardHand(QUEEN, KING, JACK, FIVE, TEN),
-                1),
-        HECompareAssertionData(
-                HighCardHand(NINE, ACE, TWO, THREE, FOUR),
-                HighCardHand(ACE, KING, JACK, TEN, FOUR),
-                -1),
-        HECompareAssertionData(
-                HighCardHand(FIVE, ACE, KING, NINE, SEVEN),
-                HighCardHand(FIVE, ACE, KING, JACK, SIX),
-                -1),
-        HECompareAssertionData(
-                HighCardHand(NINE, ACE, KING, JACK, TEN),
-                HighCardHand(NINE, ACE, JACK, KING, FIVE),
-                1),
-        HECompareAssertionData(
-                HighCardHand(NINE, ACE, KING, JACK, EIGHT),
-                HighCardHand(NINE, ACE, KING, JACK, SEVEN),
-                1),
-        HECompareAssertionData(
-                HighCardHand(NINE, ACE, KING, JACK, SEVEN),
-                HighCardHand(NINE, ACE, KING, JACK, SEVEN),
-                0)
+            HECompareAssertionData(
+                    HighCardHand(THREE, ACE, JACK, TEN, TWO),
+                    HighCardHand(QUEEN, KING, JACK, FIVE, TEN),
+                    1),
+            HECompareAssertionData(
+                    HighCardHand(NINE, ACE, TWO, THREE, FOUR),
+                    HighCardHand(ACE, KING, JACK, TEN, FOUR),
+                    -1),
+            HECompareAssertionData(
+                    HighCardHand(FIVE, ACE, KING, NINE, SEVEN),
+                    HighCardHand(FIVE, ACE, KING, JACK, SIX),
+                    -1),
+            HECompareAssertionData(
+                    HighCardHand(NINE, ACE, KING, JACK, TEN),
+                    HighCardHand(NINE, ACE, JACK, KING, FIVE),
+                    1),
+            HECompareAssertionData(
+                    HighCardHand(NINE, ACE, KING, JACK, EIGHT),
+                    HighCardHand(NINE, ACE, KING, JACK, SEVEN),
+                    1),
+            HECompareAssertionData(
+                    HighCardHand(NINE, ACE, KING, JACK, SEVEN),
+                    HighCardHand(NINE, ACE, KING, JACK, SEVEN),
+                    0)
     ).map { createDynamicTest(it) }
 
     @Test

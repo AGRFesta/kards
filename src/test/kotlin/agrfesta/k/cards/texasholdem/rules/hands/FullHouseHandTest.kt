@@ -1,6 +1,5 @@
 package agrfesta.k.cards.texasholdem.rules.hands
 
-import agrfesta.k.cards.texasholdem.HECompareAssertionData
 import agrfesta.k.cards.texasholdem.createDynamicTest
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.kcards.playingcards.suits.*

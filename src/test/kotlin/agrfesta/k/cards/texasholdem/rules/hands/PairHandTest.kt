@@ -1,8 +1,7 @@
-package agrfesta.k.cards.texasholdem
+package agrfesta.k.cards.texasholdem.rules.hands
 
+import agrfesta.k.cards.texasholdem.createDynamicTest
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
-import agrfesta.k.cards.texasholdem.rules.hands.PairHand
-import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.containsExactly
@@ -20,24 +19,24 @@ class PairHandTest {
     @DisplayName("comparisons")
     fun comparisons() = listOf(
             HECompareAssertionData(
-                    PairHand(THREE,   ACE, JACK, TEN),
-                    PairHand(QUEEN,   KING, JACK, FIVE),
+                    PairHand(THREE, ACE, JACK, TEN),
+                    PairHand(QUEEN, KING, JACK, FIVE),
                     -1),
             HECompareAssertionData(
-                    PairHand(NINE,   ACE, TWO, THREE),
-                    PairHand(NINE,   KING, JACK, TEN),
+                    PairHand(NINE, ACE, TWO, THREE),
+                    PairHand(NINE, KING, JACK, TEN),
                     1),
             HECompareAssertionData(
-                    PairHand(FIVE,   ACE, KING, JACK),
-                    PairHand(FIVE,   ACE, KING, JACK),
+                    PairHand(FIVE, ACE, KING, JACK),
+                    PairHand(FIVE, ACE, KING, JACK),
                     0),
             HECompareAssertionData(
-                    PairHand(NINE,   ACE, KING, JACK),
-                    PairHand(NINE,   ACE, JACK, TEN),
+                    PairHand(NINE, ACE, KING, JACK),
+                    PairHand(NINE, ACE, JACK, TEN),
                     1),
             HECompareAssertionData(
-                    PairHand(NINE,   ACE, KING, JACK),
-                    PairHand(NINE,   ACE, KING, TEN),
+                    PairHand(NINE, ACE, KING, JACK),
+                    PairHand(NINE, ACE, KING, TEN),
                     1)
     ).map { createDynamicTest(it) }
 
