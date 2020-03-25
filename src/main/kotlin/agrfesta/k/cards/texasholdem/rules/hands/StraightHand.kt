@@ -19,11 +19,8 @@ class StraightHand(
         if (ce !is StraightHand) {
             throw IllegalArgumentException("Comparable only to an instance of StraightHand")
         }
-        return rawCompareTo(ce)
-    }
-    private fun rawCompareTo(sh: StraightHand): Int {
         return compareBy(StraightHand::straightTop)
-                .compare(this, sh)
+                .compare(this, ce)
     }
 
     override fun toString(): String = "${getHandValue()}:{$straightTop}"

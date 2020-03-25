@@ -28,12 +28,9 @@ class ThreeOfAKindHand(
         if (ce !is ThreeOfAKindHand) {
             throw IllegalArgumentException("Comparable only to an instance of ThreeOfAKindHand")
         }
-        return rawCompareTo(ce)
-    }
-    private fun rawCompareTo(tokh: ThreeOfAKindHand): Int {
         return compareBy(ThreeOfAKindHand::tokRank)
                 .thenBy(OrderedRankListComparator(), ThreeOfAKindHand::kickers)
-                .compare(this, tokh)
+                .compare(this, ce)
     }
 
     override fun toString(): String = "${getHandValue()}:{$tokRank $kickers}"

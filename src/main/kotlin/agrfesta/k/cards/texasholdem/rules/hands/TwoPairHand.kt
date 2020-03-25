@@ -26,14 +26,10 @@ class TwoPairHand (
         if (ce !is TwoPairHand) {
             throw IllegalArgumentException("Comparable only to an instance of TwoPairHand")
         }
-        return rawCompareTo(ce)
-    }
-
-    private fun rawCompareTo(tph: TwoPairHand): Int {
         return compareBy(TwoPairHand::majorPairRank)
                 .thenBy(TwoPairHand::minorPairRank)
                 .thenBy(TwoPairHand::kicker)
-                .compare(this, tph)
+                .compare(this, ce)
     }
 
     override fun toString(): String {

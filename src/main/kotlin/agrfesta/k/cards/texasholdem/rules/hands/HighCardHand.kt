@@ -25,12 +25,8 @@ class HighCardHand (
         if (ce !is HighCardHand) {
             throw IllegalArgumentException("Comparable only to an instance of HighCardHand")
         }
-        return rawCompareTo(ce)
-    }
-
-    private fun rawCompareTo(hcd: HighCardHand): Int {
         return compareBy(OrderedRankListComparator(), HighCardHand::kickers)
-                .compare(this, hcd)
+                .compare(this, ce)
     }
 
     override fun toString(): String {

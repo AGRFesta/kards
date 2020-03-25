@@ -29,13 +29,9 @@ class PairHand (
         if (ce !is PairHand) {
             throw IllegalArgumentException("Comparable only to an instance of PairHand")
         }
-        return rawCompareTo(ce)
-    }
-
-    private fun rawCompareTo(ph: PairHand): Int {
         return compareBy(PairHand::pairRank)
                 .thenBy(OrderedRankListComparator(), PairHand::kickers)
-                .compare(this, ph)
+                .compare(this, ce)
     }
 
     override fun toString(): String {
