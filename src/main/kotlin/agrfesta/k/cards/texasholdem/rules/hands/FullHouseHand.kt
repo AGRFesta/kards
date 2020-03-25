@@ -2,11 +2,12 @@ package agrfesta.k.cards.texasholdem.rules.hands
 
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.kcards.playingcards.cards.Rank
+import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.FULL_HOUSE
 
 class FullHouseHand (
         private val threeRank: Rank,
         private val twoRank: Rank)
-    : AbstractTHHand(THPokerHand.FULL_HOUSE) {
+    : AbstractTHHand(FULL_HOUSE) {
 
     init {
         if (threeRank == twoRank) {

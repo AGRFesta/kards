@@ -2,11 +2,12 @@ package agrfesta.k.cards.texasholdem.rules.hands
 
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.kcards.playingcards.cards.Rank
+import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.FOUR_OF_A_KIND
 
 class FourOfAKindHand (
         private val fokRank: Rank,
         private val kicker: Rank)
-    : AbstractTHHand(THPokerHand.FOUR_OF_A_KIND) {
+    : AbstractTHHand(FOUR_OF_A_KIND) {
 
     init {
         if (fokRank == kicker) {
