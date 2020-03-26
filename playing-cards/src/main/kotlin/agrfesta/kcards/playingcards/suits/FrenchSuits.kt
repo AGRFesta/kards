@@ -16,11 +16,11 @@ fun getFrenchRankFromSymbol(symbol: Char): Rank {
         .findFirst()
             .orElseThrow { IllegalArgumentException("Symbol '$symbol' is not a French Rank") }
 }
-fun getFrenchSeedFromSymbol(symbol: Char): FrenchSeed {
+fun getFrenchSeedFromSymbol(char: Char): FrenchSeed {
     return stream(FrenchSeed.values())
-            .filter { s -> s.symbol() == symbol }
+            .filter { s -> s.char == char }
         .findFirst()
-            .orElseThrow { IllegalArgumentException("Symbol '$symbol' is not a French Seed") }
+            .orElseThrow { IllegalArgumentException("Symbol '$char' is not a French Seed") }
 }
 fun frenchCards(): Set<Card> {
     val allCards = HashSet<Card>()
@@ -106,13 +106,13 @@ enum class FrenchRank(private val symbol: Char) {
     fun symbol() = symbol
 }
 
-enum class FrenchSeed(private val symbol: Char) : Seed {
+enum class FrenchSeed(val char: Char, private val unicode: Char) : Seed {
 
-    HEARTS('h'),
-    DIAMONDS('d'),
-    CLUBS('c'),
-    SPADES('s');
+    HEARTS('h', '♡'),
+    DIAMONDS('d', '♢'),
+    CLUBS('c', '♣'),
+    SPADES('s', '♠');
 
-    override fun symbol() = symbol
+    override fun symbol() = unicode
     override fun ord() = ordinal
 }
