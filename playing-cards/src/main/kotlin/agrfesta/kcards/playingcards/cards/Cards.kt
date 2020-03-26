@@ -7,6 +7,7 @@ interface Card {
 fun cardOf(rank: Rank, seed: Seed) = object: Card {
     override fun rank() = rank
     override fun seed() = seed
+    override fun toString(): String = "${rank().symbol()}${seed().symbol()}"
 }
 
 interface Rank: Comparable<Rank> {
