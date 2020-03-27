@@ -69,6 +69,16 @@ class FrenchSuitsTest {
                 )
     }
 
+    @Test
+    @DisplayName("Create Set from two identical strings -> a one card Set")
+    fun createSetFromTwoIdenticalStringReturnsAOneCardSet() {
+        val set = frenchCardsSet("Ah","Ah")
+        assertThat(set).extracting(Card::rank, Card::seed)
+                .containsOnly(
+                        Pair(ACE,HEARTS)
+                )
+    }
+
     private fun assertIsFullDeck(deck: Deck) {
         assertThat(deck.size()).isEqualTo(52)
         val cards = deck.draw(52)

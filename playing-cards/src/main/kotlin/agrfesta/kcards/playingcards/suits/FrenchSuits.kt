@@ -47,6 +47,7 @@ fun createFrenchCard(str: String): Card {
 fun createFrenchHand(vararg cards: String): List<Card> {
     return cards.map { createFrenchCard(it) }
 }
+fun frenchCardsSet(vararg cards: String): Set<Card> = createFrenchHand(*cards).toSet()
 fun createFrenchDeck(): Deck {
     val deck = AutoShufflingDeck(SimpleStackShufflingService())
     deck.add(frenchCards())
