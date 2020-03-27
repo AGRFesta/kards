@@ -7,21 +7,16 @@ import agrfesta.kcards.playingcards.cards.cardOf
 import agrfesta.kcards.playingcards.deck.AutoShufflingDeck
 import agrfesta.kcards.playingcards.deck.Deck
 import agrfesta.kcards.playingcards.deck.SimpleStackShufflingService
-import java.util.Arrays.stream
 
-fun getFrenchRankFromSymbol(symbol: Char): Rank {
-    return stream(FrenchRank.values())
-            .filter { s -> s.symbol() == symbol }
+fun getFrenchRankFromSymbol(symbol: Char): Rank = FrenchRank.values()
             .map(FrenchRank::adapter)
-        .findFirst()
-            .orElseThrow { IllegalArgumentException("Symbol '$symbol' is not a French Rank") }
-}
-fun getFrenchSeedFromSymbol(char: Char): FrenchSeed {
-    return stream(FrenchSeed.values())
-            .filter { s -> s.char == char }
-        .findFirst()
-            .orElseThrow { IllegalArgumentException("Symbol '$char' is not a French Seed") }
-}
+            .find { s -> s.symbol() == symbol }
+                ?: throw IllegalArgumentException("Symbol '$symbol' is not a French Rank")
+
+fun getFrenchSeedFromSymbol(char: Char): FrenchSeed = FrenchSeed.values()
+            .find { s -> s.char == char }
+                ?: throw IllegalArgumentException("Symbol '$char' is not a French Seed")
+
 fun frenchCards(): Set<Card> {
     val allCards = HashSet<Card>()
     for (s in FrenchSeed.values()) {
@@ -44,9 +39,7 @@ fun createFrenchCard(str: String): Card {
             getFrenchSeedFromSymbol(str[1])
     )
 }
-fun createFrenchHand(vararg cards: String): List<Card> {
-    return cards.map { createFrenchCard(it) }
-}
+fun createFrenchHand(vararg cards: String): List<Card> = cards.map { createFrenchCard(it) }
 fun frenchCardsSet(vararg cards: String): Set<Card> = createFrenchHand(*cards).toSet()
 fun createFrenchDeck(): Deck {
     val deck = AutoShufflingDeck(SimpleStackShufflingService())
