@@ -60,6 +60,7 @@ fun createItalianDeck(init: ()-> Deck): Deck {
 
 class ItalianRankAdapter(private val ir: ItalianRank): Rank {
     override fun symbol(): Char = ir.symbol()
+    override fun ordinal(): Int = ir.ordinal
 
     override fun compareTo(other: Rank): Int {
         if (other !is ItalianRankAdapter) {

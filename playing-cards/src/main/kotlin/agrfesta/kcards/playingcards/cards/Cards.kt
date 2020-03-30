@@ -17,6 +17,7 @@ fun cardOf(rank: Rank, seed: Seed) = object: Card {
 
 interface Rank: Comparable<Rank> {
     fun symbol(): Char
+    fun ordinal(): Int
 }
 interface Seed {
     fun symbol(): Char

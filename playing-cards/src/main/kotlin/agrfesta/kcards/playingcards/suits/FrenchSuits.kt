@@ -54,6 +54,7 @@ fun createFrenchDeck(init: ()->Deck): Deck {
 
 class FrenchRankAdapter(private val fr: FrenchRank): Rank {
     override fun symbol(): Char = fr.symbol()
+    override fun ordinal(): Int = fr.ordinal
 
     override fun compareTo(other: Rank): Int {
         if (other !is FrenchRankAdapter) {
