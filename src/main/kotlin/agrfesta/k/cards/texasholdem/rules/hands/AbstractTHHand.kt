@@ -16,15 +16,10 @@ abstract class AbstractTHHand(private val handValue: THPokerHand) : CardsEvaluat
     override fun getHandValue(): THPokerHand = handValue
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as AbstractTHHand
-
-        if (handValue != other.handValue) return false
-
-        return true
+        if (other !is CardsEvaluation) return false
+        return compareTo(other) == 0
     }
+    //TODO test this hashcode, maybe using a Set
     override fun hashCode(): Int {
         return handValue.hashCode()
     }

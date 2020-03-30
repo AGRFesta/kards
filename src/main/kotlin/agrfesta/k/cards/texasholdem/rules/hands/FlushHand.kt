@@ -9,7 +9,7 @@ import kotlinx.collections.immutable.toImmutableList
 
 class FlushHand (
         first: Rank, second: Rank, third: Rank, fourth: Rank, fifth: Rank,
-        private val seed: Seed)
+        val seed: Seed)
     : AbstractTHHand(FLUSH) {
 
     val ranks = listOf(first, second, third, fourth, fifth)
