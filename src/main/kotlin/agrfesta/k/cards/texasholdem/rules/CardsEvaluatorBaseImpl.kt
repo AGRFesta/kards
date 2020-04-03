@@ -6,16 +6,12 @@ import agrfesta.kcards.playingcards.cards.Rank
 import agrfesta.kcards.playingcards.cards.Seed
 import agrfesta.kcards.playingcards.suits.*
 import java.util.*
-import java.util.function.Consumer
-import java.util.stream.Collectors
-import java.util.stream.IntStream
-
 
 class CardsEvaluatorBaseImpl: CardsEvaluator {
     private val cardComparator: Comparator<Card> = compareBy(Card::rank)
             .thenBy(compareBy(Seed::ord), Card::seed)
 
-    private val STRAIGHT_MASKS = intArrayOf(
+    private val straightMask = intArrayOf(
             31,    //00000000011111
             62,    //00000000111110
             124,   //00000001111100
@@ -31,19 +27,10 @@ class CardsEvaluatorBaseImpl: CardsEvaluator {
     override fun evaluate(set: Set<Card>): CardsEvaluation {
         checkSize(set)
 
-        val groupedBySeed: Map<Seed, List<Card>> = set.groupingBy { it.seed() }
-                .fold(  { _: Seed, _: Card -> listOf<Card>()},
-                        { _, accumulator, element ->
-                            accumulator.plus(element)
-                        })
-        val rankRepList = set.groupingBy { it.rank() }
-                .eachCount().entries
-                .map { Pair(it.key,it.value) }
-                .sortedByDescending { it.second }
-        val sorted: List<Card> = set.sortedWith(cardComparator)
-        val histogram: List<Set<Seed>> = buildHistogram(sorted)
+        val rankRepList = getRankRepetitionsList(set)
+        val histogram: List<Set<Seed>> = buildHistogram(set.sortedWith(cardComparator))
 
-        val flush = getFlushEvaluation(groupedBySeed)
+        val flush = getFlushEvaluation(groupBySeed(set))
         if (flush is FlushHand) {
             return getStraightFlushEvaluation(histogram, flush.seed) ?: flush
         }
@@ -52,9 +39,22 @@ class CardsEvaluatorBaseImpl: CardsEvaluator {
                 ?: getFullHouseEvaluation(rankRepList)
                 ?: getThreeOfAKindEvaluation(set, rankRepList)
                 ?: getPairsEvaluation(set, rankRepList)
-                ?: getFourOfAKindEvaluation(set, rankRepList)
+                ?: getFourOfAKindEvaluation(rankRepList)
                 ?: getHighCardEvaluation(set)
     }
+
+    private fun getRankRepetitionsList(set: Set<Card>) = set
+            .groupingBy { it.rank() }
+            .eachCount().entries
+            .map { Pair(it.key,it.value) }
+            .sortedByDescending { it.second }
+
+    private fun groupBySeed(set: Set<Card>): Map<Seed, List<Card>> = set
+            .groupingBy { it.seed() }
+            .fold(  { _: Seed, _: Card -> listOf<Card>()},
+                    { _, accumulator, element ->
+                        accumulator.plus(element)
+                    })
 
     private fun checkSize(cards: Set<Card>) {
         if (cards.size < 5) {
@@ -68,10 +68,8 @@ class CardsEvaluatorBaseImpl: CardsEvaluator {
     }
 
     private fun buildHistogram(hand: Collection<Card>): List<Set<Seed>> {
-        val histogram = IntStream.range(0, 13)
-                .mapToObj { i: Int -> HashSet<Seed>() }
-                .collect(Collectors.toList())
-        hand.forEach(Consumer { c: Card -> histogram[c.rank().ordinal()].add(c.seed()) })
+        val histogram = (0 .. 12).map { HashSet<Seed>() }
+        hand.forEach { histogram[it.rank().ordinal()].add(it.seed()) }
         return histogram
     }
     private fun getBitSequence(
@@ -82,8 +80,13 @@ class CardsEvaluatorBaseImpl: CardsEvaluator {
                 .sum() + if (predicate(histogram[0])) 1 shl histogram.size else 0
     }
     private fun getStraightRankFromSequence(bitSeq: Int): Rank? {
-        for (i in STRAIGHT_MASKS.indices) {
-            if (bitSeq and STRAIGHT_MASKS[i] == STRAIGHT_MASKS[i]) {
+//        return straightMask
+//                .filter { bitSeq and it == it }
+//                .map { getFrenchRankFromSymbol(FrenchRank.values()[it].symbol()) }
+//                .firstOrNull()
+
+        for (i in straightMask.indices) {
+            if (bitSeq and straightMask[i] == straightMask[i]) {
                 return getFrenchRankFromSymbol(FrenchRank.values()[i].symbol())
             }
         }
@@ -100,17 +103,14 @@ class CardsEvaluatorBaseImpl: CardsEvaluator {
     }
 
     private fun getFlushEvaluation(groupBySeed: Map<Seed, List<Card>>): CardsEvaluation? {
-        val seed = groupBySeed.entries
+        return groupBySeed.entries
                 .filter { it.value.size > 4 }
-                .map { it.key }
+                .map { createFlushEvaluation(it.key, it.value) }
                 .firstOrNull()
-
-        if (seed != null) {
-            val cards: List<Card> = groupBySeed[seed] ?: error("")
-            val ranks = cards.take(5).map { it.rank() }
-            return FlushHand(ranks[0],ranks[1],ranks[2],ranks[3],ranks[4],seed)
-        }
-        return null
+    }
+    private fun createFlushEvaluation(seed: Seed, cards: Collection<Card>): FlushHand {
+        val ranks = cards.take(5).map { it.rank() }
+        return FlushHand(ranks[0],ranks[1],ranks[2],ranks[3],ranks[4],seed)
     }
     private fun getStraightEvaluation(histogram: List<Set<Seed>>): CardsEvaluation? {
         val bitSeq = getBitSequence(histogram) { it.isNotEmpty() }
@@ -180,7 +180,7 @@ class CardsEvaluatorBaseImpl: CardsEvaluator {
             StraightFlushHand(rank, seed)
         } else null
     }
-    private fun getFourOfAKindEvaluation(cards: Collection<Card>, rankRepList: List<Pair<Rank,Int>>): CardsEvaluation? {
+    private fun getFourOfAKindEvaluation(rankRepList: List<Pair<Rank,Int>>): CardsEvaluation? {
         if (rankRepList[0].second == 4) {
             val rank = rankRepList[0].first
             val kicker = rankRepList
