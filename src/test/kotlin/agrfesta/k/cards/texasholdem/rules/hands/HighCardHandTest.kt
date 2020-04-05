@@ -1,6 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.hands
 
-import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.*
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
@@ -18,30 +18,12 @@ class HighCardHandTest {
     @TestFactory
     @DisplayName("comparisons")
     fun comparisons() = listOf(
-            HECompareAssertionData(
-                    HighCardHand(THREE, ACE, JACK, TEN, TWO),
-                    HighCardHand(QUEEN, KING, JACK, FIVE, TEN),
-                    1),
-            HECompareAssertionData(
-                    HighCardHand(NINE, ACE, TWO, THREE, FOUR),
-                    HighCardHand(ACE, KING, JACK, TEN, FOUR),
-                    -1),
-            HECompareAssertionData(
-                    HighCardHand(FIVE, ACE, KING, NINE, SEVEN),
-                    HighCardHand(FIVE, ACE, KING, JACK, SIX),
-                    -1),
-            HECompareAssertionData(
-                    HighCardHand(NINE, ACE, KING, JACK, TEN),
-                    HighCardHand(NINE, ACE, JACK, KING, FIVE),
-                    1),
-            HECompareAssertionData(
-                    HighCardHand(NINE, ACE, KING, JACK, EIGHT),
-                    HighCardHand(NINE, ACE, KING, JACK, SEVEN),
-                    1),
-            HECompareAssertionData(
-                    HighCardHand(NINE, ACE, KING, JACK, SEVEN),
-                    HighCardHand(NINE, ACE, KING, JACK, SEVEN),
-                    0)
+            willAssertThat(HighCardHand(THREE,ACE,JACK,TEN,TWO)).isGreaterThan(HighCardHand(QUEEN,KING,JACK,FIVE,TEN)),
+            willAssertThat(HighCardHand(NINE,ACE,TWO,THREE,FOUR)).isLessThan(HighCardHand(ACE,KING,JACK,TEN,FOUR)),
+            willAssertThat(HighCardHand(FIVE,ACE,KING,NINE,SEVEN)).isLessThan(HighCardHand(FIVE,ACE,KING,JACK,SIX)),
+            willAssertThat(HighCardHand(NINE,ACE,KING,JACK,TEN)).isGreaterThan(HighCardHand(NINE,ACE,JACK,KING,FIVE)),
+            willAssertThat(HighCardHand(NINE,ACE,KING,JACK,EIGHT)).isGreaterThan(HighCardHand(NINE,ACE,KING,JACK,SEVEN)),
+            willAssertThat(HighCardHand(NINE,ACE,KING,JACK,SEVEN)).isEqualTo(HighCardHand(NINE,KING,JACK,ACE,SEVEN))
     ).map { createDynamicTest(it) }
 
     @Test

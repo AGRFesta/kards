@@ -1,6 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.hands
 
-import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.*
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
@@ -17,18 +17,9 @@ class StraightHandTest {
     @TestFactory
     @DisplayName("comparisons")
     fun comparisons() = listOf(
-            HECompareAssertionData(
-                    StraightHand(FIVE),
-                    StraightHand(QUEEN),
-                    -1),
-            HECompareAssertionData(
-                    StraightHand(ACE),
-                    StraightHand(NINE),
-                    1),
-            HECompareAssertionData(
-                    StraightHand(SEVEN),
-                    StraightHand(SEVEN),
-                    0)
+            willAssertThat(StraightHand(FIVE)).isLessThan(StraightHand(QUEEN)),
+            willAssertThat(StraightHand(ACE)).isGreaterThan(StraightHand(NINE)),
+            willAssertThat(StraightHand(SEVEN)).isEqualTo(StraightHand(SEVEN))
     ).map { createDynamicTest(it) }
 
     @Test

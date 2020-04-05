@@ -1,6 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.hands
 
-import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.*
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
@@ -17,22 +17,10 @@ class FourOfAKindHandTest {
     @TestFactory
     @DisplayName("comparisons")
     fun comparisons() = listOf(
-            HECompareAssertionData(
-                    FourOfAKindHand(THREE, TWO),
-                    FourOfAKindHand(QUEEN, TWO),
-                    -1),
-            HECompareAssertionData(
-                    FourOfAKindHand(JACK, TEN),
-                    FourOfAKindHand(QUEEN, TWO),
-                    -1),
-            HECompareAssertionData(
-                    FourOfAKindHand(NINE, SEVEN),
-                    FourOfAKindHand(NINE, FOUR),
-                    1),
-            HECompareAssertionData(
-                    FourOfAKindHand(FIVE, TWO),
-                    FourOfAKindHand(FIVE, TWO),
-                    0)
+            willAssertThat(FourOfAKindHand(THREE, TWO)).isLessThan(FourOfAKindHand(QUEEN, TWO)),
+            willAssertThat(FourOfAKindHand(JACK, TEN)).isLessThan(FourOfAKindHand(QUEEN, TWO)),
+            willAssertThat(FourOfAKindHand(NINE, SEVEN)).isGreaterThan(FourOfAKindHand(NINE, FOUR)),
+            willAssertThat(FourOfAKindHand(FIVE, TWO)).isEqualTo(FourOfAKindHand(FIVE, TWO))
     ).map { createDynamicTest(it) }
 
     @Test

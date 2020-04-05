@@ -1,6 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.hands
 
-import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.*
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
@@ -17,26 +17,11 @@ class TwoPairHandTest {
     @TestFactory
     @DisplayName("comparisons")
     fun comparisons() = listOf(
-            HECompareAssertionData(
-                    TwoPairHand(THREE, TWO, JACK),
-                    TwoPairHand(QUEEN, TWO, JACK),
-                    -1),
-            HECompareAssertionData(
-                    TwoPairHand(JACK, TEN, ACE),
-                    TwoPairHand(QUEEN, TWO, THREE),
-                    -1),
-            HECompareAssertionData(
-                    TwoPairHand(NINE, SEVEN, TWO),
-                    TwoPairHand(NINE, FOUR, JACK),
-                    1),
-            HECompareAssertionData(
-                    TwoPairHand(FIVE, TWO, KING),
-                    TwoPairHand(FIVE, TWO, KING),
-                    0),
-            HECompareAssertionData(
-                    TwoPairHand(NINE, SEVEN, KING),
-                    TwoPairHand(NINE, SEVEN, JACK),
-                    1)
+            willAssertThat(TwoPairHand(THREE,TWO,JACK)).isLessThan(TwoPairHand(QUEEN,TWO,JACK)),
+            willAssertThat(TwoPairHand(JACK,TEN,ACE)).isLessThan(TwoPairHand(QUEEN,TWO,THREE)),
+            willAssertThat(TwoPairHand(NINE,SEVEN,TWO)).isGreaterThan(TwoPairHand(NINE,FOUR,JACK)),
+            willAssertThat(TwoPairHand(FIVE,TWO,KING)).isEqualTo(TwoPairHand(FIVE,TWO,KING)),
+            willAssertThat(TwoPairHand(NINE,SEVEN,KING)).isGreaterThan(TwoPairHand(NINE,SEVEN,JACK))
     ).map { createDynamicTest(it) }
 
     @Test

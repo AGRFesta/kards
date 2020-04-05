@@ -1,7 +1,8 @@
 package agrfesta.k.cards.texasholdem.rules.hands
 
-import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.*
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
+import agrfesta.kcards.playingcards.suits.FrenchSeed.*
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.hasClass
@@ -17,24 +18,15 @@ class StraightFlushHandTest {
     @TestFactory
     @DisplayName("comparisons")
     fun comparisons() = listOf(
-            HECompareAssertionData(
-                    StraightFlushHand(FIVE, FrenchSeed.HEARTS),
-                    StraightFlushHand(QUEEN, FrenchSeed.HEARTS),
-                    -1),
-            HECompareAssertionData(
-                    StraightFlushHand(ACE, FrenchSeed.DIAMONDS),
-                    StraightFlushHand(NINE, FrenchSeed.HEARTS),
-                    1),
-            HECompareAssertionData(
-                    StraightFlushHand(SEVEN, FrenchSeed.DIAMONDS),
-                    StraightFlushHand(SEVEN, FrenchSeed.HEARTS),
-                    0)
+            willAssertThat(StraightFlushHand(FIVE, HEARTS)).isLessThan(StraightFlushHand(QUEEN, HEARTS)),
+            willAssertThat(StraightFlushHand(ACE, DIAMONDS)).isGreaterThan(StraightFlushHand(NINE, HEARTS)),
+            willAssertThat(StraightFlushHand(SEVEN, DIAMONDS)).isEqualTo(StraightFlushHand(SEVEN, HEARTS))
     ).map { createDynamicTest(it) }
 
     @Test
     @DisplayName("comparing to a different evaluation -> raises an Exception")
     fun compareToADifferentHandEvaluationImplementationRaiseAnException() {
-        val sfh = StraightFlushHand(SEVEN, FrenchSeed.HEARTS)
+        val sfh = StraightFlushHand(SEVEN, HEARTS)
         val ce: CardsEvaluation = object : CardsEvaluation {
             override fun compareTo(other: CardsEvaluation): Int = 0
             override fun getHandValue(): THPokerHand = THPokerHand.STRAIGHT_FLUSH
@@ -51,7 +43,7 @@ class StraightFlushHandTest {
     @DisplayName("Straight top is FOUR -> raises an Exception")
     fun straightTopIsFourRaisesAnException() {
         val failure = assertThat {
-            StraightFlushHand(FOUR, FrenchSeed.HEARTS)
+            StraightFlushHand(FOUR, HEARTS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("The minimum Straight top is FIVE, straightTop: FOUR")
@@ -60,7 +52,7 @@ class StraightFlushHandTest {
     @DisplayName("Straight top is THREE -> raises an Exception")
     fun straightTopIsThreeRaisesAnException() {
         val failure = assertThat {
-            StraightFlushHand(THREE, FrenchSeed.HEARTS)
+            StraightFlushHand(THREE, HEARTS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("The minimum Straight top is FIVE, straightTop: THREE")
@@ -69,7 +61,7 @@ class StraightFlushHandTest {
     @DisplayName("Straight top is TWO -> raises an Exception")
     fun straightTopIsTwoRaisesAnException() {
         val failure = assertThat {
-            StraightFlushHand(TWO, FrenchSeed.HEARTS)
+            StraightFlushHand(TWO, HEARTS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("The minimum Straight top is FIVE, straightTop: TWO")

@@ -1,7 +1,8 @@
 package agrfesta.k.cards.texasholdem.rules.hands
 
-import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.*
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
+import agrfesta.kcards.playingcards.suits.FrenchSeed.*
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.containsExactly
@@ -18,36 +19,24 @@ class FlushHandTest {
     @TestFactory
     @DisplayName("comparisons")
     fun comparisons() = listOf(
-            HECompareAssertionData(
-                    FlushHand(THREE, ACE, JACK, TEN, TWO, FrenchSeed.HEARTS),
-                    FlushHand(QUEEN, KING, JACK, FIVE, TEN, FrenchSeed.HEARTS),
-                    1),
-            HECompareAssertionData(
-                    FlushHand(NINE, ACE, TWO, THREE, FOUR, FrenchSeed.HEARTS),
-                    FlushHand(ACE, KING, JACK, TEN, FOUR, FrenchSeed.SPADES),
-                    -1),
-            HECompareAssertionData(
-                    FlushHand(FIVE, ACE, KING, NINE, SEVEN, FrenchSeed.HEARTS),
-                    FlushHand(FIVE, ACE, KING, JACK, SIX, FrenchSeed.HEARTS),
-                    -1),
-            HECompareAssertionData(
-                    FlushHand(NINE, ACE, KING, JACK, TEN, FrenchSeed.DIAMONDS),
-                    FlushHand(NINE, ACE, JACK, KING, FIVE, FrenchSeed.HEARTS),
-                    1),
-            HECompareAssertionData(
-                    FlushHand(NINE, ACE, KING, JACK, EIGHT, FrenchSeed.HEARTS),
-                    FlushHand(NINE, ACE, KING, JACK, SEVEN, FrenchSeed.HEARTS),
-                    1),
-            HECompareAssertionData(
-                    FlushHand(NINE, ACE, KING, JACK, SEVEN, FrenchSeed.CLUBS),
-                    FlushHand(NINE, ACE, KING, JACK, SEVEN, FrenchSeed.HEARTS),
-                    0)
+            willAssertThat(FlushHand(THREE,ACE,JACK,TEN,TWO, HEARTS))
+                    .isGreaterThan(FlushHand(QUEEN,KING,JACK,FIVE,TEN, HEARTS)),
+            willAssertThat(FlushHand(NINE,ACE,TWO,THREE,FOUR, HEARTS))
+                    .isLessThan(FlushHand(ACE,KING,JACK,TEN,FOUR, SPADES)),
+            willAssertThat(FlushHand(FIVE,ACE,KING,NINE,SEVEN, HEARTS))
+                    .isLessThan(FlushHand(FIVE,ACE,KING,JACK,SIX, HEARTS)),
+            willAssertThat(FlushHand(NINE,ACE,KING,JACK,TEN, DIAMONDS))
+                    .isGreaterThan(FlushHand(NINE,ACE,JACK,KING,FIVE, HEARTS)),
+            willAssertThat(FlushHand(NINE,ACE,KING,JACK,EIGHT, HEARTS))
+                    .isGreaterThan(FlushHand(NINE,ACE,KING,JACK,SEVEN, HEARTS)),
+            willAssertThat(FlushHand(NINE,ACE,KING,JACK,SEVEN, CLUBS))
+                    .isEqualTo(FlushHand(NINE,ACE,KING,JACK,SEVEN, HEARTS))
     ).map { createDynamicTest(it) }
 
     @Test
     @DisplayName("comparing to a different evaluation -> raises an Exception")
     fun compareToADifferentHandEvaluationImplementationRaiseAnException() {
-        val fh = FlushHand(NINE, ACE, KING, JACK, SEVEN, FrenchSeed.CLUBS)
+        val fh = FlushHand(NINE,ACE,KING,JACK,SEVEN, CLUBS)
         val he: CardsEvaluation = object : CardsEvaluation {
             override fun compareTo(other: CardsEvaluation): Int = 0
             override fun getHandValue(): THPokerHand = THPokerHand.FLUSH
@@ -63,7 +52,7 @@ class FlushHandTest {
     @Test
     @DisplayName("Create from not sorted ranks -> ranks are sorted")
     fun createFromUnorderedRanksResultInOrderedRanks() {
-        val fh = FlushHand(THREE, JACK, TWO, KING, ACE, FrenchSeed.CLUBS)
+        val fh = FlushHand(THREE,JACK,TWO,KING,ACE, CLUBS)
         assertThat(fh.ranks).containsExactly(ACE,KING,JACK,THREE,TWO)
     }
 
@@ -71,7 +60,7 @@ class FlushHandTest {
     @DisplayName("Two have the same Rank -> raises an Exception")
     fun twoHaveTheSameRankRaisesAnException() {
         val failure = assertThat {
-            FlushHand(JACK, ACE, KING, ACE, TWO, FrenchSeed.CLUBS)
+            FlushHand(JACK,ACE,KING,ACE,TWO, CLUBS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Multiple with same Rank: JACK,ACE,KING,ACE,TWO")
@@ -80,7 +69,7 @@ class FlushHandTest {
     @DisplayName("Three have the same Rank -> raises an Exception")
     fun threeHaveTheSameRankRaisesAnException() {
         val failure = assertThat {
-            FlushHand(JACK, ACE, ACE, ACE, TWO, FrenchSeed.CLUBS)
+            FlushHand(JACK,ACE,ACE,ACE,TWO, FrenchSeed.CLUBS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Multiple with same Rank: JACK,ACE,ACE,ACE,TWO")
