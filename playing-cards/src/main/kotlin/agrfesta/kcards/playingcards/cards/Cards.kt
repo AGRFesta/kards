@@ -9,7 +9,7 @@ fun cardOf(rank: Rank, seed: Seed) = object: Card {
     override fun seed() = seed
     override fun toString(): String = "${rank().symbol()}${seed().symbol()}"
     override fun equals(other: Any?): Boolean {
-        if (other !is Card || other==null) return false
+        if (other !is Card) return false
         return rank()==other.rank() && seed()==other.seed()
     }
     override fun hashCode(): Int = seed().hashCode() * 31 + rank().hashCode()
@@ -18,6 +18,8 @@ fun cardOf(rank: Rank, seed: Seed) = object: Card {
 interface Rank: Comparable<Rank> {
     fun symbol(): Char
     fun ordinal(): Int
+    operator fun plus(increment: Int): Rank
+    operator fun minus(decrement: Int): Rank
 }
 interface Seed {
     fun symbol(): Char

@@ -61,6 +61,12 @@ fun createItalianDeck(init: ()-> Deck): Deck {
 class ItalianRankAdapter(private val ir: ItalianRank): Rank {
     override fun symbol(): Char = ir.symbol()
     override fun ordinal(): Int = ir.ordinal
+    override fun plus(increment: Int): Rank {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+    override fun minus(increment: Int): Rank {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     override fun compareTo(other: Rank): Int {
         if (other !is ItalianRankAdapter) {

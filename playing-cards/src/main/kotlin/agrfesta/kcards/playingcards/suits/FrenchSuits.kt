@@ -9,9 +9,12 @@ import agrfesta.kcards.playingcards.deck.Deck
 import agrfesta.kcards.playingcards.deck.SimpleStackShufflingService
 
 fun getFrenchRankFromSymbol(symbol: Char): Rank = FrenchRank.values()
-            .map(FrenchRank::adapter)
-            .find { s -> s.symbol() == symbol }
+        .map(FrenchRank::adapter)
+        .find { s -> s.symbol() == symbol }
                 ?: throw IllegalArgumentException("Symbol '$symbol' is not a French Rank")
+fun getFrenchRankFromOrdinal(ordinal: Int): Rank = FrenchRank.values()
+        .map(FrenchRank::adapter)
+        .find { it.ordinal() == ordinal % FrenchRank.values().size }!!
 
 fun getFrenchSeedFromSymbol(char: Char): FrenchSeed = FrenchSeed.values()
             .find { s -> s.char == char }
@@ -55,6 +58,11 @@ fun createFrenchDeck(init: ()->Deck): Deck {
 class FrenchRankAdapter(private val fr: FrenchRank): Rank {
     override fun symbol(): Char = fr.symbol()
     override fun ordinal(): Int = fr.ordinal
+
+    override fun plus(increment: Int): Rank = getFrenchRankFromOrdinal(ordinal() +
+            FrenchRank.values().size - (increment % FrenchRank.values().size))
+    override fun minus(decrement: Int): Rank = getFrenchRankFromOrdinal(ordinal() +
+            FrenchRank.values().size + (decrement % FrenchRank.values().size))
 
     override fun compareTo(other: Rank): Int {
         if (other !is FrenchRankAdapter) {

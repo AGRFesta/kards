@@ -185,4 +185,41 @@ class FrenchSuitsTest {
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Comparable only to an instance of FrenchRankAdapter")
     }
+
+    @TestFactory
+    @DisplayName("Plus operator overloading tests")
+    fun plusOperatorOverloadingTest() = listOf(
+            Triple(ACE, 1, TWO),
+            Triple(KING, 2, TWO),
+            Triple(TWO, 1, THREE),
+            Triple(ACE, 13, ACE),
+            Triple(QUEEN, 26, QUEEN),
+            Triple(JACK, 14, QUEEN),
+            Triple(ACE, -1, KING),
+            Triple(SEVEN, -13, SEVEN),
+            Triple(SIX, -26, SIX),
+            Triple(FOUR, -27, THREE)
+    ).map { t ->
+        DynamicTest.dynamicTest(
+                "${t.first} + ${t.second} = ${t.third}")
+        { assertThat(t.first + t.second).isEqualTo(t.third) }
+    }
+    @TestFactory
+    @DisplayName("Minus operator overloading tests")
+    fun minusOperatorOverloadingTest() = listOf(
+            Triple(ACE, 1, KING),
+            Triple(KING, 2, JACK),
+            Triple(TWO, 1, ACE),
+            Triple(ACE, 13, ACE),
+            Triple(QUEEN, 26, QUEEN),
+            Triple(JACK, 14, TEN),
+            Triple(ACE, -1, TWO),
+            Triple(SEVEN, -13, SEVEN),
+            Triple(SIX, -26, SIX),
+            Triple(FOUR, -27, FIVE)
+    ).map { t ->
+        DynamicTest.dynamicTest(
+                "${t.first} - ${t.second} = ${t.third}")
+        { assertThat(t.first - t.second).isEqualTo(t.third) }
+    }
 }
