@@ -1,6 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.hands
 
-import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.*
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
@@ -17,22 +17,10 @@ class FullHouseHandTest {
     @TestFactory
     @DisplayName("comparisons")
     fun comparisons() = listOf(
-            HECompareAssertionData(
-                    FullHouseHand(THREE, TWO),
-                    FullHouseHand(QUEEN, TWO),
-                    -1),
-            HECompareAssertionData(
-                    FullHouseHand(JACK, TEN),
-                    FullHouseHand(QUEEN, TWO),
-                    -1),
-            HECompareAssertionData(
-                    FullHouseHand(NINE, SEVEN),
-                    FullHouseHand(NINE, FOUR),
-                    1),
-            HECompareAssertionData(
-                    FullHouseHand(FIVE, TWO),
-                    FullHouseHand(FIVE, TWO),
-                    0)
+            willAssertThat(FullHouseHand(THREE, TWO)).isLessThan(FullHouseHand(QUEEN, TWO)),
+            willAssertThat(FullHouseHand(JACK, TEN)).isLessThan(FullHouseHand(QUEEN, TWO)),
+            willAssertThat(FullHouseHand(NINE, SEVEN)).isGreaterThan(FullHouseHand(NINE, FOUR)),
+            willAssertThat(FullHouseHand(FIVE, TWO)).isEqualTo(FullHouseHand(FIVE, TWO))
     ).map { createDynamicTest(it) }
 
     @Test
