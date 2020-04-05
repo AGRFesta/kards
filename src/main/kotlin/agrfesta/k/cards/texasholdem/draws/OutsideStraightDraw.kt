@@ -1,7 +1,9 @@
 package agrfesta.k.cards.texasholdem.draws
 
 import agrfesta.kcards.playingcards.cards.Rank
+import agrfesta.kcards.playingcards.suits.FIVE
 import agrfesta.kcards.playingcards.suits.FOUR
+import agrfesta.kcards.playingcards.suits.KING
 
 /*
     An outside straight draw, also called up and down, double-ended straight draw or open-ended straight draw,
@@ -12,12 +14,20 @@ import agrfesta.kcards.playingcards.suits.FOUR
     (has four outs).
  */
 
-class OutsideStraightDraw(private val top: Rank): Draw {
+data class OutsideStraightDraw(private val top: Rank): Draw {
 
     init {
-        if (top < FOUR) {
-            throw IllegalArgumentException("The minimum Outside Straight Draw top is FOUR, top: $top")
+        if (top < FIVE) {
+            throw IllegalArgumentException("The minimum Outside Straight Draw top is FIVE, top: $top")
+        }
+        if (top > KING) {
+            throw IllegalArgumentException("The maximum Outside Straight Draw top is KING, top: $top")
         }
     }
 
+    override fun toString(): String = StringBuilder("[* ${top.symbol()}")
+            .append(" ${(top-1).symbol()}")
+            .append(" ${(top-2).symbol()}")
+            .append(" ${(top-3).symbol()} *]")
+            .toString()
 }

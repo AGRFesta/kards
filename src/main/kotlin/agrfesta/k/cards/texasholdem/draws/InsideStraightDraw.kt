@@ -3,8 +3,8 @@ package agrfesta.k.cards.texasholdem.draws
 import agrfesta.kcards.playingcards.cards.Rank
 import agrfesta.kcards.playingcards.suits.ACE
 import agrfesta.kcards.playingcards.suits.FIVE
-import agrfesta.kcards.playingcards.suits.FrenchRank
-import agrfesta.kcards.playingcards.suits.getFrenchRankFromSymbol
+import agrfesta.kcards.playingcards.suits.FOUR
+import agrfesta.kcards.playingcards.suits.TEN
 
 /*
     An inside straight draw, or gutshot draw or belly buster draw, is a hand with four of the five cards needed
@@ -14,23 +14,39 @@ import agrfesta.kcards.playingcards.suits.getFrenchRankFromSymbol
     an out for an inside straight draw is half that of catching an out for an outside straight draw.
  */
 
-class InsideStraightDraw(private val top: Rank, private val missing: Rank): Draw {
+data class InsideStraightDraw(val top: Rank, val missing: Rank): Draw {
 
     init {
-        if (top < FIVE) {
-            throw IllegalArgumentException("The minimum Inside Straight Draw top is FIVE, top: $top")
+        if (top < FOUR) {
+            throw IllegalArgumentException("The minimum Inside Straight Draw top is FOUR, top: $top")
         }
-        if (missing >= top) {
+        if (top == FOUR) {
+            if (missing != FIVE) {
+                throw IllegalArgumentException("If the Inside Straight Draw top is FOUR the missing have to be FIVE, missing: $missing")
+            }
+        } else if (missing >= top) {
             throw IllegalArgumentException(
                     "The missing Rank can't be greater than or equal to top: missing=$missing, top=$top")
         }
-        val tail = tail()
-        if (missing <= tail) {
+        val tail = if (top == FIVE) ACE else top-4
+        if (top == ACE) {
+            if (missing < TEN) {
+                throw IllegalArgumentException(
+                        "The missing Rank can't be lesser than tail: missing=$missing, tail=$tail")
+            }
+        } else if (missing <= tail) {
             throw IllegalArgumentException(
                     "The missing Rank can't be lesser than or equal to tail: missing=$missing, tail=$tail")
         }
     }
 
-    private fun tail() = if (top == FIVE) ACE
-        else getFrenchRankFromSymbol(FrenchRank.values()[top.ordinal()+4].symbol()) //TODO KISS it
+    private fun stringIfMissing(rank: Rank) = if (rank==missing) "*" else rank.symbol().toString()
+    override fun toString(): String = StringBuilder("[${top.symbol()}")
+            .append(" ${stringIfMissing(top-1)}")
+            .append(" ${stringIfMissing(top-2)}")
+            .append(" ${stringIfMissing(top-3)}")
+            .append(" ${stringIfMissing(top-4)}]")
+            .toString()
 }
+
+

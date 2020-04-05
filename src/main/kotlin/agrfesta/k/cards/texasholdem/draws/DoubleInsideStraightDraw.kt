@@ -1,9 +1,7 @@
 package agrfesta.k.cards.texasholdem.draws
 
 import agrfesta.kcards.playingcards.cards.Rank
-import agrfesta.kcards.playingcards.suits.FrenchRank
 import agrfesta.kcards.playingcards.suits.SIX
-import agrfesta.kcards.playingcards.suits.getFrenchRankFromSymbol
 
 /*
     A double inside straight draw, or double gutshot draw or double belly buster draw can occur when either of two
@@ -12,7 +10,7 @@ import agrfesta.kcards.playingcards.suits.getFrenchRankFromSymbol
     outside straight draw.
  */
 
-class DoubleInsideStraightDraw(
+data class DoubleInsideStraightDraw(
         private val innerTop: Rank,
         private val potentialTop: Rank): Draw {
 
@@ -20,12 +18,20 @@ class DoubleInsideStraightDraw(
         if (innerTop < SIX) {
             throw IllegalArgumentException("The minimum Double Inside Straight Draw inner top is SIX, inner top: $innerTop")
         }
-        val minPotTop = getFrenchRankFromSymbol(FrenchRank.values()[innerTop.ordinal()-2].symbol()) //TODO KISS it
-        val maxPotTop = getFrenchRankFromSymbol(FrenchRank.values()[innerTop.ordinal()-3].symbol()) //TODO KISS it
-        if (potentialTop!=minPotTop && potentialTop!=maxPotTop) {
+        if (potentialTop!=(innerTop+2) && potentialTop!=(innerTop+3)) {
             throw IllegalArgumentException(
-                    "If the inner top is $innerTop the potential top have to be $minPotTop or $maxPotTop but is $potentialTop")
+                    "If the inner top is $innerTop the potential top have to be ${innerTop+2} or ${innerTop+3} but is $potentialTop")
         }
+    }
+
+    override fun toString(): String {
+        val maxPotTop = innerTop+3
+        val r0 = (innerTop-4).symbol()
+        val r1 = (innerTop-2).symbol()
+        val r2 = (innerTop-1).symbol()
+        val r4 = (innerTop+2).symbol()
+        val r5 = if (potentialTop == maxPotTop) " ${maxPotTop.symbol()}" else ""
+        return "[$r0 * $r1 $r2 ${innerTop.symbol()} * $r4$r5]"
     }
 
 }

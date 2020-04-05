@@ -2,11 +2,11 @@ package agrfesta.k.cards.texasholdem.draws
 
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
-import assertk.assertions.hasClass
-import assertk.assertions.hasMessage
-import assertk.assertions.isFailure
+import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 
 @DisplayName("DOUBLE INSIDE STRAIGHT DRAW tests")
 class DoubleInsideStraightDrawTest {
@@ -74,5 +74,21 @@ class DoubleInsideStraightDrawTest {
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("If the inner top is TEN the potential top have to be QUEEN or KING but is JACK")
+    }
+
+    @TestFactory
+    @DisplayName("equals tests")
+    fun equalsTests() = listOf(
+            Triple(DoubleInsideStraightDraw(TEN, QUEEN),DoubleInsideStraightDraw(TEN, QUEEN), true),
+            Triple(DoubleInsideStraightDraw(TEN, QUEEN),aDraw, false),
+            Triple(DoubleInsideStraightDraw(TEN, QUEEN),DoubleInsideStraightDraw(TEN, KING), false),
+            Triple(DoubleInsideStraightDraw(TEN, QUEEN),DoubleInsideStraightDraw(SEVEN, NINE), false)
+    ).map {
+        DynamicTest.dynamicTest(
+                "${it.first} ${if (it.third) '=' else '!'}= ${it.second}"
+        ) {
+            if (it.third) assertThat(it.first).isEqualTo(it.second)
+            else assertThat(it.first).isNotEqualTo(it.second)
+        }
     }
 }

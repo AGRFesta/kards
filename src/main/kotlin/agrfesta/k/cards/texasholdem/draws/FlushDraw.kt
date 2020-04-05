@@ -27,4 +27,21 @@ class FlushDraw(
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other !is FlushDraw) return false
+        if (other.seed != seed) return false
+        if (other.ranks != ranks) return false
+        return true
+    }
+    override fun hashCode(): Int {
+        var hash = 7
+        hash = 31 * hash + seed.hashCode()
+        hash = 31 * hash + ranks.hashCode()
+        return hash
+    }
+
+    override fun toString(): String {
+        val rankSymbols = ranks.map { it.symbol() }
+        return "$rankSymbols${seed.symbol()}"
+    }
 }
