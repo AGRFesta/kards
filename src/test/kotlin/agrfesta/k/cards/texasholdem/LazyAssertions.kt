@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThan
 import assertk.assertions.isLessThan
 import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.function.Executable
 
 interface LazyAssertion {
     fun assert()
@@ -36,4 +37,17 @@ fun <A: Comparable<B>, B> LazyAssertionBuilder<A>.isLessThan(other: B): LazyAsse
 fun <T> LazyAssertionBuilder<T>.isEqualTo(other: T): LazyAssertion = LazyAssertionEqual(actual, other)
 //fun <T> LazyAssertionBuilder<T>.isNotEqualTo(other: T): LazyAssertion = LazyAssertionNotEqual(actual, other)
 fun <T> willAssertThat(actual: T): LazyAssertionBuilder<T> = LazyAssertionBuilder(actual)
+
+//// LazyFunctionAssertion /////////////////////////////////////////////////////////////////////////////////////////////
+interface LazyFunctionAssertion<I,O> {
+    fun assert(func: (input: I) -> O)
+}
+class LazyFunctionExecutionAssertion<I,O>(private val input: I, private val output: O): LazyFunctionAssertion<I,O> {
+    override fun assert(func: (input: I) -> O) = assertThat(func(input)).isEqualTo(output)
+    override fun toString() = "$input -> $output"
+}
+fun <I,O> LazyAssertionBuilder<I>.result(output: O) = LazyFunctionExecutionAssertion(actual, output)
+fun <I,O> createDynamicTest(assertion: LazyFunctionAssertion<I,O>, func: (input: I) -> O): DynamicTest =
+        DynamicTest.dynamicTest(assertion.toString()) { assertion.assert(func) }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

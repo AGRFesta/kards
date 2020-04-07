@@ -1,14 +1,18 @@
 package agrfesta.k.cards.texasholdem.rules
 
+import agrfesta.k.cards.texasholdem.LazyFunctionAssertion
+import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.result
 import agrfesta.k.cards.texasholdem.rules.hands.*
+import agrfesta.k.cards.texasholdem.willAssertThat
+import agrfesta.kcards.playingcards.cards.Card
 import agrfesta.kcards.playingcards.suits.*
+import agrfesta.kcards.playingcards.suits.FrenchSeed.*
 import assertk.assertThat
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
-import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -17,195 +21,141 @@ interface CardsEvaluatorTest {
 
     @TestFactory
     @DisplayName("evaluations")
-    fun comparisons() = listOf(
+    fun comparisons() = listOf<LazyFunctionAssertion<Set<Card>,CardsEvaluation>>(
             /// Seven Cards TESTS
-            Pair(
-                    frenchCardsSet("Ah","Jh","Th","Ad","Ac","Kh","Qh"),
-                    StraightFlushHand(ACE, FrenchSeed.HEARTS)),
-            Pair(
-                    frenchCardsSet("Ah","5h","Th","3h","Ac","4h","2h"),
-                    StraightFlushHand(FIVE, FrenchSeed.HEARTS)),
+            willAssertThat(frenchCardsSet("Ah","Jh","Th","Ad","Ac","Kh","Qh"))
+                    .result(StraightFlushHand(ACE, HEARTS)),
+            willAssertThat(frenchCardsSet("Ah","5h","Th","3h","Ac","4h","2h"))
+                    .result(StraightFlushHand(FIVE, HEARTS)),
 
-            Pair(
-                    frenchCardsSet("Ah","Jc","3s","3d","3c","3h","Js"),
-                    FourOfAKindHand(THREE, ACE)),
-            Pair(
-                    frenchCardsSet("Jh","Jc","3s","Jd","3c","3h","Js"),
-                    FourOfAKindHand(JACK, THREE)),
+            willAssertThat(frenchCardsSet("Jh","Jc","3s","Jd","3c","3h","Js"))
+                    .result(FourOfAKindHand(JACK, THREE)),
+            willAssertThat(frenchCardsSet("Ah","Jc","3s","3d","3c","3h","Js"))
+                    .result(FourOfAKindHand(THREE, ACE)),
 
-            Pair(
-                    frenchCardsSet("3d","3c","3h","Ah","Ac","As","Js"),
-                    FullHouseHand(ACE, THREE)),
-            Pair(
-                    frenchCardsSet("Ah","Ac","As","3d","3c","Kh","Ks"),
-                    FullHouseHand(ACE, KING)),
-            Pair(
-                    frenchCardsSet("Ah","Qs","Ac","As","Jd","Jc","Kh"),
-                    FullHouseHand(ACE, JACK)),
+            willAssertThat(frenchCardsSet("3d","3c","3h","Ah","Ac","As","Js"))
+                    .result(FullHouseHand(ACE, THREE)),
+            willAssertThat(frenchCardsSet("Ah","Ac","As","3d","3c","Kh","Ks"))
+                    .result(FullHouseHand(ACE, KING)),
+            willAssertThat(frenchCardsSet("Ah","Qs","Ac","As","Jd","Jc","Kh"))
+                    .result(FullHouseHand(ACE, JACK)),
 
-            Pair(
-                    frenchCardsSet("Ah","7h","Kh","3d","3c","3h","5h"),
-                    FlushHand(ACE, KING, SEVEN, FIVE, THREE, FrenchSeed.HEARTS)),
-            Pair(
-                    frenchCardsSet("Ah","7h","Kh","3d","5c","3h","5h"),
-                    FlushHand(ACE, KING, SEVEN, FIVE, THREE, FrenchSeed.HEARTS)),
+            willAssertThat(frenchCardsSet("Ah","7h","Kh","3d","3c","3h","5h"))
+                    .result(FlushHand(ACE,KING,SEVEN,FIVE,THREE, HEARTS)),
+            willAssertThat(frenchCardsSet("Ah","7h","Kh","3d","5c","3h","5h"))
+                    .result(FlushHand(ACE,KING,SEVEN,FIVE,THREE, HEARTS)),
 
-            Pair(
-                    frenchCardsSet("7s","7h","7d","6d","4c","3h","5h"),
-                    StraightHand(SEVEN)),
-            Pair(
-                    frenchCardsSet("As","Jh","2d","Jd","4c","3h","5h"),
-                    StraightHand(FIVE)),
-            Pair(
-                    frenchCardsSet("7s","4h","7d","6d","4c","3h","5h"),
-                    StraightHand(SEVEN)),
-            Pair(
-                    frenchCardsSet("As","2h","Qd","Jd","Kc","3h","Th"),
-                    StraightHand(ACE)),
+            willAssertThat(frenchCardsSet("7s","7h","7d","6d","4c","3h","5h"))
+                    .result(StraightHand(SEVEN)),
+            willAssertThat(frenchCardsSet("As","Jh","2d","Jd","4c","3h","5h"))
+                    .result(StraightHand(FIVE)),
+            willAssertThat(frenchCardsSet("7s","4h","7d","6d","4c","3h","5h"))
+                    .result(StraightHand(SEVEN)),
+            willAssertThat(frenchCardsSet("As","2h","Qd","Jd","Kc","3h","Th"))
+                    .result(StraightHand(ACE)),
 
-            Pair(
-                    frenchCardsSet("7s","7h","7d","6d","Ac","3h","5h"),
-                    ThreeOfAKindHand(SEVEN,   ACE, SIX)),
+            willAssertThat(frenchCardsSet("7s","7h","7d","6d","Ac","3h","5h"))
+                    .result(ThreeOfAKindHand(SEVEN,  ACE,SIX)),
 
-            Pair(
-                    frenchCardsSet("7s","Ah","7d","6d","Ac","3h","5h"),
-                    TwoPairHand(ACE, SEVEN,  SIX)),
-            Pair(
-                    frenchCardsSet("7s","Kh","7d","3d","Kc","3h","5h"),
-                    TwoPairHand(KING, SEVEN,  FIVE)),
+            willAssertThat(frenchCardsSet("7s","Ah","7d","6d","Ac","3h","5h"))
+                    .result(TwoPairHand(ACE,SEVEN, SIX)),
+            willAssertThat(frenchCardsSet("7s","Kh","7d","3d","Kc","3h","5h"))
+                    .result(TwoPairHand(KING,SEVEN, FIVE)),
 
-            Pair(
-                    frenchCardsSet("7s","Kh","7d","6d","Ac","3h","5h"),
-                    PairHand(SEVEN,   ACE, KING, SIX)),
+            willAssertThat(frenchCardsSet("7s","Kh","7d","6d","Ac","3h","5h"))
+                    .result(PairHand(SEVEN, ACE,KING,SIX)),
 
-            Pair(
-                    frenchCardsSet("Ah","2d","3c","4h","Ks","8c","7s"),
-                    HighCardHand(ACE, KING, EIGHT, SEVEN, FOUR)),
-            Pair(
-                    frenchCardsSet("Ah","Jc","Ts","2d","3c","8c","7s"),
-                    HighCardHand(ACE, JACK, TEN, EIGHT, SEVEN)),
+            willAssertThat(frenchCardsSet("Ah","2d","3c","4h","Ks","8c","7s"))
+                    .result(HighCardHand(ACE,KING,EIGHT,SEVEN,FOUR)),
+            willAssertThat(frenchCardsSet("Ah","Jc","Ts","2d","3c","8c","7s"))
+                    .result(HighCardHand(ACE,JACK,TEN,EIGHT,SEVEN)),
             //////////////////////////////////////
 
             /// Five Cards TESTS
-            Pair(
-                    frenchCardsSet("Ah","Jh","Th","Kh","Qh"),
-                    StraightFlushHand(ACE, FrenchSeed.HEARTS)),
-            Pair(
-                    frenchCardsSet("Ah","5h","3h","4h","2h"),
-                    StraightFlushHand(FIVE, FrenchSeed.HEARTS)),
+            willAssertThat(frenchCardsSet("Ah","Jh","Th","Kh","Qh"))
+                    .result(StraightFlushHand(ACE, HEARTS)),
+            willAssertThat(frenchCardsSet("Ah","5h","3h","4h","2h"))
+                    .result(StraightFlushHand(FIVE, HEARTS)),
 
-            Pair(
-                    frenchCardsSet("Ah","3s","3d","3c","3h"),
-                    FourOfAKindHand(THREE, ACE)),
-            Pair(
-                    frenchCardsSet("Jh","3s","Jd","Jc","Js"),
-                    FourOfAKindHand(JACK, THREE)),
+            willAssertThat(frenchCardsSet("Ah","3s","3d","3c","3h"))
+                    .result(FourOfAKindHand(THREE, ACE)),
+            willAssertThat(frenchCardsSet("Jh","3s","Jd","Jc","Js"))
+                    .result(FourOfAKindHand(JACK, THREE)),
 
-            Pair(
-                    frenchCardsSet("3d","3h","Ah","Ac","As"),
-                    FullHouseHand(ACE, THREE)),
-            Pair(
-                    frenchCardsSet("Ah","Ac","Jd","Jc","Jh"),
-                    FullHouseHand(JACK, ACE)),
+            willAssertThat(frenchCardsSet("3d","3h","Ah","Ac","As"))
+                    .result(FullHouseHand(ACE, THREE)),
+            willAssertThat(frenchCardsSet("Ah","Ac","Jd","Jc","Jh"))
+                    .result(FullHouseHand(JACK, ACE)),
 
-            Pair(
-                    frenchCardsSet("Ah","3h","Kh","2h","4h"),
-                    FlushHand(ACE, KING, FOUR, THREE, TWO, FrenchSeed.HEARTS)),
+            willAssertThat(frenchCardsSet("Ah","3h","Kh","2h","4h"))
+                    .result(FlushHand(ACE,KING,FOUR,THREE,TWO, HEARTS)),
 
-            Pair(
-                    frenchCardsSet("7h","6d","4c","3h","5h"),
-                    StraightHand(SEVEN)),
-            Pair(
-                    frenchCardsSet("As","2d","4c","3h","5h"),
-                    StraightHand(FIVE)),
-            Pair(
-                    frenchCardsSet("As","Qd","Jd","Kc","Th"),
-                    StraightHand(ACE)),
+            willAssertThat(frenchCardsSet("7h","6d","4c","3h","5h"))
+                    .result(StraightHand(SEVEN)),
+            willAssertThat(frenchCardsSet("As","2d","4c","3h","5h"))
+                    .result(StraightHand(FIVE)),
+            willAssertThat(frenchCardsSet("As","Qd","Jd","Kc","Th"))
+                    .result(StraightHand(ACE)),
 
-            Pair(
-                    frenchCardsSet("7s","7h","7d","6d","Ac"),
-                    ThreeOfAKindHand(SEVEN,   ACE, SIX)),
+            willAssertThat(frenchCardsSet("7s","7h","7d","6d","Ac"))
+                    .result(ThreeOfAKindHand(SEVEN, ACE,SIX)),
 
-            Pair(
-                    frenchCardsSet("7s","Ah","7d","6d","Ac"),
-                    TwoPairHand(ACE, SEVEN,  SIX)),
+            willAssertThat(frenchCardsSet("7s","Ah","7d","6d","Ac"))
+                    .result(TwoPairHand(ACE,SEVEN, SIX)),
 
-            Pair(
-                    frenchCardsSet("7s","Kh","7d","6d","Ac"),
-                    PairHand(SEVEN,   ACE, KING, SIX)),
+            willAssertThat(frenchCardsSet("7s","Kh","7d","6d","Ac"))
+                    .result(PairHand(SEVEN, ACE,KING,SIX)),
 
-            Pair(
-                    frenchCardsSet("Ah","3c","Ks","8c","7s"),
-                    HighCardHand(ACE, KING, EIGHT, SEVEN, THREE)),
+            willAssertThat(frenchCardsSet("Ah","3c","Ks","8c","7s"))
+                    .result(HighCardHand(ACE,KING,EIGHT,SEVEN,THREE)),
             //////////////////////////////////////
 
             /// Six Cards TESTS
-            Pair(
-                    frenchCardsSet("Ah","Jh","Th","Ad","Kh","Qh"),
-                    StraightFlushHand(ACE, FrenchSeed.HEARTS)),
-            Pair(
-                    frenchCardsSet("Ah","5h","Th","3h","4h","2h"),
-                    StraightFlushHand(FIVE, FrenchSeed.HEARTS)),
+            willAssertThat(frenchCardsSet("Ah","Jh","Th","Ad","Kh","Qh"))
+                    .result(StraightFlushHand(ACE, HEARTS)),
+            willAssertThat(frenchCardsSet("Ah","5h","Th","3h","4h","2h"))
+                    .result(StraightFlushHand(FIVE, HEARTS)),
 
-            Pair(
-                    frenchCardsSet("Ah","3s","3d","3c","3h","Js"),
-                    FourOfAKindHand(THREE, ACE)),
-            Pair(
-                    frenchCardsSet("Jh","3s","Jd","Jc","3h","Js"),
-                    FourOfAKindHand(JACK, THREE)),
+            willAssertThat(frenchCardsSet("Ah","3s","3d","3c","3h","Js"))
+                    .result(FourOfAKindHand(THREE, ACE)),
+            willAssertThat(frenchCardsSet("Jh","3s","Jd","Jc","3h","Js"))
+                    .result(FourOfAKindHand(JACK, THREE)),
 
-            Pair(
-                    frenchCardsSet("3d","3c","3h","Ah","Ac","As"),
-                    FullHouseHand(ACE, THREE)),
-            Pair(
-                    frenchCardsSet("Ah","Ac","As","3c","Kh","Ks"),
-                    FullHouseHand(ACE, KING)),
-            Pair(
-                    frenchCardsSet("Ah","Ac","As","Jd","Jc","Kh"),
-                    FullHouseHand(ACE, JACK)),
+            willAssertThat(frenchCardsSet("3d","3c","3h","Ah","Ac","As"))
+                    .result(FullHouseHand(ACE, THREE)),
+            willAssertThat(frenchCardsSet("Ah","Ac","As","3c","Kh","Ks"))
+                    .result(FullHouseHand(ACE, KING)),
+            willAssertThat(frenchCardsSet("Ah","Ac","As","Jd","Jc","Kh"))
+                    .result(FullHouseHand(ACE, JACK)),
 
-            Pair(
-                    frenchCardsSet("Ah","7h","Kh","3c","3h","5h"),
-                    FlushHand(ACE, KING, SEVEN, FIVE, THREE, FrenchSeed.HEARTS)),
+            willAssertThat(frenchCardsSet("Ah","7h","Kh","3c","3h","5h"))
+                    .result(FlushHand(ACE,KING,SEVEN,FIVE,THREE, HEARTS)),
 
-            Pair(
-                    frenchCardsSet("7s","7h","6d","4c","3h","5h"),
-                    StraightHand(SEVEN)),
-            Pair(
-                    frenchCardsSet("As","Jh","2d","4c","3h","5h"),
-                    StraightHand(FIVE)),
-            Pair(
-                    frenchCardsSet("As","2h","Qd","Jd","Kc","Th"),
-                    StraightHand(ACE)),
+            willAssertThat(frenchCardsSet("7s","7h","6d","4c","3h","5h"))
+                    .result(StraightHand(SEVEN)),
+            willAssertThat(frenchCardsSet("As","Jh","2d","4c","3h","5h"))
+                    .result(StraightHand(FIVE)),
+            willAssertThat(frenchCardsSet("As","2h","Qd","Jd","Kc","Th"))
+                    .result(StraightHand(ACE)),
 
-            Pair(
-                    frenchCardsSet("7s","7h","7d","6d","Ac","5h"),
-                    ThreeOfAKindHand(SEVEN,   ACE, SIX)),
+            willAssertThat(frenchCardsSet("7s","7h","7d","6d","Ac","5h"))
+                    .result(ThreeOfAKindHand(SEVEN, ACE,SIX)),
 
-            Pair(
-                    frenchCardsSet("7s","Ah","7d","6d","Ac","5h"),
-                    TwoPairHand(ACE, SEVEN,  SIX)),
-            Pair(
-                    frenchCardsSet("7s","Kh","7d","3d","Kc","3h"),
-                    TwoPairHand(KING, SEVEN,  THREE)),
+            willAssertThat(frenchCardsSet("7s","Ah","7d","6d","Ac","5h"))
+                    .result(TwoPairHand(ACE,SEVEN, SIX)),
+            willAssertThat(frenchCardsSet("7s","Kh","7d","3d","Kc","3h"))
+                    .result(TwoPairHand(KING,SEVEN, THREE)),
 
-            Pair(
-                    frenchCardsSet("7s","Kh","7d","6d","Ac","5h"),
-                    PairHand(SEVEN,   ACE, KING, SIX)),
+            willAssertThat(frenchCardsSet("7s","Kh","7d","6d","Ac","5h"))
+                    .result(PairHand(SEVEN, ACE,KING,SIX)),
 
-            Pair(
-                    frenchCardsSet("Ah","2d","3c","Ks","8c","7s"),
-                    HighCardHand(ACE, KING, EIGHT, SEVEN, THREE)),
-            Pair(
-                    frenchCardsSet("Ah","Jc","Ts","2d","8c","7s"),
-                    HighCardHand(ACE, JACK, TEN, EIGHT, SEVEN))
+            willAssertThat(frenchCardsSet("Ah","2d","3c","Ks","8c","7s"))
+                    .result(HighCardHand(ACE,KING,EIGHT,SEVEN,THREE)),
+            willAssertThat(frenchCardsSet("Ah","Jc","Ts","2d","8c","7s"))
+                    .result(HighCardHand(ACE,JACK,TEN,EIGHT,SEVEN))
             //////////////////////////////////////
     ).map {
-        DynamicTest.dynamicTest(
-                "${it.first} -> ${it.second}"
-        ) {
-            assertThat(getCardsEvaluator().evaluate(it.first)).isEqualTo(it.second)
-        }
+        createDynamicTest(it){ s -> getCardsEvaluator().evaluate(s) }
     }
 
     @Test
