@@ -1,11 +1,14 @@
 package agrfesta.k.cards.texasholdem.draws
 
+import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.isEqualTo
+import agrfesta.k.cards.texasholdem.isNotEqualTo
+import agrfesta.k.cards.texasholdem.willAssertThat
 import agrfesta.kcards.playingcards.suits.*
 import agrfesta.kcards.playingcards.suits.FrenchSeed.*
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -50,19 +53,19 @@ class FlushDrawTest {
     @TestFactory
     @DisplayName("equals tests")
     fun equalsTests() = listOf(
-            Triple(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS),FlushDraw(SIX,TEN,ACE,QUEEN, HEARTS), true),
-            Triple(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS),aDraw, false),
-            Triple(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS),FlushDraw(TEN,QUEEN,ACE,SIX, DIAMONDS), false),
-            Triple(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS),FlushDraw(TEN,QUEEN,ACE,FIVE, HEARTS), false),
-            Triple(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS),FlushDraw(TEN,QUEEN,KING,FIVE, DIAMONDS), false),
-            Triple(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS),FlushDraw(TEN,TWO,KING,FIVE, DIAMONDS), false),
-            Triple(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS),FlushDraw(JACK,TWO,KING,FIVE, DIAMONDS), false)
-    ).map {
-        DynamicTest.dynamicTest(
-                "${it.first} ${if (it.third) '=' else '!'}= ${it.second}"
-        ) {
-            if (it.third) assertThat(it.first).isEqualTo(it.second)
-            else assertThat(it.first).isNotEqualTo(it.second)
-        }
-    }
+            willAssertThat(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS))
+                    .isEqualTo(FlushDraw(SIX,TEN,ACE,QUEEN, HEARTS)),
+            willAssertThat(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS) as Draw)
+                    .isNotEqualTo(aDraw),
+            willAssertThat(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS))
+                    .isNotEqualTo(FlushDraw(TEN,QUEEN,ACE,SIX, DIAMONDS)),
+            willAssertThat(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS))
+                    .isNotEqualTo(FlushDraw(TEN,QUEEN,ACE,FIVE, HEARTS)),
+            willAssertThat(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS))
+                    .isNotEqualTo(FlushDraw(TEN,QUEEN,KING,FIVE, DIAMONDS)),
+            willAssertThat(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS))
+                    .isNotEqualTo(FlushDraw(TEN,TWO,KING,FIVE, DIAMONDS)),
+            willAssertThat(FlushDraw(TEN,QUEEN,ACE,SIX, HEARTS))
+                    .isNotEqualTo(FlushDraw(JACK,TWO,KING,FIVE, DIAMONDS))
+    ).map { createDynamicTest(it) }
 }

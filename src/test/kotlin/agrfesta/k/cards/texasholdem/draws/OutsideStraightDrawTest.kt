@@ -1,10 +1,13 @@
 package agrfesta.k.cards.texasholdem.draws
 
+import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.isEqualTo
+import agrfesta.k.cards.texasholdem.isNotEqualTo
+import agrfesta.k.cards.texasholdem.willAssertThat
 import agrfesta.kcards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -51,15 +54,11 @@ class OutsideStraightDrawTest {
     @TestFactory
     @DisplayName("Equals tests")
     fun equalsTests() = listOf(
-            Triple(OutsideStraightDraw(QUEEN),OutsideStraightDraw(QUEEN), true),
-            Triple(OutsideStraightDraw(FIVE),aDraw, false),
-            Triple(OutsideStraightDraw(KING),OutsideStraightDraw(QUEEN), false)
-    ).map {
-        DynamicTest.dynamicTest(
-                "${it.first} ${if (it.third) '=' else '!'}= ${it.second}"
-        ) {
-            if (it.third) assertThat(it.first).isEqualTo(it.second)
-            else assertThat(it.first).isNotEqualTo(it.second)
-        }
-    }
+            willAssertThat(OutsideStraightDraw(QUEEN))
+                    .isEqualTo(OutsideStraightDraw(QUEEN)),
+            willAssertThat(OutsideStraightDraw(FIVE) as Draw)
+                    .isNotEqualTo(aDraw),
+            willAssertThat(OutsideStraightDraw(KING))
+                    .isNotEqualTo(OutsideStraightDraw(QUEEN))
+    ).map { createDynamicTest(it) }
 }
