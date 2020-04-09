@@ -5,11 +5,7 @@ import java.util.stream.Collectors
 import java.util.stream.IntStream
 
 interface Deck {
-    fun draw(num: Int): List<Card> {
-        return IntStream.range(0, num)
-                .mapToObj {_ -> draw()}
-                .collect(Collectors.toList())
-    }
+    fun draw(num: Int): List<Card> = (0 until num).map { draw() }
     fun draw(): Card
     fun isEmpty(): Boolean
     fun size(): Int
