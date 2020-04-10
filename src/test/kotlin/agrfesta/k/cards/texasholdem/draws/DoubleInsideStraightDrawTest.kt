@@ -12,22 +12,13 @@ import org.junit.jupiter.api.TestFactory
 class DoubleInsideStraightDrawTest {
 
     @Test
-    @DisplayName("Double Inside Straight Draw inner top is FIVE -> raises an Exception")
-    fun doubleInsideStraightDrawInnerTopIsFiveRaisesAnException() {
-        val failure = assertThat {
-            DoubleInsideStraightDraw(FIVE, SEVEN)
-        }.isFailure()
-        failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The minimum Double Inside Straight Draw inner top is SIX, inner top: FIVE")
-    }
-    @Test
     @DisplayName("Double Inside Straight Draw inner top is FOUR -> raises an Exception")
     fun doubleInsideStraightDrawInnerTopIsFourRaisesAnException() {
         val failure = assertThat {
             DoubleInsideStraightDraw(FOUR, SIX)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The minimum Double Inside Straight Draw inner top is SIX, inner top: FOUR")
+        failure.hasMessage("The minimum Double Inside Straight Draw inner top is FIVE, inner top: FOUR")
     }
     @Test
     @DisplayName("Double Inside Straight Draw inner top is THREE -> raises an Exception")
@@ -36,7 +27,7 @@ class DoubleInsideStraightDrawTest {
             DoubleInsideStraightDraw(THREE, FIVE)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The minimum Double Inside Straight Draw inner top is SIX, inner top: THREE")
+        failure.hasMessage("The minimum Double Inside Straight Draw inner top is FIVE, inner top: THREE")
     }
     @Test
     @DisplayName("Double Inside Straight Draw inner top is TWO -> raises an Exception")
@@ -45,7 +36,7 @@ class DoubleInsideStraightDrawTest {
             DoubleInsideStraightDraw(TWO, FOUR)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The minimum Double Inside Straight Draw inner top is SIX, inner top: TWO")
+        failure.hasMessage("The minimum Double Inside Straight Draw inner top is FIVE, inner top: TWO")
     }
 
     @Test

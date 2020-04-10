@@ -1,6 +1,7 @@
 package agrfesta.k.cards.texasholdem.draws
 
 import agrfesta.kcards.playingcards.cards.Rank
+import agrfesta.kcards.playingcards.suits.FIVE
 import agrfesta.kcards.playingcards.suits.SIX
 
 /*
@@ -15,8 +16,8 @@ data class DoubleInsideStraightDraw(
         private val potentialTop: Rank): Draw {
 
     init {
-        if (innerTop < SIX) {
-            throw IllegalArgumentException("The minimum Double Inside Straight Draw inner top is SIX, inner top: $innerTop")
+        if (innerTop < FIVE) {
+            throw IllegalArgumentException("The minimum Double Inside Straight Draw inner top is FIVE, inner top: $innerTop")
         }
         if (potentialTop!=(innerTop+2) && potentialTop!=(innerTop+3)) {
             throw IllegalArgumentException(
