@@ -1,10 +1,7 @@
 package agrfesta.k.cards.texasholdem
 
 import assertk.assertThat
-import assertk.assertions.isEqualTo
-import assertk.assertions.isGreaterThan
-import assertk.assertions.isLessThan
-import assertk.assertions.isNotEqualTo
+import assertk.assertions.*
 import org.junit.jupiter.api.DynamicTest
 
 interface LazyAssertion {
@@ -50,4 +47,21 @@ fun <I,O> LazyAssertionBuilder<I>.result(output: O) = LazyFunctionExecutionAsser
 fun <I,O> createDynamicTest(assertion: LazyFunctionAssertion<I,O>, func: (input: I) -> O): DynamicTest =
         DynamicTest.dynamicTest(assertion.toString()) { assertion.assert(func) }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+interface LazyCollectionAssertion<I,O> {
+    fun assert(func: (input: I) -> Collection<O>)
+}
+class LazyCollectionAssertionImpl<I,O>(private val input: I, vararg output: O): LazyCollectionAssertion<I,O> {
+    private val outputs = output
+    override fun assert(func: (input: I) -> Collection<O>) = assertThat(func(input)).containsOnly(*outputs)
+    override fun toString() = "$input -> ${outputs.toList()}"
+}
+class LazyCollectionIsEmptyAssertion<I,O>(private val input: I): LazyCollectionAssertion<I,O> {
+    override fun assert(func: (input: I) -> Collection<O>) = assertThat(func(input)).isEmpty()
+    override fun toString() = "$input result is empty"
+}
+fun <I,O> LazyAssertionBuilder<I>.resultIsEmpty(): LazyCollectionAssertion<I,O> =
+        LazyCollectionIsEmptyAssertion(actual)
+fun <I,O> LazyAssertionBuilder<I>.resultContainsOnly(vararg outputs: O): LazyCollectionAssertion<I,O> =
+        LazyCollectionAssertionImpl(actual, *outputs)
+fun <I,O> createDynamicTest(assertion: LazyCollectionAssertion<I,O>, func: (input: I) -> Collection<O>): DynamicTest =
+        DynamicTest.dynamicTest(assertion.toString()) { assertion.assert(func) }
