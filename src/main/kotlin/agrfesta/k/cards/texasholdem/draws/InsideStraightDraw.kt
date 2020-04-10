@@ -17,12 +17,17 @@ import agrfesta.kcards.playingcards.suits.TEN
 data class InsideStraightDraw(val top: Rank, val missing: Rank): Draw {
 
     init {
-        if (top < FOUR) {
-            throw IllegalArgumentException("The minimum Inside Straight Draw top is FOUR, top: $top")
+        if (top < FIVE) {
+            throw IllegalArgumentException("The minimum Inside Straight Draw top is FIVE, top: $top")
         }
-        if (top == FOUR) {
-            if (missing != FIVE) {
-                throw IllegalArgumentException("If the Inside Straight Draw top is FOUR the missing have to be FIVE, missing: $missing")
+//        if (top == FOUR) {
+//            if (missing != FIVE) {
+//                throw IllegalArgumentException("If the Inside Straight Draw top is FOUR the missing have to be FIVE, missing: $missing")
+//            }
+//        }
+        if (top == FIVE) {
+            if (missing > top) {
+                throw IllegalArgumentException("The missing Rank can't be greater than top: missing=$missing, top=$top")
             }
         } else if (missing >= top) {
             throw IllegalArgumentException(
@@ -34,9 +39,11 @@ data class InsideStraightDraw(val top: Rank, val missing: Rank): Draw {
                 throw IllegalArgumentException(
                         "The missing Rank can't be lesser than tail: missing=$missing, tail=$tail")
             }
-        } else if (missing <= tail) {
-            throw IllegalArgumentException(
-                    "The missing Rank can't be lesser than or equal to tail: missing=$missing, tail=$tail")
+        } else if (tail != ACE) {
+            if (missing <= tail) {
+                throw IllegalArgumentException(
+                        "The missing Rank can't be lesser than or equal to tail: missing=$missing, tail=$tail")
+            }
         }
     }
 

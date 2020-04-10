@@ -15,13 +15,22 @@ import org.junit.jupiter.api.TestFactory
 class InsideStraightDrawTest {
 
     @Test
+    @DisplayName("Inside Straight Draw top is FOUR -> raises an Exception")
+    fun insideStraightDrawTopIsFourRaisesAnException() {
+        val failure = assertThat {
+            InsideStraightDraw(FOUR, TWO)
+        }.isFailure()
+        failure.hasClass(IllegalArgumentException::class)
+        failure.hasMessage("The minimum Inside Straight Draw top is FIVE, top: FOUR")
+    }
+    @Test
     @DisplayName("Inside Straight Draw top is THREE -> raises an Exception")
     fun insideStraightDrawTopIsThreeRaisesAnException() {
         val failure = assertThat {
             InsideStraightDraw(THREE, TWO)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The minimum Inside Straight Draw top is FOUR, top: THREE")
+        failure.hasMessage("The minimum Inside Straight Draw top is FIVE, top: THREE")
     }
     @Test
     @DisplayName("Inside Straight Draw top is TWO -> raises an Exception")
@@ -30,17 +39,7 @@ class InsideStraightDrawTest {
             InsideStraightDraw(TWO, TWO)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The minimum Inside Straight Draw top is FOUR, top: TWO")
-    }
-
-    @Test
-    @DisplayName("Inside Straight Draw top is FOUR and missing THREE -> raises an Exception")
-    fun insideStraightDrawTopIsFourAndMissingThreeRaisesAnException() {
-        val failure = assertThat {
-            InsideStraightDraw(FOUR, THREE)
-        }.isFailure()
-        failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("If the Inside Straight Draw top is FOUR the missing have to be FIVE, missing: THREE")
+        failure.hasMessage("The minimum Inside Straight Draw top is FIVE, top: TWO")
     }
 
     @Test
@@ -60,6 +59,16 @@ class InsideStraightDrawTest {
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("The missing Rank can't be greater than or equal to top: missing=SEVEN, top=SIX")
+    }
+
+    @Test
+    @DisplayName("Inside Straight Draw top is FIVE and missing SIX -> raises an Exception")
+    fun insideStraightDrawTopIsFiveAndMissingSixRaisesAnException() {
+        val failure = assertThat {
+            InsideStraightDraw(FIVE, SIX)
+        }.isFailure()
+        failure.hasClass(IllegalArgumentException::class)
+        failure.hasMessage("The missing Rank can't be greater than top: missing=SIX, top=FIVE")
     }
 
     @Test
