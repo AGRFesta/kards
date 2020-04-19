@@ -1,13 +1,16 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-
     fun aStrategy(): PlayerStrategyInterface = object : PlayerStrategyInterface {
         override fun act(): Action = anAction()
+        override fun toString(): String = "aStrategy"
     }
     fun anAction(): Action = object : Action {
         override fun getAmount(): Int? = null
     }
     fun aPlayer() = Player("APlayer", 1000) { aStrategy() }
+    fun aPlayer(name: String) = Player(name, 1000) { aStrategy() }
+    fun aPlayer(stack: Int) = Player("APlayer", stack) { aStrategy() }
+    fun aPlayer(name: String, stack: Int) = Player(name, stack) { aStrategy() }
 
     fun foldedPlayer(): Player {
         val player = Player("FoldedPlayer", 1000) { aStrategy() }
