@@ -32,7 +32,7 @@ class Player(
         return effectiveAmount
     }
 
-    override fun act(): Action = strategy.act()
+    override fun act(context: GameContext): Action = strategy.act(context)
 
     override fun toString(): String = "$name[$strategy] ($stack)"
 
@@ -43,14 +43,10 @@ enum class PlayerStatus {
 }
 
 interface PlayerStrategyInterface {
-    fun act(): Action
+    fun act(context: GameContext): Action
 }
 
 /// List<Player> ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//fun List<Player>.getSBPlayer(btt: Int): Player = this[getSBPosition(btt, this.size)]
-//fun List<Player>.getBBPlayer(btt: Int): Player = this[getBBPosition(btt, this.size)]
-//fun List<Player>.getUTGPlayer(btt: Int): Player = this[getUTGPosition(btt, this.size)]
 
 fun List<Player>.resetActivePlayersStatus() = this.getActive()
         .forEach { it.status = PlayerStatus.NONE }

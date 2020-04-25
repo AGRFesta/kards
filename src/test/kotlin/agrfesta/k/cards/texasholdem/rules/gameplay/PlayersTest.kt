@@ -116,10 +116,10 @@ class PlayersTest {
             override fun getAmount(): Int? = 100
         }
         val strategy = object : PlayerStrategyInterface {
-            override fun act(): Action = action
+            override fun act(context: GameContext): Action = action
         }
         val player = Player("Alex", 1000) { strategy }
-        assertThat(player.act()).isEqualTo(action)
+        assertThat(player.act(aContext())).isEqualTo(action)
     }
 
     @Test
