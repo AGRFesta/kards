@@ -1,5 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
+import agrfesta.kcards.playingcards.cards.Card
+
 ///// Strategies ///////////////////////////////////////////////////////////////////////////////////////////////////////
 class PlayerStrategyInterfaceCyclicFixedListImpl(private val actions: List<Action>): PlayerStrategyInterface {
     private var pos: Int = 0
@@ -30,6 +32,12 @@ fun fold(): Action = FoldAction()
 fun aPlayer() = Player("APlayer", 1000) { aStrategy() }
 fun aPlayer(name: String) = Player(name, 1000) { aStrategy() }
 fun aPlayer(stack: Int) = Player("APlayer", stack) { aStrategy() }
+fun aPlayer(name: String, stack: Int, status: PlayerStatus, cards: Set<Card>): Player {
+    val player = Player(name, stack) { aStrategy() }
+    player.cards = cards
+    player.status = status
+    return player
+}
 fun aPlayer(name: String, stack: Int, strategy: PlayerStrategyInterface) = Player(name, stack) { strategy }
 fun aPlayer(name: String, stack: Int, status: PlayerStatus, strategy: PlayerStrategyInterface): Player {
     val player = Player(name, stack) { strategy }

@@ -8,7 +8,7 @@ class Player(
         strategyProvider: (p: Player) -> PlayerStrategyInterface
     ): PlayerStrategyInterface {
     var status: PlayerStatus = PlayerStatus.NONE
-    var cards: Set<Card> = setOf()
+    var cards: Set<Card> = setOf() //TODO check that are exactly two
     private val strategy = strategyProvider.invoke(this)
 
     /// A Player that is out of the Game
