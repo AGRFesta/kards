@@ -32,37 +32,24 @@ fun fold(): Action = FoldAction()
 fun aPlayer() = Player("APlayer", 1000) { aStrategy() }
 fun aPlayer(name: String) = Player(name, 1000) { aStrategy() }
 fun aPlayer(stack: Int) = Player("APlayer", stack) { aStrategy() }
-fun aPlayer(name: String, stack: Int, status: PlayerStatus, cards: Set<Card>): Player {
-    val player = Player(name, stack) { aStrategy() }
-    player.cards = cards
-    player.status = status
-    return player
-}
+fun aPlayer(name: String, stack: Int, status: PlayerStatus, cards: Set<Card>) = PlayerTestBuilder()
+            .name(name).stack(stack).status(status).cards(cards)
+        .build()
 fun aPlayer(name: String, stack: Int, strategy: PlayerStrategyInterface) = Player(name, stack) { strategy }
-fun aPlayer(name: String, stack: Int, status: PlayerStatus, strategy: PlayerStrategyInterface): Player {
-    val player = Player(name, stack) { strategy }
-    player.status = status
-    return player
-}
+fun aPlayer(name: String, stack: Int, status: PlayerStatus, strategy: PlayerStrategyInterface) = PlayerTestBuilder()
+                .name(name).stack(stack).status(status).strategy { strategy }
+            .build()
 
-fun foldedPlayer(): Player {
-    val player = Player("FoldedPlayer", 1000) { aStrategy() }
-    player.status = PlayerStatus.FOLD
-    return player
-}
-fun allInPlayer(): Player {
-    val player = Player("AllInPlayer", 1000) { aStrategy() }
-    player.status = PlayerStatus.ALL_IN
-    return player
-}
-fun callingPlayer(): Player {
-    val player = Player("CallingPlayer", 1000) { aStrategy() }
-    player.status = PlayerStatus.CALL
-    return player
-}
-fun raisingPlayer(): Player {
-    val player = Player("RaisingPlayer", 1000) { aStrategy() }
-    player.status = PlayerStatus.RAISE
-    return player
-}
+fun foldedPlayer(): Player = PlayerTestBuilder()
+        .name("FoldedPlayer").stack(1000).status(PlayerStatus.FOLD)
+        .build()
+fun allInPlayer(): Player = PlayerTestBuilder()
+        .name("AllInPlayer").stack(1000).status(PlayerStatus.ALL_IN)
+        .build()
+fun callingPlayer(): Player = PlayerTestBuilder()
+        .name("CallingPlayer").stack(1000).status(PlayerStatus.CALL)
+        .build()
+fun raisingPlayer(): Player = PlayerTestBuilder()
+        .name("RaisingPlayer").stack(1000).status(PlayerStatus.RAISE)
+        .build()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
