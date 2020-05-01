@@ -7,7 +7,7 @@ fun MutableMap<Player,Int>.players(): Set<Player> = this.keys.toSet()
 fun MutableMap<Player,Int>.payedBy(player: Player): Int = this[player] ?: 0
 
 operator fun MutableMap<Player,Int>.plus(increment: MutableMap<Player,Int>): MutableMap<Player,Int> =
-        (this.entries + increment.entries)
+        (this.entries.toList() + increment.entries.toList())
             .groupingBy { it.key }
             .foldTo (buildPot(),0) { acc, element -> acc + element.value }
 

@@ -110,6 +110,19 @@ class PotTest {
         potB[jane] = 1
         assertThat(potA + potB).containsOnly(jane to 6, alex to 3, giulia to 2)
     }
+    @Test
+    @DisplayName("[Jane=200,Alex=200] + [Alex=400,Jane=200] -> [Jane=400,Alex=600]")
+    fun potSumStory000() {
+        val jane = aPlayer("Jane")
+        val alex = aPlayer("Alex")
+        val potA = buildPot()
+        potA[alex] = 200
+        potA[jane] = 200
+        val potB = buildPot()
+        potB[alex] = 400
+        potB[jane] = 200
+        assertThat(potA + potB).containsOnly(jane to 400, alex to 600)
+    }
 
     @Test
     @DisplayName("APlayer(1000) sends 200 to Pot[] -> APlayer(800), Pot[APlayer=200]")
