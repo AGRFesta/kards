@@ -32,6 +32,7 @@ fun fold(): Action = FoldAction()
 fun aPlayer() = Player("APlayer", 1000) { aStrategy() }
 fun aPlayer(name: String) = Player(name, 1000) { aStrategy() }
 fun aPlayer(stack: Int) = Player("APlayer", stack) { aStrategy() }
+fun aPlayer(name: String, stack: Int) = Player(name, stack) { aStrategy() }
 fun aPlayer(name: String, stack: Int, status: PlayerStatus, cards: Set<Card>) = PlayerTestBuilder()
             .name(name).stack(stack).status(status).cards(cards)
         .build()
