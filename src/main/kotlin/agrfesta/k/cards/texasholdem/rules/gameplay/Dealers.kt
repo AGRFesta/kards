@@ -2,7 +2,7 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 
 
 interface Dealer {
-    fun collectPot(): MutableMap<Player,Int>
+    fun collectPot(): MutableMap<GamePlayer,Int>
 }
 
 abstract class AbstractDealer(private val context: GameContext): Dealer {
@@ -13,12 +13,12 @@ abstract class AbstractDealer(private val context: GameContext): Dealer {
     }
 
     protected var amountRequired: Int = 0
-    private var raisingPlayer: Player? = null
+    private var raisingPlayer: GamePlayer? = null
 
-    protected abstract fun createPot(): MutableMap<Player,Int>
+    protected abstract fun createPot(): MutableMap<GamePlayer,Int>
     protected abstract fun playersIterator(): TableIterator
 
-    override fun collectPot(): MutableMap<Player,Int> {
+    override fun collectPot(): MutableMap<GamePlayer,Int> {
         val pot = createPot()
         val iterator = playersIterator()
 
@@ -36,33 +36,33 @@ abstract class AbstractDealer(private val context: GameContext): Dealer {
         return pot
     }
 
-    private fun someoneHaveToAct(pot: MutableMap<Player,Int>): Boolean = hadToAct(pot).isNotEmpty()
-    private fun hadToAct(pot: MutableMap<Player,Int>): List<Player> {
+    private fun someoneHaveToAct(pot: MutableMap<GamePlayer,Int>): Boolean = hadToAct(pot).isNotEmpty()
+    private fun hadToAct(pot: MutableMap<GamePlayer,Int>): List<GamePlayer> {
         return context.table.players.filter { hadToAct(it,pot) }
     }
-    private fun theOnlyActive(player: Player): Boolean = context.table.players
+    private fun theOnlyActive(player: GamePlayer): Boolean = context.table.players
             .filter { player !== it }
             .none { it.isActive() }
-    private fun hadToPay(player: Player, pot: MutableMap<Player,Int>): Boolean {
+    private fun hadToPay(player: GamePlayer, pot: MutableMap<GamePlayer,Int>): Boolean {
         val payed: Int = pot.payedBy(player)
         return payed!=pot.maxContribution()?.amount?:0
     }
-    private fun hadToAct(player: Player, pot: MutableMap<Player,Int>): Boolean {
+    private fun hadToAct(player: GamePlayer, pot: MutableMap<GamePlayer,Int>): Boolean {
         val hadToPay = hadToPay(player, pot)
         return player.isActive()
                 && (!theOnlyActive(player) || hadToPay)
                 && (player.status==PlayerStatus.NONE || hadToPay)
     }
 
-    private fun callEffect(player: Player, pot: MutableMap<Player,Int>) {
+    private fun callEffect(player: GamePlayer, pot: MutableMap<GamePlayer,Int>) {
         val payed: Int = pot.payedBy(player)
         player.status = PlayerStatus.CALL
         pot.receiveFrom(player, amountRequired-payed)
     }
-    private fun foldEffect(player: Player) {
+    private fun foldEffect(player: GamePlayer) {
         player.status = PlayerStatus.FOLD
     }
-    private fun raiseEffect(player: Player, action: RaiseAction, pot: MutableMap<Player,Int>) {
+    private fun raiseEffect(player: GamePlayer, action: RaiseAction, pot: MutableMap<GamePlayer,Int>) {
         val payed: Int = pot.payedBy(player)
         val minimumRaise = context.payments.bb()
         if (raisingPlayer!=null && (amountRequired-payed < minimumRaise)) {
@@ -79,18 +79,18 @@ abstract class AbstractDealer(private val context: GameContext): Dealer {
 }
 
 class PostFlopDealer (
-        private val prevPot: MutableMap<Player,Int>,
+        private val prevPot: MutableMap<GamePlayer,Int>,
         private val context: GameContext
     ): AbstractDealer(context) {
 
     override fun createPot() = buildPot()
     override fun playersIterator(): TableIterator = context.table.iterateFromSB()
-    override fun collectPot(): MutableMap<Player,Int> = super.collectPot() + prevPot
+    override fun collectPot(): MutableMap<GamePlayer,Int> = super.collectPot() + prevPot
 }
 
 class PreFlopDealer (private val context: GameContext): AbstractDealer(context) {
 
-    override fun createPot(): MutableMap<Player, Int> {
+    override fun createPot(): MutableMap<GamePlayer, Int> {
         val pot = buildPot()
         pot.receiveFrom(context.table.getSB(),context.payments.sb())
         pot.receiveFrom(context.table.getBB(),context.payments.bb())

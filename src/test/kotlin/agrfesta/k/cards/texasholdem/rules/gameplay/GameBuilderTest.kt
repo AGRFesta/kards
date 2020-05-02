@@ -13,7 +13,7 @@ class GameMockImpl(
         val deck: Deck,
         val table: Table,
         val preFlopDealerProvider: (GameContext) -> Dealer,
-        val dealerProvider: (MutableMap<Player,Int>,GameContext) -> Dealer,
+        val dealerProvider: (MutableMap<GamePlayer,Int>, GameContext) -> Dealer,
         val showdown: Showdown
 ): Game {
     override fun play() {}
@@ -65,7 +65,7 @@ class GameBuilderTest {
     fun builderInjectProvidedInternalImplementations() {
         val deck = aDeck()
         val showdown = object : Showdown {
-            override fun execute(pot: MutableMap<Player, Int>, board: Board) {}
+            override fun execute(pot: MutableMap<GamePlayer, Int>, board: Board) {}
         }
         val dealer = PostFlopDealer(buildPot(),aContext())
         val preFlopDealer = PreFlopDealer(aContext())

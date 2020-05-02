@@ -29,28 +29,28 @@ fun fold(): Action = FoldAction()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///// Players //////////////////////////////////////////////////////////////////////////////////////////////////////////
-fun aPlayer() = Player("APlayer", 1000) { aStrategy() }
-fun aPlayer(name: String) = Player(name, 1000) { aStrategy() }
-fun aPlayer(stack: Int) = Player("APlayer", stack) { aStrategy() }
-fun aPlayer(name: String, stack: Int) = Player(name, stack) { aStrategy() }
+fun aPlayer() = GamePlayer("APlayer", 1000) { aStrategy() }
+fun aPlayer(name: String) = GamePlayer(name, 1000) { aStrategy() }
+fun aPlayer(stack: Int) = GamePlayer("APlayer", stack) { aStrategy() }
+fun aPlayer(name: String, stack: Int) = GamePlayer(name, stack) { aStrategy() }
 fun aPlayer(name: String, stack: Int, status: PlayerStatus, cards: Set<Card>) = PlayerTestBuilder()
             .name(name).stack(stack).status(status).cards(cards)
         .build()
-fun aPlayer(name: String, stack: Int, strategy: PlayerStrategyInterface) = Player(name, stack) { strategy }
+fun aPlayer(name: String, stack: Int, strategy: PlayerStrategyInterface) = GamePlayer(name, stack) { strategy }
 fun aPlayer(name: String, stack: Int, status: PlayerStatus, strategy: PlayerStrategyInterface) = PlayerTestBuilder()
                 .name(name).stack(stack).status(status).strategy { strategy }
             .build()
 
-fun foldedPlayer(): Player = PlayerTestBuilder()
+fun foldedPlayer(): GamePlayer = PlayerTestBuilder()
         .name("FoldedPlayer").stack(1000).status(PlayerStatus.FOLD)
         .build()
-fun allInPlayer(): Player = PlayerTestBuilder()
+fun allInPlayer(): GamePlayer = PlayerTestBuilder()
         .name("AllInPlayer").stack(1000).status(PlayerStatus.ALL_IN)
         .build()
-fun callingPlayer(): Player = PlayerTestBuilder()
+fun callingPlayer(): GamePlayer = PlayerTestBuilder()
         .name("CallingPlayer").stack(1000).status(PlayerStatus.CALL)
         .build()
-fun raisingPlayer(): Player = PlayerTestBuilder()
+fun raisingPlayer(): GamePlayer = PlayerTestBuilder()
         .name("RaisingPlayer").stack(1000).status(PlayerStatus.RAISE)
         .build()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
