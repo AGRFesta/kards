@@ -23,7 +23,7 @@ import agrfesta.kcards.playingcards.suits.createFrenchDeck
 val evaluator = CardsEvaluatorBaseImpl()
 const val num = 100_000_000
 
-fun main(args: Array<String>) {
+fun main() {
     val start = System.currentTimeMillis()
     val result = (0 .. num)
             .map { play() }

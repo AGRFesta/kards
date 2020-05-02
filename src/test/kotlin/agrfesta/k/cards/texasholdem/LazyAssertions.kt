@@ -5,7 +5,6 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThan
 import assertk.assertions.isLessThan
 import org.junit.jupiter.api.DynamicTest
-import org.junit.jupiter.api.function.Executable
 
 interface LazyAssertion {
     fun assert()

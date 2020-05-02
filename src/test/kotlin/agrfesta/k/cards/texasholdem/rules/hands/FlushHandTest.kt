@@ -69,7 +69,7 @@ class FlushHandTest {
     @DisplayName("Three have the same Rank -> raises an Exception")
     fun threeHaveTheSameRankRaisesAnException() {
         val failure = assertThat {
-            FlushHand(JACK,ACE,ACE,ACE,TWO, FrenchSeed.CLUBS)
+            FlushHand(JACK,ACE,ACE,ACE,TWO, CLUBS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Multiple with same Rank: JACK,ACE,ACE,ACE,TWO")
@@ -78,7 +78,7 @@ class FlushHandTest {
     @DisplayName("Four have the same Rank -> raises an Exception")
     fun fourHaveTheSameRankRaisesAnException() {
         val failure = assertThat {
-            FlushHand(ACE, ACE, ACE, ACE, TWO, FrenchSeed.CLUBS)
+            FlushHand(ACE, ACE, ACE, ACE, TWO, CLUBS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Multiple with same Rank: ACE,ACE,ACE,ACE,TWO")
@@ -87,7 +87,7 @@ class FlushHandTest {
     @DisplayName("All have the same Rank -> raises an Exception")
     fun allHaveTheSameRankRaisesAnException() {
         val failure = assertThat {
-            FlushHand(ACE, ACE, ACE, ACE, ACE, FrenchSeed.CLUBS)
+            FlushHand(ACE, ACE, ACE, ACE, ACE, CLUBS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Multiple with same Rank: ACE,ACE,ACE,ACE,ACE")

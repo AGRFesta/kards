@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 class PotBuilder {
-    val pot = buildPot()
+    private val pot = buildPot()
 
     fun contribution(player: Player, amount: Int): PotBuilder {
         pot[player] = amount
