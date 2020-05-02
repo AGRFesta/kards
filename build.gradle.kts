@@ -1,12 +1,20 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.jvm.tasks.Jar
+
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.61"
 
+    // Dokka is a popular documentation engine for Kotlin projects
+    id("org.jetbrains.dokka") version "0.10.0"
+
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+    `maven-publish`
 }
 
 val myMavenRepoReadUrl: String by project
+val myMavenRepoWriteUrl: String by project
 
 group = "agrfesta.kcards"
 version = "1.0-SNAPSHOT"
@@ -32,7 +40,7 @@ dependencies {
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.20")
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "1.8"
@@ -41,4 +49,30 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+val dokkaJar by tasks.creating(Jar::class) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles Kotlin docs with Dokka"
+    classifier = "javadoc"
+    from(tasks.dokka)
+}
+
+tasks.dokka {
+    outputFormat = "html"
+    outputDirectory = "$buildDir/javadoc"
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("default") {
+            from(components["java"])
+            artifact(dokkaJar)
+        }
+    }
+    repositories {
+        maven {
+            url = uri(myMavenRepoWriteUrl)
+        }
+    }
 }
