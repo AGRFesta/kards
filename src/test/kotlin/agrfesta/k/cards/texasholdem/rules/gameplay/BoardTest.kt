@@ -1,10 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.DeckListImpl
-import agrfesta.kcards.playingcards.cards.Card
-import agrfesta.kcards.playingcards.suits.createFrenchCard
-import agrfesta.kcards.playingcards.suits.createFrenchHand
-import agrfesta.kcards.playingcards.suits.frenchCardsSet
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
@@ -12,9 +8,7 @@ import org.junit.jupiter.api.Test
 
 @DisplayName("Board tests")
 class BoardTest {
-    private fun cards(vararg strings: String): Array<Card> = frenchCardsSet(*strings).toTypedArray()
-    private fun card(string: String): Card = createFrenchCard(string)
-    private fun cardList(vararg strings: String): List<Card> = createFrenchHand(*strings)
+
 
     @Test
     @DisplayName("EmptyBoard cards -> []")
