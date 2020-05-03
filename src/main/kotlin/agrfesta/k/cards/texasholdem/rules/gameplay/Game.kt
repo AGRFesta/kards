@@ -11,7 +11,7 @@ class GameImpl(
         private val deck: Deck,
         private val table: Table,
         private val preFlopDealerProvider: (GameContext) -> Dealer,
-        private val dealerProvider: (MutableMap<Player,Int>,GameContext) -> Dealer,
+        private val dealerProvider: (MutableMap<GamePlayer,Int>, GameContext) -> Dealer,
         private val showdown: Showdown
 ): Game {
     private var pot = buildPot()
@@ -33,13 +33,13 @@ class GameImpl(
         showdown.execute(pot, board)
     }
 
-    private fun findWinner(players: List<Player>): Player? {
+    private fun findWinner(players: List<GamePlayer>): GamePlayer? {
         val winner = players.findWinner()
         winner?.receive(pot.amount())
         return winner
     }
 
-    private fun findPreFlopWinner(): Player? {
+    private fun findPreFlopWinner(): GamePlayer? {
         table.players.forEach { it.cards = deck.draw(2).toSet() }
 
         val dealer = preFlopDealerProvider.invoke(GameContext(table, payments, board))
@@ -47,7 +47,7 @@ class GameImpl(
         return findWinner(table.players)
     }
 
-    private fun findWinner(): Player? {
+    private fun findWinner(): GamePlayer? {
         board = board.next()
         val dealer = dealerProvider.invoke(pot, GameContext(table, payments, board))
         pot = pot + dealer.collectPot()

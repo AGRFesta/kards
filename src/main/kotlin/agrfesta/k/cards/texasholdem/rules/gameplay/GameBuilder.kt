@@ -8,10 +8,10 @@ class GameBuilder {
     private var deck: Deck = createFrenchDeck()
     private var showdown: Showdown = ShowdownImpl(CardsEvaluatorBaseImpl())
     private var preFlopDealerProvider: (GameContext) -> Dealer = { PreFlopDealer(it) }
-    private var dealerProvider: (MutableMap<Player,Int>,GameContext) -> Dealer =
+    private var dealerProvider: (MutableMap<GamePlayer,Int>, GameContext) -> Dealer =
             { pot,context -> PostFlopDealer(pot,context) }
     private var implementation: (GamePayments, Deck, Table, (GameContext) -> Dealer,
-                                 (MutableMap<Player,Int>,GameContext) -> Dealer, Showdown) -> Game = ::GameImpl
+                                 (MutableMap<GamePlayer,Int>, GameContext) -> Dealer, Showdown) -> Game = ::GameImpl
 
     fun deck(deck: Deck): GameBuilder {
         this.deck = deck
@@ -25,11 +25,11 @@ class GameBuilder {
         this.preFlopDealerProvider = preFlopDealerProvider
         return this
     }
-    fun dealerProvider(dealerProvider: (MutableMap<Player,Int>,GameContext) -> Dealer): GameBuilder {
+    fun dealerProvider(dealerProvider: (MutableMap<GamePlayer,Int>, GameContext) -> Dealer): GameBuilder {
         this.dealerProvider = dealerProvider
         return this
     }
-    fun implementation(implementation: (GamePayments, Deck, Table, (GameContext) -> Dealer, (MutableMap<Player,Int>,GameContext) -> Dealer, Showdown) -> Game): GameBuilder {
+    fun implementation(implementation: (GamePayments, Deck, Table, (GameContext) -> Dealer, (MutableMap<GamePlayer,Int>, GameContext) -> Dealer, Showdown) -> Game): GameBuilder {
         this.implementation = implementation
         return this
     }

@@ -10,11 +10,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-class DealerMock(private val collectPotBody: () -> MutableMap<Player, Int>): Dealer {
-    override fun collectPot(): MutableMap<Player, Int> = collectPotBody.invoke()
+class DealerMock(private val collectPotBody: () -> MutableMap<GamePlayer, Int>): Dealer {
+    override fun collectPot(): MutableMap<GamePlayer, Int> = collectPotBody.invoke()
 }
-class ShowdownMock(private val showdownBody: (MutableMap<Player, Int>, Board) -> Unit): Showdown {
-    override fun execute(pot: MutableMap<Player, Int>, board: Board) = showdownBody.invoke(pot,board)
+class ShowdownMock(private val showdownBody: (MutableMap<GamePlayer, Int>, Board) -> Unit): Showdown {
+    override fun execute(pot: MutableMap<GamePlayer, Int>, board: Board) = showdownBody.invoke(pot,board)
 }
 
 @DisplayName("Game tests")
@@ -25,7 +25,7 @@ class GameTest {
     private var jane = aPlayer()
     private var dave = aPlayer()
 
-    private val defaultDealer: () -> MutableMap<Player, Int> = {
+    private val defaultDealer: () -> MutableMap<GamePlayer, Int> = {
         assert(false) { "The game is not following the correct phases sequence" }
         buildPot()
     }
@@ -43,13 +43,13 @@ class GameTest {
     fun inPreFlopPhaseTakesTwoCardsFromDeckForEachPlayerAtTheTable() {
         val deck = DeckListImpl(cardList("Ah","Ac","3h","5s","Kh","Qc"))
         val table = Table(listOf(alex,poly,jane), 0)
-        val preFlopDealer: () -> MutableMap<Player, Int> = {
+        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
             alex.status = PlayerStatus.RAISE
             poly.status = PlayerStatus.FOLD
             jane.status = PlayerStatus.FOLD
             buildPot()
         }
-        val flopDealer: () -> MutableMap<Player, Int> = {
+        val flopDealer: () -> MutableMap<GamePlayer, Int> = {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
@@ -69,7 +69,7 @@ class GameTest {
     @DisplayName("Game story: Alex is the remaining player in pre-flop and takes all the pot")
     fun gameStory000() {
         val table = Table(listOf(alex,poly), 0)
-        val preFlopDealer: () -> MutableMap<Player, Int> = {
+        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,500)
@@ -77,7 +77,7 @@ class GameTest {
             pot.receiveFrom(poly,200)
             pot
         }
-        val flopDealer: () -> MutableMap<Player, Int> = {
+        val flopDealer: () -> MutableMap<GamePlayer, Int> = {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
@@ -101,7 +101,7 @@ class GameTest {
     @DisplayName("Game story: Alex is the remaining player at flop and takes all the pot")
     fun gameStory001() {
         val table = Table(listOf(alex,poly,jane), 0)
-        val preFlopDealer: () -> MutableMap<Player, Int> = {
+        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,200)
@@ -110,7 +110,7 @@ class GameTest {
             jane.status = PlayerStatus.FOLD
             pot
         }
-        val flopDealer: () -> MutableMap<Player, Int> = {
+        val flopDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,400)
@@ -118,7 +118,7 @@ class GameTest {
             pot.receiveFrom(poly,200)
             pot
         }
-        val turnDealer: () -> MutableMap<Player, Int> = {
+        val turnDealer: () -> MutableMap<GamePlayer, Int> = {
             assert(false) { "The game should finish at flop but is collecting pot at turn" }
             buildPot()
         }
@@ -152,7 +152,7 @@ class GameTest {
     @DisplayName("Game story: Alex is the remaining player at turn and takes all the pot")
     fun gameStory002() {
         val table = Table(listOf(alex,poly,jane,dave), 0)
-        val preFlopDealer: () -> MutableMap<Player, Int> = {
+        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,200)
@@ -163,7 +163,7 @@ class GameTest {
             pot.receiveFrom(dave,200)
             pot
         }
-        val flopDealer: () -> MutableMap<Player, Int> = {
+        val flopDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,200)
@@ -172,14 +172,14 @@ class GameTest {
             pot.receiveFrom(dave,200)
             pot
         }
-        val turnDealer: () -> MutableMap<Player, Int> = {
+        val turnDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,200)
             dave.status = PlayerStatus.FOLD
             pot
         }
-        val riverDealer: () -> MutableMap<Player, Int> = {
+        val riverDealer: () -> MutableMap<GamePlayer, Int> = {
             assert(false) { "The game should finish at turn but is collecting pot at river" }
             buildPot()
         }
@@ -220,7 +220,7 @@ class GameTest {
     @DisplayName("Game story: Alex is the remaining player at river and takes all the pot")
     fun gameStory003() {
         val table = Table(listOf(alex,poly,jane,dave), 0)
-        val preFlopDealer: () -> MutableMap<Player, Int> = {
+        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,200)
@@ -231,7 +231,7 @@ class GameTest {
             pot.receiveFrom(dave,200)
             pot
         }
-        val flopDealer: () -> MutableMap<Player, Int> = {
+        val flopDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,200)
@@ -240,7 +240,7 @@ class GameTest {
             pot.receiveFrom(dave,200)
             pot
         }
-        val turnDealer: () -> MutableMap<Player, Int> = {
+        val turnDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,200)
@@ -248,7 +248,7 @@ class GameTest {
             pot.receiveFrom(dave,200)
             pot
         }
-        val riverDealer: () -> MutableMap<Player, Int> = {
+        val riverDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,200)
@@ -295,7 +295,7 @@ class GameTest {
     @DisplayName("Game story: Alex wins the pot at showdown")
     fun gameStory004() {
         val table = Table(listOf(alex,poly,jane,dave), 0)
-        val preFlopDealer: () -> MutableMap<Player, Int> = {
+        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,200)
@@ -306,7 +306,7 @@ class GameTest {
             pot.receiveFrom(dave,200)
             pot
         }
-        val flopDealer: () -> MutableMap<Player, Int> = {
+        val flopDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,200)
@@ -315,7 +315,7 @@ class GameTest {
             pot.receiveFrom(dave,200)
             pot
         }
-        val turnDealer: () -> MutableMap<Player, Int> = {
+        val turnDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,200)
@@ -323,7 +323,7 @@ class GameTest {
             pot.receiveFrom(dave,200)
             pot
         }
-        val riverDealer: () -> MutableMap<Player, Int> = {
+        val riverDealer: () -> MutableMap<GamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex,200)

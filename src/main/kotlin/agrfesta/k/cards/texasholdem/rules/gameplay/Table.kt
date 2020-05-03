@@ -1,6 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-class Table(val players: List<Player>, private val button: Int) {
+class Table(val players: List<GamePlayer>, private val button: Int) {
     private val size = players.size
 
     init {
@@ -15,14 +15,14 @@ class Table(val players: List<Player>, private val button: Int) {
     private fun getUTGPosition(): Int = if (size == 2) getSBPosition()
                         else (getBBPosition() + 1) % size
 
-    fun getSB(): Player = players[getSBPosition()]
-    fun getBB(): Player = players[getBBPosition()]
+    fun getSB(): GamePlayer = players[getSBPosition()]
+    fun getBB(): GamePlayer = players[getBBPosition()]
 
     fun iterateFromSB(): TableIterator = TableIterator(players, getSBPosition())
     fun iterateFromUTG(): TableIterator = TableIterator(players, getUTGPosition())
 }
 
-class TableIterator(private val players: List<Player>,
+class TableIterator(private val players: List<GamePlayer>,
                     private var actualPosition: Int) {
-    fun next(): Player = players[actualPosition++%players.size]
+    fun next(): GamePlayer = players[actualPosition++%players.size]
 }

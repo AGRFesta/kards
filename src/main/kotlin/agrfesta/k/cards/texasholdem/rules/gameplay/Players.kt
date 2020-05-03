@@ -2,11 +2,14 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.kcards.playingcards.cards.Card
 
-class Player(
-        val name: String,
+class Player(val name: String)
+
+class GamePlayer(
+        val player: Player,
         var stack: Int,
-        strategyProvider: (p: Player) -> PlayerStrategyInterface
+        strategyProvider: (p: GamePlayer) -> PlayerStrategyInterface
     ): PlayerStrategyInterface {
+    val name = player.name
     var status: PlayerStatus = PlayerStatus.NONE
     var cards: Set<Card> = setOf() //TODO check that are exactly two
     private val strategy = strategyProvider.invoke(this)
@@ -48,11 +51,11 @@ interface PlayerStrategyInterface {
 
 /// List<Player> ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-fun List<Player>.resetActivePlayersStatus() = this.getActive()
+fun List<GamePlayer>.resetActivePlayersStatus() = this.getActive()
         .forEach { it.status = PlayerStatus.NONE }
-fun List<Player>.getActive(): List<Player> = this.filter { it.isActive() }
+fun List<GamePlayer>.getActive(): List<GamePlayer> = this.filter { it.isActive() }
 
-fun List<Player>.findWinner(): Player? {
+fun List<GamePlayer>.findWinner(): GamePlayer? {
     val notFoldedPlayers = this.filter { !it.hasFolded() }
     return if (notFoldedPlayers.size == 1) notFoldedPlayers[0]
     else null
