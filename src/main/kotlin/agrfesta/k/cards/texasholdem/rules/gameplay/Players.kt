@@ -2,11 +2,14 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.kcards.playingcards.cards.Card
 
+class Player(val name: String)
+
 class GamePlayer(
-        val name: String,
+        val player: Player,
         var stack: Int,
         strategyProvider: (p: GamePlayer) -> PlayerStrategyInterface
     ): PlayerStrategyInterface {
+    val name = player.name
     var status: PlayerStatus = PlayerStatus.NONE
     var cards: Set<Card> = setOf() //TODO check that are exactly two
     private val strategy = strategyProvider.invoke(this)

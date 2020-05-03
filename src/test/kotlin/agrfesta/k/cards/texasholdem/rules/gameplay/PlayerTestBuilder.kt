@@ -3,14 +3,14 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 import agrfesta.kcards.playingcards.cards.Card
 
 class PlayerTestBuilder {
-    private var name: String = "aPlayer"
+    private var player: Player = Player("aPlayer")
     private var stack: Int = 1000
     private var strategyProvider: (p: GamePlayer) -> PlayerStrategyInterface = { aStrategy() }
     private var status: PlayerStatus = PlayerStatus.NONE
     private var cards: Set<Card> = setOf()
 
-    fun name(name: String): PlayerTestBuilder {
-        this.name = name
+    fun player(player: Player): PlayerTestBuilder {
+        this.player = player
         return this
     }
     fun stack(stack: Int): PlayerTestBuilder {
@@ -31,7 +31,7 @@ class PlayerTestBuilder {
     }
 
     fun build(): GamePlayer {
-        val player = GamePlayer(name, stack, strategyProvider)
+        val player = GamePlayer(player, stack, strategyProvider)
         player.status = this.status
         player.cards = this.cards
         return player
