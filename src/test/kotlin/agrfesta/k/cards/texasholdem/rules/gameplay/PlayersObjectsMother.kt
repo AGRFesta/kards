@@ -1,21 +1,20 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.kcards.playingcards.cards.Card
+import io.mockk.every
+import io.mockk.mockk
 
 ///// Strategies ///////////////////////////////////////////////////////////////////////////////////////////////////////
-class PlayerStrategyInterfaceCyclicFixedListImpl(private val actions: List<Action>): PlayerStrategyInterface {
-    private var pos: Int = 0
-    override fun act(context: GameContext): Action = actions[pos++%actions.size]
-    override fun toString(): String = "CyclicFixedStrategy"
-}
-
 fun aStrategy(): PlayerStrategyInterface = object : PlayerStrategyInterface {
     override fun act(context: GameContext): Action = anAction()
     override fun toString(): String = "aStrategy"
 }
 
-fun strategy(vararg actions: Action): PlayerStrategyInterface =
-        PlayerStrategyInterfaceCyclicFixedListImpl(actions.toList())
+fun strategyMock(vararg actions: Action): PlayerStrategyInterface {
+    val strategy = mockk<PlayerStrategyInterface>()
+    every { strategy.act(any()) } returnsMany actions.toList()
+    return strategy
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///// Actions //////////////////////////////////////////////////////////////////////////////////////////////////////////

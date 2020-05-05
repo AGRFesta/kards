@@ -38,6 +38,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.1")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.20")
+    testImplementation("io.mockk:mockk:1.10.0")
 }
 
 tasks.withType<KotlinCompile> {

@@ -6,12 +6,16 @@ import assertk.assertions.containsOnly
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-class DealerMock(private val collectPotBody: () -> MutableMap<GamePlayer, Int>): Dealer {
-    override fun collectPot(): MutableMap<GamePlayer, Int> = collectPotBody.invoke()
+private fun dealerMock(collectPotBody: () -> MutableMap<GamePlayer, Int>): Dealer {
+    val dealer = mockk<Dealer>()
+    every { dealer.collectPot() } returns collectPotBody.invoke()
+    return dealer
 }
 class ShowdownMock(private val showdownBody: (MutableMap<GamePlayer, Int>, Board) -> Unit): Showdown {
     override fun execute(pot: MutableMap<GamePlayer, Int>, board: Board) = showdownBody.invoke(pot,board)
@@ -58,9 +62,9 @@ class GameTest {
                 .deck(deck)
                 .preFlopDealerProvider {
                     assertThat(alex.cards).containsOnly(*cards("Ah","Ac"))
-                    DealerMock(preFlopDealer)
+                    dealerMock(preFlopDealer)
                 }
-                .dealerProvider { _,_ -> DealerMock(flopDealer) }
+                .dealerProvider { _,_ -> dealerMock(flopDealer) }
                 .build(payments,table)
                 .play()
     }
@@ -87,9 +91,9 @@ class GameTest {
                     assertThat(it.table === table).isTrue()
                     assertThat(it.payments === payments).isTrue()
                     assertThat(it.board).isInstanceOf(EmptyBoard::class)
-                    DealerMock(preFlopDealer)
+                    dealerMock(preFlopDealer)
                 }
-                .dealerProvider { _,_ -> DealerMock(flopDealer) }
+                .dealerProvider { _,_ -> dealerMock(flopDealer) }
                 .build(payments,table)
             .play()
 
@@ -128,16 +132,16 @@ class GameTest {
                     assertThat(it.table === table).isTrue()
                     assertThat(it.payments === payments).isTrue()
                     assertThat(it.board).isInstanceOf(EmptyBoard::class)
-                    DealerMock(preFlopDealer)
+                    dealerMock(preFlopDealer)
                 }
                 .dealerProvider { pot,context ->
                     assertThat(pot).containsOnly(poly to 200, alex to 200)
                     assertThat(context.table === table).isTrue()
                     assertThat(context.payments === payments).isTrue()
                     when (context.board) {
-                        is FlopBoard -> DealerMock(flopDealer)
-                        is TurnBoard -> DealerMock(turnDealer)
-                        else -> DealerMock(defaultDealer)
+                        is FlopBoard -> dealerMock(flopDealer)
+                        is TurnBoard -> dealerMock(turnDealer)
+                        else -> dealerMock(defaultDealer)
                     }
                 }
                 .build(payments,table)
@@ -189,7 +193,7 @@ class GameTest {
                     assertThat(it.table === table).isTrue()
                     assertThat(it.payments === payments).isTrue()
                     assertThat(it.board).isInstanceOf(EmptyBoard::class)
-                    DealerMock(preFlopDealer)
+                    dealerMock(preFlopDealer)
                 }
                 .dealerProvider { pot,context ->
                     assertThat(context.table === table).isTrue()
@@ -197,14 +201,14 @@ class GameTest {
                     when (context.board) {
                         is FlopBoard -> {
                             assertThat(pot).containsOnly(poly to 200, alex to 200, dave to 200)
-                            DealerMock(flopDealer)
+                            dealerMock(flopDealer)
                         }
                         is TurnBoard -> {
                             assertThat(pot).containsOnly(poly to 200, alex to 400, dave to 400)
-                            DealerMock(turnDealer)
+                            dealerMock(turnDealer)
                         }
-                        is RiverBoard -> DealerMock(riverDealer)
-                        else -> DealerMock(defaultDealer)
+                        is RiverBoard -> dealerMock(riverDealer)
+                        else -> dealerMock(defaultDealer)
                     }
                 }
                 .build(payments,table)
@@ -261,7 +265,7 @@ class GameTest {
                     assertThat(it.table === table).isTrue()
                     assertThat(it.payments === payments).isTrue()
                     assertThat(it.board).isInstanceOf(EmptyBoard::class)
-                    DealerMock(preFlopDealer)
+                    dealerMock(preFlopDealer)
                 }
                 .dealerProvider { pot,context ->
                     assertThat(context.table === table).isTrue()
@@ -269,17 +273,17 @@ class GameTest {
                     when (context.board) {
                         is FlopBoard -> {
                             assertThat(pot).containsOnly(poly to 200, alex to 200, dave to 200)
-                            DealerMock(flopDealer)
+                            dealerMock(flopDealer)
                         }
                         is TurnBoard -> {
                             assertThat(pot).containsOnly(poly to 200, alex to 400, dave to 400)
-                            DealerMock(turnDealer)
+                            dealerMock(turnDealer)
                         }
                         is RiverBoard -> {
                             assertThat(pot).containsOnly(poly to 200, alex to 600, dave to 600)
-                            DealerMock(riverDealer)
+                            dealerMock(riverDealer)
                         }
-                        else -> DealerMock(defaultDealer)
+                        else -> dealerMock(defaultDealer)
                     }
                 }
                 .build(payments,table)
@@ -337,7 +341,7 @@ class GameTest {
                     assertThat(it.table === table).isTrue()
                     assertThat(it.payments === payments).isTrue()
                     assertThat(it.board).isInstanceOf(EmptyBoard::class)
-                    DealerMock(preFlopDealer)
+                    dealerMock(preFlopDealer)
                 }
                 .dealerProvider { pot,context ->
                     assertThat(context.table === table).isTrue()
@@ -345,17 +349,17 @@ class GameTest {
                     when (context.board) {
                         is FlopBoard -> {
                             assertThat(pot).containsOnly(poly to 200, alex to 200, dave to 200)
-                            DealerMock(flopDealer)
+                            dealerMock(flopDealer)
                         }
                         is TurnBoard -> {
                             assertThat(pot).containsOnly(poly to 200, alex to 400, dave to 400)
-                            DealerMock(turnDealer)
+                            dealerMock(turnDealer)
                         }
                         is RiverBoard -> {
                             assertThat(pot).containsOnly(poly to 200, alex to 600, dave to 600)
-                            DealerMock(riverDealer)
+                            dealerMock(riverDealer)
                         }
-                        else -> DealerMock(defaultDealer)
+                        else -> dealerMock(defaultDealer)
                     }
                 }
                 .showdown(ShowdownMock {
