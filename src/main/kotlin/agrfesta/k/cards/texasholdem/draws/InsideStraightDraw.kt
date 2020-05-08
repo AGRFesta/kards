@@ -3,7 +3,6 @@ package agrfesta.k.cards.texasholdem.draws
 import agrfesta.kcards.playingcards.cards.Rank
 import agrfesta.kcards.playingcards.suits.ACE
 import agrfesta.kcards.playingcards.suits.FIVE
-import agrfesta.kcards.playingcards.suits.FOUR
 import agrfesta.kcards.playingcards.suits.TEN
 
 /*
