@@ -1,5 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
+import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 import agrfesta.kcards.playingcards.cards.Card
 
 class Player(val name: String)
@@ -11,6 +12,7 @@ class GamePlayer(
     ): PlayerStrategyInterface {
     val name = player.name
     var status: PlayerStatus = PlayerStatus.NONE
+
     var cards: Set<Card> = setOf() //TODO check that are exactly two
     private val strategy = strategyProvider.invoke(this)
 
@@ -35,8 +37,7 @@ class GamePlayer(
         return effectiveAmount
     }
 
-    override fun act(context: GameContext): Action = strategy.act(context)
-
+    override fun act(context: PlayerGameContext): Action = strategy.act(context)
     override fun toString(): String = "$name[$strategy] ($stack)"
 
 }
@@ -46,7 +47,7 @@ enum class PlayerStatus {
 }
 
 interface PlayerStrategyInterface {
-    fun act(context: GameContext): Action
+    fun act(context: PlayerGameContext): Action
 }
 
 /// List<Player> ///////////////////////////////////////////////////////////////////////////////////////////////////////

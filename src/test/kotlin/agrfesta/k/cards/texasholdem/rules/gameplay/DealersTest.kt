@@ -1,11 +1,11 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
+import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 import assertk.assertThat
-import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.*
-import assertk.assertions.isEmpty
+import assertk.assertions.*
 
 @DisplayName("Dealers tests")
 class DealersTest {
@@ -381,6 +381,61 @@ class DealersTest {
         assertThat(alex.stack).isEqualTo(1900)
         assertThat(jane.stack).isEqualTo(0)
         assertThat(dave.stack).isEqualTo(0)
+    }
+
+    @Test
+    @DisplayName("Players receive a context to help them to act")
+    fun playersReceiveAContextToHelpThemToAct() {
+        val payments = blinds(10,20)
+        val alexContexts = mutableListOf<PlayerGameContext>()
+        val janeContexts = mutableListOf<PlayerGameContext>()
+        val alexStrategy = strategyMock(alexContexts,   call(),    fold() )
+        val janeStrategy = strategyMock(janeContexts,   raise(100)        )
+        val alex = aPlayer("Alex", 2000, alexStrategy)
+        val jane = aPlayer("Jane", 2000, janeStrategy)
+        val table = Table(listOf(alex,jane),0)
+        val context = aContext(table, payments)
+        val dealer = PostFlopDealer(buildPot(),context)
+
+        dealer.collectPot()
+
+        assertThat(alexContexts).hasSize(2)
+
+        assertThat(alexContexts[0].board).isInstanceOf(EmptyBoard::class)
+        assertThat(alexContexts[0].hero).isEqualTo(alex)
+        assertThat(alexContexts[0].payments).isEqualTo(payments)
+        assertThat(alexContexts[0].potAmount).isEqualTo(0)
+        assertThat(alexContexts[0].history).isEmpty()
+        assertThat(alexContexts[0].table.button).isEqualTo(0)
+        assertThat(alexContexts[0].table.players).extracting({ it.player },{ it.stack },{ it.state })
+                .containsOnly(Triple(alex.player,2000,NONE),
+                              Triple(jane.player,2000,NONE))
+
+        assertThat(janeContexts).hasSize(1)
+        assertThat(janeContexts[0].board).isInstanceOf(EmptyBoard::class)
+        assertThat(janeContexts[0].hero).isEqualTo(jane)
+        assertThat(janeContexts[0].payments).isEqualTo(payments)
+        assertThat(janeContexts[0].potAmount).isEqualTo(0)
+        assertThat(janeContexts[0].history).extracting({ it.player },{ it.action::class },{ it.action.getAmount() } )
+                .containsOnly(Triple(alex.player,CallAction::class,null))
+        assertThat(janeContexts[0].table.button).isEqualTo(0)
+        assertThat(janeContexts[0].table.players).extracting({ it.player },{ it.stack },{ it.state })
+                .containsOnly(Triple(alex.player,2000,CALL),
+                              Triple(jane.player,2000,NONE))
+
+        assertThat(alexContexts[1].board).isInstanceOf(EmptyBoard::class)
+        assertThat(alexContexts[1].hero).isEqualTo(alex)
+        assertThat(alexContexts[1].payments).isEqualTo(payments)
+        assertThat(alexContexts[1].potAmount).isEqualTo(100)
+        assertThat(alexContexts[1].history).extracting({ it.player },{ it.action::class },{ it.action.getAmount() } )
+                .containsOnly(Triple(alex.player,CallAction::class,null),
+                              Triple(jane.player,RaiseAction::class,100))
+        assertThat(alexContexts[1].table.button).isEqualTo(0)
+        assertThat(alexContexts[1].table.players).extracting({ it.player },{ it.stack },{ it.state })
+                .containsOnly(Triple(alex.player,2000,CALL),
+                              Triple(jane.player,1900,RAISE))
+
+
     }
 
 }

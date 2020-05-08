@@ -1,6 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-class Table(val players: List<GamePlayer>, private val button: Int) {
+class Table(val players: List<GamePlayer>, val button: Int) {
     private val size = players.size
 
     init {

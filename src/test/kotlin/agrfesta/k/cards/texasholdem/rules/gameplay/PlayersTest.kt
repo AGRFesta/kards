@@ -1,5 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
+import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
@@ -116,10 +117,10 @@ class PlayersTest {
             override fun getAmount(): Int? = 100
         }
         val strategy = object : PlayerStrategyInterface {
-            override fun act(context: GameContext): Action = action
+            override fun act(context: PlayerGameContext): Action = action
         }
         val player = GamePlayer(Player("Alex"), 1000) { strategy }
-        assertThat(player.act(aContext())).isEqualTo(action)
+        assertThat(player.act(aPlayerContext())).isEqualTo(action)
     }
 
     @Test

@@ -1,6 +1,8 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.DeckListImpl
+import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
+import agrfesta.k.cards.texasholdem.playercontext.publicData
 import agrfesta.kcards.playingcards.cards.Card
 import agrfesta.kcards.playingcards.deck.Deck
 import agrfesta.kcards.playingcards.suits.frenchCardsSet
@@ -11,6 +13,8 @@ fun aTable(): Table = Table(listOf(aPlayer(),aPlayer()), 0)
 fun aContext(): GameContext = GameContext(aTable(), aGamePayments(), EmptyBoard(aDeck()))
 fun aContext(table: Table, payments: GamePayments): GameContext =
         GameContext(table, payments, EmptyBoard(aDeck()))
+fun aPlayerContext(): PlayerGameContext = PlayerGameContext(aPlayer(),aGamePayments(),EmptyBoard(aDeck()),0,
+        aTable().publicData(), listOf())
 
 fun aGamePayments(): GamePayments = GamePaymentsFixedImpl(10, 20)
 fun blinds(sb: Int, bb: Int): GamePayments = GamePaymentsFixedImpl(sb, bb)

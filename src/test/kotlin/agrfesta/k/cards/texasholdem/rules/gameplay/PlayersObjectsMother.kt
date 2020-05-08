@@ -1,18 +1,24 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
+import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 import agrfesta.kcards.playingcards.cards.Card
 import io.mockk.every
 import io.mockk.mockk
 
 ///// Strategies ///////////////////////////////////////////////////////////////////////////////////////////////////////
 fun aStrategy(): PlayerStrategyInterface = object : PlayerStrategyInterface {
-    override fun act(context: GameContext): Action = anAction()
+    override fun act(context: PlayerGameContext): Action = anAction()
     override fun toString(): String = "aStrategy"
 }
 
 fun strategyMock(vararg actions: Action): PlayerStrategyInterface {
     val strategy = mockk<PlayerStrategyInterface>()
     every { strategy.act(any()) } returnsMany actions.toList()
+    return strategy
+}
+fun strategyMock(contexts: MutableList<PlayerGameContext>,vararg actions: Action): PlayerStrategyInterface {
+    val strategy = mockk<PlayerStrategyInterface>()
+    every { strategy.act(capture(contexts)) } returnsMany actions.toList()
     return strategy
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
