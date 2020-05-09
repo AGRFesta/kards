@@ -130,7 +130,7 @@ class DrawsEvaluatorImpl: DrawsEvaluator {
     //TODO reuse refactoring from CardsEvaluatorBaseImpl
     private fun groupBySeed(set: Set<Card>): Map<Seed, List<Card>> = set
             .groupingBy { it.seed() }
-            .fold(  { _: Seed, _: Card -> listOf()},
+            .fold(  { _: Seed, _: Card -> listOf<Card>()},
                     { _, accumulator, element ->
                         accumulator.plus(element)
                     })
