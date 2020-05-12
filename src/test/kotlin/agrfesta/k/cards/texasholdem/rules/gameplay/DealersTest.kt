@@ -179,6 +179,30 @@ class DealersTest {
         assertThat(eric.stack).isEqualTo(0)
         assertThat(sara.stack).isEqualTo(8880)
     }
+    @Test
+    @DisplayName("Post flop (10/20) story: In previous phase both Alex and Jane call 20. " +
+            "Alex calls, Jane raises 100, Alex folds")
+    fun postFlopStory009() {
+        val alex = aPlayer("Alex", 2000, strategyMock(call(),    fold() ))
+        val jane = aPlayer("Jane", 2000, strategyMock(raise(100)        ))
+        val table = Table(listOf(alex,jane),0)
+
+        val prevPot = buildPot()
+        prevPot.receiveFrom(alex, 20)
+        prevPot.receiveFrom(jane, 20)
+
+        val context = aContext(table, blinds(10,20))
+        val dealer = PostFlopDealer(prevPot,context)
+
+        val pot = dealer.collectPot()
+
+        assertThat(pot.payedBy(alex)).isEqualTo(0)
+        assertThat(pot.payedBy(jane)).isEqualTo(100)
+        assertThat(alex.status).isEqualTo(FOLD)
+        assertThat(jane.status).isEqualTo(RAISE)
+        assertThat(alex.stack).isEqualTo(1980)
+        assertThat(jane.stack).isEqualTo(1880)
+    }
 
     @Test
     @DisplayName("Pre flop (50/100) story: Dave calls, Alex calls, Jane calls")

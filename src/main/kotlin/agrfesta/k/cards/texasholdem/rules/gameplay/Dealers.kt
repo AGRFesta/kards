@@ -94,7 +94,7 @@ class PostFlopDealer (
     override fun prevPot(): MutableMap<GamePlayer, Int>? = prevPot
     override fun createPot() = buildPot()
     override fun playersIterator(): TableIterator = context.table.iterateFromSB()
-    override fun collectPot(): MutableMap<GamePlayer,Int> = super.collectPot() + prevPot
+    override fun collectPot(): MutableMap<GamePlayer,Int> = super.collectPot()
 }
 
 class PreFlopDealer (private val context: GameContext): AbstractDealer(context) {
