@@ -291,4 +291,12 @@ class PotTest {
         assertThat(max?.player).isEqualTo(giulia)
         assertThat(max?.amount).isEqualTo(150)
     }
+
+    @Test
+    @DisplayName("An empty Pot receives an amount of 0 from a player -> the Pot is still empty")
+    fun potIgnoresReceivedAmountIfZero() {
+        val pot = buildPot()
+        pot.receiveFrom(aPlayer(), 0)
+        assertThat(pot).isEmpty()
+    }
 }

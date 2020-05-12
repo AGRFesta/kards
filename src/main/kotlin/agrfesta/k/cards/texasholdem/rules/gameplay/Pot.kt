@@ -12,6 +12,7 @@ operator fun MutableMap<GamePlayer,Int>.plus(increment: MutableMap<GamePlayer,In
             .foldTo (buildPot(),0) { acc, element -> acc + element.value }
 
 fun MutableMap<GamePlayer,Int>.receiveFrom(player: GamePlayer, amount: Int): Int {
+    if (amount == 0) return 0
     if (amount < 0) throw IllegalArgumentException("Can't receive a negative amount")
     val effAmount = player.pay(amount)
     this[player] = this.payedBy(player) + effAmount
