@@ -100,8 +100,8 @@ class PostFlopDealer (
 class PreFlopDealer (private val context: GameContext): AbstractDealer(context) {
     override fun createPot(): MutableMap<GamePlayer, Int> {
         val pot = buildPot()
-        pot.receiveFrom(context.table.getSB(),context.payments.sb())
-        pot.receiveFrom(context.table.getBB(),context.payments.bb())
+        pot.receiveFrom(context.table.getPlayer(Position.SMALL_BLIND),context.payments.sb())
+        pot.receiveFrom(context.table.getPlayer(Position.BIG_BLIND),context.payments.bb())
         context.payments.ante()?.let { ante -> context.table.players.forEach { pot.receiveFrom(it,ante) }  }
         amountRequired = context.payments.bb()
         return pot
