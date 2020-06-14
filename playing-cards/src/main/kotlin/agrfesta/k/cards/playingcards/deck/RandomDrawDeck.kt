@@ -1,6 +1,6 @@
-package agrfesta.kcards.playingcards.deck
+package agrfesta.k.cards.playingcards.deck
 
-import agrfesta.kcards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.cards.Card
 
 class RandomDrawDeck : Deck {
     private val cards = ArrayList<Card>()

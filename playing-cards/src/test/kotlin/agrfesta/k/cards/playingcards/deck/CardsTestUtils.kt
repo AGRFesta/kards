@@ -1,12 +1,12 @@
-package agrfesta.kcards.playingcards.deck
+package agrfesta.k.cards.playingcards.deck
 
-import agrfesta.kcards.playingcards.cards.Card
-import agrfesta.kcards.playingcards.cards.cardOf
+import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.cards.cardOf
 import java.util.*
 
 fun aCard() = cardOf(aRank(), aSeed())
 fun aRank() = rankOf('R')
-fun aSeed() = seedOf('s',1)
+fun aSeed() = seedOf('s', 1)
 
 fun deckContent(deck: Deck): Collection<Card> {
     val content = ArrayList<Card>()

@@ -1,4 +1,4 @@
-package agrfesta.kcards.playingcards.cards
+package agrfesta.k.cards.playingcards.cards
 
 interface Card {
     fun rank(): Rank

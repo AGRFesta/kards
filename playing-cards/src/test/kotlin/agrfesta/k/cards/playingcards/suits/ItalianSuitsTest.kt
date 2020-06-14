@@ -1,14 +1,14 @@
-package agrfesta.kcards.playingcards.suits
+package agrfesta.k.cards.playingcards.suits
 
-import agrfesta.kcards.playingcards.cards.Card
-import agrfesta.kcards.playingcards.deck.Deck
-import agrfesta.kcards.playingcards.deck.RandomDrawDeck
-import agrfesta.kcards.playingcards.deck.rankOf
+import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.deck.Deck
+import agrfesta.k.cards.playingcards.deck.RandomDrawDeck
+import agrfesta.k.cards.playingcards.deck.rankOf
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import agrfesta.kcards.playingcards.suits.ItalianSeed.*
+import agrfesta.k.cards.playingcards.suits.ItalianSeed.*
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 
@@ -60,7 +60,7 @@ class ItalianSuitsTest {
     @Test
     @DisplayName("Build hand from two valid string -> a two card hand")
     fun buildHandFromTwoValidStringReturnsATwoCardHand() {
-        val hand = createItalianHand("Kc","3s")
+        val hand = createItalianHand("Kc", "3s")
         assertThat(hand).extracting(Card::rank, Card::seed)
                 .containsOnly(
                         Pair(RE,COPPE),

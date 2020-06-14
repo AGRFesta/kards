@@ -1,12 +1,12 @@
-package agrfesta.kcards.playingcards.suits
+package agrfesta.k.cards.playingcards.suits
 
-import agrfesta.kcards.playingcards.cards.Card
-import agrfesta.kcards.playingcards.cards.Rank
-import agrfesta.kcards.playingcards.cards.Seed
-import agrfesta.kcards.playingcards.cards.cardOf
-import agrfesta.kcards.playingcards.deck.AutoShufflingDeck
-import agrfesta.kcards.playingcards.deck.Deck
-import agrfesta.kcards.playingcards.deck.SimpleStackShufflingService
+import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.cards.Rank
+import agrfesta.k.cards.playingcards.cards.Seed
+import agrfesta.k.cards.playingcards.cards.cardOf
+import agrfesta.k.cards.playingcards.deck.AutoShufflingDeck
+import agrfesta.k.cards.playingcards.deck.Deck
+import agrfesta.k.cards.playingcards.deck.SimpleStackShufflingService
 import java.util.*
 
 fun getItalianRankFromSymbol(symbol: Char): Rank {

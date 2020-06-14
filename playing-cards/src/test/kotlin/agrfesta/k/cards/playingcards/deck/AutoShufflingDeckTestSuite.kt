@@ -1,4 +1,4 @@
-package agrfesta.kcards.playingcards.deck
+package agrfesta.k.cards.playingcards.deck
 
 import org.junit.jupiter.api.DisplayName
 

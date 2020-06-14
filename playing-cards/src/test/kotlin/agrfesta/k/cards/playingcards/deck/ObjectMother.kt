@@ -1,7 +1,7 @@
-package agrfesta.kcards.playingcards.deck
+package agrfesta.k.cards.playingcards.deck
 
-import agrfesta.kcards.playingcards.cards.Rank
-import agrfesta.kcards.playingcards.cards.Seed
+import agrfesta.k.cards.playingcards.cards.Rank
+import agrfesta.k.cards.playingcards.cards.Seed
 
 fun rankOf(symbol: Char) = object: Rank {
     override fun symbol() = symbol

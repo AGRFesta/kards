@@ -1,6 +1,6 @@
-package agrfesta.kcards.playingcards.deck
+package agrfesta.k.cards.playingcards.deck
 
-import agrfesta.kcards.playingcards.cards.cardOf
+import agrfesta.k.cards.playingcards.cards.cardOf
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.hasMessage

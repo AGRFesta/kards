@@ -1,7 +1,7 @@
-package agrfesta.kcards.playingcards.cards
+package agrfesta.k.cards.playingcards.cards
 
-import agrfesta.kcards.playingcards.deck.aRank
-import agrfesta.kcards.playingcards.deck.aSeed
+import agrfesta.k.cards.playingcards.deck.aRank
+import agrfesta.k.cards.playingcards.deck.aSeed
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEqualTo
