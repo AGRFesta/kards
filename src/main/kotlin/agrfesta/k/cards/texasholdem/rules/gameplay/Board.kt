@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-import agrfesta.kcards.playingcards.cards.Card
-import agrfesta.kcards.playingcards.deck.Deck
+import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.deck.Deck
 
 interface Board {
     fun cards(): Set<Card>

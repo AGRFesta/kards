@@ -3,9 +3,9 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 import agrfesta.k.cards.texasholdem.DeckListImpl
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 import agrfesta.k.cards.texasholdem.playercontext.publicData
-import agrfesta.kcards.playingcards.cards.Card
-import agrfesta.kcards.playingcards.deck.Deck
-import agrfesta.kcards.playingcards.suits.frenchCardsSet
+import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.deck.Deck
+import agrfesta.k.cards.playingcards.suits.frenchCardsSet
 
 fun aDeck(): Deck = DeckListImpl(listOf())
 fun aTable(): Table = Table(listOf(aPlayer(),aPlayer()), 0)

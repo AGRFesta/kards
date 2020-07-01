@@ -1,6 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-import agrfesta.kcards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.cards.Card
 
 class PlayerTestBuilder {
     private var player: Player = Player("aPlayer")

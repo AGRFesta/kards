@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
-import agrfesta.kcards.playingcards.suits.frenchCardsSet
+import agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.*
 import assertk.assertThat
 import assertk.assertions.isEqualTo

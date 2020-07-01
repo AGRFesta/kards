@@ -1,9 +1,9 @@
 package agrfesta.k.cards.texasholdem.draws
 
 import agrfesta.k.cards.texasholdem.*
-import agrfesta.kcards.playingcards.cards.Card
-import agrfesta.kcards.playingcards.suits.*
-import agrfesta.kcards.playingcards.suits.FrenchSeed.*
+import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.suits.*
+import agrfesta.k.cards.playingcards.suits.FrenchSeed.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.TestFactory
 

@@ -4,8 +4,8 @@ import agrfesta.k.cards.texasholdem.createDynamicTest
 import agrfesta.k.cards.texasholdem.isEqualTo
 import agrfesta.k.cards.texasholdem.isNotEqualTo
 import agrfesta.k.cards.texasholdem.willAssertThat
-import agrfesta.kcards.playingcards.suits.*
-import agrfesta.kcards.playingcards.suits.FrenchSeed.*
+import agrfesta.k.cards.playingcards.suits.*
+import agrfesta.k.cards.playingcards.suits.FrenchSeed.*
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName

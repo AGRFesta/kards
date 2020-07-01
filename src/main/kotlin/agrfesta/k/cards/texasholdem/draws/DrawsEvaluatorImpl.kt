@@ -4,9 +4,9 @@ import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluator
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand
-import agrfesta.kcards.playingcards.cards.Card
-import agrfesta.kcards.playingcards.cards.Seed
-import agrfesta.kcards.playingcards.suits.*
+import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.cards.Seed
+import agrfesta.k.cards.playingcards.suits.*
 import java.util.Comparator
 import java.util.HashSet
 

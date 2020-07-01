@@ -2,8 +2,8 @@ package agrfesta.k.cards.texasholdem.rules.hands
 
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.STRAIGHT
-import agrfesta.kcards.playingcards.cards.Rank
-import agrfesta.kcards.playingcards.suits.FIVE
+import agrfesta.k.cards.playingcards.cards.Rank
+import agrfesta.k.cards.playingcards.suits.FIVE
 
 class StraightHand(
         private val straightTop: Rank)

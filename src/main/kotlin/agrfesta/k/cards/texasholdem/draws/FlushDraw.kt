@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.draws
 
-import agrfesta.kcards.playingcards.cards.Rank
-import agrfesta.kcards.playingcards.cards.Seed
+import agrfesta.k.cards.playingcards.cards.Rank
+import agrfesta.k.cards.playingcards.cards.Seed
 import kotlinx.collections.immutable.toImmutableList
 
 /*

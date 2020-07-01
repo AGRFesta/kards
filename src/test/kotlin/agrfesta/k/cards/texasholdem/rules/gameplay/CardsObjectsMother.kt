@@ -1,9 +1,9 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-import agrfesta.kcards.playingcards.cards.Card
-import agrfesta.kcards.playingcards.suits.createFrenchCard
-import agrfesta.kcards.playingcards.suits.createFrenchHand
-import agrfesta.kcards.playingcards.suits.frenchCardsSet
+import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.suits.createFrenchCard
+import agrfesta.k.cards.playingcards.suits.createFrenchHand
+import agrfesta.k.cards.playingcards.suits.frenchCardsSet
 
 fun cards(vararg strings: String): Array<Card> = frenchCardsSet(*strings).toTypedArray()
 fun card(string: String): Card = createFrenchCard(string)

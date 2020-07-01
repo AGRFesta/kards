@@ -2,9 +2,9 @@ package agrfesta.k.cards.texasholdem.rules.hands
 
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.STRAIGHT_FLUSH
-import agrfesta.kcards.playingcards.cards.Rank
-import agrfesta.kcards.playingcards.cards.Seed
-import agrfesta.kcards.playingcards.suits.FIVE
+import agrfesta.k.cards.playingcards.cards.Rank
+import agrfesta.k.cards.playingcards.cards.Seed
+import agrfesta.k.cards.playingcards.suits.FIVE
 
 class StraightFlushHand(
         private val straightTop: Rank,

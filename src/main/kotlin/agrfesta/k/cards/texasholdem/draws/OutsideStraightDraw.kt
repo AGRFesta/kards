@@ -1,8 +1,8 @@
 package agrfesta.k.cards.texasholdem.draws
 
-import agrfesta.kcards.playingcards.cards.Rank
-import agrfesta.kcards.playingcards.suits.FIVE
-import agrfesta.kcards.playingcards.suits.KING
+import agrfesta.k.cards.playingcards.cards.Rank
+import agrfesta.k.cards.playingcards.suits.FIVE
+import agrfesta.k.cards.playingcards.suits.KING
 
 /*
     An outside straight draw, also called up and down, double-ended straight draw or open-ended straight draw,

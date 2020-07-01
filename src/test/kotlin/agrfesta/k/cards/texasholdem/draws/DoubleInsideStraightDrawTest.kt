@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.draws
 
 import agrfesta.k.cards.texasholdem.*
-import agrfesta.kcards.playingcards.suits.*
+import agrfesta.k.cards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName

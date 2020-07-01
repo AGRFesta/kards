@@ -1,9 +1,9 @@
 package agrfesta.k.cards.texasholdem.draws
 
-import agrfesta.kcards.playingcards.cards.Rank
-import agrfesta.kcards.playingcards.suits.ACE
-import agrfesta.kcards.playingcards.suits.FIVE
-import agrfesta.kcards.playingcards.suits.TEN
+import agrfesta.k.cards.playingcards.cards.Rank
+import agrfesta.k.cards.playingcards.suits.ACE
+import agrfesta.k.cards.playingcards.suits.FIVE
+import agrfesta.k.cards.playingcards.suits.TEN
 
 /*
     An inside straight draw, or gutshot draw or belly buster draw, is a hand with four of the five cards needed

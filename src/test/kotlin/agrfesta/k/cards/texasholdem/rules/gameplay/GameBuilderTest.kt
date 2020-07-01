@@ -1,9 +1,9 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
+import agrfesta.k.cards.playingcards.deck.AutoShufflingDeck
+import agrfesta.k.cards.playingcards.deck.Deck
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
-import agrfesta.kcards.playingcards.deck.AutoShufflingDeck
-import agrfesta.kcards.playingcards.deck.Deck
 import assertk.assertThat
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNull
@@ -12,6 +12,7 @@ import io.mockk.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
+//TODO use mockk
 class GameMockImpl(
         val payments: GamePayments,
         val deck: Deck,

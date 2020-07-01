@@ -3,9 +3,10 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.ShowdownObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
-import agrfesta.kcards.playingcards.deck.Deck
-import agrfesta.kcards.playingcards.suits.createFrenchDeck
+import agrfesta.k.cards.playingcards.deck.Deck
+import agrfesta.k.cards.playingcards.suits.createFrenchDeck
 
+//TODO refactoring moving default values in constructor
 class GameBuilder {
     private var deck: Deck = createFrenchDeck()
     private var observer: GameObserver? = null

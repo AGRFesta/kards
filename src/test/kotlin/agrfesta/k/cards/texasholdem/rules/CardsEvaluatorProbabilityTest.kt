@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules
 
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand
-import agrfesta.kcards.playingcards.suits.createFrenchDeck
+import agrfesta.k.cards.playingcards.suits.createFrenchDeck
 
 /*  Hand	        Frequency	Probability	Cumulative	Odds (odds against)
 

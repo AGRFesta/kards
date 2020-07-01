@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.draws
 
-import agrfesta.kcards.playingcards.cards.Rank
-import agrfesta.kcards.playingcards.suits.FIVE
+import agrfesta.k.cards.playingcards.cards.Rank
+import agrfesta.k.cards.playingcards.suits.FIVE
 
 /*
     A double inside straight draw, or double gutshot draw or double belly buster draw can occur when either of two

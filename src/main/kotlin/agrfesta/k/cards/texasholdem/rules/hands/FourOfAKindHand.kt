@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.hands
 
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
-import agrfesta.kcards.playingcards.cards.Rank
+import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.FOUR_OF_A_KIND
 
 class FourOfAKindHand (

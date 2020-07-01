@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.observers.GameObserver
-import agrfesta.kcards.playingcards.deck.Deck
+import agrfesta.k.cards.playingcards.deck.Deck
 
 interface Game {
     fun play()

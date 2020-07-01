@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem
 
-import agrfesta.kcards.playingcards.cards.Card
-import agrfesta.kcards.playingcards.deck.Deck
+import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.deck.Deck
 
 class DeckListImpl(list: List<Card>): Deck {//TODO check for empty list
     private val list: MutableList<Card> = list.toMutableList()

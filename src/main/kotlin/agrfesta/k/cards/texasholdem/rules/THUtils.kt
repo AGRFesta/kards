@@ -1,6 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules
 
-import agrfesta.kcards.playingcards.cards.Rank
+import agrfesta.k.cards.playingcards.cards.Rank
 
 //val RANK_COMPARATOR: Comparator<Rank> = compareBy { it } //TODO make Rank comparable and remove this comparator
 

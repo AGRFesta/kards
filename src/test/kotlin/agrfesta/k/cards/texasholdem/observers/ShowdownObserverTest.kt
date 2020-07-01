@@ -4,7 +4,7 @@ import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
 import agrfesta.k.cards.texasholdem.rules.gameplay.*
 import agrfesta.k.cards.texasholdem.rules.hands.PairHand
 import agrfesta.k.cards.texasholdem.rules.hands.ThreeOfAKindHand
-import agrfesta.kcards.playingcards.suits.*
+import agrfesta.k.cards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.extracting

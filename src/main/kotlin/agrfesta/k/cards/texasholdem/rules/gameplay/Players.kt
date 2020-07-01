@@ -1,9 +1,11 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
-import agrfesta.kcards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.cards.Card
 
-class Player(val name: String)
+class Player(val name: String) {
+    override fun toString() = name
+}
 
 class GamePlayer(
         val player: Player,
@@ -61,5 +63,7 @@ fun List<GamePlayer>.findWinner(): GamePlayer? {
     return if (notFoldedPlayers.size == 1) notFoldedPlayers[0]
     else null
 }
+
+fun List<GamePlayer>.get(player: Player): GamePlayer? = this.find { it.player == player }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

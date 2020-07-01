@@ -1,10 +1,10 @@
 package agrfesta.k.cards.texasholdem.rules
 
 import agrfesta.k.cards.texasholdem.rules.hands.*
-import agrfesta.kcards.playingcards.cards.Card
-import agrfesta.kcards.playingcards.cards.Rank
-import agrfesta.kcards.playingcards.cards.Seed
-import agrfesta.kcards.playingcards.suits.*
+import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.cards.Rank
+import agrfesta.k.cards.playingcards.cards.Seed
+import agrfesta.k.cards.playingcards.suits.*
 import java.util.*
 
 class CardsEvaluatorBaseImpl: CardsEvaluator {

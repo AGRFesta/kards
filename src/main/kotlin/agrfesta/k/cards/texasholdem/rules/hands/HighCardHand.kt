@@ -2,7 +2,7 @@ package agrfesta.k.cards.texasholdem.rules.hands
 
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.OrderedRankListComparator
-import agrfesta.kcards.playingcards.cards.Rank
+import agrfesta.k.cards.playingcards.cards.Rank
 import kotlinx.collections.immutable.toImmutableList
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.HIGH_CARD
 
