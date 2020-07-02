@@ -13,7 +13,7 @@ fun aTable(): Table = Table(listOf(aPlayer(),aPlayer()), 0)
 fun aContext(): GameContext = GameContext(aTable(), aGamePayments(), EmptyBoard(aDeck()))
 fun aContext(table: Table, payments: GamePayments): GameContext =
         GameContext(table, payments, EmptyBoard(aDeck()))
-fun aPlayerContext(): PlayerGameContext = PlayerGameContext(aPlayer(),aGamePayments(),EmptyBoard(aDeck()),0,
+fun aPlayerContext(): PlayerGameContext = PlayerGameContext(aPlayer().asOwnPlayer(),aGamePayments(),EmptyBoard(aDeck()),0,
         aTable().publicData(), listOf())
 
 fun aGamePayments(): GamePayments = GamePaymentsFixedImpl(10, 20)

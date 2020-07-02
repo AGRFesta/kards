@@ -30,7 +30,8 @@ abstract class AbstractDealer(private val context: GameContext): Dealer {
         while ( someoneHaveToAct(pot) ) {
             val player = iterator.next()
             if (hadToAct(player, pot)) {
-                val gameContext = playerGameContext(player, history.toList(), pot.amount()+(prevPot()?.amount()?:0), context)
+                val gameContext = playerGameContext(player.asOwnPlayer(), history.toList(),
+                        pot.amount()+(prevPot()?.amount()?:0), context)
                 val action = player.act(gameContext)
                 history.add(PlayerAction(player.player,action))
                 when (action) {
@@ -43,8 +44,8 @@ abstract class AbstractDealer(private val context: GameContext): Dealer {
 
         return pot
     }
-    private fun playerGameContext(hero: GamePlayer, history: List<PlayerAction>, potAmount: Int, gc: GameContext) =
-            PlayerGameContext(hero, gc.payments, gc.board, potAmount, gc.table.publicData(), history)
+    private fun playerGameContext(me: OwnPlayer, history: List<PlayerAction>, potAmount: Int, gc: GameContext) =
+            PlayerGameContext(me, gc.payments, gc.board, potAmount, gc.table.publicData(), history)
     private fun someoneHaveToAct(pot: MutableMap<GamePlayer,Int>): Boolean = hadToAct(pot).isNotEmpty()
     private fun hadToAct(pot: MutableMap<GamePlayer,Int>): List<GamePlayer> {
         return context.table.players.filter { hadToAct(it,pot) }

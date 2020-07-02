@@ -426,7 +426,9 @@ class DealersTest {
         assertThat(alexContexts).hasSize(2)
 
         assertThat(alexContexts[0].board).isInstanceOf(EmptyBoard::class)
-        assertThat(alexContexts[0].hero).isEqualTo(alex)
+        assertThat(alexContexts[0].me.name).isEqualTo("Alex")
+        assertThat(alexContexts[0].me.stack).isEqualTo(2000)
+        assertThat(alexContexts[0].me.cards).isEmpty()
         assertThat(alexContexts[0].payments).isEqualTo(payments)
         assertThat(alexContexts[0].potAmount).isEqualTo(0)
         assertThat(alexContexts[0].history).isEmpty()
@@ -437,7 +439,9 @@ class DealersTest {
 
         assertThat(janeContexts).hasSize(1)
         assertThat(janeContexts[0].board).isInstanceOf(EmptyBoard::class)
-        assertThat(janeContexts[0].hero).isEqualTo(jane)
+        assertThat(janeContexts[0].me.name).isEqualTo("Jane")
+        assertThat(janeContexts[0].me.stack).isEqualTo(2000)
+        assertThat(janeContexts[0].me.cards).isEmpty()
         assertThat(janeContexts[0].payments).isEqualTo(payments)
         assertThat(janeContexts[0].potAmount).isEqualTo(0)
         assertThat(janeContexts[0].history).extracting({ it.player },{ it.action::class },{ it.action.getAmount() } )
@@ -448,7 +452,9 @@ class DealersTest {
                               Triple(jane.player,2000,NONE))
 
         assertThat(alexContexts[1].board).isInstanceOf(EmptyBoard::class)
-        assertThat(alexContexts[1].hero).isEqualTo(alex)
+        assertThat(alexContexts[1].me.name).isEqualTo("Alex")
+        assertThat(alexContexts[1].me.stack).isEqualTo(2000)
+        assertThat(alexContexts[1].me.cards).isEmpty()
         assertThat(alexContexts[1].payments).isEqualTo(payments)
         assertThat(alexContexts[1].potAmount).isEqualTo(100)
         assertThat(alexContexts[1].history).extracting({ it.player },{ it.action::class },{ it.action.getAmount() } )

@@ -39,6 +39,9 @@ class GamePlayer(
         return effectiveAmount
     }
 
+    //TODO test
+    fun asOwnPlayer() = OwnPlayer(name, cards, stack)
+
     override fun act(context: PlayerGameContext): Action = strategy.act(context)
     override fun toString(): String = "$name[$strategy] ($stack)"
 
@@ -51,6 +54,8 @@ enum class PlayerStatus {
 interface PlayerStrategyInterface {
     fun act(context: PlayerGameContext): Action
 }
+
+class OwnPlayer(val name: String, val cards: Set<Card>, val stack: Int)
 
 /// List<Player> ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
