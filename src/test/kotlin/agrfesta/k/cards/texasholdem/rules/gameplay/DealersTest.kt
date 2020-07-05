@@ -425,7 +425,7 @@ class DealersTest {
 
         assertThat(alexContexts).hasSize(2)
 
-        assertThat(alexContexts[0].board).isInstanceOf(EmptyBoard::class)
+        assertThat(alexContexts[0].board.phase).isEqualTo(GamePhase.PRE_FLOP)
         assertThat(alexContexts[0].me.name).isEqualTo("Alex")
         assertThat(alexContexts[0].me.stack).isEqualTo(2000)
         assertThat(alexContexts[0].me.cards).isEmpty()
@@ -438,7 +438,7 @@ class DealersTest {
                               Triple(jane.player,2000,NONE))
 
         assertThat(janeContexts).hasSize(1)
-        assertThat(janeContexts[0].board).isInstanceOf(EmptyBoard::class)
+        assertThat(janeContexts[0].board.phase).isEqualTo(GamePhase.PRE_FLOP)
         assertThat(janeContexts[0].me.name).isEqualTo("Jane")
         assertThat(janeContexts[0].me.stack).isEqualTo(2000)
         assertThat(janeContexts[0].me.cards).isEmpty()
@@ -451,7 +451,7 @@ class DealersTest {
                 .containsOnly(Triple(alex.player,2000,CALL),
                               Triple(jane.player,2000,NONE))
 
-        assertThat(alexContexts[1].board).isInstanceOf(EmptyBoard::class)
+        assertThat(alexContexts[1].board.phase).isEqualTo(GamePhase.PRE_FLOP)
         assertThat(alexContexts[1].me.name).isEqualTo("Alex")
         assertThat(alexContexts[1].me.stack).isEqualTo(2000)
         assertThat(alexContexts[1].me.cards).isEmpty()
