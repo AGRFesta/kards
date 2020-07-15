@@ -10,3 +10,5 @@ class PlayerGameContext(
         val table: PublicTableData,
         val history: List<PlayerAction>
 )
+
+class PlayerAction(val player: Player, val action: Action)
