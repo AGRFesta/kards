@@ -1,21 +1,29 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-interface Action {
-    fun getAmount(): Int?
+enum class ActionType {
+    Call, Raise, Fold
 }
 
-class CallAction: Action {
-    override fun getAmount(): Int? = null
+interface Action {
+    fun getAmount(): Int?
+    fun getType(): ActionType
+}
+
+class CallAction(private val amount: Int? = null): Action {
+    override fun getAmount(): Int? = amount
+    override fun getType() = ActionType.Call
     override fun toString(): String = "CALL"
 }
 
 class RaiseAction(private val amount: Int): Action {
     override fun getAmount(): Int? = amount
+    override fun getType() = ActionType.Raise
     override fun toString(): String = "RAISE $amount"
 }
 
 class FoldAction: Action {
     override fun getAmount(): Int? = null
+    override fun getType() = ActionType.Fold
     override fun toString(): String = "FOLD"
 }
 

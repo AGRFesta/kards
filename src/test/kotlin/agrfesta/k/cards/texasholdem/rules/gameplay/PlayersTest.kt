@@ -115,6 +115,7 @@ class PlayersTest {
     fun actReturnsActionFromStrategy() {
         val action = object : Action {
             override fun getAmount(): Int? = 100
+            override fun getType() = ActionType.Call
         }
         val strategy = object : PlayerStrategyInterface {
             override fun act(context: PlayerGameContext): Action = action

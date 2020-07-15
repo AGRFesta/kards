@@ -26,6 +26,7 @@ fun strategyMock(contexts: MutableList<PlayerGameContext>,vararg actions: Action
 ///// Actions //////////////////////////////////////////////////////////////////////////////////////////////////////////
 fun anAction(): Action = object : Action {
     override fun getAmount(): Int? = null
+    override fun getType() = ActionType.Call
 }
 
 fun call(): Action = CallAction()
