@@ -2,6 +2,7 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.playingcards.deck.AutoShufflingDeck
 import agrfesta.k.cards.playingcards.deck.Deck
+import agrfesta.k.cards.texasholdem.observers.DealerObserver
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
 import assertk.assertThat
@@ -17,8 +18,8 @@ class GameMockImpl(
         val payments: GamePayments,
         val deck: Deck,
         val table: Table,
-        val preFlopDealerProvider: (GameContext) -> Dealer,
-        val dealerProvider: (MutableMap<GamePlayer,Int>, GameContext) -> Dealer,
+        val preFlopDealerProvider: (GameContext, DealerObserver?) -> Dealer,
+        val dealerProvider: (MutableMap<GamePlayer,Int>, GameContext, DealerObserver?) -> Dealer,
         val showdown: Showdown,
         val observer: GameObserver?
 ): Game {
@@ -45,8 +46,8 @@ class GameBuilderTest {
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
             assertThat(game.deck).isInstanceOf(AutoShufflingDeck::class)
-            assertThat(game.dealerProvider.invoke(buildPot(),aContext())).isInstanceOf(PostFlopDealer::class)
-            assertThat(game.preFlopDealerProvider.invoke(aContext())).isInstanceOf(PreFlopDealer::class)
+            assertThat(game.dealerProvider.invoke(buildPot(),aContext(),null)).isInstanceOf(PostFlopDealer::class)
+            assertThat(game.preFlopDealerProvider.invoke(aContext(),null)).isInstanceOf(PreFlopDealer::class)
             assertThat(game.showdown).isInstanceOf(Showdown::class)
             assertThat(game.observer).isNull()
         }
@@ -78,16 +79,16 @@ class GameBuilderTest {
         val preFlopDealer = PreFlopDealer(aContext())
         val game = GameBuilder()
                 .deck(deck)
-                .dealerProvider {_,_ -> dealer}
-                .preFlopDealerProvider { preFlopDealer }
+                .dealerProvider {_,_,_ -> dealer}
+                .preFlopDealerProvider { _,_ -> preFlopDealer }
                 .showdown(showdown)
                 .implementation( ::GameMockImpl )
                 .build(aGamePayments(), aTable())
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
             assertThat(game.deck === deck).isTrue()
-            assertThat(game.dealerProvider.invoke(buildPot(),aContext()) === dealer).isTrue()
-            assertThat(game.preFlopDealerProvider.invoke(aContext()) === preFlopDealer).isTrue()
+            assertThat(game.dealerProvider.invoke(buildPot(),aContext(),null) === dealer).isTrue()
+            assertThat(game.preFlopDealerProvider.invoke(aContext(),null) === preFlopDealer).isTrue()
             assertThat(game.showdown === showdown).isTrue()
         }
     }

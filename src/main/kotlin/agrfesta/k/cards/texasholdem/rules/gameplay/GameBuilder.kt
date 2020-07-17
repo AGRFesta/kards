@@ -5,20 +5,20 @@ import agrfesta.k.cards.texasholdem.observers.ShowdownObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
 import agrfesta.k.cards.playingcards.deck.Deck
 import agrfesta.k.cards.playingcards.suits.createFrenchDeck
+import agrfesta.k.cards.texasholdem.observers.DealerObserver
 
 //TODO refactoring moving default values in constructor
 class GameBuilder {
     private var deck: Deck = createFrenchDeck()
     private var observer: GameObserver? = null
 
-    //private var showdownObserved: ((ShowdownObserver) -> Showdown)? = { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }
     private var showdownProvider: (ShowdownObserver?) -> Showdown = { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }
 
-    private var preFlopDealerProvider: (GameContext) -> Dealer = { PreFlopDealer(it) }
-    private var dealerProvider: (MutableMap<GamePlayer,Int>, GameContext) -> Dealer =
-            { pot,context -> PostFlopDealer(pot,context) }
-    private var implementation: (GamePayments, Deck, Table, (GameContext) -> Dealer,
-                                 (MutableMap<GamePlayer,Int>, GameContext) -> Dealer,
+    private var preFlopDealerProvider: (GameContext, DealerObserver?) -> Dealer = { gc, obs -> PreFlopDealer(gc,obs) }
+    private var dealerProvider: (MutableMap<GamePlayer,Int>, GameContext, DealerObserver?) -> Dealer =
+            { pot,context,observer -> PostFlopDealer(pot,context,observer) }
+    private var implementation: (GamePayments, Deck, Table, (GameContext, DealerObserver?) -> Dealer,
+                                 (MutableMap<GamePlayer,Int>, GameContext, DealerObserver?) -> Dealer,
                                  Showdown, GameObserver?) -> Game = ::GameImpl
 
     fun deck(deck: Deck): GameBuilder {
@@ -39,17 +39,18 @@ class GameBuilder {
         return this
     }
 
-    fun preFlopDealerProvider(preFlopDealerProvider: (GameContext) -> Dealer): GameBuilder {
+    fun preFlopDealerProvider(preFlopDealerProvider: (GameContext, DealerObserver?) -> Dealer): GameBuilder {
         this.preFlopDealerProvider = preFlopDealerProvider
         return this
     }
-    fun dealerProvider(dealerProvider: (MutableMap<GamePlayer,Int>, GameContext) -> Dealer): GameBuilder {
+    fun dealerProvider(dealerProvider: (MutableMap<GamePlayer,Int>, GameContext, DealerObserver?) -> Dealer)
+            : GameBuilder {
         this.dealerProvider = dealerProvider
         return this
     }
     fun implementation(implementation: (GamePayments, Deck, Table,
-                                        (GameContext) -> Dealer,
-                                        (MutableMap<GamePlayer,Int>, GameContext) -> Dealer,
+                                        (GameContext, DealerObserver?) -> Dealer,
+                                        (MutableMap<GamePlayer,Int>, GameContext, DealerObserver?) -> Dealer,
                                         Showdown, GameObserver?) -> Game): GameBuilder {
         this.implementation = implementation
         return this

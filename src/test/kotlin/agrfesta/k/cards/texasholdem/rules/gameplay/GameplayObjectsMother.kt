@@ -10,11 +10,11 @@ import agrfesta.k.cards.playingcards.suits.frenchCardsSet
 fun aDeck(): Deck = DeckListImpl(listOf())
 fun aTable(): Table = Table(listOf(aPlayer(),aPlayer()), 0)
 
-fun aContext(): GameContext = GameContext(aTable(), aGamePayments(), EmptyBoard(aDeck()))
+fun aContext(): GameContext = GameContext(aTable(), aGamePayments(), EmptyBoard(aDeck()), mapOf())
 fun aContext(table: Table, payments: GamePayments): GameContext =
-        GameContext(table, payments, EmptyBoard(aDeck()))
+        GameContext(table, payments, EmptyBoard(aDeck()), mapOf())
 fun aPlayerContext(): PlayerGameContext = PlayerGameContext(aPlayer().asOwnPlayer(),aGamePayments(),
-        EmptyBoard(aDeck()).info(),0,aTable().publicData(), listOf())
+        EmptyBoard(aDeck()).info(),0,aTable().publicData(), mapOf())
 
 fun aGamePayments(): GamePayments = GamePaymentsFixedImpl(10, 20)
 fun blinds(sb: Int, bb: Int): GamePayments = GamePaymentsFixedImpl(sb, bb)

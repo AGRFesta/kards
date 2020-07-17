@@ -8,7 +8,8 @@ class PlayerGameContext(
         val board: BoardInfo,
         val potAmount: Int,
         val table: PublicTableData,
-        val history: List<PlayerAction>
+        val history: Map<GamePhase,List<PlayerAction>>
 )
 
 class PlayerAction(val player: Player, val action: Action)
+

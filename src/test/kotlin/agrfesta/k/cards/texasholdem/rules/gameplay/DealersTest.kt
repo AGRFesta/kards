@@ -431,7 +431,7 @@ class DealersTest {
         assertThat(alexContexts[0].me.cards).isEmpty()
         assertThat(alexContexts[0].payments).isEqualTo(payments)
         assertThat(alexContexts[0].potAmount).isEqualTo(0)
-        assertThat(alexContexts[0].history).isEmpty()
+        assertThat(alexContexts[0].history[GamePhase.PRE_FLOP] ?: error("Should be at Pre-Flop")).isEmpty()
         assertThat(alexContexts[0].table.button).isEqualTo(0)
         assertThat(alexContexts[0].table.players).extracting({ it.player },{ it.stack },{ it.state })
                 .containsOnly(Triple(alex.player,2000,NONE),
@@ -444,7 +444,8 @@ class DealersTest {
         assertThat(janeContexts[0].me.cards).isEmpty()
         assertThat(janeContexts[0].payments).isEqualTo(payments)
         assertThat(janeContexts[0].potAmount).isEqualTo(0)
-        assertThat(janeContexts[0].history).extracting({ it.player },{ it.action::class },{ it.action.getAmount() } )
+        assertThat(janeContexts[0].history[GamePhase.PRE_FLOP] ?: error("Should be at Pre-Flop"))
+                .extracting({ it.player },{ it.action::class },{ it.action.getAmount() } )
                 .containsOnly(Triple(alex.player,CallAction::class,null))
         assertThat(janeContexts[0].table.button).isEqualTo(0)
         assertThat(janeContexts[0].table.players).extracting({ it.player },{ it.stack },{ it.state })
@@ -457,7 +458,8 @@ class DealersTest {
         assertThat(alexContexts[1].me.cards).isEmpty()
         assertThat(alexContexts[1].payments).isEqualTo(payments)
         assertThat(alexContexts[1].potAmount).isEqualTo(100)
-        assertThat(alexContexts[1].history).extracting({ it.player },{ it.action::class },{ it.action.getAmount() } )
+        assertThat(alexContexts[1].history[GamePhase.PRE_FLOP] ?: error("Should be at Pre-Flop"))
+                .extracting({ it.player },{ it.action::class },{ it.action.getAmount() } )
                 .containsOnly(Triple(alex.player,CallAction::class,null),
                               Triple(jane.player,RaiseAction::class,100))
         assertThat(alexContexts[1].table.button).isEqualTo(0)

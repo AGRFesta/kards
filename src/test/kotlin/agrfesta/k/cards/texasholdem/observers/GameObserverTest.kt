@@ -68,8 +68,8 @@ class GameObserverTest {
         GameBuilder()
                 .observer(observerMock)
                 .deck(deck)
-                .preFlopDealerProvider { dealerMock(preFlopDealer) }
-                .dealerProvider { _,_ -> dealerMock(flopDealer) }
+                .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
+                .dealerProvider { _,_,_ -> dealerMock(flopDealer) }
                 .build(payments,table)
                 .play()
 
@@ -119,8 +119,8 @@ class GameObserverTest {
         GameBuilder()
                 .observer(observerMock)
                 .deck(deck)
-                .preFlopDealerProvider { dealerMock(preFlopDealer) }
-                .dealerProvider { _,context ->
+                .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
+                .dealerProvider { _,context,_ ->
                     when (context.board) {
                         is FlopBoard -> dealerMock(flopDealer)
                         is TurnBoard -> dealerMock(turnDealer)
@@ -178,8 +178,8 @@ class GameObserverTest {
         GameBuilder()
                 .observer(observerMock)
                 .deck(deck)
-                .preFlopDealerProvider { dealerMock(preFlopDealer) }
-                .dealerProvider { _,context ->
+                .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
+                .dealerProvider { _,context,_ ->
                     when (context.board) {
                         is FlopBoard -> dealerMock(allChecksDealer)
                         is TurnBoard -> dealerMock(turnDealer)
@@ -236,8 +236,8 @@ class GameObserverTest {
         GameBuilder()
                 .observer(observerMock)
                 .deck(deck)
-                .preFlopDealerProvider { dealerMock(preFlopDealer) }
-                .dealerProvider { _,context ->
+                .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
+                .dealerProvider { _,context,_ ->
                     when (context.board) {
                         is FlopBoard -> dealerMock(allChecksDealer)
                         is TurnBoard -> dealerMock(allChecksDealer)
@@ -285,8 +285,8 @@ class GameObserverTest {
         GameBuilder()
                 .observer(observerMock)
                 .deck(deck)
-                .preFlopDealerProvider { dealerMock(preFlopDealer) }
-                .dealerProvider { _,_ -> dealerMock(allChecksDealer) }
+                .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
+                .dealerProvider { _,_,_ -> dealerMock(allChecksDealer) }
                 .build(payments,table)
                 .play()
 
