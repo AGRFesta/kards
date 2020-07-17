@@ -11,5 +11,7 @@ class PlayerGameContext(
         val history: Map<GamePhase,List<PlayerAction>>
 )
 
-class PlayerAction(val player: Player, val action: Action)
+class PlayerAction(val player: Player, val action: Action) {
+    override fun toString() = "${player.name} $action"
+}
 
