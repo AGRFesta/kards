@@ -3,7 +3,7 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 import agrfesta.k.cards.playingcards.cards.Card
 
-class Player(val name: String) {
+data class Player(val name: String) {
     override fun toString() = name
 }
 
