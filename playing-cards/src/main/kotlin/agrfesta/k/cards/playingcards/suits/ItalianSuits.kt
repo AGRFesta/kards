@@ -22,6 +22,10 @@ fun getItalianSeedFromSymbol(symbol: Char): ItalianSeed {
             .findFirst()
             .orElseThrow { IllegalArgumentException("Symbol '$symbol' is not an Italian Seed") }
 }
+fun getItalianRankFromOrdinal(ordinal: Int): Rank = ItalianRank.values()
+        .map(ItalianRank::adapter)
+        .find { it.ordinal() == ordinal % ItalianRank.values().size }!!
+
 fun italianCards(): Set<Card> {
     val allCards = HashSet<Card>()
     for (s in ItalianSeed.values()) {
@@ -61,12 +65,10 @@ fun createItalianDeck(init: ()-> Deck): Deck {
 class ItalianRankAdapter(private val ir: ItalianRank): Rank {
     override fun symbol(): Char = ir.symbol()
     override fun ordinal(): Int = ir.ordinal
-    override fun plus(increment: Int): Rank {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-    override fun minus(increment: Int): Rank {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun plus(increment: Int): Rank = getItalianRankFromOrdinal(ordinal() +
+            ItalianRank.values().size - (increment % ItalianRank.values().size))
+    override fun minus(decrement: Int): Rank = getItalianRankFromOrdinal(ordinal() +
+            ItalianRank.values().size + (decrement % ItalianRank.values().size))
 
     override fun compareTo(other: Rank): Int {
         if (other !is ItalianRankAdapter) {
