@@ -2,10 +2,7 @@ package agrfesta.k.cards.playingcards.deck
 
 import agrfesta.k.cards.playingcards.cards.cardOf
 import assertk.assertThat
-import assertk.assertions.containsOnly
-import assertk.assertions.hasMessage
-import assertk.assertions.isEqualTo
-import assertk.assertions.isFailure
+import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -18,11 +15,9 @@ interface DeckTestSuite {
         val deck = testingDeck()
         assertThat(deck.size()).isEqualTo(0)
 
-        assertThat {
-            deck.draw()
-        }.isFailure()
-                //TODO .hasClass(EmptyDeckException)
-                .hasMessage("Trying to draw a card from an empty deck")
+        val failure = assertThat { deck.draw() }.isFailure()
+        failure.hasClass(EmptyDeckException::class)
+        failure.hasMessage("Trying to draw a card from an empty deck")
     }
     @Test
     @DisplayName("Draw two cards from a one card deck -> throws EmptyDeckException")
@@ -31,11 +26,9 @@ interface DeckTestSuite {
         deck.add(aCard())
         assertThat(deck.size()).isEqualTo(1)
 
-        assertThat {
-            deck.draw(2)
-        }.isFailure()
-                //TODO .hasClass(EmptyDeckException)
-                .hasMessage("Trying to draw a card from an empty deck")
+        val failure = assertThat { deck.draw(2) }.isFailure()
+        failure.hasClass(EmptyDeckException::class)
+        failure.hasMessage("Trying to draw a card from an empty deck")
     }
 
     @Test
