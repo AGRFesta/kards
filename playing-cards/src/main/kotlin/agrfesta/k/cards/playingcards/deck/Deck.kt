@@ -11,14 +11,11 @@ interface Deck {
     fun size(): Int
 }
 
-//TODO replace with IllegalStateException
-class EmptyDeckException(message: String = "Trying to draw a card from an empty deck") : Exception(message)
-
 class DeckImpl(private val cards: MutableList<Card> = mutableListOf()) : Deck {
 
     override fun draw(): Card {
         if (cards.isEmpty()) {
-            throw EmptyDeckException()
+            throw IllegalStateException("Trying to draw a card from an empty deck")
         }
         return cards.removeAt(0)
     }

@@ -15,7 +15,7 @@ class DeckImplTest {
         assertThat(deck.size()).isEqualTo(0)
 
         val failure = assertThat { deck.draw() }.isFailure()
-        failure.hasClass(EmptyDeckException::class)
+        failure.hasClass(IllegalStateException::class)
         failure.hasMessage("Trying to draw a card from an empty deck")
     }
     @Test
@@ -25,7 +25,7 @@ class DeckImplTest {
         assertThat(deck.size()).isEqualTo(1)
 
         val failure = assertThat { deck.draw(2) }.isFailure()
-        failure.hasClass(EmptyDeckException::class)
+        failure.hasClass(IllegalStateException::class)
         failure.hasMessage("Trying to draw a card from an empty deck")
     }
 
