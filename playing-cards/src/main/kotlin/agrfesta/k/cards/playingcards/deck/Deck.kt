@@ -25,9 +25,8 @@ class DeckImpl(private val cards: MutableList<Card> = mutableListOf()) : Deck {
 
 }
 
-//TODO test
-class DeckBuilder {
-    private var shuffler: ShufflingService = SimpleShufflingService()
+class DeckBuilder(defaultShuffler: ShufflingService) {
+    private var shuffler: ShufflingService = defaultShuffler
 
     fun shuffleWith(shuffler: ShufflingService): DeckBuilder {
         this.shuffler = shuffler
@@ -46,3 +45,6 @@ class DeckBuilder {
     }
 
 }
+
+fun deckBuilder() = DeckBuilder(SimpleShufflingService())
+fun buildDeck(cards: Collection<Card>) = deckBuilder().build(cards)

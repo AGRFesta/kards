@@ -2,14 +2,14 @@ package agrfesta.k.cards.playingcards.suits
 
 import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.deck.Deck
-import agrfesta.k.cards.playingcards.deck.DeckBuilder
+import agrfesta.k.cards.playingcards.deck.buildDeck
 import agrfesta.k.cards.playingcards.deck.rankOf
+import agrfesta.k.cards.playingcards.suits.ItalianSeed.*
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
-import agrfesta.k.cards.playingcards.suits.ItalianSeed.*
 import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
 @DisplayName("Italian Suits Tests")
@@ -121,13 +121,7 @@ class ItalianSuitsTest {
     @Test
     @DisplayName("Create deck with default settings -> a full deck")
     fun createDeckWithDefaultSettings() {
-        val deck = DeckBuilder().build(italianCards()) //createItalianDeck()
-        assertIsFullDeck(deck)
-    }
-    @Test
-    @DisplayName("Create deck with specific settings -> a full deck")
-    fun createDeckWithSpecificSettings() {
-        val deck = DeckBuilder().build(italianCards()) //createItalianDeck() { RandomDrawDeck() }
+        val deck = buildDeck(italianCards())
         assertIsFullDeck(deck)
     }
 

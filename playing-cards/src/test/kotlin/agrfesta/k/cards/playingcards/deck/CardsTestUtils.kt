@@ -15,3 +15,4 @@ fun deckContent(deck: Deck): Collection<Card> {
     }
     return content
 }
+
