@@ -4,9 +4,6 @@ import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.playingcards.cards.Seed
 import agrfesta.k.cards.playingcards.cards.cardOf
-import agrfesta.k.cards.playingcards.deck.AutoShufflingDeck
-import agrfesta.k.cards.playingcards.deck.Deck
-import agrfesta.k.cards.playingcards.deck.SimpleStackShufflingService
 
 fun getFrenchRankFromSymbol(symbol: Char): Rank = FrenchRank.values()
         .map(FrenchRank::adapter)
@@ -44,16 +41,6 @@ fun createFrenchCard(str: String): Card {
 }
 fun createFrenchHand(vararg cards: String): List<Card> = cards.map { createFrenchCard(it) }
 fun frenchCardsSet(vararg cards: String): Set<Card> = createFrenchHand(*cards).toSet()
-fun createFrenchDeck(): Deck {
-    val deck = AutoShufflingDeck(SimpleStackShufflingService())
-    deck.add(frenchCards())
-    return deck
-}
-fun createFrenchDeck(init: ()-> Deck): Deck {
-    val deck = init()
-    deck.add(frenchCards())
-    return deck
-}
 
 class FrenchRankAdapter(private val fr: FrenchRank): Rank {
     override fun symbol(): Char = fr.symbol()

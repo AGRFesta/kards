@@ -2,7 +2,7 @@ package agrfesta.k.cards.playingcards.suits
 
 import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.deck.Deck
-import agrfesta.k.cards.playingcards.deck.RandomDrawDeck
+import agrfesta.k.cards.playingcards.deck.DeckBuilder
 import agrfesta.k.cards.playingcards.deck.rankOf
 import assertk.assertThat
 import assertk.assertions.*
@@ -144,13 +144,13 @@ class FrenchSuitsTest {
     @Test
     @DisplayName("Create deck with default settings -> a full deck")
     fun createDeckWithDefaultSettings() {
-        val deck = createFrenchDeck()
+        val deck = DeckBuilder().build(frenchCards()) //createFrenchDeck()
         assertIsFullDeck(deck)
     }
     @Test
     @DisplayName("Create deck with specific settings -> a full deck")
     fun createDeckWithSpecificSettings() {
-        val deck = createFrenchDeck() { RandomDrawDeck() }
+        val deck = DeckBuilder().build(frenchCards()) //createFrenchDeck() { RandomDrawDeck() }
         assertIsFullDeck(deck)
     }
 

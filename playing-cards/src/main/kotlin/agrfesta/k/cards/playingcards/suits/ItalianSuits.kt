@@ -4,9 +4,6 @@ import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.playingcards.cards.Seed
 import agrfesta.k.cards.playingcards.cards.cardOf
-import agrfesta.k.cards.playingcards.deck.AutoShufflingDeck
-import agrfesta.k.cards.playingcards.deck.Deck
-import agrfesta.k.cards.playingcards.deck.SimpleStackShufflingService
 import java.util.*
 
 fun getItalianRankFromSymbol(symbol: Char): Rank {
@@ -50,16 +47,6 @@ fun createItalianCard(str: String): Card {
 }
 fun createItalianHand(vararg cards: String): List<Card> {
     return cards.map { createItalianCard(it) }
-}
-fun createItalianDeck(): Deck {
-    val deck = AutoShufflingDeck(SimpleStackShufflingService())
-    deck.add(italianCards())
-    return deck
-}
-fun createItalianDeck(init: ()-> Deck): Deck {
-    val deck = init()
-    deck.add(italianCards())
-    return deck
 }
 
 class ItalianRankAdapter(private val ir: ItalianRank): Rank {

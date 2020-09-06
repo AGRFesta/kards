@@ -15,10 +15,3 @@ fun deckContent(deck: Deck): Collection<Card> {
     }
     return content
 }
-
-class ReverseStackShufflingService : ShufflingService {
-    override fun shuffle(cards: Stack<Card>): Stack<Card> {
-        cards.reverse()
-        return cards
-    }
-}
