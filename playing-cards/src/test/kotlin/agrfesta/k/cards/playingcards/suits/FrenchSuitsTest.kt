@@ -16,6 +16,25 @@ import org.junit.jupiter.api.TestFactory
 class FrenchSuitsTest {
 
     @Test
+    @DisplayName("Get rank from symbol 'x' -> throws IllegalArgumentException")
+    fun gettingRankFromWrongSymbolThrowsException() {
+        val failure = assertThat {
+            getFrenchRankFromSymbol('x')
+        }.isFailure()
+        failure.hasClass(IllegalArgumentException::class)
+        failure.hasMessage("Symbol 'x' is not a French Rank")
+    }
+    @Test
+    @DisplayName("Get seed from symbol 'x' -> throws IllegalArgumentException")
+    fun gettingSeedFromWrongSymbolThrowsException() {
+        val failure = assertThat {
+            getFrenchSeedFromSymbol('x')
+        }.isFailure()
+        failure.hasClass(IllegalArgumentException::class)
+        failure.hasMessage("Symbol 'x' is not a French Seed")
+    }
+
+    @Test
     @DisplayName("Build hand from an empty string card -> throws IllegalArgumentException")
     fun buildHandFromEmptyStringCardThrowsException() {
         val failure = assertThat {

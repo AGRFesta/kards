@@ -14,6 +14,26 @@ import org.junit.jupiter.api.TestFactory
 
 @DisplayName("Italian Suits Tests")
 class ItalianSuitsTest {
+
+    @Test
+    @DisplayName("Get rank from symbol 'x' -> throws IllegalArgumentException")
+    fun gettingRankFromWrongSymbolThrowsException() {
+        val failure = assertThat {
+            getItalianRankFromSymbol('x')
+        }.isFailure()
+        failure.hasClass(IllegalArgumentException::class)
+        failure.hasMessage("Symbol 'x' is not an Italian Rank")
+    }
+    @Test
+    @DisplayName("Get seed from symbol 'x' -> throws IllegalArgumentException")
+    fun gettingSeedFromWrongSymbolThrowsException() {
+        val failure = assertThat {
+            getItalianSeedFromSymbol('x')
+        }.isFailure()
+        failure.hasClass(IllegalArgumentException::class)
+        failure.hasMessage("Symbol 'x' is not an Italian Seed")
+    }
+
     @Test
     @DisplayName("Build hand from an empty string card -> throws IllegalArgumentException")
     fun buildHandFromEmptyStringCardThrowsException() {
@@ -152,5 +172,42 @@ class ItalianSuitsTest {
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Comparable only to an instance of ItalianRankAdapter")
+    }
+
+    @TestFactory
+    @DisplayName("Plus operator overloading tests")
+    fun plusOperatorOverloadingTest() = listOf(
+            Triple(ASSO, 1, DUE),
+            Triple(RE, 2, DUE),
+            Triple(DUE, 1, TRE),
+            Triple(ASSO, 10, ASSO),
+            Triple(CAVALLO, 20, CAVALLO),
+            Triple(FANTE, 11, CAVALLO),
+            Triple(ASSO, -1, RE),
+            Triple(SETTE, -10, SETTE),
+            Triple(SEI, -20, SEI),
+            Triple(QUATTRO, -21, TRE)
+    ).map { t ->
+        DynamicTest.dynamicTest(
+                "${t.first} + ${t.second} = ${t.third}")
+        { assertThat(t.first + t.second).isEqualTo(t.third) }
+    }
+    @TestFactory
+    @DisplayName("Minus operator overloading tests")
+    fun minusOperatorOverloadingTest() = listOf(
+            Triple(RE, 1, CAVALLO),
+            Triple(RE, 2, FANTE),
+            Triple(DUE, 1, ASSO),
+            Triple(ASSO, 10, ASSO),
+            Triple(CAVALLO, 20, CAVALLO),
+            Triple(FANTE, 11, SETTE),
+            Triple(ASSO, -1, DUE),
+            Triple(SETTE, -10, SETTE),
+            Triple(SEI, -20, SEI),
+            Triple(QUATTRO, -11, CINQUE)
+    ).map { t ->
+        DynamicTest.dynamicTest(
+                "${t.first} - ${t.second} = ${t.third}")
+        { assertThat(t.first - t.second).isEqualTo(t.third) }
     }
 }

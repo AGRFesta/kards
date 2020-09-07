@@ -2,6 +2,8 @@ package agrfesta.k.cards.playingcards.cards
 
 import agrfesta.k.cards.playingcards.deck.aRank
 import agrfesta.k.cards.playingcards.deck.aSeed
+import agrfesta.k.cards.playingcards.deck.rankOf
+import agrfesta.k.cards.playingcards.deck.seedOf
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEqualTo
@@ -55,6 +57,13 @@ class CardTest {
     fun comparingACardToNullResultNotEqual() {
         val a = cardOf(aRank(), aSeed())
         assertThat(a).isNotEqualTo(null)
+    }
+
+    @Test
+    @DisplayName("A Card with rank 'r' and seed 'S' -> to string is 'rS'")
+    fun toStringTest() {
+        val card = cardOf(rankOf('r'), seedOf('S',0))
+        assertThat(card.toString()).isEqualTo("rS")
     }
 
 }
