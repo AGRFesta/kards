@@ -2,13 +2,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.jvm.tasks.Jar
 
 plugins {
-    // Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.61"
-	
-	// Dokka is a popular documentation engine for Kotlin projects
 	id("org.jetbrains.dokka") version "0.10.0"
-
-    // java-library plugin for API and implementation separation.
+	jacoco
     `java-library`
 	`maven-publish`
 }
