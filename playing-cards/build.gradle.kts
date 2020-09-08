@@ -4,6 +4,7 @@ import org.gradle.jvm.tasks.Jar
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.3.61"
 	id("org.jetbrains.dokka") version "0.10.0"
+	id("io.gitlab.arturbosch.detekt").version("1.12.0")
 	jacoco
     `java-library`
 	`maven-publish`
@@ -50,6 +51,15 @@ val dokkaJar by tasks.creating(Jar::class) {
 	description = "Assembles Kotlin docs with Dokka"
 	classifier = "javadoc"
 	from(tasks.dokka)
+}
+
+detekt {
+	reports {
+		html {
+			enabled = true
+			destination = file("$buildDir/reports/detekt/deteckt.html")
+		}
+	}
 }
 
 publishing {
