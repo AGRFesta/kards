@@ -8,19 +8,16 @@ interface Card {
     fun seed(): Seed
 }
 
-/**
- * Create and returns a new [Card] with [rank] and [seed].
- */
-fun cardOf(rank: Rank, seed: Seed) = object: Card {
+data class CardImpl(private val rank: Rank, private val seed: Seed): Card {
     override fun rank() = rank
     override fun seed() = seed
     override fun toString(): String = "${rank().symbol()}${seed().symbol()}"
-    override fun equals(other: Any?): Boolean {
-        if (other !is Card) return false
-        return rank()==other.rank() && seed()==other.seed()
-    }
-    override fun hashCode(): Int = seed().hashCode() * 31 + rank().hashCode()
 }
+
+/**
+ * Create and returns a new [Card] with [rank] and [seed].
+ */
+fun cardOf(rank: Rank, seed: Seed) = CardImpl(rank, seed)
 
 /**
  * Represents a playing card rank, usually is a number or a figure.
