@@ -4,12 +4,12 @@ import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.ShowdownObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
 import agrfesta.k.cards.playingcards.deck.Deck
-import agrfesta.k.cards.playingcards.suits.createFrenchDeck
+import agrfesta.k.cards.playingcards.suits.Suit.FRENCH
 import agrfesta.k.cards.texasholdem.observers.DealerObserver
 
 //TODO refactoring moving default values in constructor
 class GameBuilder {
-    private var deck: Deck = createFrenchDeck()
+    private var deck: Deck = FRENCH.createDeck()
     private var observer: GameObserver? = null
 
     private var showdownProvider: (ShowdownObserver?) -> Showdown = { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }

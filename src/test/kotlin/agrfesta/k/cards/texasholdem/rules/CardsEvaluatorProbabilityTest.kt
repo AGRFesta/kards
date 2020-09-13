@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules
 
+import agrfesta.k.cards.playingcards.suits.Suit.FRENCH
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand
-import agrfesta.k.cards.playingcards.suits.createFrenchDeck
 
 /*  Hand	        Frequency	Probability	Cumulative	Odds (odds against)
 
@@ -37,7 +37,7 @@ fun main() {
 
 fun play(): THPokerHand {
     return evaluator.evaluate(
-            createFrenchDeck().draw(7).toSet()
+            FRENCH.createDeck().draw(7).toSet()
         ).getHandValue()
 }
 

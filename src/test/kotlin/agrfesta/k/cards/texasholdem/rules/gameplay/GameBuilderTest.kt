@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-import agrfesta.k.cards.playingcards.deck.AutoShufflingDeck
 import agrfesta.k.cards.playingcards.deck.Deck
+import agrfesta.k.cards.playingcards.deck.DeckImpl
 import agrfesta.k.cards.texasholdem.observers.DealerObserver
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
@@ -45,7 +45,7 @@ class GameBuilderTest {
                 .build(aGamePayments(), aTable())
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
-            assertThat(game.deck).isInstanceOf(AutoShufflingDeck::class)
+            assertThat(game.deck).isInstanceOf(DeckImpl::class)
             assertThat(game.dealerProvider.invoke(buildPot(),aContext(),null)).isInstanceOf(PostFlopDealer::class)
             assertThat(game.preFlopDealerProvider.invoke(aContext(),null)).isInstanceOf(PreFlopDealer::class)
             assertThat(game.showdown).isInstanceOf(Showdown::class)
