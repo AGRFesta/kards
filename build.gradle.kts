@@ -2,13 +2,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.jvm.tasks.Jar
 
 plugins {
-    // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.61"
-
-    // Dokka is a popular documentation engine for Kotlin projects
     id("org.jetbrains.dokka") version "0.10.0"
-
-    // Apply the java-library plugin for API and implementation separation.
+    id("io.gitlab.arturbosch.detekt").version("1.12.0")
+    jacoco
     `java-library`
     `maven-publish`
 }
@@ -66,6 +63,15 @@ val dokkaJar by tasks.creating(Jar::class) {
 tasks.dokka {
     outputFormat = "html"
     outputDirectory = "$buildDir/javadoc"
+}
+
+detekt {
+    reports {
+        html {
+            enabled = true
+            destination = file("$buildDir/reports/detekt/deteckt.html")
+        }
+    }
 }
 
 publishing {
