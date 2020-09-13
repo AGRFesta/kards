@@ -17,16 +17,6 @@ fun getFrenchSeedFromSymbol(char: Char): FrenchSeed = FrenchSeed.values()
             .find { s -> s.char == char }
                 ?: throw IllegalArgumentException("Symbol '$char' is not a French Seed")
 
-fun frenchCards(): Set<Card> {
-    val allCards = HashSet<Card>()
-    for (s in FrenchSeed.values()) {
-        for (v in FrenchRank.values()) {
-            allCards.add(cardOf(v.adapter, s))
-        }
-    }
-    return allCards
-}
-
 fun createFrenchCard(str: String): Card {
     if (str.isBlank()) {
         throw IllegalArgumentException("Unable to create French Card, received empty String")
@@ -40,7 +30,7 @@ fun createFrenchCard(str: String): Card {
     )
 }
 fun createFrenchHand(vararg cards: String): List<Card> = cards.map { createFrenchCard(it) }
-fun frenchCardsSet(vararg cards: String): Set<Card> = createFrenchHand(*cards).toSet()
+fun frenchCardsSet(vararg cards: String): Set<Card> = cards.map { createFrenchCard(it) }.toSet()
 
 class FrenchRankAdapter(private val fr: FrenchRank): Rank {
     override fun symbol(): Char = fr.symbol()

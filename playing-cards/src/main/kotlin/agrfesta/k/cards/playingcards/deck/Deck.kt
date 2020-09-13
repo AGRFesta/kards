@@ -99,7 +99,3 @@ class DeckBuilder(defaultShuffler: ShufflingService) {
  */
 fun deckBuilder() = DeckBuilder(SimpleShufflingService())
 
-/**
- * Returns a new deck containing cards from [cards].
- */
-fun buildDeck(cards: Collection<Card>) = deckBuilder().build(cards)

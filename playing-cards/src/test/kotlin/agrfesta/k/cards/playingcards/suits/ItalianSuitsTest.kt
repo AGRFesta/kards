@@ -2,9 +2,9 @@ package agrfesta.k.cards.playingcards.suits
 
 import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.deck.Deck
-import agrfesta.k.cards.playingcards.deck.buildDeck
 import agrfesta.k.cards.playingcards.deck.rankOf
 import agrfesta.k.cards.playingcards.suits.ItalianSeed.*
+import agrfesta.k.cards.playingcards.suits.Suit.ITALIAN
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
@@ -88,61 +88,10 @@ class ItalianSuitsTest {
                 )
     }
 
-    private fun assertIsFullDeck(deck: Deck) {
-        assertThat(deck.size()).isEqualTo(40)
-        val cards = deck.draw(40)
-        assertThat(cards).extracting(Card::rank, Card::seed)
-                .containsOnly(
-                        Pair(ASSO, DENARI),
-                        Pair(RE, DENARI),
-                        Pair(CAVALLO, DENARI),
-                        Pair(FANTE, DENARI),
-                        Pair(SETTE, DENARI),
-                        Pair(SEI, DENARI),
-                        Pair(CINQUE, DENARI),
-                        Pair(QUATTRO, DENARI),
-                        Pair(TRE, DENARI),
-                        Pair(DUE, DENARI),
-
-                        Pair(ASSO, COPPE),
-                        Pair(RE, COPPE),
-                        Pair(CAVALLO, COPPE),
-                        Pair(FANTE, COPPE),
-                        Pair(SETTE, COPPE),
-                        Pair(SEI, COPPE),
-                        Pair(CINQUE, COPPE),
-                        Pair(QUATTRO, COPPE),
-                        Pair(TRE, COPPE),
-                        Pair(DUE, COPPE),
-
-                        Pair(ASSO, BASTONI),
-                        Pair(RE, BASTONI),
-                        Pair(CAVALLO, BASTONI),
-                        Pair(FANTE, BASTONI),
-                        Pair(SETTE, BASTONI),
-                        Pair(SEI, BASTONI),
-                        Pair(CINQUE, BASTONI),
-                        Pair(QUATTRO, BASTONI),
-                        Pair(TRE, BASTONI),
-                        Pair(DUE, BASTONI),
-
-                        Pair(ASSO, SPADE),
-                        Pair(RE, SPADE),
-                        Pair(CAVALLO, SPADE),
-                        Pair(FANTE, SPADE),
-                        Pair(SETTE, SPADE),
-                        Pair(SEI, SPADE),
-                        Pair(CINQUE, SPADE),
-                        Pair(QUATTRO, SPADE),
-                        Pair(TRE, SPADE),
-                        Pair(DUE, SPADE)
-                )
-    }
     @Test
     @DisplayName("Create deck with default settings -> a full deck")
     fun createDeckWithDefaultSettings() {
-        val deck = buildDeck(italianCards())
-        assertIsFullDeck(deck)
+        assertIsFullItalianDeck(ITALIAN.createDeck())
     }
 
     @TestFactory
@@ -210,4 +159,58 @@ class ItalianSuitsTest {
                 "${t.first} - ${t.second} = ${t.third}")
         { assertThat(t.first - t.second).isEqualTo(t.third) }
     }
+}
+
+fun assertIsFullItalianCardList(cards: Collection<Card>) {
+    assertThat(cards).extracting(Card::rank, Card::seed)
+            .containsOnly(
+                    Pair(ASSO, DENARI),
+                    Pair(RE, DENARI),
+                    Pair(CAVALLO, DENARI),
+                    Pair(FANTE, DENARI),
+                    Pair(SETTE, DENARI),
+                    Pair(SEI, DENARI),
+                    Pair(CINQUE, DENARI),
+                    Pair(QUATTRO, DENARI),
+                    Pair(TRE, DENARI),
+                    Pair(DUE, DENARI),
+
+                    Pair(ASSO, COPPE),
+                    Pair(RE, COPPE),
+                    Pair(CAVALLO, COPPE),
+                    Pair(FANTE, COPPE),
+                    Pair(SETTE, COPPE),
+                    Pair(SEI, COPPE),
+                    Pair(CINQUE, COPPE),
+                    Pair(QUATTRO, COPPE),
+                    Pair(TRE, COPPE),
+                    Pair(DUE, COPPE),
+
+                    Pair(ASSO, BASTONI),
+                    Pair(RE, BASTONI),
+                    Pair(CAVALLO, BASTONI),
+                    Pair(FANTE, BASTONI),
+                    Pair(SETTE, BASTONI),
+                    Pair(SEI, BASTONI),
+                    Pair(CINQUE, BASTONI),
+                    Pair(QUATTRO, BASTONI),
+                    Pair(TRE, BASTONI),
+                    Pair(DUE, BASTONI),
+
+                    Pair(ASSO, SPADE),
+                    Pair(RE, SPADE),
+                    Pair(CAVALLO, SPADE),
+                    Pair(FANTE, SPADE),
+                    Pair(SETTE, SPADE),
+                    Pair(SEI, SPADE),
+                    Pair(CINQUE, SPADE),
+                    Pair(QUATTRO, SPADE),
+                    Pair(TRE, SPADE),
+                    Pair(DUE, SPADE)
+            )
+}
+fun assertIsFullItalianDeck(deck: Deck) {
+    assertThat(deck.size()).isEqualTo(40)
+    val cards = deck.draw(40)
+    assertIsFullItalianCardList(cards)
 }

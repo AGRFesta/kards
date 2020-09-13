@@ -23,16 +23,6 @@ fun getItalianRankFromOrdinal(ordinal: Int): Rank = ItalianRank.values()
         .map(ItalianRank::adapter)
         .find { it.ordinal() == ordinal % ItalianRank.values().size }!!
 
-fun italianCards(): Set<Card> {
-    val allCards = HashSet<Card>()
-    for (s in ItalianSeed.values()) {
-        for (v in ItalianRank.values()) {
-            allCards.add(cardOf(v.adapter, s))
-        }
-    }
-    return allCards
-}
-
 fun createItalianCard(str: String): Card {
     if (str.isBlank()) {
         throw IllegalArgumentException("Unable to create Italian Card, received empty String")

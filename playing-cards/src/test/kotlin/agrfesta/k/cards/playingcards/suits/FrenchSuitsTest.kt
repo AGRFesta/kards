@@ -2,9 +2,9 @@ package agrfesta.k.cards.playingcards.suits
 
 import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.deck.Deck
-import agrfesta.k.cards.playingcards.deck.buildDeck
 import agrfesta.k.cards.playingcards.deck.rankOf
 import agrfesta.k.cards.playingcards.suits.FrenchSeed.*
+import agrfesta.k.cards.playingcards.suits.Suit.FRENCH
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
@@ -98,73 +98,10 @@ class FrenchSuitsTest {
                 )
     }
 
-    private fun assertIsFullDeck(deck: Deck) {
-        assertThat(deck.size()).isEqualTo(52)
-        val cards = deck.draw(52)
-        assertThat(cards).extracting(Card::rank, Card::seed)
-                .containsOnly(
-                        Pair(ACE, HEARTS),
-                        Pair(KING, HEARTS),
-                        Pair(QUEEN, HEARTS),
-                        Pair(JACK, HEARTS),
-                        Pair(TEN, HEARTS),
-                        Pair(NINE, HEARTS),
-                        Pair(EIGHT, HEARTS),
-                        Pair(SEVEN, HEARTS),
-                        Pair(SIX, HEARTS),
-                        Pair(FIVE, HEARTS),
-                        Pair(FOUR, HEARTS),
-                        Pair(THREE, HEARTS),
-                        Pair(TWO, HEARTS),
-
-                        Pair(ACE, SPADES),
-                        Pair(KING, SPADES),
-                        Pair(QUEEN, SPADES),
-                        Pair(JACK, SPADES),
-                        Pair(TEN, SPADES),
-                        Pair(NINE, SPADES),
-                        Pair(EIGHT, SPADES),
-                        Pair(SEVEN, SPADES),
-                        Pair(SIX, SPADES),
-                        Pair(FIVE, SPADES),
-                        Pair(FOUR, SPADES),
-                        Pair(THREE, SPADES),
-                        Pair(TWO, SPADES),
-
-                        Pair(ACE, CLUBS),
-                        Pair(KING, CLUBS),
-                        Pair(QUEEN, CLUBS),
-                        Pair(JACK, CLUBS),
-                        Pair(TEN, CLUBS),
-                        Pair(NINE, CLUBS),
-                        Pair(EIGHT, CLUBS),
-                        Pair(SEVEN, CLUBS),
-                        Pair(SIX, CLUBS),
-                        Pair(FIVE, CLUBS),
-                        Pair(FOUR, CLUBS),
-                        Pair(THREE, CLUBS),
-                        Pair(TWO, CLUBS),
-
-                        Pair(ACE, DIAMONDS),
-                        Pair(KING, DIAMONDS),
-                        Pair(QUEEN, DIAMONDS),
-                        Pair(JACK, DIAMONDS),
-                        Pair(TEN, DIAMONDS),
-                        Pair(NINE, DIAMONDS),
-                        Pair(EIGHT, DIAMONDS),
-                        Pair(SEVEN, DIAMONDS),
-                        Pair(SIX, DIAMONDS),
-                        Pair(FIVE, DIAMONDS),
-                        Pair(FOUR, DIAMONDS),
-                        Pair(THREE, DIAMONDS),
-                        Pair(TWO, DIAMONDS)
-                )
-    }
     @Test
     @DisplayName("Create deck with default settings -> a full deck")
     fun createDeckWithDefaultSettings() {
-        val deck = buildDeck(frenchCards())
-        assertIsFullDeck(deck)
+        assertIsFullFrenchDeck(FRENCH.createDeck())
     }
 
     @TestFactory
@@ -235,4 +172,70 @@ class FrenchSuitsTest {
                 "${t.first} - ${t.second} = ${t.third}")
         { assertThat(t.first - t.second).isEqualTo(t.third) }
     }
+}
+
+fun assertIsFullFrenchCardList(cards: Collection<Card>) {
+    assertThat(cards).extracting(Card::rank, Card::seed)
+            .containsOnly(
+                    Pair(ACE, HEARTS),
+                    Pair(KING, HEARTS),
+                    Pair(QUEEN, HEARTS),
+                    Pair(JACK, HEARTS),
+                    Pair(TEN, HEARTS),
+                    Pair(NINE, HEARTS),
+                    Pair(EIGHT, HEARTS),
+                    Pair(SEVEN, HEARTS),
+                    Pair(SIX, HEARTS),
+                    Pair(FIVE, HEARTS),
+                    Pair(FOUR, HEARTS),
+                    Pair(THREE, HEARTS),
+                    Pair(TWO, HEARTS),
+
+                    Pair(ACE, SPADES),
+                    Pair(KING, SPADES),
+                    Pair(QUEEN, SPADES),
+                    Pair(JACK, SPADES),
+                    Pair(TEN, SPADES),
+                    Pair(NINE, SPADES),
+                    Pair(EIGHT, SPADES),
+                    Pair(SEVEN, SPADES),
+                    Pair(SIX, SPADES),
+                    Pair(FIVE, SPADES),
+                    Pair(FOUR, SPADES),
+                    Pair(THREE, SPADES),
+                    Pair(TWO, SPADES),
+
+                    Pair(ACE, CLUBS),
+                    Pair(KING, CLUBS),
+                    Pair(QUEEN, CLUBS),
+                    Pair(JACK, CLUBS),
+                    Pair(TEN, CLUBS),
+                    Pair(NINE, CLUBS),
+                    Pair(EIGHT, CLUBS),
+                    Pair(SEVEN, CLUBS),
+                    Pair(SIX, CLUBS),
+                    Pair(FIVE, CLUBS),
+                    Pair(FOUR, CLUBS),
+                    Pair(THREE, CLUBS),
+                    Pair(TWO, CLUBS),
+
+                    Pair(ACE, DIAMONDS),
+                    Pair(KING, DIAMONDS),
+                    Pair(QUEEN, DIAMONDS),
+                    Pair(JACK, DIAMONDS),
+                    Pair(TEN, DIAMONDS),
+                    Pair(NINE, DIAMONDS),
+                    Pair(EIGHT, DIAMONDS),
+                    Pair(SEVEN, DIAMONDS),
+                    Pair(SIX, DIAMONDS),
+                    Pair(FIVE, DIAMONDS),
+                    Pair(FOUR, DIAMONDS),
+                    Pair(THREE, DIAMONDS),
+                    Pair(TWO, DIAMONDS)
+            )
+}
+fun assertIsFullFrenchDeck(deck: Deck) {
+    assertThat(deck.size()).isEqualTo(52)
+    val cards = deck.draw(52)
+    assertIsFullFrenchCardList(cards)
 }
