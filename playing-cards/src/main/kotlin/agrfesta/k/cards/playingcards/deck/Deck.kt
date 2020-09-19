@@ -1,6 +1,7 @@
 package agrfesta.k.cards.playingcards.deck
 
 import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.suits.Suit
 import agrfesta.k.cards.playingcards.utils.ShufflingService
 import agrfesta.k.cards.playingcards.utils.SimpleShufflingService
 
@@ -58,6 +59,7 @@ class DeckImpl(private val cards: MutableList<Card> = mutableListOf()) : Deck {
  */
 class DeckBuilder(defaultShuffler: ShufflingService) {
     private var shuffler: ShufflingService = defaultShuffler
+    private var cards: MutableList<Card> = mutableListOf()
 
     /**
      * Chained method, can be used to set a specific [ShufflingService].
@@ -69,27 +71,44 @@ class DeckBuilder(defaultShuffler: ShufflingService) {
     }
 
     /**
-     * Returns a [Deck] with all and only elements of [Collection] [cards].
-     * Cards inside the deck will be shuffled before returning it.
-     *
-     * if [cards] is empty will create an empty [Deck]
+     * Chained method, can be used to set deck content.
+     * Deck will contain cards from this [Collection] only.
+     * Will override any previous cards setting.
      */
-    fun build(cards: Collection<Card>): Deck {
-        val list = cards.toMutableList()
-        shuffler.shuffle(list)
-        return DeckImpl(list)
+    fun withCards(cards: Collection<Card>): DeckBuilder {
+        this.cards = cards.toMutableList()
+        return this
     }
 
     /**
-     * Returns a [Deck] with all and only elements of [cards] array.
+     * Chained method, can be used to set deck content.
+     * Deck will contain cards from this [Array] only.
+     * Will override any previous cards setting.
+     */
+    fun withCards(vararg cards: Card): DeckBuilder {
+        this.cards = cards.toMutableList()
+        return this
+    }
+
+    /**
+     * Chained method, can be used to set deck content.
+     * Deck will contain cards from [suit] only.
+     * Will override any previous cards setting.
+     */
+    fun withCardsFromSuit(suit: Suit): DeckBuilder {
+        this.cards = suit.cards.toMutableList()
+        return this
+    }
+
+    /**
+     * Returns a [Deck] with all and only elements of [MutableList] [cards].
      * Cards inside the deck will be shuffled before returning it.
      *
      * if [cards] is empty will create an empty [Deck]
      */
-    fun build(vararg cards: Card): Deck {
-        val list = cards.toMutableList()
-        shuffler.shuffle(list)
-        return DeckImpl(list)
+    fun build(): Deck {
+        shuffler.shuffle(cards)
+        return DeckImpl(cards)
     }
 
 }

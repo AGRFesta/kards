@@ -18,7 +18,8 @@ enum class Suit(val cards: Set<Card>) {
      */
     fun createDeck(): Deck =
             DeckBuilder(SimpleShufflingService())
-                .build(cards)
+                    .withCards(cards)
+                    .build()
 
 }
 
