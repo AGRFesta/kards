@@ -4,18 +4,19 @@ import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.playingcards.cards.Seed
 import agrfesta.k.cards.playingcards.cards.cardOf
+import agrfesta.k.cards.playingcards.utils.circularIndex
 
 fun getFrenchRankFromSymbol(symbol: Char): Rank = FrenchRank.values()
         .map(FrenchRank::adapter)
-        .find { s -> s.symbol() == symbol }
-                ?: throw IllegalArgumentException("Symbol '$symbol' is not a French Rank")
+        .find { it.symbol() == symbol }
+        ?: throw IllegalArgumentException("Symbol '$symbol' is not a French Rank")
 fun getFrenchRankFromOrdinal(ordinal: Int): Rank = FrenchRank.values()
         .map(FrenchRank::adapter)
-        .find { it.ordinal() == ordinal % FrenchRank.values().size }!!
+        .circularIndex(ordinal)
 
 fun getFrenchSeedFromSymbol(char: Char): FrenchSeed = FrenchSeed.values()
-            .find { s -> s.char == char }
-                ?: throw IllegalArgumentException("Symbol '$char' is not a French Seed")
+        .find { it.char == char }
+        ?: throw IllegalArgumentException("Symbol '$char' is not a French Seed")
 
 fun createFrenchCard(str: String): Card {
     if (str.isBlank()) {

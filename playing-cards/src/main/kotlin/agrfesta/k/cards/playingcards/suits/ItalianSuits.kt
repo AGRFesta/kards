@@ -4,24 +4,19 @@ import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.playingcards.cards.Seed
 import agrfesta.k.cards.playingcards.cards.cardOf
-import java.util.*
+import agrfesta.k.cards.playingcards.utils.circularIndex
 
-fun getItalianRankFromSymbol(symbol: Char): Rank {
-    return Arrays.stream(ItalianRank.values())
-            .filter { s -> s.symbol() == symbol }
-            .map(ItalianRank::adapter)
-            .findFirst()
-            .orElseThrow { IllegalArgumentException("Symbol '$symbol' is not an Italian Rank") }
-}
-fun getItalianSeedFromSymbol(symbol: Char): ItalianSeed {
-    return Arrays.stream(ItalianSeed.values())
-            .filter { s -> s.symbol() == symbol }
-            .findFirst()
-            .orElseThrow { IllegalArgumentException("Symbol '$symbol' is not an Italian Seed") }
-}
+fun getItalianRankFromSymbol(symbol: Char): Rank = ItalianRank.values()
+        .map(ItalianRank::adapter)
+        .find { it.symbol() == symbol }
+        ?: throw IllegalArgumentException("Symbol '$symbol' is not an Italian Rank")
 fun getItalianRankFromOrdinal(ordinal: Int): Rank = ItalianRank.values()
         .map(ItalianRank::adapter)
-        .find { it.ordinal() == ordinal % ItalianRank.values().size }!!
+        .circularIndex(ordinal)
+
+fun getItalianSeedFromSymbol(symbol: Char): ItalianSeed = ItalianSeed.values()
+        .find { it.symbol() == symbol }
+        ?: throw IllegalArgumentException("Symbol '$symbol' is not an Italian Seed")
 
 fun createItalianCard(str: String): Card {
     if (str.isBlank()) {

@@ -24,6 +24,25 @@ class ItalianSuitsTest {
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Symbol 'x' is not an Italian Rank")
     }
+    @TestFactory
+    @DisplayName("Get italian rank from symbol tests")
+    fun getItalianRankFromSymbolTests() = listOf(
+            'A' to ASSO,
+            'K' to RE,
+            'H' to CAVALLO,
+            'J' to FANTE,
+            '7' to SETTE,
+            '6' to SEI,
+            '5' to CINQUE,
+            '4' to QUATTRO,
+            '3' to TRE,
+            '2' to DUE
+    ).map { pair ->
+        DynamicTest.dynamicTest(
+                "${pair.first} -> ${pair.second}")
+        { assertThat(getItalianRankFromSymbol(pair.first)).isEqualTo(pair.second) }
+    }
+
     @Test
     @DisplayName("Get seed from symbol 'x' -> throws IllegalArgumentException")
     fun gettingSeedFromWrongSymbolThrowsException() {
@@ -32,6 +51,43 @@ class ItalianSuitsTest {
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Symbol 'x' is not an Italian Seed")
+    }
+    @TestFactory
+    @DisplayName("Get italian seed from symbol tests")
+    fun getItalianSeedFromSymbolTests() = listOf(
+            'b' to BASTONI,
+            'd' to DENARI,
+            's' to SPADE,
+            'c' to COPPE
+    ).map { pair ->
+        DynamicTest.dynamicTest(
+                "${pair.first} -> ${pair.second}")
+        { assertThat(getItalianSeedFromSymbol(pair.first)).isEqualTo(pair.second) }
+    }
+
+    @TestFactory
+    @DisplayName("Get italian rank from ordinal tests")
+    fun getItalianRankFromOrdinalTests() = listOf(
+            -12 to TRE,
+            -1 to DUE,
+
+            0 to ASSO,
+            1 to RE,
+            2 to CAVALLO,
+            3 to FANTE,
+            4 to SETTE,
+            5 to SEI,
+            6 to CINQUE,
+            7 to QUATTRO,
+            8 to TRE,
+            9 to DUE,
+
+            10 to ASSO,
+            21 to RE
+    ).map { pair ->
+        DynamicTest.dynamicTest(
+                "${pair.first} -> ${pair.second}")
+        { assertThat(getItalianRankFromOrdinal(pair.first)).isEqualTo(pair.second) }
     }
 
     @Test
@@ -158,6 +214,67 @@ class ItalianSuitsTest {
         DynamicTest.dynamicTest(
                 "${t.first} - ${t.second} = ${t.third}")
         { assertThat(t.first - t.second).isEqualTo(t.third) }
+    }
+
+    @Test
+    @DisplayName("Test italian seed values")
+    fun assertItalianSeedValues() {
+        assertThat(listOf(
+                SPADE, COPPE, DENARI, BASTONI
+        )).extracting(ItalianSeed::ord,ItalianSeed::symbol)
+                .containsExactly(
+                        0 to 's',
+                        1 to 'c',
+                        2 to 'd',
+                        3 to 'b'
+                )
+    }
+    @Test
+    @DisplayName("Test italian rank values")
+    fun assertItalianRankValues() {
+        assertThat(listOf(
+                ItalianRank.ASSO,
+                ItalianRank.RE,
+                ItalianRank.CAVALLO,
+                ItalianRank.FANTE,
+                ItalianRank.SETTE,
+                ItalianRank.SEI,
+                ItalianRank.CINQUE,
+                ItalianRank.QUATTRO,
+                ItalianRank.TRE,
+                ItalianRank.DUE
+        )).extracting(ItalianRank::ord,ItalianRank::adapter,ItalianRank::symbol)
+                .containsExactly(
+                        Triple(0, ASSO, 'A'),
+                        Triple(1, RE, 'K'),
+                        Triple(2, CAVALLO, 'H'),
+                        Triple(3, FANTE, 'J'),
+                        Triple(4, SETTE, '7'),
+                        Triple(5, SEI, '6'),
+                        Triple(6, CINQUE, '5'),
+                        Triple(7, QUATTRO, '4'),
+                        Triple(8, TRE, '3'),
+                        Triple(9, DUE, '2')
+                )
+    }
+    @Test
+    @DisplayName("Test italian rank adapter values")
+    fun assertItalianRankAdapterValues() {
+        assertThat(listOf(
+                ASSO, RE, CAVALLO, FANTE, SETTE, SEI, CINQUE, QUATTRO, TRE, DUE
+        )).extracting(ItalianRankAdapter::ordinal, ItalianRankAdapter::symbol)
+                .containsExactly(
+                        0 to 'A',
+                        1 to 'K',
+                        2 to 'H',
+                        3 to 'J',
+                        4 to '7',
+                        5 to '6',
+                        6 to '5',
+                        7 to '4',
+                        8 to '3',
+                        9 to '2'
+                )
     }
 }
 

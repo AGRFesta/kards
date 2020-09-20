@@ -24,6 +24,28 @@ class FrenchSuitsTest {
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Symbol 'x' is not a French Rank")
     }
+    @TestFactory
+    @DisplayName("Get french rank from symbol tests")
+    fun getFrenchRankFromSymbolTests() = listOf(
+            'A' to ACE,
+            'K' to KING,
+            'Q' to QUEEN,
+            'J' to JACK,
+            'T' to TEN,
+            '9' to NINE,
+            '8' to EIGHT,
+            '7' to SEVEN,
+            '6' to SIX,
+            '5' to FIVE,
+            '4' to FOUR,
+            '3' to THREE,
+            '2' to TWO
+    ).map { pair ->
+        DynamicTest.dynamicTest(
+                "${pair.first} -> ${pair.second}")
+        { assertThat(getFrenchRankFromSymbol(pair.first)).isEqualTo(pair.second) }
+    }
+
     @Test
     @DisplayName("Get seed from symbol 'x' -> throws IllegalArgumentException")
     fun gettingSeedFromWrongSymbolThrowsException() {
@@ -32,6 +54,46 @@ class FrenchSuitsTest {
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Symbol 'x' is not a French Seed")
+    }
+    @TestFactory
+    @DisplayName("Get french seed from symbol tests")
+    fun getFrenchSeedFromSymbolTests() = listOf(
+            'h' to HEARTS,
+            'c' to CLUBS,
+            's' to SPADES,
+            'd' to DIAMONDS
+    ).map { pair ->
+        DynamicTest.dynamicTest(
+                "${pair.first} -> ${pair.second}")
+        { assertThat(getFrenchSeedFromSymbol(pair.first)).isEqualTo(pair.second) }
+    }
+
+    @TestFactory
+    @DisplayName("Get french rank from ordinal tests")
+    fun getFrenchRankFromOrdinalTests() = listOf(
+            -15 to THREE,
+            -1 to TWO,
+
+            0 to ACE,
+            1 to KING,
+            2 to QUEEN,
+            3 to JACK,
+            4 to TEN,
+            5 to NINE,
+            6 to EIGHT,
+            7 to SEVEN,
+            8 to SIX,
+            9 to FIVE,
+            10 to FOUR,
+            11 to THREE,
+            12 to TWO,
+
+            13 to ACE,
+            27 to KING
+    ).map { pair ->
+        DynamicTest.dynamicTest(
+                "${pair.first} -> ${pair.second}")
+        { assertThat(getFrenchRankFromOrdinal(pair.first)).isEqualTo(pair.second) }
     }
 
     @Test
@@ -171,6 +233,54 @@ class FrenchSuitsTest {
         DynamicTest.dynamicTest(
                 "${t.first} - ${t.second} = ${t.third}")
         { assertThat(t.first - t.second).isEqualTo(t.third) }
+    }
+
+    @Test
+    @DisplayName("Test french seed values")
+    fun assertFrenchSeedValues() {
+        assertThat(listOf(
+                HEARTS, DIAMONDS, CLUBS, SPADES
+        )).extracting(FrenchSeed::ord,FrenchSeed::char,FrenchSeed::symbol)
+                .containsExactly(
+                        Triple(0, 'h', '♡'),
+                        Triple(1, 'd', '♢'),
+                        Triple(2, 'c', '♣'),
+                        Triple(3, 's', '♠')
+                )
+    }
+    @Test
+    @DisplayName("Test french rank values")
+    fun assertFrenchRankValues() {
+        assertThat(listOf(
+                FrenchRank.ACE,
+                FrenchRank.KING,
+                FrenchRank.QUEEN,
+                FrenchRank.JACK,
+                FrenchRank.TEN,
+                FrenchRank.NINE,
+                FrenchRank.EIGHT,
+                FrenchRank.SEVEN,
+                FrenchRank.SIX,
+                FrenchRank.FIVE,
+                FrenchRank.FOUR,
+                FrenchRank.THREE,
+                FrenchRank.TWO
+        )).extracting(FrenchRank::ordinal,FrenchRank::adapter,FrenchRank::symbol)
+                .containsExactly(
+                        Triple(0, ACE, 'A'),
+                        Triple(1, KING, 'K'),
+                        Triple(2, QUEEN, 'Q'),
+                        Triple(3, JACK, 'J'),
+                        Triple(4, TEN, 'T'),
+                        Triple(5, NINE, '9'),
+                        Triple(6, EIGHT, '8'),
+                        Triple(7, SEVEN, '7'),
+                        Triple(8, SIX, '6'),
+                        Triple(9, FIVE, '5'),
+                        Triple(10, FOUR, '4'),
+                        Triple(11, THREE, '3'),
+                        Triple(12, TWO, '2')
+                )
     }
 }
 
