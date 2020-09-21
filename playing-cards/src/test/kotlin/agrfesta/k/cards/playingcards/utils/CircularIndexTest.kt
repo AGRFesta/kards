@@ -1,5 +1,6 @@
 package agrfesta.k.cards.playingcards.utils
 
+import agrfesta.k.cards.playingcards.deck.rankOf
 import assertk.assertThat
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
@@ -12,8 +13,10 @@ import org.junit.jupiter.api.TestFactory
 
 @DisplayName("Circular Index Tests")
 class CircularIndexTest {
-    private val list = listOf('A','B','C')
-    private val array = arrayOf('X','Y')
+    private val list = listOf('A', 'B', 'C')
+    private val rankX = rankOf('X')
+    private val rankY = rankOf('Y')
+    private val array = arrayOf(rankX, rankY)
 
     @Test
     @DisplayName("Get circular index mapping of an empty List -> throws IllegalStateException")
@@ -120,15 +123,15 @@ class CircularIndexTest {
     @TestFactory
     @DisplayName("Circular index on Array tests")
     fun circularIndexOnArrayTests() = listOf(
-            -6 to 'X',
-            -1 to 'Y',
+            -6 to rankX,
+            -1 to rankY,
 
-            0 to 'X',
-            1 to 'Y',
+            0 to rankX,
+            1 to rankY,
 
-            2 to 'X',
-            3 to 'Y',
-            7 to 'Y'
+            2 to rankX,
+            3 to rankY,
+            7 to rankY
     ).map { pair ->
         DynamicTest.dynamicTest(
                 "Array ${array.toList()}: ${pair.first} -> ${pair.second}")
