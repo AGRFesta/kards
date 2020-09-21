@@ -1,10 +1,6 @@
 package agrfesta.k.cards.playingcards.utils
 
-import agrfesta.k.cards.playingcards.cards.cardOf
-import agrfesta.k.cards.playingcards.deck.aRank
-import agrfesta.k.cards.playingcards.deck.aSeed
 import assertk.assertThat
-import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isLessThan
 import org.junit.jupiter.api.DisplayName
