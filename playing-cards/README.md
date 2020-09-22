@@ -1,6 +1,4 @@
-## Using PlayKards [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-
-This library is intended for a study case
+## K-PlayingCards [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 ### Build your deck
 The easiest way to create your deck is choosing the card suit.
