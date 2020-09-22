@@ -14,7 +14,7 @@ val myMavenRepoReadUrl: String by project
 val myMavenRepoWriteUrl: String by project
 
 group = "agrfesta.kcards"
-version = "1.0-SNAPSHOT"
+version = "0.1.0-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -34,7 +34,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3")
 
-    api("agrfesta.kcards:playing-cards:1.0-SNAPSHOT")
+    api("agrfesta.kcards:k-playing-cards:0.1.0-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.1")
