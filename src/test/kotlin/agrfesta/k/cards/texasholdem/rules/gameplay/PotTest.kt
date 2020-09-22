@@ -1,7 +1,15 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.containsOnly
+import assertk.assertions.hasClass
+import assertk.assertions.hasMessage
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFailure
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
+import assertk.assertions.isTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 

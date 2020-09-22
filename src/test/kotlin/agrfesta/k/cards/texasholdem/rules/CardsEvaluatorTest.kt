@@ -1,10 +1,32 @@
 package agrfesta.k.cards.texasholdem.rules
 
-import agrfesta.k.cards.texasholdem.*
-import agrfesta.k.cards.texasholdem.rules.hands.*
 import agrfesta.k.cards.playingcards.cards.Card
-import agrfesta.k.cards.playingcards.suits.*
-import agrfesta.k.cards.playingcards.suits.FrenchSeed.*
+import agrfesta.k.cards.playingcards.suits.ACE
+import agrfesta.k.cards.playingcards.suits.EIGHT
+import agrfesta.k.cards.playingcards.suits.FIVE
+import agrfesta.k.cards.playingcards.suits.FOUR
+import agrfesta.k.cards.playingcards.suits.FrenchSeed.HEARTS
+import agrfesta.k.cards.playingcards.suits.JACK
+import agrfesta.k.cards.playingcards.suits.KING
+import agrfesta.k.cards.playingcards.suits.SEVEN
+import agrfesta.k.cards.playingcards.suits.SIX
+import agrfesta.k.cards.playingcards.suits.TEN
+import agrfesta.k.cards.playingcards.suits.THREE
+import agrfesta.k.cards.playingcards.suits.TWO
+import agrfesta.k.cards.playingcards.suits.frenchCardsSet
+import agrfesta.k.cards.texasholdem.LazyFunctionAssertion
+import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.result
+import agrfesta.k.cards.texasholdem.rules.hands.FlushHand
+import agrfesta.k.cards.texasholdem.rules.hands.FourOfAKindHand
+import agrfesta.k.cards.texasholdem.rules.hands.FullHouseHand
+import agrfesta.k.cards.texasholdem.rules.hands.HighCardHand
+import agrfesta.k.cards.texasholdem.rules.hands.PairHand
+import agrfesta.k.cards.texasholdem.rules.hands.StraightFlushHand
+import agrfesta.k.cards.texasholdem.rules.hands.StraightHand
+import agrfesta.k.cards.texasholdem.rules.hands.ThreeOfAKindHand
+import agrfesta.k.cards.texasholdem.rules.hands.TwoPairHand
+import agrfesta.k.cards.texasholdem.willAssertThatCards
 import assertk.assertThat
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
@@ -17,9 +39,9 @@ interface CardsEvaluatorTest {
     fun getCardsEvaluator(): CardsEvaluator
 
     @TestFactory
-    @DisplayName("evaluations")
-    fun comparisons() = listOf<LazyFunctionAssertion<Set<Card>,CardsEvaluation>>(
-            /// Seven Cards TESTS
+    @DisplayName("Seven cards evaluations")
+    fun sevenCardsEvaluations() = listOf<LazyFunctionAssertion<Set<Card>,CardsEvaluation>>(
+
             willAssertThatCards("Ah","Jh","Th","Ad","Ac","Kh","Qh")
                     .result(StraightFlushHand(ACE, HEARTS)),
             willAssertThatCards("Ah","5h","Th","3h","Ac","4h","2h")
@@ -65,10 +87,16 @@ interface CardsEvaluatorTest {
             willAssertThatCards("Ah","2d","3c","4h","Ks","8c","7s")
                     .result(HighCardHand(ACE,KING,EIGHT,SEVEN,FOUR)),
             willAssertThatCards("Ah","Jc","Ts","2d","3c","8c","7s")
-                    .result(HighCardHand(ACE,JACK,TEN,EIGHT,SEVEN)),
-            //////////////////////////////////////
+                    .result(HighCardHand(ACE,JACK,TEN,EIGHT,SEVEN))
 
-            /// Five Cards TESTS
+    ).map {
+        createDynamicTest(it){ s -> getCardsEvaluator().evaluate(s) }
+    }
+
+    @TestFactory
+    @DisplayName("Five cards evaluations")
+    fun fiveCardsEvaluations() = listOf<LazyFunctionAssertion<Set<Card>,CardsEvaluation>>(
+
             willAssertThatCards("Ah","Jh","Th","Kh","Qh")
                     .result(StraightFlushHand(ACE, HEARTS)),
             willAssertThatCards("Ah","5h","3h","4h","2h")
@@ -104,10 +132,16 @@ interface CardsEvaluatorTest {
                     .result(PairHand(SEVEN, ACE,KING,SIX)),
 
             willAssertThatCards("Ah","3c","Ks","8c","7s")
-                    .result(HighCardHand(ACE,KING,EIGHT,SEVEN,THREE)),
-            //////////////////////////////////////
+                    .result(HighCardHand(ACE,KING,EIGHT,SEVEN,THREE))
 
-            /// Six Cards TESTS
+    ).map {
+        createDynamicTest(it){ s -> getCardsEvaluator().evaluate(s) }
+    }
+
+    @TestFactory
+    @DisplayName("Six cards evaluations")
+    fun sixCardsEvaluations() = listOf<LazyFunctionAssertion<Set<Card>,CardsEvaluation>>(
+
             willAssertThatCards("Ah","Jh","Th","Ad","Kh","Qh")
                     .result(StraightFlushHand(ACE, HEARTS)),
             willAssertThatCards("Ah","5h","Th","3h","4h","2h")
@@ -150,7 +184,7 @@ interface CardsEvaluatorTest {
                     .result(HighCardHand(ACE,KING,EIGHT,SEVEN,THREE)),
             willAssertThatCards("Ah","Jc","Ts","2d","8c","7s")
                     .result(HighCardHand(ACE,JACK,TEN,EIGHT,SEVEN))
-            //////////////////////////////////////
+
     ).map {
         createDynamicTest(it){ s -> getCardsEvaluator().evaluate(s) }
     }

@@ -1,18 +1,33 @@
 package agrfesta.k.cards.texasholdem.observers
 
+import agrfesta.k.cards.playingcards.suits.ACE
+import agrfesta.k.cards.playingcards.suits.EIGHT
+import agrfesta.k.cards.playingcards.suits.JACK
+import agrfesta.k.cards.playingcards.suits.NINE
+import agrfesta.k.cards.playingcards.suits.TEN
+import agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
-import agrfesta.k.cards.texasholdem.rules.gameplay.*
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
+import agrfesta.k.cards.texasholdem.rules.gameplay.ShowdownImpl
+import agrfesta.k.cards.texasholdem.rules.gameplay.aPlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.board
+import agrfesta.k.cards.texasholdem.rules.gameplay.buildPot
 import agrfesta.k.cards.texasholdem.rules.hands.PairHand
 import agrfesta.k.cards.texasholdem.rules.hands.ThreeOfAKindHand
-import agrfesta.k.cards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.extracting
 import assertk.assertions.isEmpty
 import assertk.assertions.isTrue
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import kotlin.collections.set
 
 @DisplayName("Showdown Observer tests")
 class ShowdownObserverTest {

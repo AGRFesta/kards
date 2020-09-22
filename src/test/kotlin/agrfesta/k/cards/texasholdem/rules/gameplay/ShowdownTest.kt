@@ -1,8 +1,12 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
 import agrfesta.k.cards.playingcards.suits.frenchCardsSet
-import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.*
+import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.ALL_IN
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.CALL
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.FOLD
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.NONE
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.RAISE
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.DisplayName

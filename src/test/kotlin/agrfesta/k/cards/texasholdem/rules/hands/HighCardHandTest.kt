@@ -1,8 +1,24 @@
 package agrfesta.k.cards.texasholdem.rules.hands
 
-import agrfesta.k.cards.texasholdem.*
+import agrfesta.k.cards.playingcards.suits.ACE
+import agrfesta.k.cards.playingcards.suits.EIGHT
+import agrfesta.k.cards.playingcards.suits.FIVE
+import agrfesta.k.cards.playingcards.suits.FOUR
+import agrfesta.k.cards.playingcards.suits.JACK
+import agrfesta.k.cards.playingcards.suits.KING
+import agrfesta.k.cards.playingcards.suits.NINE
+import agrfesta.k.cards.playingcards.suits.QUEEN
+import agrfesta.k.cards.playingcards.suits.SEVEN
+import agrfesta.k.cards.playingcards.suits.SIX
+import agrfesta.k.cards.playingcards.suits.TEN
+import agrfesta.k.cards.playingcards.suits.THREE
+import agrfesta.k.cards.playingcards.suits.TWO
+import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.isEqualTo
+import agrfesta.k.cards.texasholdem.isGreaterThan
+import agrfesta.k.cards.texasholdem.isLessThan
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
-import agrfesta.k.cards.playingcards.suits.*
+import agrfesta.k.cards.texasholdem.willAssertThat
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.hasClass
@@ -22,7 +38,8 @@ class HighCardHandTest {
             willAssertThat(HighCardHand(NINE,ACE,TWO,THREE,FOUR)).isLessThan(HighCardHand(ACE,KING,JACK,TEN,FOUR)),
             willAssertThat(HighCardHand(FIVE,ACE,KING,NINE,SEVEN)).isLessThan(HighCardHand(FIVE,ACE,KING,JACK,SIX)),
             willAssertThat(HighCardHand(NINE,ACE,KING,JACK,TEN)).isGreaterThan(HighCardHand(NINE,ACE,JACK,KING,FIVE)),
-            willAssertThat(HighCardHand(NINE,ACE,KING,JACK,EIGHT)).isGreaterThan(HighCardHand(NINE,ACE,KING,JACK,SEVEN)),
+            willAssertThat(HighCardHand(NINE,ACE,KING,JACK,EIGHT)).isGreaterThan(
+                    HighCardHand(NINE,ACE,KING,JACK,SEVEN)),
             willAssertThat(HighCardHand(NINE,ACE,KING,JACK,SEVEN)).isEqualTo(HighCardHand(NINE,KING,JACK,ACE,SEVEN))
     ).map { createDynamicTest(it) }
 

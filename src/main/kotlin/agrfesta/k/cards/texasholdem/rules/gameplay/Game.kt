@@ -10,60 +10,60 @@ interface Game {
 }
 
 class GameImpl(
-        payments: GamePayments,
+        initialContext: GameContext,
         private val deck: Deck,
-        private val table: Table,
         private val preFlopDealerProvider: (GameContext, DealerObserver) -> Dealer,
-        private val dealerProvider: (MutableMap<GamePlayer,Int>, GameContext, DealerObserver) -> Dealer,
+        private val dealerProvider: (MutableMap<GamePlayer, Int>, GameContext, DealerObserver) -> Dealer,
         private val showdown: Showdown,
         private val observer: GameObserver?
-): Game, DealerObserver {
+) : Game, DealerObserver {
     private var pot = buildPot()
-    private var actualContext = GameContext(table, payments, EmptyBoard(deck), mapOf())
+    private var context = initialContext
 
     override fun play() {
-        if (findPreFlopWinner() != null) return
+        // Pre-Flop
+        findPreFlopWinner() ?:
 
         // Flop
-        if (findWinner() != null) return
+        findWinner() ?:
 
         // Turn
-        if (findWinner() != null) return
+        findWinner() ?:
 
         // River
-        if (findWinner() != null) return
+        findWinner() ?:
 
         // Showdown
-        showdown.execute(pot, actualContext.board)
+        showdown.execute(pot, context.board)
     }
 
     private fun findWinner(players: List<GamePlayer>): GamePlayer? {
         val winner = players.findWinner()
         if (winner != null) {
-            observer?.notifyWinner(winner.player,pot.amount())
+            observer?.notifyWinner(winner.player, pot.amount())
             winner.receive(pot.amount())
         }
         return winner
     }
 
     private fun findPreFlopWinner(): GamePlayer? {
-        observer?.notifyStartingPhase(actualContext.board)
-        table.players.forEach { it.cards = deck.draw(2).toSet() }
-        val dealer = preFlopDealerProvider.invoke(actualContext, this)
+        observer?.notifyStartingPhase(context.board)
+        context.table.players.forEach { it.cards = deck.draw(2).toSet() }
+        val dealer = preFlopDealerProvider.invoke(context, this)
         pot = dealer.collectPot()
-        return findWinner(table.players)
+        return findWinner(context.table.players)
     }
 
     private fun findWinner(): GamePlayer? {
-        actualContext = actualContext.nextPhase()
-        observer?.notifyStartingPhase(actualContext.board)
-        val dealer = dealerProvider.invoke(pot, actualContext, this)
+        context = context.nextPhase()
+        observer?.notifyStartingPhase(context.board)
+        val dealer = dealerProvider.invoke(pot, context, this)
         pot = pot + dealer.collectPot()
-        return findWinner(table.players)
+        return findWinner(context.table.players)
     }
 
     override fun notifyActions(phase: GamePhase, actions: List<PlayerAction>) {
         //TODO maybe check that phase is coherent with actual context
-        actualContext = actualContext.add(actions)
+        context = context.add(actions)
     }
 }

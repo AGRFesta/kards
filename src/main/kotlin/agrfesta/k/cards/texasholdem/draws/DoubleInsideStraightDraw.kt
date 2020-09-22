@@ -2,6 +2,10 @@ package agrfesta.k.cards.texasholdem.draws
 
 import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.playingcards.suits.FIVE
+import agrfesta.k.cards.texasholdem.utils.FOUR_OFF
+import agrfesta.k.cards.texasholdem.utils.ONE_OFF
+import agrfesta.k.cards.texasholdem.utils.THREE_OFF
+import agrfesta.k.cards.texasholdem.utils.TWO_OFF
 
 /*
     A double inside straight draw, or double gutshot draw or double belly buster draw can occur when either of two
@@ -11,27 +15,28 @@ import agrfesta.k.cards.playingcards.suits.FIVE
  */
 
 data class DoubleInsideStraightDraw(
-        private val innerTop: Rank,
-        private val potentialTop: Rank): Draw {
+    private val innerTop: Rank,
+    private val potentialTop: Rank) : Draw {
 
-    init {
-        if (innerTop < FIVE) {
-            throw IllegalArgumentException("The minimum Double Inside Straight Draw inner top is FIVE, inner top: $innerTop")
-        }
-        if (potentialTop!=(innerTop+2) && potentialTop!=(innerTop+3)) {
-            throw IllegalArgumentException(
-                    "If the inner top is $innerTop the potential top have to be ${innerTop+2} or ${innerTop+3} but is $potentialTop")
-        }
+  init {
+    if (innerTop < FIVE) {
+      throw IllegalArgumentException("The minimum Double Inside Straight Draw inner top is FIVE, inner top: $innerTop")
     }
+    if (potentialTop != (innerTop + TWO_OFF) && potentialTop != (innerTop + THREE_OFF)) {
+      throw IllegalArgumentException(
+          "If the inner top is $innerTop the potential top have to be ${innerTop + TWO_OFF} " +
+              "or ${innerTop + THREE_OFF} but is $potentialTop")
+    }
+  }
 
-    override fun toString(): String {
-        val maxPotTop = innerTop+3
-        val r0 = (innerTop-4).symbol()
-        val r1 = (innerTop-2).symbol()
-        val r2 = (innerTop-1).symbol()
-        val r4 = (innerTop+2).symbol()
-        val r5 = if (potentialTop == maxPotTop) " ${maxPotTop.symbol()}" else ""
-        return "[$r0 * $r1 $r2 ${innerTop.symbol()} * $r4$r5]"
-    }
+  override fun toString(): String {
+    val maxPotTop = innerTop + THREE_OFF
+    val r0 = (innerTop - FOUR_OFF).symbol()
+    val r1 = (innerTop - TWO_OFF).symbol()
+    val r2 = (innerTop - ONE_OFF).symbol()
+    val r4 = (innerTop + TWO_OFF).symbol()
+    val r5 = if (potentialTop == maxPotTop) " ${maxPotTop.symbol()}" else ""
+    return "[$r0 * $r1 $r2 ${innerTop.symbol()} * $r4$r5]"
+  }
 
 }

@@ -3,7 +3,12 @@ package agrfesta.k.cards.texasholdem.tournaments
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.TournamentObserver
 import agrfesta.k.cards.texasholdem.observers.toRanking
-import agrfesta.k.cards.texasholdem.rules.gameplay.*
+import agrfesta.k.cards.texasholdem.rules.gameplay.Game
+import agrfesta.k.cards.texasholdem.rules.gameplay.GamePlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.Player
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStrategyInterface
+import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 import agrfesta.k.cards.texasholdem.utils.circularPos
 
 interface Tournament {

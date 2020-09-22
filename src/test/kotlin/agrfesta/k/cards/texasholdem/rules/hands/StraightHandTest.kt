@@ -1,8 +1,19 @@
 package agrfesta.k.cards.texasholdem.rules.hands
 
-import agrfesta.k.cards.texasholdem.*
+import agrfesta.k.cards.playingcards.suits.ACE
+import agrfesta.k.cards.playingcards.suits.FIVE
+import agrfesta.k.cards.playingcards.suits.FOUR
+import agrfesta.k.cards.playingcards.suits.NINE
+import agrfesta.k.cards.playingcards.suits.QUEEN
+import agrfesta.k.cards.playingcards.suits.SEVEN
+import agrfesta.k.cards.playingcards.suits.THREE
+import agrfesta.k.cards.playingcards.suits.TWO
+import agrfesta.k.cards.texasholdem.createDynamicTest
+import agrfesta.k.cards.texasholdem.isEqualTo
+import agrfesta.k.cards.texasholdem.isGreaterThan
+import agrfesta.k.cards.texasholdem.isLessThan
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
-import agrfesta.k.cards.playingcards.suits.*
+import agrfesta.k.cards.texasholdem.willAssertThat
 import assertk.assertThat
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage

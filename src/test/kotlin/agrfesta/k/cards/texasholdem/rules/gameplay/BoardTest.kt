@@ -2,13 +2,16 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.DeckListImpl
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.containsOnly
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import assertk.assertions.isTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 @DisplayName("Board tests")
 class BoardTest {
-
 
     @Test
     @DisplayName("EmptyBoard cards -> []")

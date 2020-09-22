@@ -1,11 +1,23 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.ALL_IN
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.CALL
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.FOLD
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.NONE
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.RAISE
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.containsExactly
+import assertk.assertions.extracting
+import assertk.assertions.hasClass
+import assertk.assertions.hasMessage
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFailure
+import assertk.assertions.isFalse
+import assertk.assertions.isNull
+import assertk.assertions.isTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.*
 
 @DisplayName("Players tests")
 class PlayersTest {
@@ -71,7 +83,8 @@ class PlayersTest {
     }
 
     @Test
-    @DisplayName("Player with a stack of 200 pays 500 -> effective payment is 200 player have a stack of 0 and is ALL-IN")
+    @DisplayName("Player with a stack of 200 pays 500 -> effective payment is 200 player have a stack of 0 and is " +
+            "ALL-IN")
     fun playerPayAPositiveAmountGreaterThanStack() {
         val player = GamePlayer(Player("Alex"), 200) { aStrategy() }
         val payed = player.pay(500)
@@ -80,7 +93,8 @@ class PlayersTest {
         assertThat(payed).isEqualTo(200)
     }
     @Test
-    @DisplayName("Player with a stack of 500 pays 500 -> effective payment is 500 player have a stack of 0 and is ALL-IN")
+    @DisplayName("Player with a stack of 500 pays 500 -> effective payment is 500 player have a stack of 0 and is " +
+            "ALL-IN")
     fun playerPayAPositiveAmountEqualToStack() {
         val player = GamePlayer(Player("Alex"), 500) { aStrategy() }
         val payed = player.pay(500)
@@ -89,7 +103,8 @@ class PlayersTest {
         assertThat(payed).isEqualTo(500)
     }
     @Test
-    @DisplayName("Player with a stack of 1000 pays 500 -> effective payment is 500 player have a stack of 500, the status doesn't change")
+    @DisplayName("Player with a stack of 1000 pays 500 -> effective payment is 500 player have a stack of 500, the " +
+            "status doesn't change")
     fun playerPayAPositiveAmountLessThanStack() {
         val player = GamePlayer(Player("Alex"), 1000) { aStrategy() }
         assertThat(player.status).isEqualTo(NONE)

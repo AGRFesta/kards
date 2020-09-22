@@ -9,21 +9,24 @@ import assertk.assertThat
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 //TODO use mockk
 class GameMockImpl(
-        val payments: GamePayments,
+        val context: GameContext,
         val deck: Deck,
-        val table: Table,
         val preFlopDealerProvider: (GameContext, DealerObserver?) -> Dealer,
         val dealerProvider: (MutableMap<GamePlayer,Int>, GameContext, DealerObserver?) -> Dealer,
         val showdown: Showdown,
         val observer: GameObserver?
 ): Game {
-    override fun play() {}
+    override fun play() {/*...*/}
 }
 
 @DisplayName("GameBuilder tests")
@@ -63,8 +66,8 @@ class GameBuilderTest {
                 .build(payments, table)
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
-            assertThat(game.payments === payments).isTrue()
-            assertThat(game.table === table).isTrue()
+            assertThat(game.context.payments === payments).isTrue()
+            assertThat(game.context.table === table).isTrue()
         }
     }
 
@@ -73,12 +76,12 @@ class GameBuilderTest {
     fun builderInjectProvidedInternalImplementations() {
         val deck = aDeck()
         val showdown = object : Showdown {
-            override fun execute(pot: MutableMap<GamePlayer, Int>, board: Board) {}
+            override fun execute(pot: MutableMap<GamePlayer, Int>, board: Board) {/*...*/}
         }
         val dealer = PostFlopDealer(buildPot(),aContext())
         val preFlopDealer = PreFlopDealer(aContext())
         val game = GameBuilder()
-                .deck(deck)
+                .withDeck(deck)
                 .dealerProvider {_,_,_ -> dealer}
                 .preFlopDealerProvider { _,_ -> preFlopDealer }
                 .showdown(showdown)
@@ -99,7 +102,7 @@ class GameBuilderTest {
         val observerMock = mockk<GameObserver>()
         every { observerMock.notifyResult(any()) } just Runs
         val game = GameBuilder()
-                .observer(observerMock)
+                .observedBy(observerMock)
                 .implementation( ::GameMockImpl )
                 .build(aGamePayments(), aTable())
         assertThat(game).isInstanceOf(GameMockImpl::class)
@@ -120,7 +123,7 @@ class GameBuilderTest {
         every { observerMock.notifyResult(any()) } just Runs
         val game = GameBuilder()
                 .showdown(showdown)
-                .observer(observerMock)
+                .observedBy(observerMock)
                 .implementation( ::GameMockImpl )
                 .build(aGamePayments(), aTable())
         assertThat(game).isInstanceOf(GameMockImpl::class)
@@ -138,7 +141,7 @@ class GameBuilderTest {
         every { observerMock.notifyResult(any()) } just Runs
         val game = GameBuilder()
                 .showdown { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }
-                .observer(observerMock)
+                .observedBy(observerMock)
                 .implementation( ::GameMockImpl )
                 .build(aGamePayments(), aTable())
         assertThat(game).isInstanceOf(GameMockImpl::class)

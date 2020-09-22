@@ -1,6 +1,14 @@
 package agrfesta.k.cards.texasholdem.tournaments
 
-import agrfesta.k.cards.texasholdem.rules.gameplay.*
+import agrfesta.k.cards.texasholdem.rules.gameplay.Game
+import agrfesta.k.cards.texasholdem.rules.gameplay.GamePlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.Player
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
+import agrfesta.k.cards.texasholdem.rules.gameplay.Position
+import agrfesta.k.cards.texasholdem.rules.gameplay.Table
+import agrfesta.k.cards.texasholdem.rules.gameplay.aStrategy
+import agrfesta.k.cards.texasholdem.rules.gameplay.get
+import agrfesta.k.cards.texasholdem.rules.gameplay.isSittingOn
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.extracting

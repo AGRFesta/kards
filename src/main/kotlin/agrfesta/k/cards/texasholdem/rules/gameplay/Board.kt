@@ -3,6 +3,8 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.deck.Deck
 
+private const val FLOP_SIZE = 3
+
 interface Board {
     fun cards(): Set<Card>
     fun next(): Board
@@ -20,7 +22,7 @@ class EmptyBoard(private val deck: Deck): Board {
     override fun info() = BoardInfo(cards(), GamePhase.PRE_FLOP)
 }
 class FlopBoard(private val deck: Deck): Board {
-    val flop: Set<Card> = deck.draw(3).toSet()
+    val flop: Set<Card> = deck.draw(FLOP_SIZE).toSet()
     override fun cards(): Set<Card> = flop
     override fun toString(): String = flop.toString()
     override fun next(): Board = TurnBoard(deck, this)

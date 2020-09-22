@@ -13,35 +13,36 @@ import kotlinx.collections.immutable.toImmutableList
  */
 
 class FlushDraw(
-        first: Rank, second: Rank, third: Rank, fourth: Rank,
-        val seed: Seed): Draw {
+    first: Rank, second: Rank, third: Rank, fourth: Rank,
+    val seed: Seed) : Draw {
 
-    val ranks = listOf(first, second, third, fourth)
-            .sorted().reversed()
-            .toImmutableList()
+  val ranks = listOf(first, second, third, fourth)
+      .sorted().reversed()
+      .toImmutableList()
 
-    init {
-        val set = setOf(first, second, third, fourth)
-        if (set.size != 4) {
-            throw IllegalArgumentException("Multiple with same Rank: $first,$second,$third,$fourth")
-        }
+  init {
+    val set = setOf(first, second, third, fourth)
+    if (set.size != FLUSH_DRAW_SIZE) {
+      throw IllegalArgumentException("Multiple with same Rank: $first,$second,$third,$fourth")
     }
+  }
 
-    override fun equals(other: Any?): Boolean {
-        if (other !is FlushDraw) return false
-        if (other.seed != seed) return false
-        if (other.ranks != ranks) return false
-        return true
-    }
-    override fun hashCode(): Int {
-        var hash = 7
-        hash = 31 * hash + seed.hashCode()
-        hash = 31 * hash + ranks.hashCode()
-        return hash
-    }
+  override fun equals(other: Any?): Boolean {
+    if (other !is FlushDraw) return false
+    if (other.seed != seed) return false
+    if (other.ranks != ranks) return false
+    return true
+  }
 
-    override fun toString(): String {
-        val rankSymbols = ranks.map { it.symbol() }
-        return "$rankSymbols${seed.symbol()}"
-    }
+  override fun hashCode(): Int {
+    var hash = 7
+    hash = 31 * hash + seed.hashCode()
+    hash = 31 * hash + ranks.hashCode()
+    return hash
+  }
+
+  override fun toString(): String {
+    val rankSymbols = ranks.map { it.symbol() }
+    return "$rankSymbols${seed.symbol()}"
+  }
 }

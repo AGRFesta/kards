@@ -29,8 +29,10 @@ class LazyAssertionLessThan<A: Comparable<B>, B>(private val actual: A, private 
 }
 
 class LazyAssertionBuilder<T>(val actual: T)
-fun <A: Comparable<B>, B> LazyAssertionBuilder<A>.isGreaterThan(other: B): LazyAssertion = LazyAssertionGreaterThan(actual, other)
-fun <A: Comparable<B>, B> LazyAssertionBuilder<A>.isLessThan(other: B): LazyAssertion = LazyAssertionLessThan(actual, other)
+fun <A: Comparable<B>, B> LazyAssertionBuilder<A>.isGreaterThan(other: B): LazyAssertion =
+        LazyAssertionGreaterThan(actual, other)
+fun <A: Comparable<B>, B> LazyAssertionBuilder<A>.isLessThan(other: B): LazyAssertion =
+        LazyAssertionLessThan(actual, other)
 fun <T> LazyAssertionBuilder<T>.isEqualTo(other: T): LazyAssertion = LazyAssertionEqual(actual, other)
 fun <T> LazyAssertionBuilder<T>.isNotEqualTo(other: T): LazyAssertion = LazyAssertionNotEqual(actual, other)
 fun <T> willAssertThat(actual: T): LazyAssertionBuilder<T> = LazyAssertionBuilder(actual)

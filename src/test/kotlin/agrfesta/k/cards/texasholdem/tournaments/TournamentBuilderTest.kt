@@ -4,9 +4,19 @@ import agrfesta.k.cards.playingcards.utils.RandomGenerator
 import agrfesta.k.cards.playingcards.utils.SimpleRandomGenerator
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.TournamentObserver
-import agrfesta.k.cards.texasholdem.rules.gameplay.*
+import agrfesta.k.cards.texasholdem.rules.gameplay.Game
+import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder
+import agrfesta.k.cards.texasholdem.rules.gameplay.Player
+import agrfesta.k.cards.texasholdem.rules.gameplay.Table
+import agrfesta.k.cards.texasholdem.rules.gameplay.aStrategy
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.containsOnly
+import assertk.assertions.extracting
+import assertk.assertions.hasClass
+import assertk.assertions.hasMessage
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFailure
+import assertk.assertions.isNull
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.DisplayName
@@ -46,7 +56,8 @@ class TournamentBuilderTest {
     }
 
     @Test
-    @DisplayName("Tournament implementation injected -> build a tournament that is the one provided from the injected provider")
+    @DisplayName("Tournament implementation injected -> build a tournament that is the one provided from the " +
+            "injected provider")
     fun story002() {
         val expectedTournament: Tournament = mockk()
         val tournament = testBuilder { _,_,_,_,_,_ -> expectedTournament}
@@ -56,7 +67,8 @@ class TournamentBuilderTest {
     }
 
     @Test
-    @DisplayName("Button provider not provided -> the initial button position will be the nextInt on the random generator")
+    @DisplayName("Button provider not provided -> the initial button position will be the nextInt on the " +
+            "random generator")
     fun story003() {
         val rndGenerator: RandomGenerator = mockk()
         every { rndGenerator.nextInt(10) } returns 5
@@ -69,8 +81,8 @@ class TournamentBuilderTest {
             .build(2000,payments)
     }
     @Test
-    @DisplayName("Button provider provided -> the initial button position will be provided by the provider and not from " +
-            "the default one")
+    @DisplayName("Button provider provided -> the initial button position will be provided by the provider and " +
+            "not from the default one")
     fun story004() {
         val rndGenerator: RandomGenerator = mockk()
         every { rndGenerator.nextInt(10) } returns 5

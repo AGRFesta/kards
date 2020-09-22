@@ -3,6 +3,9 @@ package agrfesta.k.cards.texasholdem.draws
 import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.playingcards.suits.FIVE
 import agrfesta.k.cards.playingcards.suits.KING
+import agrfesta.k.cards.texasholdem.utils.ONE_OFF
+import agrfesta.k.cards.texasholdem.utils.THREE_OFF
+import agrfesta.k.cards.texasholdem.utils.TWO_OFF
 
 /*
     An outside straight draw, also called up and down, double-ended straight draw or open-ended straight draw,
@@ -25,8 +28,8 @@ data class OutsideStraightDraw(private val top: Rank): Draw {
     }
 
     override fun toString(): String = StringBuilder("[* ${top.symbol()}")
-            .append(" ${(top-1).symbol()}")
-            .append(" ${(top-2).symbol()}")
-            .append(" ${(top-3).symbol()} *]")
+            .append(" ${(top-ONE_OFF).symbol()}")
+            .append(" ${(top-TWO_OFF).symbol()}")
+            .append(" ${(top-THREE_OFF).symbol()} *]")
             .toString()
 }

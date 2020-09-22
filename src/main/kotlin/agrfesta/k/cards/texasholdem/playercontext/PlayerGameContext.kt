@@ -1,6 +1,11 @@
 package agrfesta.k.cards.texasholdem.playercontext
 
-import agrfesta.k.cards.texasholdem.rules.gameplay.*
+import agrfesta.k.cards.texasholdem.rules.gameplay.Action
+import agrfesta.k.cards.texasholdem.rules.gameplay.BoardInfo
+import agrfesta.k.cards.texasholdem.rules.gameplay.GamePayments
+import agrfesta.k.cards.texasholdem.rules.gameplay.GamePhase
+import agrfesta.k.cards.texasholdem.rules.gameplay.OwnPlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 
 class PlayerGameContext(
         val me: OwnPlayer,

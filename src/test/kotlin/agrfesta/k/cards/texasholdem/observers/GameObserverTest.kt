@@ -21,7 +21,8 @@ class GameObserverTest {
         poly = aPlayer("Poly",1000)
     }
 
-    private fun observerMock(winner: CapturingSlot<Player>, prize: CapturingSlot<Int>, boards: MutableList<Board>): GameObserver {
+    private fun observerMock(winner: CapturingSlot<Player>, prize: CapturingSlot<Int>, boards: MutableList<Board>)
+            : GameObserver {
         val observerMock = mockk<GameObserver>()
         every { observerMock.notifyStartingPhase(capture(boards)) } just Runs
         every { observerMock.notifyWinner(capture(winner),capture(prize)) } just Runs
@@ -66,8 +67,8 @@ class GameObserverTest {
         val observerMock = observerMock(winner, prize, boards)
 
         GameBuilder()
-                .observer(observerMock)
-                .deck(deck)
+                .observedBy(observerMock)
+                .withDeck(deck)
                 .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
                 .dealerProvider { _,_,_ -> dealerMock(flopDealer) }
                 .build(payments,table)
@@ -117,8 +118,8 @@ class GameObserverTest {
         val observerMock = observerMock(winner, prize, boards)
 
         GameBuilder()
-                .observer(observerMock)
-                .deck(deck)
+                .observedBy(observerMock)
+                .withDeck(deck)
                 .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
                 .dealerProvider { _,context,_ ->
                     when (context.board) {
@@ -176,8 +177,8 @@ class GameObserverTest {
         val observerMock = observerMock(winner, prize, boards)
 
         GameBuilder()
-                .observer(observerMock)
-                .deck(deck)
+                .observedBy(observerMock)
+                .withDeck(deck)
                 .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
                 .dealerProvider { _,context,_ ->
                     when (context.board) {
@@ -234,8 +235,8 @@ class GameObserverTest {
         val observerMock = observerMock(winner, prize, boards)
 
         GameBuilder()
-                .observer(observerMock)
-                .deck(deck)
+                .observedBy(observerMock)
+                .withDeck(deck)
                 .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
                 .dealerProvider { _,context,_ ->
                     when (context.board) {
@@ -283,8 +284,8 @@ class GameObserverTest {
         every { observerMock.notifyResult(any()) } just Runs
 
         GameBuilder()
-                .observer(observerMock)
-                .deck(deck)
+                .observedBy(observerMock)
+                .withDeck(deck)
                 .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
                 .dealerProvider { _,_,_ -> dealerMock(allChecksDealer) }
                 .build(payments,table)
