@@ -19,7 +19,7 @@ abstract class AbstractTHHand(private val handValue: THPokerHand) : CardsEvaluat
         if (other !is CardsEvaluation) return false
         return compareTo(other) == 0
     }
-    //TODO test this hashcode, maybe using a Set
+
     override fun hashCode(): Int {
         return handValue.hashCode()
     }

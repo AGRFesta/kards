@@ -11,10 +11,6 @@ import java.util.*
 val cardComparator: Comparator<Card> = compareBy(Card::rank)
     .thenBy(compareBy(Seed::ord), Card::seed)
 
-//val RANK_COMPARATOR: Comparator<Rank> = compareBy { it } //TODO make Rank comparable and remove this comparator
-
-//TODO test
-//TODO doc
 class OrderedRankListComparator : Comparator<List<Rank>> {
   override fun compare(o1: List<Rank>?, o2: List<Rank>?): Int {
     if (o1 == null || o2 == null) {

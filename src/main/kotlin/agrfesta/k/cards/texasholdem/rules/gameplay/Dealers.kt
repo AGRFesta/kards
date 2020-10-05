@@ -9,7 +9,6 @@ interface Dealer {
     fun collectPot(): MutableMap<GamePlayer, Int>
 }
 
-//TODO test observer
 abstract class AbstractDealer(
         private val context: GameContext,
         private val observer: DealerObserver?) : Dealer {

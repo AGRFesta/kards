@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 
 data class Player(val name: String) {
     override fun toString() = name
@@ -39,7 +39,6 @@ class GamePlayer(
         return effectiveAmount
     }
 
-    //TODO test
     fun asOwnPlayer() = OwnPlayer(name, cards, stack)
 
     override fun act(context: PlayerGameContext): Action = strategy.act(context)

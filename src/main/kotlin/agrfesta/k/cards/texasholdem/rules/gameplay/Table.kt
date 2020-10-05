@@ -1,6 +1,5 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-//TODO test button input
 class Table(playersList: List<GamePlayer>, val button: Int) {
   val players: List<GamePlayer> = playersList.toList()
 

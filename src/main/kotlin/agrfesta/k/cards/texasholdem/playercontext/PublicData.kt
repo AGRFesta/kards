@@ -9,7 +9,5 @@ class PublicPlayerData(val player: Player, val stack: Int, val state: PlayerStat
 
 class PublicTableData(val players: List<PublicPlayerData>, val button: Int)
 
-//TODO test
 fun GamePlayer.publicData() = PublicPlayerData(this.player,this.stack,this.status)
-//TODO test
 fun Table.publicData() = PublicTableData(this.players.map { it.publicData() }, this.button)
