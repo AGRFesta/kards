@@ -4,8 +4,17 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.GamePayments
 
 // info: https://pokersoup.com/tool/blindStructureCalculator
 
-//TODO test
-class IncreasingGamePayments(private val structure: List<LevelPayments>, private val gamesPerLevel: Int): GamePayments {
+class IncreasingGamePayments(structure: List<LevelPayments>, gamesPerLevel: Int): GamePayments {
+    private val gamesPerLevel = if (gamesPerLevel < 1) {
+        throw IllegalArgumentException("Unable to create an IncreasingGamePayments, gamesPerLevel=$gamesPerLevel")
+    } else {
+        gamesPerLevel
+    }
+    private val structure: List<LevelPayments> = if (structure.isEmpty()) {
+        throw IllegalArgumentException("Unable to create an IncreasingGamePayments from an empty structure")
+    } else {
+        structure
+    }
     private var games = 0
 
     override fun sb(): Int = structure[level()].sb
@@ -19,4 +28,4 @@ class IncreasingGamePayments(private val structure: List<LevelPayments>, private
     }
 }
 
-class LevelPayments(val sb: Int, val bb: Int, val ante: Int?)
+data class LevelPayments(val sb: Int, val bb: Int, val ante: Int?)
