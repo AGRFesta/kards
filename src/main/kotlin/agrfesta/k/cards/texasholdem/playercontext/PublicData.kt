@@ -1,6 +1,6 @@
 package agrfesta.k.cards.texasholdem.playercontext
 
-import agrfesta.k.cards.texasholdem.rules.gameplay.GamePlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
@@ -9,5 +9,5 @@ class PublicPlayerData(val player: Player, val stack: Int, val state: PlayerStat
 
 class PublicTableData(val players: List<PublicPlayerData>, val button: Int)
 
-fun GamePlayer.publicData() = PublicPlayerData(this.player,this.stack,this.status)
+fun InGamePlayer.publicData() = PublicPlayerData(this.player,this.stack,this.status)
 fun Table.publicData() = PublicTableData(this.players.map { it.publicData() }, this.button)

@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-class Table(playersList: List<GamePlayer>, val button: Int) {
-  val players: List<GamePlayer> = playersList.toList()
+class Table(playersList: List<InGamePlayer>, val button: Int) {
+  val players: List<InGamePlayer> = playersList.toList()
 
   init {
     if (players.size < 2) {
@@ -9,7 +9,7 @@ class Table(playersList: List<GamePlayer>, val button: Int) {
     }
   }
 
-  fun getPlayer(position: Position): GamePlayer {
+  fun getPlayer(position: Position): InGamePlayer {
     return players[position.pos(this)]
   }
 
@@ -17,9 +17,9 @@ class Table(playersList: List<GamePlayer>, val button: Int) {
   fun iterateFromUTG(): TableIterator = TableIterator(players, Position.UNDER_THE_GUN.pos(this))
 }
 
-class TableIterator(private val players: List<GamePlayer>,
+class TableIterator(private val players: List<InGamePlayer>,
                     private var actualPosition: Int) {
-  fun next(): GamePlayer = players[actualPosition++ % players.size]
+  fun next(): InGamePlayer = players[actualPosition++ % players.size]
 }
 
 private fun getSBPosition(table: Table): Int =

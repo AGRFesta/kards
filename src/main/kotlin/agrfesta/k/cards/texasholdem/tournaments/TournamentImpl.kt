@@ -4,7 +4,7 @@ import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.TournamentObserver
 import agrfesta.k.cards.texasholdem.observers.toRanking
 import agrfesta.k.cards.texasholdem.rules.gameplay.Game
-import agrfesta.k.cards.texasholdem.rules.gameplay.GamePlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
@@ -21,8 +21,8 @@ class TournamentImpl(subscriptions: Set<Player>,
                      private val gameProvider: (IncreasingGamePayments, Table, GameObserver?) -> Game,
                      private val observer: TournamentObserver? ): Tournament {
     private val losers: MutableList<Set<Player>> = mutableListOf()
-    private val players: MutableList<GamePlayer> = subscriptions
-            .map { player -> GamePlayer(player,initialStack) }
+    private val players: MutableList<InGamePlayer> = subscriptions
+            .map { player -> InGamePlayer(player,initialStack) }
             .toMutableList()
 
     override fun play(): List<Set<Player>> {

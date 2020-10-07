@@ -3,11 +3,11 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 class PotBuilder {
     private val pot = buildPot()
 
-    fun contribution(player: GamePlayer, amount: Int): PotBuilder {
+    fun contribution(player: InGamePlayer, amount: Int): PotBuilder {
         pot[player] = amount
         return this
     }
 
-    fun build(): MutableMap<GamePlayer,Int> = pot
+    fun build(): MutableMap<InGamePlayer,Int> = pot
 
 }

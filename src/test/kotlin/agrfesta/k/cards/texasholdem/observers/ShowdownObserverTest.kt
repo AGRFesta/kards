@@ -9,7 +9,7 @@ import agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
 import agrfesta.k.cards.texasholdem.rules.gameplay.ShowdownImpl
-import agrfesta.k.cards.texasholdem.rules.gameplay.aPlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.anInGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.board
 import agrfesta.k.cards.texasholdem.rules.gameplay.buildPot
 import agrfesta.k.cards.texasholdem.rules.hands.PairHand
@@ -38,9 +38,9 @@ class ShowdownObserverTest {
         val result = slot<Collection<ShowdownPlayerResult>>()
         val observerMock = mockk<ShowdownObserver>()
         every { observerMock.notifyResult(capture(result)) } just Runs
-        val alex = aPlayer("Alex", 1000, PlayerStatus.RAISE, frenchCardsSet("Ad","Ts"))
-        val poly = aPlayer("Poly", 1000, PlayerStatus.CALL,  frenchCardsSet("Jd","7c"))
-        val jane = aPlayer("Jane", 1000, PlayerStatus.CALL,  frenchCardsSet("9d","9c"))
+        val alex = anInGamePlayer("Alex", 1000, PlayerStatus.RAISE, frenchCardsSet("Ad","Ts"))
+        val poly = anInGamePlayer("Poly", 1000, PlayerStatus.CALL,  frenchCardsSet("Jd","7c"))
+        val jane = anInGamePlayer("Jane", 1000, PlayerStatus.CALL,  frenchCardsSet("9d","9c"))
         val pot = buildPot()
         pot[alex] = 300
         pot[poly] = 300

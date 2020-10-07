@@ -6,7 +6,7 @@ import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 import agrfesta.k.cards.texasholdem.playercontext.publicData
 
 interface Dealer {
-    fun collectPot(): MutableMap<GamePlayer, Int>
+    fun collectPot(): MutableMap<InGamePlayer, Int>
 }
 
 abstract class AbstractDealer(
@@ -19,13 +19,13 @@ abstract class AbstractDealer(
     }
 
     protected var amountRequired: Int = 0
-    private var raisingPlayer: GamePlayer? = null
+    private var raisingPlayer: InGamePlayer? = null
 
-    protected abstract fun prevPot(): MutableMap<GamePlayer, Int>?
-    protected abstract fun createPot(): MutableMap<GamePlayer, Int>
+    protected abstract fun prevPot(): MutableMap<InGamePlayer, Int>?
+    protected abstract fun createPot(): MutableMap<InGamePlayer, Int>
     protected abstract fun playersIterator(): TableIterator
 
-    override fun collectPot(): MutableMap<GamePlayer, Int> {
+    override fun collectPot(): MutableMap<InGamePlayer, Int> {
         val pot = createPot()
         val iterator = playersIterator()
         val actions: MutableList<PlayerAction> = mutableListOf()
@@ -48,22 +48,22 @@ abstract class AbstractDealer(
         return pot
     }
 
-    private fun someoneHaveToAct(pot: MutableMap<GamePlayer, Int>): Boolean = hadToAct(pot).isNotEmpty()
-    private fun hadToAct(pot: MutableMap<GamePlayer, Int>): List<GamePlayer> {
+    private fun someoneHaveToAct(pot: MutableMap<InGamePlayer, Int>): Boolean = hadToAct(pot).isNotEmpty()
+    private fun hadToAct(pot: MutableMap<InGamePlayer, Int>): List<InGamePlayer> {
         return context.table.players.filter { context.hadToAct(it, pot) }
     }
 
-    private fun callEffect(player: GamePlayer, pot: MutableMap<GamePlayer, Int>) {
+    private fun callEffect(player: InGamePlayer, pot: MutableMap<InGamePlayer, Int>) {
         val payed: Int = pot.payedBy(player)
         player.status = PlayerStatus.CALL
         pot.receiveFrom(player, amountRequired - payed)
     }
 
-    private fun foldEffect(player: GamePlayer) {
+    private fun foldEffect(player: InGamePlayer) {
         player.status = PlayerStatus.FOLD
     }
 
-    private fun raiseEffect(player: GamePlayer, action: RaiseAction, pot: MutableMap<GamePlayer, Int>) {
+    private fun raiseEffect(player: InGamePlayer, action: RaiseAction, pot: MutableMap<InGamePlayer, Int>) {
         val payed: Int = pot.payedBy(player)
         val minimumRaise = context.payments.bb()
         if (raisingPlayer != null && (amountRequired - payed < minimumRaise)) {
@@ -82,33 +82,33 @@ abstract class AbstractDealer(
 private fun GameContext.toPlayerGameContext(me: OwnPlayer, potAmount: Int) =
         PlayerGameContext(me, this.payments, this.board.info(), potAmount, this.table.publicData(), this.history)
 
-private fun hadToPay(player: GamePlayer, pot: MutableMap<GamePlayer, Int>): Boolean {
+private fun hadToPay(player: InGamePlayer, pot: MutableMap<InGamePlayer, Int>): Boolean {
     val payed: Int = pot.payedBy(player)
     return payed != pot.maxContribution()?.amount ?: 0
 }
 
-private fun GameContext.hadToAct(player: GamePlayer, pot: MutableMap<GamePlayer, Int>): Boolean {
+private fun GameContext.hadToAct(player: InGamePlayer, pot: MutableMap<InGamePlayer, Int>): Boolean {
     val hadToPay = hadToPay(player, pot)
     return player.isActive()
             && (!theOnlyActive(player) || hadToPay)
             && (player.status == PlayerStatus.NONE || hadToPay)
 }
 
-private fun GameContext.theOnlyActive(player: GamePlayer): Boolean = this.table.players
+private fun GameContext.theOnlyActive(player: InGamePlayer): Boolean = this.table.players
         .filter { player !== it }
         .none { it.isActive() }
 
 class PostFlopDealer(
-        private val prevPot: MutableMap<GamePlayer, Int>,
+        private val prevPot: MutableMap<InGamePlayer, Int>,
         private val context: GameContext,
         observer: DealerObserver?
 ) : AbstractDealer(context, observer) {
-    constructor(prevPot: MutableMap<GamePlayer, Int>, context: GameContext) : this(prevPot, context, null)
+    constructor(prevPot: MutableMap<InGamePlayer, Int>, context: GameContext) : this(prevPot, context, null)
 
-    override fun prevPot(): MutableMap<GamePlayer, Int>? = prevPot
+    override fun prevPot(): MutableMap<InGamePlayer, Int>? = prevPot
     override fun createPot() = buildPot()
     override fun playersIterator(): TableIterator = context.table.iterateFromSB()
-    override fun collectPot(): MutableMap<GamePlayer, Int> = super.collectPot()
+    override fun collectPot(): MutableMap<InGamePlayer, Int> = super.collectPot()
 }
 
 class PreFlopDealer(
@@ -117,7 +117,7 @@ class PreFlopDealer(
 ) : AbstractDealer(context, observer) {
     constructor(context: GameContext) : this(context, null)
 
-    override fun createPot(): MutableMap<GamePlayer, Int> {
+    override fun createPot(): MutableMap<InGamePlayer, Int> {
         val pot = buildPot()
         pot.receiveFrom(context.table.getPlayer(Position.SMALL_BLIND), context.payments.sb())
         pot.receiveFrom(context.table.getPlayer(Position.BIG_BLIND), context.payments.bb())
@@ -126,7 +126,7 @@ class PreFlopDealer(
         return pot
     }
 
-    override fun prevPot(): MutableMap<GamePlayer, Int>? = null
+    override fun prevPot(): MutableMap<InGamePlayer, Int>? = null
     override fun playersIterator(): TableIterator = context.table.iterateFromUTG()
 }
 

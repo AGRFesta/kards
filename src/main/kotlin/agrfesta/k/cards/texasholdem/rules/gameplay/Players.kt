@@ -7,7 +7,7 @@ data class Player(val name: String, val strategy: PlayerStrategyInterface) {
     override fun toString() = "$name{$strategy}"
 }
 
-class GamePlayer(
+class InGamePlayer(
         val player: Player,
         var stack: Int
     ): PlayerStrategyInterface {
@@ -56,16 +56,16 @@ class OwnPlayer(val name: String, val cards: Set<Card>, val stack: Int)
 
 /// List<Player> ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-fun List<GamePlayer>.resetActivePlayersStatus() = this.getActive()
+fun List<InGamePlayer>.resetActivePlayersStatus() = this.getActive()
         .forEach { it.status = PlayerStatus.NONE }
-fun List<GamePlayer>.getActive(): List<GamePlayer> = this.filter { it.isActive() }
+fun List<InGamePlayer>.getActive(): List<InGamePlayer> = this.filter { it.isActive() }
 
-fun List<GamePlayer>.findWinner(): GamePlayer? {
+fun List<InGamePlayer>.findWinner(): InGamePlayer? {
     val notFoldedPlayers = this.filter { !it.hasFolded() }
     return if (notFoldedPlayers.size == 1) notFoldedPlayers[0]
     else null
 }
 
-fun List<GamePlayer>.get(player: Player): GamePlayer? = this.find { it.player == player }
+fun List<InGamePlayer>.get(player: Player): InGamePlayer? = this.find { it.player == player }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

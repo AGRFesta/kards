@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test
 
 @DisplayName("Table tests")
 class TableTest {
-    private val alex = aPlayer("Alex")
-    private val juno = aPlayer("Juno")
-    private val maya = aPlayer("Maya")
+    private val alex = anInGamePlayer("Alex")
+    private val juno = anInGamePlayer("Juno")
+    private val maya = anInGamePlayer("Maya")
 
     @Test
     @DisplayName("creating a Table with one player -> raises an Exception")

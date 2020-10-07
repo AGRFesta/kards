@@ -1,7 +1,7 @@
 package agrfesta.k.cards.texasholdem.tournaments
 
 import agrfesta.k.cards.texasholdem.rules.gameplay.Game
-import agrfesta.k.cards.texasholdem.rules.gameplay.GamePlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
 import agrfesta.k.cards.texasholdem.rules.gameplay.Position
@@ -32,7 +32,7 @@ class TournamentImplTest {
         val dave = Player("Dave", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
-        val mockedGames = listOf< (List<GamePlayer>) -> Game >(
+        val mockedGames = listOf< (List<InGamePlayer>) -> Game >(
                 { mockk(relaxed = true) },
                 { mockk(relaxed = true) },
                 { mockk(relaxed = true) },
@@ -79,7 +79,7 @@ class TournamentImplTest {
         val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
-        val mockedGames = listOf< (List<GamePlayer>) -> Game >(
+        val mockedGames = listOf< (List<InGamePlayer>) -> Game >(
                 { players ->
                     val game = mockk<Game>()
                     every { game.play() } answers {
@@ -125,7 +125,7 @@ class TournamentImplTest {
         val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
-        val mockedGames = listOf< (List<GamePlayer>) -> Game >(
+        val mockedGames = listOf< (List<InGamePlayer>) -> Game >(
                 { players ->
                     val game = mockk<Game>()
                     every { game.play() } answers {
@@ -171,7 +171,7 @@ class TournamentImplTest {
         val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
-        val mockedGames = listOf< (List<GamePlayer>) -> Game >(
+        val mockedGames = listOf< (List<InGamePlayer>) -> Game >(
                 { players ->
                     val game = mockk<Game>()
                     every { game.play() } answers {
@@ -215,7 +215,7 @@ class TournamentImplTest {
         val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
-        val mockedGames = listOf< (List<GamePlayer>) -> Game >(
+        val mockedGames = listOf< (List<InGamePlayer>) -> Game >(
                 { players ->
                     val game = mockk<Game>()
                     every { game.play() } answers {

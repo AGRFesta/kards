@@ -25,8 +25,8 @@ class PlayerTestBuilder {
         return this
     }
 
-    fun build(): GamePlayer {
-        val player = GamePlayer(player, stack)
+    fun build(): InGamePlayer {
+        val player = InGamePlayer(player, stack)
         player.status = this.status
         player.cards = this.cards
         return player

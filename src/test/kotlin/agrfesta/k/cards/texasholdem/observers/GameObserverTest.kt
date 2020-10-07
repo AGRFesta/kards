@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test
 @DisplayName("Game Observer tests")
 class GameObserverTest {
     private val payments = aGamePayments()
-    private var alex = aPlayer()
-    private var poly = aPlayer()
+    private var alex = anInGamePlayer()
+    private var poly = anInGamePlayer()
 
     @BeforeEach
     fun init() {
-        alex = aPlayer("Alex",1000)
-        poly = aPlayer("Poly",1000)
+        alex = anInGamePlayer("Alex",1000)
+        poly = anInGamePlayer("Poly",1000)
     }
 
     private fun observerMock(winner: CapturingSlot<Player>, prize: CapturingSlot<Int>, boards: MutableList<Board>)
@@ -28,16 +28,16 @@ class GameObserverTest {
         every { observerMock.notifyWinner(capture(winner),capture(prize)) } just Runs
         return observerMock
     }
-    private fun dealerMock(collectPotBody: () -> MutableMap<GamePlayer, Int>): Dealer {
+    private fun dealerMock(collectPotBody: () -> MutableMap<InGamePlayer, Int>): Dealer {
         val dealer = mockk<Dealer>()
         every { dealer.collectPot() } returns collectPotBody.invoke()
         return dealer
     }
-    private val defaultDealer: () -> MutableMap<GamePlayer, Int> = {
+    private val defaultDealer: () -> MutableMap<InGamePlayer, Int> = {
         assert(false) { "The game is not following the correct phases sequence" }
         buildPot()
     }
-    private val allChecksDealer: () -> MutableMap<GamePlayer, Int> = {
+    private val allChecksDealer: () -> MutableMap<InGamePlayer, Int> = {
         alex.status = PlayerStatus.CALL
         poly.status = PlayerStatus.CALL
         buildPot()
@@ -48,7 +48,7 @@ class GameObserverTest {
     fun gameObserverStory000() {
         val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac","3h","5s"))
-        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val preFlopDealer: () -> MutableMap<InGamePlayer, Int> = {
             val pot = buildPot()
             pot.receiveFrom(alex,200)
             pot.receiveFrom(poly,100)
@@ -56,7 +56,7 @@ class GameObserverTest {
             poly.status = PlayerStatus.FOLD
             pot
         }
-        val flopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val flopDealer: () -> MutableMap<InGamePlayer, Int> = {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
@@ -91,7 +91,7 @@ class GameObserverTest {
     fun gameObserverStory001() {
         val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac", "3h","5s", "Jh","Js","7h"))
-        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val preFlopDealer: () -> MutableMap<InGamePlayer, Int> = {
             val pot = buildPot()
             pot.receiveFrom(alex,200)
             pot.receiveFrom(poly,200)
@@ -99,7 +99,7 @@ class GameObserverTest {
             poly.status = PlayerStatus.CALL
             pot
         }
-        val flopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val flopDealer: () -> MutableMap<InGamePlayer, Int> = {
             val pot = buildPot()
             pot.receiveFrom(alex,400)
             pot.receiveFrom(poly,200)
@@ -107,7 +107,7 @@ class GameObserverTest {
             poly.status = PlayerStatus.FOLD
             pot
         }
-        val turnDealer: () -> MutableMap<GamePlayer, Int> = {
+        val turnDealer: () -> MutableMap<InGamePlayer, Int> = {
             assert(false) { "The game should finish at flop but is collecting pot at turn" }
             buildPot()
         }
@@ -150,7 +150,7 @@ class GameObserverTest {
     fun gameObserverStory002() {
         val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac", "3h","5s", "Jh","Js","7h", "5d"))
-        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val preFlopDealer: () -> MutableMap<InGamePlayer, Int> = {
             val pot = buildPot()
             pot.receiveFrom(alex,200)
             pot.receiveFrom(poly,200)
@@ -158,7 +158,7 @@ class GameObserverTest {
             poly.status = PlayerStatus.CALL
             pot
         }
-        val turnDealer: () -> MutableMap<GamePlayer, Int> = {
+        val turnDealer: () -> MutableMap<InGamePlayer, Int> = {
             val pot = buildPot()
             pot.receiveFrom(alex,500)
             pot.receiveFrom(poly,200)
@@ -166,7 +166,7 @@ class GameObserverTest {
             poly.status = PlayerStatus.FOLD
             pot
         }
-        val riverDealer: () -> MutableMap<GamePlayer, Int> = {
+        val riverDealer: () -> MutableMap<InGamePlayer, Int> = {
             assert(false) { "The game should finish at turn but is collecting pot at river" }
             buildPot()
         }
@@ -212,7 +212,7 @@ class GameObserverTest {
     fun gameObserverStory003() {
         val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac", "3h","5s", "Jh","Js","7h", "5d", "Td"))
-        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val preFlopDealer: () -> MutableMap<InGamePlayer, Int> = {
             val pot = buildPot()
             pot.receiveFrom(alex,200)
             pot.receiveFrom(poly,200)
@@ -220,7 +220,7 @@ class GameObserverTest {
             poly.status = PlayerStatus.CALL
             pot
         }
-        val riverDealer: () -> MutableMap<GamePlayer, Int> = {
+        val riverDealer: () -> MutableMap<InGamePlayer, Int> = {
             val pot = buildPot()
             pot.receiveFrom(alex,300)
             pot.receiveFrom(poly,200)
@@ -272,7 +272,7 @@ class GameObserverTest {
     fun gameObserverStory004() {
         val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac", "3h","5s", "Jh","Js","7h", "5d", "Td"))
-        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val preFlopDealer: () -> MutableMap<InGamePlayer, Int> = {
             alex.status = PlayerStatus.CALL
             poly.status = PlayerStatus.CALL
             buildPot()

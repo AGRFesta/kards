@@ -13,35 +13,35 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-private fun dealerMock(collectPotBody: () -> MutableMap<GamePlayer, Int>): Dealer {
+private fun dealerMock(collectPotBody: () -> MutableMap<InGamePlayer, Int>): Dealer {
     val dealer = mockk<Dealer>()
     every { dealer.collectPot() } returns collectPotBody.invoke()
     return dealer
 }
 
-class ShowdownMock(private val showdownBody: (MutableMap<GamePlayer, Int>, Board) -> Unit) : Showdown {
-    override fun execute(pot: MutableMap<GamePlayer, Int>, board: Board) = showdownBody.invoke(pot, board)
+class ShowdownMock(private val showdownBody: (MutableMap<InGamePlayer, Int>, Board) -> Unit) : Showdown {
+    override fun execute(pot: MutableMap<InGamePlayer, Int>, board: Board) = showdownBody.invoke(pot, board)
 }
 
 @DisplayName("Game tests")
 class GameTest {
     private val payments = aGamePayments()
-    private var alex = aPlayer()
-    private var poly = aPlayer()
-    private var jane = aPlayer()
-    private var dave = aPlayer()
+    private var alex = anInGamePlayer()
+    private var poly = anInGamePlayer()
+    private var jane = anInGamePlayer()
+    private var dave = anInGamePlayer()
 
-    private val defaultDealer: () -> MutableMap<GamePlayer, Int> = {
+    private val defaultDealer: () -> MutableMap<InGamePlayer, Int> = {
         assert(false) { "The game is not following the correct phases sequence" }
         buildPot()
     }
 
     @BeforeEach
     fun init() {
-        alex = aPlayer("Alex", 1000)
-        poly = aPlayer("Poly", 1000)
-        jane = aPlayer("Jane", 1000)
-        dave = aPlayer("Dave", 1000)
+        alex = anInGamePlayer("Alex", 1000)
+        poly = anInGamePlayer("Poly", 1000)
+        jane = anInGamePlayer("Jane", 1000)
+        dave = anInGamePlayer("Dave", 1000)
     }
 
     @Test
@@ -49,13 +49,13 @@ class GameTest {
     fun inPreFlopPhaseTakesTwoCardsFromDeckForEachPlayerAtTheTable() {
         val deck = DeckListImpl(cardList("Ah", "Ac", "3h", "5s", "Kh", "Qc"))
         val table = Table(listOf(alex, poly, jane), 0)
-        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val preFlopDealer: () -> MutableMap<InGamePlayer, Int> = {
             alex.status = PlayerStatus.RAISE
             poly.status = PlayerStatus.FOLD
             jane.status = PlayerStatus.FOLD
             buildPot()
         }
-        val flopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val flopDealer: () -> MutableMap<InGamePlayer, Int> = {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
@@ -75,7 +75,7 @@ class GameTest {
     @DisplayName("Game story: Alex is the remaining player in pre-flop and takes all the pot")
     fun gameStory000() {
         val table = Table(listOf(alex, poly), 0)
-        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val preFlopDealer: () -> MutableMap<InGamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex, 500)
@@ -83,7 +83,7 @@ class GameTest {
             pot.receiveFrom(poly, 200)
             pot
         }
-        val flopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val flopDealer: () -> MutableMap<InGamePlayer, Int> = {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
@@ -107,7 +107,7 @@ class GameTest {
     @DisplayName("Game story: Alex is the remaining player at flop and takes all the pot")
     fun gameStory001() {
         val table = Table(listOf(alex, poly, jane), 0)
-        val preFlopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val preFlopDealer: () -> MutableMap<InGamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex, 200)
@@ -116,7 +116,7 @@ class GameTest {
             jane.status = PlayerStatus.FOLD
             pot
         }
-        val flopDealer: () -> MutableMap<GamePlayer, Int> = {
+        val flopDealer: () -> MutableMap<InGamePlayer, Int> = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex, 400)
@@ -124,7 +124,7 @@ class GameTest {
             pot.receiveFrom(poly, 200)
             pot
         }
-        val turnDealer: () -> MutableMap<GamePlayer, Int> = {
+        val turnDealer: () -> MutableMap<InGamePlayer, Int> = {
             assert(false) { "The game should finish at flop but is collecting pot at turn" }
             buildPot()
         }
@@ -173,7 +173,7 @@ class GameTest {
             it.receiveRaiseFrom(alex, 200)
                     .receiveFoldFrom(dave)
         }
-        val riverDealer: () -> MutableMap<GamePlayer, Int> = {
+        val riverDealer: () -> MutableMap<InGamePlayer, Int> = {
             assert(false) { "The game should finish at turn but is collecting pot at river" }
             buildPot()
         }
@@ -332,7 +332,7 @@ class GameTest {
         assertThat(dave.stack).isEqualTo(200)
     }
 
-    private fun buildPotFromActions(core: (TestPotBuilder) -> TestPotBuilder): () -> MutableMap<GamePlayer, Int> = {
+    private fun buildPotFromActions(core: (TestPotBuilder) -> TestPotBuilder): () -> MutableMap<InGamePlayer, Int> = {
         core.invoke(TestPotBuilder()).build()
     }
 }
