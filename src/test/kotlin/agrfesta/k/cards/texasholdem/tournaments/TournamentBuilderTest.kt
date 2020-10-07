@@ -11,7 +11,6 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 import agrfesta.k.cards.texasholdem.rules.gameplay.aStrategy
 import assertk.assertThat
 import assertk.assertions.containsOnly
-import assertk.assertions.extracting
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
@@ -26,7 +25,7 @@ import org.junit.jupiter.api.Test
 class TournamentBuilderTest {
     private val payments = mockk<IncreasingGamePayments>(relaxed = true)
 
-    private fun testBuilder(trnImplementer: (Set<PlayerSubscription>, Int, IncreasingGamePayments,
+    private fun testBuilder(trnImplementer: (Set<Player>, Int, IncreasingGamePayments,
                                              (Int) -> Int,
                                              (IncreasingGamePayments, Table, GameObserver?) -> Game,
                                              TournamentObserver?) -> Tournament) =
@@ -40,7 +39,7 @@ class TournamentBuilderTest {
         testBuilder { _, _, _, _, _,observer ->
                 assertThat(observer).isNull()
                 mockk() }
-            .subscriptions(Player("Alex") to aStrategy(), Player("Poly") to aStrategy())
+            .subscriptions( Player("Alex",aStrategy()), Player("Poly",aStrategy()) )
             .build(2000,payments)
     }
     @Test
@@ -50,7 +49,7 @@ class TournamentBuilderTest {
         testBuilder { _,_,_,_,_,observer ->
                 assertThat(observer).isEqualTo(providedObserver)
                 mockk() }
-            .subscriptions(Player("Alex") to aStrategy(), Player("Poly") to aStrategy())
+            .subscriptions( Player("Alex",aStrategy()), Player("Poly",aStrategy()) )
             .observer(providedObserver)
             .build(2000,payments)
     }
@@ -61,7 +60,7 @@ class TournamentBuilderTest {
     fun story002() {
         val expectedTournament: Tournament = mockk()
         val tournament = testBuilder { _,_,_,_,_,_ -> expectedTournament}
-                .subscriptions(Player("Alex") to aStrategy(), Player("Poly") to aStrategy())
+                .subscriptions( Player("Alex",aStrategy()), Player("Poly",aStrategy()) )
                 .build(2000,payments)
         assertThat(tournament).isEqualTo(expectedTournament)
     }
@@ -77,7 +76,7 @@ class TournamentBuilderTest {
                 { _,_,_,buttonProvider,_,_ ->
                     assertThat(buttonProvider.invoke(10)).isEqualTo(5)
                     mockk() })
-            .subscriptions(Player("Alex") to aStrategy(), Player("Poly") to aStrategy())
+            .subscriptions( Player("Alex",aStrategy()), Player("Poly",aStrategy()) )
             .build(2000,payments)
     }
     @Test
@@ -91,7 +90,7 @@ class TournamentBuilderTest {
                 { _,_,_,buttonProvider,_,_ ->
                     assertThat(buttonProvider.invoke(10)).isEqualTo(10)
                     mockk() })
-            .subscriptions(Player("Alex") to aStrategy(), Player("Poly") to aStrategy())
+            .subscriptions( Player("Alex",aStrategy()), Player("Poly",aStrategy()) )
             .buttonProvider { it }
             .build(2000,payments)
     }
@@ -111,7 +110,7 @@ class TournamentBuilderTest {
     fun story006() {
         val failure = assertThat {
             tournamentBuilder()
-                    .subscriptions(Player("Alex") to aStrategy())
+                    .subscriptions( Player("Alex",aStrategy()) )
                     .build(2000,payments)
         }.isFailure()
         failure.hasClass(IllegalStateException::class)
@@ -120,15 +119,14 @@ class TournamentBuilderTest {
     @Test
     @DisplayName("Tournament with three subscriptions -> all and oly those three are provided to the tournament")
     fun story007() {
-        val alex = Player("Alex")
-        val poly = Player("Poly")
-        val jane = Player("Jane")
+        val alex = Player("Alex",aStrategy())
+        val poly = Player("Poly",aStrategy())
+        val jane = Player("Jane",aStrategy())
         testBuilder { subscriptions,_,_,_,_,_ ->
             assertThat(subscriptions)
-                    .extracting { it.player }
                     .containsOnly(alex, poly, jane)
             mockk() }
-                .subscriptions(alex to aStrategy(), poly to aStrategy(), jane to aStrategy())
+                .subscriptions(alex, poly, jane)
                 .build(2000,payments)
     }
 
@@ -141,7 +139,7 @@ class TournamentBuilderTest {
             assertThat(gameProvider).isEqualTo(expectedDefaultGameProvider)
             mockk()
         }
-                .subscriptions(Player("Alex") to aStrategy(), Player("Poly") to aStrategy())
+                .subscriptions( Player("Alex",aStrategy()), Player("Poly",aStrategy()) )
                 .build(2000,payments)
     }
     @Test
@@ -154,7 +152,7 @@ class TournamentBuilderTest {
             assertThat(gameProvider).isEqualTo(expectedGameProvider)
             mockk()
         }
-                .subscriptions(Player("Alex") to aStrategy(), Player("Poly") to aStrategy())
+                .subscriptions( Player("Alex",aStrategy()), Player("Poly",aStrategy()) )
                 .gameProvider(expectedGameProvider)
                 .build(2000,payments)
     }

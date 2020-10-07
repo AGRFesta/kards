@@ -35,28 +35,33 @@ fun fold(): Action = FoldAction()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///// Players //////////////////////////////////////////////////////////////////////////////////////////////////////////
-fun aPlayer() = GamePlayer(Player("APlayer"), 1000) { aStrategy() }
-fun aPlayer(name: String) = GamePlayer(Player(name), 1000) { aStrategy() }
-fun aPlayer(stack: Int) = GamePlayer(Player("APlayer"), stack) { aStrategy() }
-fun aPlayer(name: String, stack: Int) = GamePlayer(Player(name), stack) { aStrategy() }
+fun aPlayer() = GamePlayer(Player("APlayer",aStrategy()), 1000)
+fun aPlayer(name: String) = GamePlayer(Player(name,aStrategy()), 1000)
+fun aPlayer(stack: Int) = GamePlayer(Player("APlayer",aStrategy()), stack)
+fun aPlayer(name: String, stack: Int) = GamePlayer(Player(name,aStrategy()), stack)
 fun aPlayer(name: String, stack: Int, status: PlayerStatus, cards: Set<Card>) = PlayerTestBuilder()
-            .player(Player(name)).stack(stack).status(status).cards(cards)
+        .player(Player(name, aStrategy()))
+        .stack(stack)
+        .status(status)
+        .cards(cards)
         .build()
-fun aPlayer(name: String, stack: Int, strategy: PlayerStrategyInterface) = GamePlayer(Player(name), stack) { strategy }
+fun aPlayer(name: String, stack: Int, strategy: PlayerStrategyInterface) = GamePlayer(Player(name,strategy), stack)
 fun aPlayer(name: String, stack: Int, status: PlayerStatus, strategy: PlayerStrategyInterface) = PlayerTestBuilder()
-                .player(Player(name)).stack(stack).status(status).strategy { strategy }
-            .build()
+        .player(Player(name,strategy))
+        .stack(stack)
+        .status(status)
+        .build()
 
 fun foldedPlayer(): GamePlayer = PlayerTestBuilder()
-        .player(Player("FoldedPlayer")).stack(1000).status(PlayerStatus.FOLD)
+        .player(Player("FoldedPlayer",aStrategy())).stack(1000).status(PlayerStatus.FOLD)
         .build()
 fun allInPlayer(): GamePlayer = PlayerTestBuilder()
-        .player(Player("AllInPlayer")).stack(1000).status(PlayerStatus.ALL_IN)
+        .player(Player("AllInPlayer",aStrategy())).stack(1000).status(PlayerStatus.ALL_IN)
         .build()
 fun callingPlayer(): GamePlayer = PlayerTestBuilder()
-        .player(Player("CallingPlayer")).stack(1000).status(PlayerStatus.CALL)
+        .player(Player("CallingPlayer",aStrategy())).stack(1000).status(PlayerStatus.CALL)
         .build()
 fun raisingPlayer(): GamePlayer = PlayerTestBuilder()
-        .player(Player("RaisingPlayer")).stack(1000).status(PlayerStatus.RAISE)
+        .player(Player("RaisingPlayer",aStrategy())).stack(1000).status(PlayerStatus.RAISE)
         .build()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

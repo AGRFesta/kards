@@ -26,10 +26,10 @@ class TournamentImplTest {
     @DisplayName("Alex start a four players tournament from the Button, the second game from SB, third from BB, " +
             "fourth from UTG and final again from Button.")
     fun tournamentStory000() {
-        val alex = Player("Alex")
-        val poly = Player("Poly")
-        val jane = Player("Jane")
-        val dave = Player("Dave")
+        val alex = Player("Alex", aStrategy())
+        val poly = Player("Poly", aStrategy())
+        val jane = Player("Jane", aStrategy())
+        val dave = Player("Dave", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
         val mockedGames = listOf< (List<GamePlayer>) -> Game >(
@@ -50,11 +50,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table>()
 
         val result = tournamentBuilder()
-                .subscriptions(
-                        poly to aStrategy(),
-                        jane to aStrategy(),
-                        alex to aStrategy(),
-                        dave to aStrategy() )
+                .subscriptions(poly, jane, alex, dave)
                 .buttonProvider { 2 } // button of first game in position 2
                 .gameProvider { igp, table, _ ->
                     assertThat(igp === payments).isTrue()
@@ -78,9 +74,9 @@ class TournamentImplTest {
     @DisplayName("In a three players tournament Alex goes all-in an lose, is the first eliminated player and won't " +
             "participate to remaining games.")
     fun tournamentStory001() {
-        val alex = Player("Alex")
-        val poly = Player("Poly")
-        val jane = Player("Jane")
+        val alex = Player("Alex", aStrategy())
+        val poly = Player("Poly", aStrategy())
+        val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
         val mockedGames = listOf< (List<GamePlayer>) -> Game >(
@@ -102,10 +98,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table>()
 
         val result = tournamentBuilder()
-                .subscriptions(
-                        poly to aStrategy(),
-                        jane to aStrategy(),
-                        alex to aStrategy() )
+                .subscriptions(poly, jane, alex)
                 .buttonProvider { 2 } // button of first game in position 2
                 .gameProvider { igp, table, _ ->
                     assertThat(igp === payments).isTrue()
@@ -127,9 +120,9 @@ class TournamentImplTest {
     @DisplayName("In a three players tournament Alex and Jane go all-in with an initial stack of 1500 and 1000, they " +
             "both lose and are eliminated, Poly win the tournament, Alex second and Jane third.")
     fun tournamentStory002() {
-        val alex = Player("Alex")
-        val poly = Player("Poly")
-        val jane = Player("Jane")
+        val alex = Player("Alex", aStrategy())
+        val poly = Player("Poly", aStrategy())
+        val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
         val mockedGames = listOf< (List<GamePlayer>) -> Game >(
@@ -153,10 +146,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table>()
 
         val result = tournamentBuilder()
-                .subscriptions(
-                        poly to aStrategy(),
-                        jane to aStrategy(),
-                        alex to aStrategy() )
+                .subscriptions(poly, jane, alex)
                 .buttonProvider { 2 } // button of first game in position 2
                 .gameProvider { igp, table, _ ->
                     assertThat(igp === payments).isTrue()
@@ -176,9 +166,9 @@ class TournamentImplTest {
     @DisplayName("In a three players tournament Alex and Jane go all-in with an initial stack of 1000 and 1000, they " +
             "both lose and are eliminated, Poly win the tournament, Alex and Jane second.")
     fun tournamentStory003() {
-        val alex = Player("Alex")
-        val poly = Player("Poly")
-        val jane = Player("Jane")
+        val alex = Player("Alex", aStrategy())
+        val poly = Player("Poly", aStrategy())
+        val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
         val mockedGames = listOf< (List<GamePlayer>) -> Game >(
@@ -202,10 +192,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table>()
 
         val result = tournamentBuilder()
-                .subscriptions(
-                        poly to aStrategy(),
-                        jane to aStrategy(),
-                        alex to aStrategy() )
+                .subscriptions(poly, jane, alex)
                 .buttonProvider { 2 } // button of first game in position 2
                 .gameProvider { igp, table, _ ->
                     assertThat(igp === payments).isTrue()
@@ -223,9 +210,9 @@ class TournamentImplTest {
     @Test
     @DisplayName("Every game reset the initial status of the players")
     fun everyGameResetTheInitialPlayersStatus() {
-        val alex = Player("Alex")
-        val poly = Player("Poly")
-        val jane = Player("Jane")
+        val alex = Player("Alex", aStrategy())
+        val poly = Player("Poly", aStrategy())
+        val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
         val mockedGames = listOf< (List<GamePlayer>) -> Game >(
@@ -250,10 +237,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table>()
 
         val result = tournamentBuilder()
-                .subscriptions(
-                        poly to aStrategy(),
-                        jane to aStrategy(),
-                        alex to aStrategy() )
+                .subscriptions(poly, jane, alex)
                 .buttonProvider { 2 } // button of first game in position 2
                 .gameProvider { igp, table, _ ->
                     assertThat(igp === payments).isTrue()

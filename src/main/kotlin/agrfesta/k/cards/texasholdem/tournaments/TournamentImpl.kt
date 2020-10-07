@@ -7,7 +7,6 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.Game
 import agrfesta.k.cards.texasholdem.rules.gameplay.GamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
-import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStrategyInterface
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 import agrfesta.k.cards.texasholdem.utils.circularPos
 
@@ -15,7 +14,7 @@ interface Tournament {
     fun play(): List<Set<Player>>
 }
 
-class TournamentImpl(subscriptions: Set<PlayerSubscription>,
+class TournamentImpl(subscriptions: Set<Player>,
                      private val initialStack: Int,
                      private val payments: IncreasingGamePayments,
                      private val buttonProvider: (Int) -> Int,
@@ -23,7 +22,7 @@ class TournamentImpl(subscriptions: Set<PlayerSubscription>,
                      private val observer: TournamentObserver? ): Tournament {
     private val losers: MutableList<Set<Player>> = mutableListOf()
     private val players: MutableList<GamePlayer> = subscriptions
-            .map { s -> GamePlayer(s.player,initialStack){ s.strategy } }
+            .map { player -> GamePlayer(player,initialStack) }
             .toMutableList()
 
     override fun play(): List<Set<Player>> {
@@ -65,4 +64,3 @@ class TournamentImpl(subscriptions: Set<PlayerSubscription>,
 
 }
 
-class PlayerSubscription(val player: Player, val strategy: PlayerStrategyInterface)

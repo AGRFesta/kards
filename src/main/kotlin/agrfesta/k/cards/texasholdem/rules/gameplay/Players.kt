@@ -3,20 +3,18 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 
-data class Player(val name: String) {
-    override fun toString() = name
+data class Player(val name: String, val strategy: PlayerStrategyInterface) {
+    override fun toString() = "$name{$strategy}"
 }
 
 class GamePlayer(
         val player: Player,
-        var stack: Int,
-        strategyProvider: (p: GamePlayer) -> PlayerStrategyInterface
+        var stack: Int
     ): PlayerStrategyInterface {
     val name = player.name
     var status: PlayerStatus = PlayerStatus.NONE
 
     var cards: Set<Card> = setOf() //TODO check that are exactly two
-    private val strategy = strategyProvider.invoke(this)
 
     /// A Player that is out of the Game
     fun hasFolded(): Boolean = status == PlayerStatus.FOLD
@@ -41,8 +39,8 @@ class GamePlayer(
 
     fun asOwnPlayer() = OwnPlayer(name, cards, stack)
 
-    override fun act(context: PlayerGameContext): Action = strategy.act(context)
-    override fun toString(): String = "$name[$strategy] ($stack)"
+    override fun act(context: PlayerGameContext): Action = player.strategy.act(context)
+    override fun toString(): String = "$player ($stack)"
 
 }
 

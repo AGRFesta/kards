@@ -7,26 +7,23 @@ import agrfesta.k.cards.texasholdem.observers.TournamentObserver
 import agrfesta.k.cards.texasholdem.rules.gameplay.Game
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
-import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStrategyInterface
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 
 class TournamentBuilder(private val rndGenerator: RandomGenerator,
                         defaultGameProvider: (IncreasingGamePayments, Table, GameObserver?) -> Game,
-                        private val tournamentImplementation: (Set<PlayerSubscription>, Int, IncreasingGamePayments,
+                        private val tournamentImplementation: (Set<Player>, Int, IncreasingGamePayments,
                                                                (Int) -> Int,
                                                                (IncreasingGamePayments, Table, GameObserver?) -> Game,
                                                                TournamentObserver?) -> Tournament) {
   private var observer: TournamentObserver? = null
 
-  private val subscriptions: MutableSet<PlayerSubscription> = mutableSetOf()
+  private val subscriptions: MutableSet<Player> = mutableSetOf()
 
   private var buttonProvider: (Int) -> Int = { rndGenerator.nextInt(it) } // Random position
   private var gameProvider = defaultGameProvider
 
-  fun subscriptions(vararg pairs: Pair<Player, PlayerStrategyInterface>): TournamentBuilder {
-    subscriptions.addAll(
-        pairs.map { PlayerSubscription(it.first, it.second) }
-    )
+  fun subscriptions(vararg players: Player): TournamentBuilder {
+    subscriptions.addAll(players)
     return this
   }
 
