@@ -7,6 +7,10 @@ data class Player(val name: String, val strategy: PlayerStrategyInterface) {
     override fun toString() = "$name{$strategy}"
 }
 
+class Opponent(val name: String, val stack: Int, val status: PlayerStatus) {
+    override fun toString() = "$name[$stack]"
+}
+
 class InGamePlayer(
         val player: Player,
         var stack: Int
@@ -26,6 +30,8 @@ class InGamePlayer(
         if (amount < 0) throw IllegalArgumentException("Can't receive a negative amount")
         stack += amount
     }
+
+    fun asOpponent(): Opponent = Opponent(name, stack, status)
 
     fun pay(amount: Int): Int {
         if (amount < 0) throw IllegalArgumentException("Can't pay a negative amount")

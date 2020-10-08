@@ -456,9 +456,9 @@ class DealersTest {
         assertThat(alexContexts[0].potAmount).isEqualTo(0)
         assertThat(alexContexts[0].history[GamePhase.PRE_FLOP] ?: error("Should be at Pre-Flop")).isEmpty()
         assertThat(alexContexts[0].table.button).isEqualTo(0)
-        assertThat(alexContexts[0].table.players).extracting({ it.player }, { it.stack }, { it.state })
-                .containsOnly(Triple(alex.player, 2000, NONE),
-                        Triple(jane.player, 2000, NONE))
+        assertThat(alexContexts[0].table.players).extracting({ it.name }, { it.stack }, { it.status })
+                .containsOnly(Triple("Alex", 2000, NONE),
+                        Triple("Jane", 2000, NONE))
 
         assertThat(janeContexts).hasSize(1)
         assertThat(janeContexts[0].board.phase).isEqualTo(GamePhase.PRE_FLOP)
@@ -471,9 +471,9 @@ class DealersTest {
                 .extracting({ it.player }, { it.action::class }, { it.action.getAmount() })
                 .containsOnly(Triple(alex.player, CallAction::class, null))
         assertThat(janeContexts[0].table.button).isEqualTo(0)
-        assertThat(janeContexts[0].table.players).extracting({ it.player }, { it.stack }, { it.state })
-                .containsOnly(Triple(alex.player, 2000, CALL),
-                        Triple(jane.player, 2000, NONE))
+        assertThat(janeContexts[0].table.players).extracting({ it.name }, { it.stack }, { it.status })
+                .containsOnly(Triple("Alex", 2000, CALL),
+                        Triple("Jane", 2000, NONE))
 
         assertThat(alexContexts[1].board.phase).isEqualTo(GamePhase.PRE_FLOP)
         assertThat(alexContexts[1].me.name).isEqualTo("Alex")
@@ -486,9 +486,9 @@ class DealersTest {
                 .containsOnly(Triple(alex.player, CallAction::class, null),
                         Triple(jane.player, RaiseAction::class, 100))
         assertThat(alexContexts[1].table.button).isEqualTo(0)
-        assertThat(alexContexts[1].table.players).extracting({ it.player }, { it.stack }, { it.state })
-                .containsOnly(Triple(alex.player, 2000, CALL),
-                        Triple(jane.player, 1900, RAISE))
+        assertThat(alexContexts[1].table.players).extracting({ it.name }, { it.stack }, { it.status })
+                .containsOnly(Triple("Alex", 2000, CALL),
+                        Triple("Jane", 1900, RAISE))
     }
 
 }
