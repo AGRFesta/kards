@@ -4,15 +4,17 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.Action
 import agrfesta.k.cards.texasholdem.rules.gameplay.BoardInfo
 import agrfesta.k.cards.texasholdem.rules.gameplay.GamePayments
 import agrfesta.k.cards.texasholdem.rules.gameplay.GamePhase
+import agrfesta.k.cards.texasholdem.rules.gameplay.Opponent
 import agrfesta.k.cards.texasholdem.rules.gameplay.OwnPlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
+import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 
 class PlayerGameContext(
         val me: OwnPlayer,
         val payments: GamePayments,
         val board: BoardInfo,
         val potAmount: Int,
-        val table: PublicTableData,
+        val table: Table<Opponent>,
         val history: Map<GamePhase,List<PlayerAction>>) {
     fun getActions(phase: GamePhase) = history.getOrElse(phase){ emptyList() }
     fun actualActions() = getActions(board.phase)

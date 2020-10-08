@@ -5,7 +5,6 @@ import agrfesta.k.cards.playingcards.deck.Deck
 import agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import agrfesta.k.cards.texasholdem.DeckListImpl
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
-import agrfesta.k.cards.texasholdem.playercontext.publicData
 
 fun aDeck(): Deck = DeckListImpl(listOf())
 fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer(),anInGamePlayer()), 0)
@@ -14,7 +13,7 @@ fun aContext(): GameContext = GameContext(aTable(), aGamePayments(), EmptyBoard(
 fun aContext(table: Table<InGamePlayer>, payments: GamePayments): GameContext =
         GameContext(table, payments, EmptyBoard(aDeck()), mapOf())
 fun aPlayerContext(): PlayerGameContext = PlayerGameContext(anInGamePlayer().asOwnPlayer(),aGamePayments(),
-        EmptyBoard(aDeck()).info(),0,aTable().publicData(), mapOf())
+        EmptyBoard(aDeck()).info(), 0, aTable().map { it.asOpponent() }, mapOf())
 
 fun aGamePayments(): GamePayments = GamePaymentsFixedImpl(10, 20)
 fun blinds(sb: Int, bb: Int): GamePayments = GamePaymentsFixedImpl(sb, bb)

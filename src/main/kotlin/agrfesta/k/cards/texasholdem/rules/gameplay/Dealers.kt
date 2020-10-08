@@ -3,7 +3,6 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 import agrfesta.k.cards.texasholdem.observers.DealerObserver
 import agrfesta.k.cards.texasholdem.playercontext.PlayerAction
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
-import agrfesta.k.cards.texasholdem.playercontext.publicData
 
 interface Dealer {
     fun collectPot(): MutableMap<InGamePlayer, Int>
@@ -79,8 +78,8 @@ abstract class AbstractDealer(
     }
 }
 
-private fun GameContext.toPlayerGameContext(me: OwnPlayer, potAmount: Int) =
-        PlayerGameContext(me, this.payments, this.board.info(), potAmount, this.table.publicData(), this.history)
+private fun GameContext.toPlayerGameContext(me: OwnPlayer, potAmount: Int) = PlayerGameContext(
+        me, this.payments, this.board.info(), potAmount, this.table.map { it.asOpponent() }, this.history)
 
 private fun hadToPay(player: InGamePlayer, pot: MutableMap<InGamePlayer, Int>): Boolean {
     val payed: Int = pot.payedBy(player)

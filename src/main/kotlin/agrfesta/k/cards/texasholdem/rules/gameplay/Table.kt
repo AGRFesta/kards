@@ -16,6 +16,8 @@ class Table<T>(playersList: List<T>, val button: Int) {
 
     fun iterateFromSB(): TableIterator<T> = TableIterator(players, Position.SMALL_BLIND.pos(this))
     fun iterateFromUTG(): TableIterator<T> = TableIterator(players, Position.UNDER_THE_GUN.pos(this))
+
+    fun <M> map(function: (T) -> M): Table<M> = Table(players.map(function), button)
 }
 
 class TableIterator<T>(private val players: List<T>,
