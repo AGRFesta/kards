@@ -23,7 +23,7 @@ abstract class AbstractDealer(
 
     protected abstract fun prevPot(): MutableMap<InGamePlayer, Int>?
     protected abstract fun createPot(): MutableMap<InGamePlayer, Int>
-    protected abstract fun playersIterator(): TableIterator
+    protected abstract fun playersIterator(): TableIterator<InGamePlayer>
 
     override fun collectPot(): MutableMap<InGamePlayer, Int> {
         val pot = createPot()
@@ -107,7 +107,7 @@ class PostFlopDealer(
 
     override fun prevPot(): MutableMap<InGamePlayer, Int>? = prevPot
     override fun createPot() = buildPot()
-    override fun playersIterator(): TableIterator = context.table.iterateFromSB()
+    override fun playersIterator(): TableIterator<InGamePlayer> = context.table.iterateFromSB()
     override fun collectPot(): MutableMap<InGamePlayer, Int> = super.collectPot()
 }
 
@@ -127,6 +127,6 @@ class PreFlopDealer(
     }
 
     override fun prevPot(): MutableMap<InGamePlayer, Int>? = null
-    override fun playersIterator(): TableIterator = context.table.iterateFromUTG()
+    override fun playersIterator(): TableIterator<InGamePlayer> = context.table.iterateFromUTG()
 }
 

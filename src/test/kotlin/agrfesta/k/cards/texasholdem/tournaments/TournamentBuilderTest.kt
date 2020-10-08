@@ -6,6 +6,7 @@ import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.TournamentObserver
 import agrfesta.k.cards.texasholdem.rules.gameplay.Game
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder
+import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 import agrfesta.k.cards.texasholdem.rules.gameplay.aStrategy
@@ -27,7 +28,7 @@ class TournamentBuilderTest {
 
     private fun testBuilder(trnImplementer: (Set<Player>, Int, IncreasingGamePayments,
                                              (Int) -> Int,
-                                             (IncreasingGamePayments, Table, GameObserver?) -> Game,
+                                             (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game,
                                              TournamentObserver?) -> Tournament) =
             TournamentBuilder(SimpleRandomGenerator(),
                     { payments,table,_ -> GameBuilder().build(payments,table) },
@@ -133,7 +134,8 @@ class TournamentBuilderTest {
     @Test
     @DisplayName("Game provider not provided -> the default game provider is provided to the tournament")
     fun story008() {
-        val expectedDefaultGameProvider: (IncreasingGamePayments, Table, GameObserver?) -> Game = {_,_,_ -> mockk() }
+        val expectedDefaultGameProvider:
+                (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game = { _, _, _ -> mockk() }
         TournamentBuilder(SimpleRandomGenerator(), expectedDefaultGameProvider) {
             _, _, _, _, gameProvider, _ ->
             assertThat(gameProvider).isEqualTo(expectedDefaultGameProvider)
@@ -145,8 +147,10 @@ class TournamentBuilderTest {
     @Test
     @DisplayName("Game provider provided -> the provided provider is provided to the tournament")
     fun story009() {
-        val expectedGameProvider: (IncreasingGamePayments, Table, GameObserver?) -> Game = {_,_,_ -> mockk() }
-        val defaultGameProvider: (IncreasingGamePayments, Table, GameObserver?) -> Game = {_,_,_ -> mockk() }
+        val expectedGameProvider:
+                (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game = {_,_,_ -> mockk() }
+        val defaultGameProvider:
+                (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game = {_,_,_ -> mockk() }
         TournamentBuilder(SimpleRandomGenerator(), defaultGameProvider) {
             _, _, _, _, gameProvider, _ ->
             assertThat(gameProvider).isEqualTo(expectedGameProvider)

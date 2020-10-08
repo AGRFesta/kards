@@ -18,7 +18,7 @@ class TournamentImpl(subscriptions: Set<Player>,
                      private val initialStack: Int,
                      private val payments: IncreasingGamePayments,
                      private val buttonProvider: (Int) -> Int,
-                     private val gameProvider: (IncreasingGamePayments, Table, GameObserver?) -> Game,
+                     private val gameProvider: (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game,
                      private val observer: TournamentObserver? ): Tournament {
     private val losers: MutableList<Set<Player>> = mutableListOf()
     private val players: MutableList<InGamePlayer> = subscriptions

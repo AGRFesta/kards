@@ -55,7 +55,7 @@ class GameBuilder {
         return this
     }
 
-    fun build(payments: GamePayments, table: Table): Game {
+    fun build(payments: GamePayments, table: Table<InGamePlayer>): Game {
         val context = GameContext(table, payments, EmptyBoard(deck), mapOf())
         return implementation.invoke(context, deck, preFlopDealerProvider, dealerProvider,
                 showdownProvider.invoke(observer), observer)

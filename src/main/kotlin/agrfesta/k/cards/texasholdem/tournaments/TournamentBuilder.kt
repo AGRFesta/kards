@@ -6,14 +6,15 @@ import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.TournamentObserver
 import agrfesta.k.cards.texasholdem.rules.gameplay.Game
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder
+import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 
 class TournamentBuilder(private val rndGenerator: RandomGenerator,
-                        defaultGameProvider: (IncreasingGamePayments, Table, GameObserver?) -> Game,
+                        defaultGameProvider: (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game,
                         private val tournamentImplementation: (Set<Player>, Int, IncreasingGamePayments,
                                                                (Int) -> Int,
-                                                               (IncreasingGamePayments, Table, GameObserver?) -> Game,
+                                                               (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game,
                                                                TournamentObserver?) -> Tournament) {
   private var observer: TournamentObserver? = null
 
@@ -37,7 +38,7 @@ class TournamentBuilder(private val rndGenerator: RandomGenerator,
     return this
   }
 
-  fun gameProvider(provider: (IncreasingGamePayments, Table, GameObserver?) -> Game): TournamentBuilder {
+  fun gameProvider(provider: (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game): TournamentBuilder {
     this.gameProvider = provider
     return this
   }

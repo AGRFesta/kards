@@ -27,7 +27,7 @@ class TableTest {
     @DisplayName("creating a Table with no players -> raises an Exception")
     fun creatingATableWithNoPlayerRaisesAnException() {
         val failure = assertThat {
-            Table(listOf(),0)
+            Table<InGamePlayer>(listOf(),0)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("The minimum number of players for a Table is 2, actual number: 0")

@@ -47,7 +47,7 @@ class TournamentImplTest {
                     game
                 }
         )
-        val tables = mutableListOf<Table>()
+        val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = tournamentBuilder()
                 .subscriptions(poly, jane, alex, dave)
@@ -95,7 +95,7 @@ class TournamentImplTest {
                     game
                 }
         )
-        val tables = mutableListOf<Table>()
+        val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = tournamentBuilder()
                 .subscriptions(poly, jane, alex)
@@ -143,7 +143,7 @@ class TournamentImplTest {
                     game
                 }
         )
-        val tables = mutableListOf<Table>()
+        val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = tournamentBuilder()
                 .subscriptions(poly, jane, alex)
@@ -189,7 +189,7 @@ class TournamentImplTest {
                     game
                 }
         )
-        val tables = mutableListOf<Table>()
+        val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = tournamentBuilder()
                 .subscriptions(poly, jane, alex)
@@ -234,7 +234,7 @@ class TournamentImplTest {
                     game
                 }
         )
-        val tables = mutableListOf<Table>()
+        val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = tournamentBuilder()
                 .subscriptions(poly, jane, alex)
