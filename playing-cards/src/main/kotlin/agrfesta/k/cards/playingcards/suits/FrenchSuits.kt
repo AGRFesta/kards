@@ -19,12 +19,8 @@ fun getFrenchSeedFromSymbol(char: Char): FrenchSeed = FrenchSeed.values()
         ?: throw IllegalArgumentException("Symbol '$char' is not a French Seed")
 
 fun createFrenchCard(str: String): Card {
-    if (str.isBlank()) {
-        throw IllegalArgumentException("Unable to create French Card, received empty String")
-    }
-    if (str.length != 2) {
-        throw IllegalArgumentException("Unable to create French Card, expected two char String, received: $str")
-    }
+    require(!str.isBlank()) { "Unable to create French Card, received empty String" }
+    require(str.length == 2) { "Unable to create French Card, expected two char String, received: $str" }
     return cardOf(
             getFrenchRankFromSymbol(str[0]),
             getFrenchSeedFromSymbol(str[1])
@@ -43,9 +39,7 @@ class FrenchRankAdapter(private val fr: FrenchRank): Rank {
             FrenchRank.values().size + (decrement % FrenchRank.values().size))
 
     override fun compareTo(other: Rank): Int {
-        if (other !is FrenchRankAdapter) {
-            throw IllegalArgumentException("Comparable only to an instance of FrenchRankAdapter")
-        }
+        require(other is FrenchRankAdapter) { "Comparable only to an instance of FrenchRankAdapter" }
         return other.fr.compareTo(fr)
     }
 

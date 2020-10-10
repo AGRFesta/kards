@@ -19,12 +19,8 @@ fun getItalianSeedFromSymbol(symbol: Char): ItalianSeed = ItalianSeed.values()
         ?: throw IllegalArgumentException("Symbol '$symbol' is not an Italian Seed")
 
 fun createItalianCard(str: String): Card {
-    if (str.isBlank()) {
-        throw IllegalArgumentException("Unable to create Italian Card, received empty String")
-    }
-    if (str.length != 2) {
-        throw IllegalArgumentException("Unable to create Italian Card, expected two char String, received: $str")
-    }
+    require(!str.isBlank()) { "Unable to create Italian Card, received empty String" }
+    require(str.length == 2) { "Unable to create Italian Card, expected two char String, received: $str" }
     return cardOf(
             getItalianRankFromSymbol(str[0]),
             getItalianSeedFromSymbol(str[1])
@@ -43,9 +39,7 @@ class ItalianRankAdapter(private val ir: ItalianRank): Rank {
             ItalianRank.values().size + (decrement % ItalianRank.values().size))
 
     override fun compareTo(other: Rank): Int {
-        if (other !is ItalianRankAdapter) {
-            throw IllegalArgumentException("Comparable only to an instance of ItalianRankAdapter")
-        }
+        require(other is ItalianRankAdapter) { "Comparable only to an instance of ItalianRankAdapter" }
         return other.ir.compareTo(ir)
     }
 

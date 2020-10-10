@@ -41,9 +41,7 @@ interface Deck {
 class DeckImpl(private val cards: MutableList<Card> = mutableListOf()) : Deck {
 
     override fun draw(): Card {
-        if (cards.isEmpty()) {
-            throw IllegalStateException("Trying to draw a card from an empty deck")
-        }
+        check(cards.isNotEmpty()) { "Trying to draw a card from an empty deck" }
         return cards.removeAt(0)
     }
 

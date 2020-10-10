@@ -12,7 +12,7 @@ package agrfesta.k.cards.playingcards.utils
  * Throws [IllegalStateException] if [List] is empty.
  */
 fun <T> List<T>.circularIndexMapping(value: Int): Int {
-    if (this.isEmpty()) throw IllegalStateException("Trying to map a circular index on an empty List")
+    check(this.isNotEmpty()) { "Trying to map a circular index on an empty List" }
     return  ((value % this.size) + this.size) % this.size
 }
 
@@ -39,7 +39,7 @@ fun <T> List<T>.circularIndex(value: Int): T = this[this.circularIndexMapping(va
  * Throws [IllegalStateException] if [Array] is empty.
  */
 fun <T> Array<T>.circularIndexMapping(value: Int): Int {
-    if (this.isEmpty()) throw IllegalStateException("Trying to map a circular index on an empty Array")
+    check(this.isNotEmpty()) { "Trying to map a circular index on an empty Array" }
     return ((value % this.size) + this.size) % this.size
 }
 
