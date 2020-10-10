@@ -1,10 +1,36 @@
 package agrfesta.k.cards.texasholdem.observers
 
 import agrfesta.k.cards.texasholdem.DeckListImpl
-import agrfesta.k.cards.texasholdem.rules.gameplay.*
+import agrfesta.k.cards.texasholdem.rules.gameplay.Board
+import agrfesta.k.cards.texasholdem.rules.gameplay.Dealer
+import agrfesta.k.cards.texasholdem.rules.gameplay.EmptyBoard
+import agrfesta.k.cards.texasholdem.rules.gameplay.FlopBoard
+import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
+import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.Player
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
+import agrfesta.k.cards.texasholdem.rules.gameplay.RiverBoard
+import agrfesta.k.cards.texasholdem.rules.gameplay.Table
+import agrfesta.k.cards.texasholdem.rules.gameplay.TurnBoard
+import agrfesta.k.cards.texasholdem.rules.gameplay.aGamePayments
+import agrfesta.k.cards.texasholdem.rules.gameplay.anInGamePlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.buildPot
+import agrfesta.k.cards.texasholdem.rules.gameplay.cardList
+import agrfesta.k.cards.texasholdem.rules.gameplay.cards
+import agrfesta.k.cards.texasholdem.rules.gameplay.receiveFrom
 import assertk.assertThat
-import assertk.assertions.*
-import io.mockk.*
+import assertk.assertions.containsOnly
+import assertk.assertions.hasSize
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import io.mockk.CapturingSlot
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -66,12 +92,14 @@ class GameObserverTest {
         val prize = slot<Int>()
         val observerMock = observerMock(winner, prize, boards)
 
-        GameBuilder()
+        buildingAGame()
+                .withPayments(payments)
+                .withTable(table)
                 .observedBy(observerMock)
                 .withDeck(deck)
                 .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
                 .dealerProvider { _,_,_ -> dealerMock(flopDealer) }
-                .build(payments,table)
+                .build()
                 .play()
 
         verify(exactly = 1) { observerMock.notifyStartingPhase(any()) }
@@ -117,7 +145,9 @@ class GameObserverTest {
         val prize = slot<Int>()
         val observerMock = observerMock(winner, prize, boards)
 
-        GameBuilder()
+        buildingAGame()
+                .withPayments(payments)
+                .withTable(table)
                 .observedBy(observerMock)
                 .withDeck(deck)
                 .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
@@ -128,7 +158,7 @@ class GameObserverTest {
                         else -> dealerMock(defaultDealer)
                     }
                 }
-                .build(payments,table)
+                .build()
                 .play()
 
         verify(exactly = 2) { observerMock.notifyStartingPhase(any()) }
@@ -176,7 +206,9 @@ class GameObserverTest {
         val prize = slot<Int>()
         val observerMock = observerMock(winner, prize, boards)
 
-        GameBuilder()
+        buildingAGame()
+                .withPayments(payments)
+                .withTable(table)
                 .observedBy(observerMock)
                 .withDeck(deck)
                 .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
@@ -188,7 +220,7 @@ class GameObserverTest {
                         else -> dealerMock(defaultDealer)
                     }
                 }
-                .build(payments,table)
+                .build()
                 .play()
 
         verify(exactly = 3) { observerMock.notifyStartingPhase(any()) }
@@ -234,7 +266,9 @@ class GameObserverTest {
         val prize = slot<Int>()
         val observerMock = observerMock(winner, prize, boards)
 
-        GameBuilder()
+        buildingAGame()
+                .withPayments(payments)
+                .withTable(table)
                 .observedBy(observerMock)
                 .withDeck(deck)
                 .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
@@ -246,7 +280,7 @@ class GameObserverTest {
                         else -> dealerMock(defaultDealer)
                     }
                 }
-                .build(payments,table)
+                .build()
                 .play()
 
         verify(exactly = 4) { observerMock.notifyStartingPhase(any()) }
@@ -283,12 +317,14 @@ class GameObserverTest {
         every { observerMock.notifyStartingPhase(capture(boards)) } just Runs
         every { observerMock.notifyResult(any()) } just Runs
 
-        GameBuilder()
+        buildingAGame()
+                .withPayments(payments)
+                .withTable(table)
                 .observedBy(observerMock)
                 .withDeck(deck)
                 .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
                 .dealerProvider { _,_,_ -> dealerMock(allChecksDealer) }
-                .build(payments,table)
+                .build()
                 .play()
 
         verify(exactly = 4) { observerMock.notifyStartingPhase(any()) }

@@ -7,8 +7,15 @@ import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.ShowdownObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
 
-//TODO refactoring moving default values in constructor
-class GameBuilder {
+interface PaymentsStep {
+    fun withPayments(payments: GamePayments): TableStep
+    fun withPayments(sb: Int, bb: Int, ante: Int? = null): TableStep
+}
+interface TableStep {
+    fun withTable(table: Table<InGamePlayer>): GameBuilder
+}
+
+class GameBuilder private constructor(): PaymentsStep, TableStep {
     private var deck: Deck = FRENCH.createDeck()
     private var observer: GameObserver? = null
 
@@ -20,6 +27,13 @@ class GameBuilder {
     private var implementation: (GameContext, Deck, (GameContext, DealerObserver?) -> Dealer,
                                  (MutableMap<InGamePlayer,Int>, GameContext, DealerObserver?) -> Dealer,
                                  Showdown, GameObserver?) -> Game = ::GameImpl
+
+    private lateinit var payments: GamePayments
+    private lateinit var table: Table<InGamePlayer>
+
+    companion object {
+        fun buildingAGame(): PaymentsStep = GameBuilder()
+    }
 
     fun withDeck(deck: Deck): GameBuilder {
         this.deck = deck
@@ -48,14 +62,28 @@ class GameBuilder {
         this.dealerProvider = dealerProvider
         return this
     }
-    fun implementation(implementation: (GameContext, Deck, (GameContext, DealerObserver?) -> Dealer,
-                                        (MutableMap<InGamePlayer,Int>, GameContext, DealerObserver?) -> Dealer,
-                                        Showdown, GameObserver?) -> Game): GameBuilder {
+    fun implementedBy(implementation: (GameContext, Deck, (GameContext, DealerObserver?) -> Dealer,
+                                       (MutableMap<InGamePlayer,Int>, GameContext, DealerObserver?) -> Dealer,
+                                       Showdown, GameObserver?) -> Game): GameBuilder {
         this.implementation = implementation
         return this
     }
 
-    fun build(payments: GamePayments, table: Table<InGamePlayer>): Game {
+    override fun withPayments(payments: GamePayments): TableStep {
+        this.payments = payments
+        return this
+    }
+    override fun withPayments(sb: Int, bb: Int, ante: Int?): TableStep {
+        this.payments = GamePaymentsFixedImpl(sb, bb, ante)
+        return this
+    }
+
+    override fun withTable(table: Table<InGamePlayer>): GameBuilder {
+        this.table = table
+        return this
+    }
+
+    fun build(): Game {
         val context = GameContext(table, payments, EmptyBoard(deck), mapOf())
         return implementation.invoke(context, deck, preFlopDealerProvider, dealerProvider,
                 showdownProvider.invoke(observer), observer)

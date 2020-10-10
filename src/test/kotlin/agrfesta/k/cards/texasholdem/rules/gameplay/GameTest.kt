@@ -1,6 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.DeckListImpl
+import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
 import agrfesta.k.cards.texasholdem.rules.gameplay.utils.TestPotBuilder
 import assertk.assertThat
 import assertk.assertions.containsOnly
@@ -60,14 +61,16 @@ class GameTest {
             buildPot()
         }
 
-        GameBuilder()
+        buildingAGame()
+                .withPayments(payments)
+                .withTable(table)
                 .withDeck(deck)
                 .preFlopDealerProvider { _, _ ->
                     assertThat(alex.cards).containsOnly(*cards("Ah", "Ac"))
                     dealerMock(preFlopDealer)
                 }
                 .dealerProvider { _, _, _ -> dealerMock(flopDealer) }
-                .build(payments, table)
+                .build()
                 .play()
     }
 
@@ -88,7 +91,9 @@ class GameTest {
             buildPot()
         }
 
-        GameBuilder()
+        buildingAGame()
+                .withPayments(payments)
+                .withTable(table)
                 .preFlopDealerProvider { gc, _ ->
                     assertThat(gc.table === table).isTrue()
                     assertThat(gc.payments === payments).isTrue()
@@ -96,7 +101,7 @@ class GameTest {
                     dealerMock(preFlopDealer)
                 }
                 .dealerProvider { _, _, _ -> dealerMock(flopDealer) }
-                .build(payments, table)
+                .build()
                 .play()
 
         assertThat(alex.stack).isEqualTo(1200)
@@ -129,7 +134,9 @@ class GameTest {
             buildPot()
         }
 
-        GameBuilder()
+        buildingAGame()
+                .withPayments(payments)
+                .withTable(table)
                 .preFlopDealerProvider { gc, _ ->
                     assertThat(gc.table === table).isTrue()
                     assertThat(gc.payments === payments).isTrue()
@@ -146,7 +153,7 @@ class GameTest {
                         else -> dealerMock(defaultDealer)
                     }
                 }
-                .build(payments, table)
+                .build()
                 .play()
 
         assertThat(alex.stack).isEqualTo(1400)
@@ -178,7 +185,9 @@ class GameTest {
             buildPot()
         }
 
-        GameBuilder()
+        buildingAGame()
+                .withPayments(payments)
+                .withTable(table)
                 .preFlopDealerProvider { gc, _ ->
                     assertThat(gc.table === table).isTrue()
                     assertThat(gc.payments === payments).isTrue()
@@ -201,7 +210,7 @@ class GameTest {
                         else -> dealerMock(defaultDealer)
                     }
                 }
-                .build(payments, table)
+                .build()
                 .play()
 
         assertThat(alex.stack).isEqualTo(1600)
@@ -234,7 +243,9 @@ class GameTest {
                     .receiveFoldFrom(dave)
         }
 
-        GameBuilder()
+        buildingAGame()
+                .withPayments(payments)
+                .withTable(table)
                 .preFlopDealerProvider { gc, _ ->
                     assertThat(gc.table === table).isTrue()
                     assertThat(gc.payments === payments).isTrue()
@@ -260,7 +271,7 @@ class GameTest {
                         else -> dealerMock(defaultDealer)
                     }
                 }
-                .build(payments, table)
+                .build()
                 .play()
 
         assertThat(alex.stack).isEqualTo(1800)
@@ -293,7 +304,9 @@ class GameTest {
                     .receiveCallFrom(dave, 200)
         }
 
-        GameBuilder()
+        buildingAGame()
+                .withPayments(payments)
+                .withTable(table)
                 .preFlopDealerProvider { gc, _ ->
                     assertThat(gc.table === table).isTrue()
                     assertThat(gc.payments === payments).isTrue()
@@ -323,7 +336,7 @@ class GameTest {
                     assertThat(board).isInstanceOf(RiverBoard::class)
                     assertThat(pot).containsOnly(poly to 200, alex to 800, dave to 800)
                 })
-                .build(payments, table)
+                .build()
                 .play()
 
         assertThat(alex.stack).isEqualTo(200)

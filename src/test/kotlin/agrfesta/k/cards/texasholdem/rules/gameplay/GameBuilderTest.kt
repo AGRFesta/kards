@@ -5,6 +5,7 @@ import agrfesta.k.cards.playingcards.deck.DeckImpl
 import agrfesta.k.cards.texasholdem.observers.DealerObserver
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
+import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
 import assertk.assertThat
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNull
@@ -35,17 +36,21 @@ class GameBuilderTest {
     @Test
     @DisplayName("Default Game implementation is GameImpl")
     fun defaultGameImplementationIsGameImpl() {
-        val game = GameBuilder()
-                .build(aGamePayments(), aTable())
+        val game = buildingAGame()
+                .withPayments(aGamePayments())
+                .withTable(aTable())
+                .build()
         assertThat(game).isInstanceOf(GameImpl::class)
     }
     @Test
     @DisplayName("Default internal implementations: deck is AutoShufflingDeck, dealer is PostFlopDealer," +
             " pre-flop dealer is PreFlopDealer, showdown is Showdown, no observer")
     fun defaultDeckImplementationIsAutoShufflingDeck() {
-        val game = GameBuilder()
-                .implementation( ::GameMockImpl )
-                .build(aGamePayments(), aTable())
+        val game = buildingAGame()
+                .withPayments(aGamePayments())
+                .withTable(aTable())
+                .implementedBy( ::GameMockImpl )
+                .build()
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
             assertThat(game.deck).isInstanceOf(DeckImpl::class)
@@ -61,9 +66,11 @@ class GameBuilderTest {
     fun builderInjectInGameProvidedGamePaymentsAndTable() {
         val payments = aGamePayments()
         val table = aTable()
-        val game = GameBuilder()
-                .implementation( ::GameMockImpl )
-                .build(payments, table)
+        val game = buildingAGame()
+                .withPayments(payments)
+                .withTable(table)
+                .implementedBy( ::GameMockImpl )
+                .build()
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
             assertThat(game.context.payments === payments).isTrue()
@@ -80,13 +87,15 @@ class GameBuilderTest {
         }
         val dealer = PostFlopDealer(buildPot(),aContext())
         val preFlopDealer = PreFlopDealer(aContext())
-        val game = GameBuilder()
+        val game = buildingAGame()
+                .withPayments(aGamePayments())
+                .withTable(aTable())
                 .withDeck(deck)
                 .dealerProvider {_,_,_ -> dealer}
                 .preFlopDealerProvider { _,_ -> preFlopDealer }
                 .showdown(showdown)
-                .implementation( ::GameMockImpl )
-                .build(aGamePayments(), aTable())
+                .implementedBy( ::GameMockImpl )
+                .build()
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
             assertThat(game.deck === deck).isTrue()
@@ -101,10 +110,12 @@ class GameBuilderTest {
     fun gameBuildingStory000() {
         val observerMock = mockk<GameObserver>()
         every { observerMock.notifyResult(any()) } just Runs
-        val game = GameBuilder()
+        val game = buildingAGame()
+                .withPayments(aGamePayments())
+                .withTable(aTable())
                 .observedBy(observerMock)
-                .implementation( ::GameMockImpl )
-                .build(aGamePayments(), aTable())
+                .implementedBy( ::GameMockImpl )
+                .build()
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
             game.showdown.execute(buildPot(),EmptyBoard(aDeck()))
@@ -121,11 +132,13 @@ class GameBuilderTest {
 
         val observerMock = mockk<GameObserver>()
         every { observerMock.notifyResult(any()) } just Runs
-        val game = GameBuilder()
+        val game = buildingAGame()
+                .withPayments(aGamePayments())
+                .withTable(aTable())
                 .showdown(showdown)
                 .observedBy(observerMock)
-                .implementation( ::GameMockImpl )
-                .build(aGamePayments(), aTable())
+                .implementedBy( ::GameMockImpl )
+                .build()
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
             game.showdown.execute(buildPot(),EmptyBoard(aDeck()))
@@ -139,11 +152,13 @@ class GameBuilderTest {
     fun gameBuildingStory002() {
         val observerMock = mockk<GameObserver>()
         every { observerMock.notifyResult(any()) } just Runs
-        val game = GameBuilder()
+        val game = buildingAGame()
+                .withPayments(aGamePayments())
+                .withTable(aTable())
                 .showdown { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }
                 .observedBy(observerMock)
-                .implementation( ::GameMockImpl )
-                .build(aGamePayments(), aTable())
+                .implementedBy( ::GameMockImpl )
+                .build()
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
             game.showdown.execute(buildPot(),EmptyBoard(aDeck()))

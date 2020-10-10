@@ -5,7 +5,7 @@ import agrfesta.k.cards.playingcards.utils.SimpleRandomGenerator
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.TournamentObserver
 import agrfesta.k.cards.texasholdem.rules.gameplay.Game
-import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder
+import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
 import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
@@ -31,7 +31,9 @@ class TournamentBuilderTest {
                                              (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game,
                                              TournamentObserver?) -> Tournament) =
             TournamentBuilder(SimpleRandomGenerator(),
-                    { payments,table,_ -> GameBuilder().build(payments,table) },
+                    { payments,table,_ -> buildingAGame()
+                            .withPayments(payments)
+                            .withTable(table).build() },
                     trnImplementer)
 
     @Test
@@ -73,7 +75,9 @@ class TournamentBuilderTest {
         val rndGenerator: RandomGenerator = mockk()
         every { rndGenerator.nextInt(10) } returns 5
         TournamentBuilder(rndGenerator,
-                { payments,table,_ -> GameBuilder().build(payments,table) },
+                { payments,table,_ -> buildingAGame()
+                        .withPayments(payments)
+                        .withTable(table).build() },
                 { _,_,_,buttonProvider,_,_ ->
                     assertThat(buttonProvider.invoke(10)).isEqualTo(5)
                     mockk() })
@@ -87,7 +91,9 @@ class TournamentBuilderTest {
         val rndGenerator: RandomGenerator = mockk()
         every { rndGenerator.nextInt(10) } returns 5
         TournamentBuilder(rndGenerator,
-                { payments,table,_ -> GameBuilder().build(payments,table) },
+                { payments,table,_ -> buildingAGame()
+                        .withPayments(payments)
+                        .withTable(table).build() },
                 { _,_,_,buttonProvider,_,_ ->
                     assertThat(buttonProvider.invoke(10)).isEqualTo(10)
                     mockk() })
