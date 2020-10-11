@@ -2,7 +2,6 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.playingcards.deck.Deck
 import agrfesta.k.cards.playingcards.suits.Suit.FRENCH
-import agrfesta.k.cards.texasholdem.observers.DealerObserver
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.ShowdownObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
@@ -21,12 +20,8 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
 
     private var showdownProvider: (ShowdownObserver?) -> Showdown = { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }
 
-    private var preFlopDealerProvider: (GameContext, DealerObserver?) -> Dealer = { gc, obs -> PreFlopDealer(gc,obs) }
-    private var dealerProvider: (MutableMap<InGamePlayer,Int>, GameContext, DealerObserver?) -> Dealer =
-            { pot,context,observer -> PostFlopDealer(pot,context,observer) }
-    private var implementation: (GameContext, Deck, (GameContext, DealerObserver?) -> Dealer,
-                                 (MutableMap<InGamePlayer,Int>, GameContext, DealerObserver?) -> Dealer,
-                                 Showdown, GameObserver?) -> Game = ::GameImpl
+    private var dealerFactory: DealerFactory = DealerFactoryImpl()
+    private var implementation: (GameContext, Deck, DealerFactory, Showdown, GameObserver?) -> Game = ::GameImpl
 
     private lateinit var payments: GamePayments
     private lateinit var table: Table<InGamePlayer>
@@ -53,17 +48,12 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
         return this
     }
 
-    fun preFlopDealerProvider(preFlopDealerProvider: (GameContext, DealerObserver?) -> Dealer): GameBuilder {
-        this.preFlopDealerProvider = preFlopDealerProvider
+    fun withDealerFactory(dealerFactory: DealerFactory): GameBuilder {
+        this.dealerFactory = dealerFactory
         return this
     }
-    fun dealerProvider(dealerProvider: (MutableMap<InGamePlayer,Int>, GameContext, DealerObserver?) -> Dealer)
-            : GameBuilder {
-        this.dealerProvider = dealerProvider
-        return this
-    }
-    fun implementedBy(implementation: (GameContext, Deck, (GameContext, DealerObserver?) -> Dealer,
-                                       (MutableMap<InGamePlayer,Int>, GameContext, DealerObserver?) -> Dealer,
+
+    fun implementedBy(implementation: (GameContext, Deck, dealerFactory: DealerFactory,
                                        Showdown, GameObserver?) -> Game): GameBuilder {
         this.implementation = implementation
         return this
@@ -85,7 +75,7 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
 
     fun build(): Game {
         val context = GameContext(table, payments, EmptyBoard(deck), mapOf())
-        return implementation.invoke(context, deck, preFlopDealerProvider, dealerProvider,
+        return implementation.invoke(context, deck, dealerFactory,
                 showdownProvider.invoke(observer), observer)
     }
 

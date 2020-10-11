@@ -12,8 +12,7 @@ interface Game {
 class GameImpl(
         initialContext: GameContext,
         private val deck: Deck,
-        private val preFlopDealerProvider: (GameContext, DealerObserver) -> Dealer,
-        private val dealerProvider: (MutableMap<InGamePlayer, Int>, GameContext, DealerObserver) -> Dealer,
+        private val dealerFactory: DealerFactory,
         private val showdown: Showdown,
         private val observer: GameObserver?
 ) : Game, DealerObserver {
@@ -49,7 +48,7 @@ class GameImpl(
     private fun findPreFlopWinner(): InGamePlayer? {
         observer?.notifyStartingPhase(context.board)
         context.table.players.forEach { it.cards = deck.draw(2).toSet() }
-        val dealer = preFlopDealerProvider.invoke(context, this)
+        val dealer = dealerFactory.preFlopDealer(context, this)
         pot = dealer.collectPot()
         return findWinner(context.table.players)
     }
@@ -57,7 +56,7 @@ class GameImpl(
     private fun findWinner(): InGamePlayer? {
         context = context.nextPhase()
         observer?.notifyStartingPhase(context.board)
-        val dealer = dealerProvider.invoke(pot, context, this)
+        val dealer = dealerFactory.postFlopDealer(pot, context, this)
         pot = pot + dealer.collectPot()
         return findWinner(context.table.players)
     }

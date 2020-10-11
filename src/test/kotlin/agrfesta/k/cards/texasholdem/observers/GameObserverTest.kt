@@ -3,9 +3,11 @@ package agrfesta.k.cards.texasholdem.observers
 import agrfesta.k.cards.texasholdem.DeckListImpl
 import agrfesta.k.cards.texasholdem.rules.gameplay.Board
 import agrfesta.k.cards.texasholdem.rules.gameplay.Dealer
+import agrfesta.k.cards.texasholdem.rules.gameplay.DealerFactory
 import agrfesta.k.cards.texasholdem.rules.gameplay.EmptyBoard
 import agrfesta.k.cards.texasholdem.rules.gameplay.FlopBoard
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
+import agrfesta.k.cards.texasholdem.rules.gameplay.GameContext
 import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
@@ -86,6 +88,9 @@ class GameObserverTest {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
+        val dealerFactory = mockk<DealerFactory>()
+        every { dealerFactory.preFlopDealer(any(),any()) } answers { dealerMock(preFlopDealer) }
+        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(flopDealer) }
 
         val boards = mutableListOf<Board>()
         val winner = slot<Player>()
@@ -97,8 +102,7 @@ class GameObserverTest {
                 .withTable(table)
                 .observedBy(observerMock)
                 .withDeck(deck)
-                .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
-                .dealerProvider { _,_,_ -> dealerMock(flopDealer) }
+                .withDealerFactory(dealerFactory)
                 .build()
                 .play()
 
@@ -139,6 +143,15 @@ class GameObserverTest {
             assert(false) { "The game should finish at flop but is collecting pot at turn" }
             buildPot()
         }
+        val dealerFactory = mockk<DealerFactory>()
+        every { dealerFactory.preFlopDealer(any(),any()) } returns dealerMock(preFlopDealer)
+        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers {
+            when (secondArg<GameContext>().board) {
+                is FlopBoard -> dealerMock(flopDealer)
+                is TurnBoard -> dealerMock(turnDealer)
+                else -> dealerMock(defaultDealer)
+            }
+        }
 
         val boards = mutableListOf<Board>()
         val winner = slot<Player>()
@@ -150,14 +163,7 @@ class GameObserverTest {
                 .withTable(table)
                 .observedBy(observerMock)
                 .withDeck(deck)
-                .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
-                .dealerProvider { _,context,_ ->
-                    when (context.board) {
-                        is FlopBoard -> dealerMock(flopDealer)
-                        is TurnBoard -> dealerMock(turnDealer)
-                        else -> dealerMock(defaultDealer)
-                    }
-                }
+                .withDealerFactory(dealerFactory)
                 .build()
                 .play()
 
@@ -200,6 +206,16 @@ class GameObserverTest {
             assert(false) { "The game should finish at turn but is collecting pot at river" }
             buildPot()
         }
+        val dealerFactory = mockk<DealerFactory>()
+        every { dealerFactory.preFlopDealer(any(),any()) } returns dealerMock(preFlopDealer)
+        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers {
+            when (secondArg<GameContext>().board) {
+                is FlopBoard -> dealerMock(allChecksDealer)
+                is TurnBoard -> dealerMock(turnDealer)
+                is RiverBoard -> dealerMock(riverDealer)
+                else -> dealerMock(defaultDealer)
+            }
+        }
 
         val boards = mutableListOf<Board>()
         val winner = slot<Player>()
@@ -211,15 +227,7 @@ class GameObserverTest {
                 .withTable(table)
                 .observedBy(observerMock)
                 .withDeck(deck)
-                .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
-                .dealerProvider { _,context,_ ->
-                    when (context.board) {
-                        is FlopBoard -> dealerMock(allChecksDealer)
-                        is TurnBoard -> dealerMock(turnDealer)
-                        is RiverBoard -> dealerMock(riverDealer)
-                        else -> dealerMock(defaultDealer)
-                    }
-                }
+                .withDealerFactory(dealerFactory)
                 .build()
                 .play()
 
@@ -260,6 +268,16 @@ class GameObserverTest {
             poly.status = PlayerStatus.FOLD
             pot
         }
+        val dealerFactory = mockk<DealerFactory>()
+        every { dealerFactory.preFlopDealer(any(),any()) } returns dealerMock(preFlopDealer)
+        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers {
+            when (secondArg<GameContext>().board) {
+                is FlopBoard -> dealerMock(allChecksDealer)
+                is TurnBoard -> dealerMock(allChecksDealer)
+                is RiverBoard -> dealerMock(riverDealer)
+                else -> dealerMock(defaultDealer)
+            }
+        }
 
         val boards = mutableListOf<Board>()
         val winner = slot<Player>()
@@ -271,15 +289,7 @@ class GameObserverTest {
                 .withTable(table)
                 .observedBy(observerMock)
                 .withDeck(deck)
-                .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
-                .dealerProvider { _,context,_ ->
-                    when (context.board) {
-                        is FlopBoard -> dealerMock(allChecksDealer)
-                        is TurnBoard -> dealerMock(allChecksDealer)
-                        is RiverBoard -> dealerMock(riverDealer)
-                        else -> dealerMock(defaultDealer)
-                    }
-                }
+                .withDealerFactory(dealerFactory)
                 .build()
                 .play()
 
@@ -317,13 +327,16 @@ class GameObserverTest {
         every { observerMock.notifyStartingPhase(capture(boards)) } just Runs
         every { observerMock.notifyResult(any()) } just Runs
 
+        val dealerFactory = mockk<DealerFactory>()
+        every { dealerFactory.preFlopDealer(any(),any()) } returns dealerMock(preFlopDealer)
+        every { dealerFactory.postFlopDealer(any(),any(),any()) } returns dealerMock(allChecksDealer)
+
         buildingAGame()
                 .withPayments(payments)
                 .withTable(table)
                 .observedBy(observerMock)
                 .withDeck(deck)
-                .preFlopDealerProvider { _,_ -> dealerMock(preFlopDealer) }
-                .dealerProvider { _,_,_ -> dealerMock(allChecksDealer) }
+                .withDealerFactory(dealerFactory)
                 .build()
                 .play()
 

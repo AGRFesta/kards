@@ -3,13 +3,18 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 import agrfesta.k.cards.texasholdem.DeckListImpl
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
 import agrfesta.k.cards.texasholdem.rules.gameplay.utils.TestPotBuilder
+import assertk.Assert
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
+import assertk.assertions.prop
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -31,6 +36,7 @@ class GameTest {
     private var poly = anInGamePlayer()
     private var jane = anInGamePlayer()
     private var dave = anInGamePlayer()
+    private val dealerFactory = mockk<DealerFactory>()
 
     private val defaultDealer: () -> MutableMap<InGamePlayer, Int> = {
         assert(false) { "The game is not following the correct phases sequence" }
@@ -43,6 +49,11 @@ class GameTest {
         poly = anInGamePlayer("Poly", 1000)
         jane = anInGamePlayer("Jane", 1000)
         dave = anInGamePlayer("Dave", 1000)
+    }
+
+    @AfterEach
+    fun clear() {
+        clearMocks(dealerFactory)
     }
 
     @Test
@@ -60,16 +71,14 @@ class GameTest {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
+        every { dealerFactory.preFlopDealer(any(),any()) }  answers {
+            assertThat(alex.cards).containsOnly(*cards("Ah", "Ac"))
+            dealerMock(preFlopDealer)
+        }
+        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(flopDealer) }
 
-        buildingAGame()
-                .withPayments(payments)
-                .withTable(table)
+        buildingATestGame(table)
                 .withDeck(deck)
-                .preFlopDealerProvider { _, _ ->
-                    assertThat(alex.cards).containsOnly(*cards("Ah", "Ac"))
-                    dealerMock(preFlopDealer)
-                }
-                .dealerProvider { _, _, _ -> dealerMock(flopDealer) }
                 .build()
                 .play()
     }
@@ -90,17 +99,14 @@ class GameTest {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
+        every { dealerFactory.preFlopDealer(any(),any()) }  answers {
+            assertThat(firstArg<GameContext>()).has(table, payments)
+            assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
+            dealerMock(preFlopDealer)
+        }
+        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(flopDealer) }
 
-        buildingAGame()
-                .withPayments(payments)
-                .withTable(table)
-                .preFlopDealerProvider { gc, _ ->
-                    assertThat(gc.table === table).isTrue()
-                    assertThat(gc.payments === payments).isTrue()
-                    assertThat(gc.board).isInstanceOf(EmptyBoard::class)
-                    dealerMock(preFlopDealer)
-                }
-                .dealerProvider { _, _, _ -> dealerMock(flopDealer) }
+        buildingATestGame(table)
                 .build()
                 .play()
 
@@ -133,26 +139,23 @@ class GameTest {
             assert(false) { "The game should finish at flop but is collecting pot at turn" }
             buildPot()
         }
+        every { dealerFactory.preFlopDealer(any(),any()) }  answers {
+            assertThat(firstArg<GameContext>()).has(table, payments)
+            assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
+            dealerMock(preFlopDealer)
+        }
+        every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
+            assertThat(firstArg<MutableMap<InGamePlayer,Int>>()).containsOnly(poly to 200, alex to 200)
+            assertThat(secondArg<GameContext>().table === table).isTrue()
+            assertThat(secondArg<GameContext>().payments === payments).isTrue()
+            when (secondArg<GameContext>().board) {
+                is FlopBoard -> dealerMock(flopDealer)
+                is TurnBoard -> dealerMock(turnDealer)
+                else -> dealerMock(defaultDealer)
+            }
+        }
 
-        buildingAGame()
-                .withPayments(payments)
-                .withTable(table)
-                .preFlopDealerProvider { gc, _ ->
-                    assertThat(gc.table === table).isTrue()
-                    assertThat(gc.payments === payments).isTrue()
-                    assertThat(gc.board).isInstanceOf(EmptyBoard::class)
-                    dealerMock(preFlopDealer)
-                }
-                .dealerProvider { pot, context, _ ->
-                    assertThat(pot).containsOnly(poly to 200, alex to 200)
-                    assertThat(context.table === table).isTrue()
-                    assertThat(context.payments === payments).isTrue()
-                    when (context.board) {
-                        is FlopBoard -> dealerMock(flopDealer)
-                        is TurnBoard -> dealerMock(turnDealer)
-                        else -> dealerMock(defaultDealer)
-                    }
-                }
+        buildingATestGame(table)
                 .build()
                 .play()
 
@@ -184,32 +187,31 @@ class GameTest {
             assert(false) { "The game should finish at turn but is collecting pot at river" }
             buildPot()
         }
+        every { dealerFactory.preFlopDealer(any(),any()) }  answers {
+            assertThat(firstArg<GameContext>()).has(table, payments)
+            assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
+            dealerMock(preFlopDealer)
+        }
+        every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
+            assertThat(secondArg<GameContext>().table === table).isTrue()
+            assertThat(secondArg<GameContext>().payments === payments).isTrue()
+            when (secondArg<GameContext>().board) {
+                is FlopBoard -> {
+                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                            .containsOnly(poly to 200, alex to 200, dave to 200)
+                    dealerMock(flopDealer)
+                }
+                is TurnBoard -> {
+                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                            .containsOnly(poly to 200, alex to 400, dave to 400)
+                    dealerMock(turnDealer)
+                }
+                is RiverBoard -> dealerMock(riverDealer)
+                else -> dealerMock(defaultDealer)
+            }
+        }
 
-        buildingAGame()
-                .withPayments(payments)
-                .withTable(table)
-                .preFlopDealerProvider { gc, _ ->
-                    assertThat(gc.table === table).isTrue()
-                    assertThat(gc.payments === payments).isTrue()
-                    assertThat(gc.board).isInstanceOf(EmptyBoard::class)
-                    dealerMock(preFlopDealer)
-                }
-                .dealerProvider { pot, context, _ ->
-                    assertThat(context.table === table).isTrue()
-                    assertThat(context.payments === payments).isTrue()
-                    when (context.board) {
-                        is FlopBoard -> {
-                            assertThat(pot).containsOnly(poly to 200, alex to 200, dave to 200)
-                            dealerMock(flopDealer)
-                        }
-                        is TurnBoard -> {
-                            assertThat(pot).containsOnly(poly to 200, alex to 400, dave to 400)
-                            dealerMock(turnDealer)
-                        }
-                        is RiverBoard -> dealerMock(riverDealer)
-                        else -> dealerMock(defaultDealer)
-                    }
-                }
+        buildingATestGame(table)
                 .build()
                 .play()
 
@@ -242,35 +244,34 @@ class GameTest {
             it.receiveRaiseFrom(alex, 200)
                     .receiveFoldFrom(dave)
         }
+        every { dealerFactory.preFlopDealer(any(),any()) }  answers {
+            assertThat(firstArg<GameContext>()).has(table, payments)
+            assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
+            dealerMock(preFlopDealer)
+        }
+        every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
+            assertThat(secondArg<GameContext>()).has(table, payments)
+            when (secondArg<GameContext>().board) {
+                is FlopBoard -> {
+                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                            .containsOnly(poly to 200, alex to 200, dave to 200)
+                    dealerMock(flopDealer)
+                }
+                is TurnBoard -> {
+                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                            .containsOnly(poly to 200, alex to 400, dave to 400)
+                    dealerMock(turnDealer)
+                }
+                is RiverBoard -> {
+                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                            .containsOnly(poly to 200, alex to 600, dave to 600)
+                    dealerMock(riverDealer)
+                }
+                else -> dealerMock(defaultDealer)
+            }
+        }
 
-        buildingAGame()
-                .withPayments(payments)
-                .withTable(table)
-                .preFlopDealerProvider { gc, _ ->
-                    assertThat(gc.table === table).isTrue()
-                    assertThat(gc.payments === payments).isTrue()
-                    assertThat(gc.board).isInstanceOf(EmptyBoard::class)
-                    dealerMock(preFlopDealer)
-                }
-                .dealerProvider { pot, context, _ ->
-                    assertThat(context.table === table).isTrue()
-                    assertThat(context.payments === payments).isTrue()
-                    when (context.board) {
-                        is FlopBoard -> {
-                            assertThat(pot).containsOnly(poly to 200, alex to 200, dave to 200)
-                            dealerMock(flopDealer)
-                        }
-                        is TurnBoard -> {
-                            assertThat(pot).containsOnly(poly to 200, alex to 400, dave to 400)
-                            dealerMock(turnDealer)
-                        }
-                        is RiverBoard -> {
-                            assertThat(pot).containsOnly(poly to 200, alex to 600, dave to 600)
-                            dealerMock(riverDealer)
-                        }
-                        else -> dealerMock(defaultDealer)
-                    }
-                }
+        buildingATestGame(table)
                 .build()
                 .play()
 
@@ -303,35 +304,34 @@ class GameTest {
             it.receiveRaiseFrom(alex, 200)
                     .receiveCallFrom(dave, 200)
         }
+        every { dealerFactory.preFlopDealer(any(),any()) }  answers {
+            assertThat(firstArg<GameContext>()).has(table, payments)
+            assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
+            dealerMock(preFlopDealer)
+        }
+        every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
+            assertThat(secondArg<GameContext>()).has(table, payments)
+            when (secondArg<GameContext>().board) {
+                is FlopBoard -> {
+                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                            .containsOnly(poly to 200, alex to 200, dave to 200)
+                    dealerMock(flopDealer)
+                }
+                is TurnBoard -> {
+                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                            .containsOnly(poly to 200, alex to 400, dave to 400)
+                    dealerMock(turnDealer)
+                }
+                is RiverBoard -> {
+                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                            .containsOnly(poly to 200, alex to 600, dave to 600)
+                    dealerMock(riverDealer)
+                }
+                else -> dealerMock(defaultDealer)
+            }
+        }
 
-        buildingAGame()
-                .withPayments(payments)
-                .withTable(table)
-                .preFlopDealerProvider { gc, _ ->
-                    assertThat(gc.table === table).isTrue()
-                    assertThat(gc.payments === payments).isTrue()
-                    assertThat(gc.board).isInstanceOf(EmptyBoard::class)
-                    dealerMock(preFlopDealer)
-                }
-                .dealerProvider { pot, context, _ ->
-                    assertThat(context.table === table).isTrue()
-                    assertThat(context.payments === payments).isTrue()
-                    when (context.board) {
-                        is FlopBoard -> {
-                            assertThat(pot).containsOnly(poly to 200, alex to 200, dave to 200)
-                            dealerMock(flopDealer)
-                        }
-                        is TurnBoard -> {
-                            assertThat(pot).containsOnly(poly to 200, alex to 400, dave to 400)
-                            dealerMock(turnDealer)
-                        }
-                        is RiverBoard -> {
-                            assertThat(pot).containsOnly(poly to 200, alex to 600, dave to 600)
-                            dealerMock(riverDealer)
-                        }
-                        else -> dealerMock(defaultDealer)
-                    }
-                }
+        buildingATestGame(table)
                 .showdown(ShowdownMock { pot, board ->
                     assertThat(board).isInstanceOf(RiverBoard::class)
                     assertThat(pot).containsOnly(poly to 200, alex to 800, dave to 800)
@@ -348,4 +348,15 @@ class GameTest {
     private fun buildPotFromActions(core: (TestPotBuilder) -> TestPotBuilder): () -> MutableMap<InGamePlayer, Int> = {
         core.invoke(TestPotBuilder()).build()
     }
+
+    private fun Assert<GameContext>.has(table: Table<InGamePlayer>, payments: GamePayments) {
+        prop(GameContext::table).isSameAs(table)
+        prop(GameContext::payments).isSameAs(payments)
+    }
+
+    private fun buildingATestGame(table: Table<InGamePlayer>): GameBuilder = buildingAGame()
+            .withPayments(payments)
+            .withTable(table)
+            .withDealerFactory(dealerFactory)
+
 }

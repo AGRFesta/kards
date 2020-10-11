@@ -2,7 +2,6 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.playingcards.deck.Deck
 import agrfesta.k.cards.playingcards.deck.DeckImpl
-import agrfesta.k.cards.texasholdem.observers.DealerObserver
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
@@ -18,12 +17,10 @@ import io.mockk.verify
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-//TODO use mockk
 class GameMockImpl(
         val context: GameContext,
         val deck: Deck,
-        val preFlopDealerProvider: (GameContext, DealerObserver?) -> Dealer,
-        val dealerProvider: (MutableMap<InGamePlayer,Int>, GameContext, DealerObserver?) -> Dealer,
+        val dealerFactory: DealerFactory,
         val showdown: Showdown,
         val observer: GameObserver?
 ): Game {
@@ -43,8 +40,8 @@ class GameBuilderTest {
         assertThat(game).isInstanceOf(GameImpl::class)
     }
     @Test
-    @DisplayName("Default internal implementations: deck is AutoShufflingDeck, dealer is PostFlopDealer," +
-            " pre-flop dealer is PreFlopDealer, showdown is Showdown, no observer")
+    @DisplayName("Default internal implementations: deck is AutoShufflingDeck, dealerFactory is DealerFactoryImpl," +
+            " showdown is Showdown, no observer")
     fun defaultDeckImplementationIsAutoShufflingDeck() {
         val game = buildingAGame()
                 .withPayments(aGamePayments())
@@ -54,8 +51,7 @@ class GameBuilderTest {
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
             assertThat(game.deck).isInstanceOf(DeckImpl::class)
-            assertThat(game.dealerProvider.invoke(buildPot(),aContext(),null)).isInstanceOf(PostFlopDealer::class)
-            assertThat(game.preFlopDealerProvider.invoke(aContext(),null)).isInstanceOf(PreFlopDealer::class)
+            assertThat(game.dealerFactory).isInstanceOf(DealerFactoryImpl::class)
             assertThat(game.showdown).isInstanceOf(Showdown::class)
             assertThat(game.observer).isNull()
         }
@@ -82,25 +78,20 @@ class GameBuilderTest {
     @DisplayName("Builder inject provided internal implementations")
     fun builderInjectProvidedInternalImplementations() {
         val deck = aDeck()
-        val showdown = object : Showdown {
-            override fun execute(pot: MutableMap<InGamePlayer, Int>, board: Board) {/*...*/}
-        }
-        val dealer = PostFlopDealer(buildPot(),aContext())
-        val preFlopDealer = PreFlopDealer(aContext())
+        val showdown = mockk<Showdown>()
+        val dealerFactory = mockk<DealerFactory>()
         val game = buildingAGame()
                 .withPayments(aGamePayments())
                 .withTable(aTable())
                 .withDeck(deck)
-                .dealerProvider {_,_,_ -> dealer}
-                .preFlopDealerProvider { _,_ -> preFlopDealer }
+                .withDealerFactory(dealerFactory)
                 .showdown(showdown)
                 .implementedBy( ::GameMockImpl )
                 .build()
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
             assertThat(game.deck === deck).isTrue()
-            assertThat(game.dealerProvider.invoke(buildPot(),aContext(),null) === dealer).isTrue()
-            assertThat(game.preFlopDealerProvider.invoke(aContext(),null) === preFlopDealer).isTrue()
+            assertThat(game.dealerFactory === dealerFactory).isTrue()
             assertThat(game.showdown === showdown).isTrue()
         }
     }

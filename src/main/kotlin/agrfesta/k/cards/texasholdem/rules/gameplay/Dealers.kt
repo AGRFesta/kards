@@ -8,6 +8,23 @@ interface Dealer {
     fun collectPot(): MutableMap<InGamePlayer, Int>
 }
 
+interface DealerFactory {
+    fun preFlopDealer(context: GameContext, observer: DealerObserver?): Dealer
+    fun postFlopDealer(prevPot: MutableMap<InGamePlayer, Int>, context: GameContext, observer: DealerObserver?): Dealer
+}
+class DealerFactoryImpl: DealerFactory {
+
+    override fun preFlopDealer(context: GameContext, observer: DealerObserver?): Dealer {
+        return PreFlopDealer(context, observer)
+    }
+
+    override fun postFlopDealer(
+            prevPot: MutableMap<InGamePlayer, Int>, context: GameContext, observer: DealerObserver?): Dealer {
+        return PostFlopDealer(prevPot, context, observer)
+    }
+
+}
+
 abstract class AbstractDealer(
         private val context: GameContext,
         private val observer: DealerObserver?) : Dealer {
@@ -107,7 +124,6 @@ class PostFlopDealer(
     override fun prevPot(): MutableMap<InGamePlayer, Int>? = prevPot
     override fun createPot() = buildPot()
     override fun playersIterator(): TableIterator<InGamePlayer> = context.table.iterateFromSB()
-    override fun collectPot(): MutableMap<InGamePlayer, Int> = super.collectPot()
 }
 
 class PreFlopDealer(
@@ -128,4 +144,3 @@ class PreFlopDealer(
     override fun prevPot(): MutableMap<InGamePlayer, Int>? = null
     override fun playersIterator(): TableIterator<InGamePlayer> = context.table.iterateFromUTG()
 }
-
