@@ -27,14 +27,14 @@ class InGamePlayer(
     fun isActive(): Boolean = status!=PlayerStatus.FOLD && status!=PlayerStatus.ALL_IN
 
     fun receive(amount: Int) {
-        if (amount < 0) throw IllegalArgumentException("Can't receive a negative amount")
+        require(amount >= 0) { "Can't receive a negative amount" }
         stack += amount
     }
 
     fun asOpponent(): Opponent = Opponent(name, stack, status)
 
     fun pay(amount: Int): Int {
-        if (amount < 0) throw IllegalArgumentException("Can't pay a negative amount")
+        require(amount >= 0) { "Can't pay a negative amount" }
         val effectiveAmount = amount.coerceAtMost(stack)
         stack -= effectiveAmount
         if (stack == 0) {

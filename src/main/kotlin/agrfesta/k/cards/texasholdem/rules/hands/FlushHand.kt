@@ -8,7 +8,7 @@ import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.FLUSH
 import agrfesta.k.cards.texasholdem.utils.POKER_HAND_SIZE
 import kotlinx.collections.immutable.toImmutableList
 
-class FlushHand (
+class FlushHand(
         first: Rank, second: Rank, third: Rank, fourth: Rank, fifth: Rank,
         val seed: Seed)
     : AbstractTHHand(FLUSH) {
@@ -19,15 +19,11 @@ class FlushHand (
 
     init {
         val set = setOf(first, second, third, fourth, fifth)
-        if (set.size != POKER_HAND_SIZE) {
-            throw IllegalArgumentException("Multiple with same Rank: $first,$second,$third,$fourth,$fifth")
-        }
+        require(set.size == POKER_HAND_SIZE) { "Multiple with same Rank: $first,$second,$third,$fourth,$fifth" }
     }
 
     override fun innerCompareTo(ce: CardsEvaluation): Int {
-        if (ce !is FlushHand) {
-            throw IllegalArgumentException("Comparable only to an instance of FlushHand")
-        }
+        require(ce is FlushHand) { "Comparable only to an instance of FlushHand" }
         return compareBy(OrderedRankListComparator(), FlushHand::ranks)
                 .compare(this, ce)
     }

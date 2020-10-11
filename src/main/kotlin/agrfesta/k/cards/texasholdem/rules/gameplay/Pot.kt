@@ -13,13 +13,13 @@ operator fun MutableMap<InGamePlayer,Int>.plus(increment: MutableMap<InGamePlaye
 
 fun MutableMap<InGamePlayer,Int>.receiveFrom(player: InGamePlayer, amount: Int): Int {
     if (amount == 0) return 0
-    if (amount < 0) throw IllegalArgumentException("Can't receive a negative amount")
+    require(amount >= 0) { "Can't receive a negative amount" }
     val effAmount = player.pay(amount)
     this[player] = this.payedBy(player) + effAmount
     return effAmount
 }
 private fun MutableMap<InGamePlayer,Int>.removeFrom(player: InGamePlayer, amount: Int) {
-    if (amount < 0) throw IllegalArgumentException("Can't remove a negative amount")
+    require(amount >= 0) { "Can't remove a negative amount" }
     val newAmount = (this[player] ?: 0) - amount
     if (newAmount <= 0) {
         this.remove(player)

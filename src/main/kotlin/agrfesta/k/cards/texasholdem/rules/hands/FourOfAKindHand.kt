@@ -12,15 +12,11 @@ class FourOfAKindHand (
     : AbstractTHHand(FOUR_OF_A_KIND) {
 
     init {
-        if (fokRank == kicker) {
-            throw IllegalArgumentException("Kicker's rank can't be equal to fokRank: $fokRank")
-        }
+        require(fokRank != kicker) { "Kicker's rank can't be equal to fokRank: $fokRank" }
     }
 
     override fun innerCompareTo(ce: CardsEvaluation): Int {
-        if (ce !is FourOfAKindHand) {
-            throw IllegalArgumentException("Comparable only to an instance of FourOfAKindHand")
-        }
+        require(ce is FourOfAKindHand) { "Comparable only to an instance of FourOfAKindHand" }
         return compareBy(FourOfAKindHand::fokRank)
                 .thenBy(FourOfAKindHand::kicker)
                 .compare(this, ce)

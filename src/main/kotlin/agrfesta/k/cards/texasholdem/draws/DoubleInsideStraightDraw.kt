@@ -15,28 +15,24 @@ import agrfesta.k.cards.texasholdem.utils.TWO_OFF
  */
 
 data class DoubleInsideStraightDraw(
-    private val innerTop: Rank,
-    private val potentialTop: Rank) : Draw {
+        private val innerTop: Rank,
+        private val potentialTop: Rank) : Draw {
 
-  init {
-    if (innerTop < FIVE) {
-      throw IllegalArgumentException("The minimum Double Inside Straight Draw inner top is FIVE, inner top: $innerTop")
+    init {
+        require(innerTop >= FIVE) { "The minimum Double Inside Straight Draw inner top is FIVE, inner top: $innerTop" }
+        require(potentialTop == (innerTop + TWO_OFF) || potentialTop == (innerTop + THREE_OFF))
+        { "If the inner top is $innerTop the potential top have to be ${innerTop + TWO_OFF} " +
+                "or ${innerTop + THREE_OFF} but is $potentialTop" }
     }
-    if (potentialTop != (innerTop + TWO_OFF) && potentialTop != (innerTop + THREE_OFF)) {
-      throw IllegalArgumentException(
-          "If the inner top is $innerTop the potential top have to be ${innerTop + TWO_OFF} " +
-              "or ${innerTop + THREE_OFF} but is $potentialTop")
-    }
-  }
 
-  override fun toString(): String {
-    val maxPotTop = innerTop + THREE_OFF
-    val r0 = (innerTop - FOUR_OFF).symbol()
-    val r1 = (innerTop - TWO_OFF).symbol()
-    val r2 = (innerTop - ONE_OFF).symbol()
-    val r4 = (innerTop + TWO_OFF).symbol()
-    val r5 = if (potentialTop == maxPotTop) " ${maxPotTop.symbol()}" else ""
-    return "[$r0 * $r1 $r2 ${innerTop.symbol()} * $r4$r5]"
-  }
+    override fun toString(): String {
+        val maxPotTop = innerTop + THREE_OFF
+        val r0 = (innerTop - FOUR_OFF).symbol()
+        val r1 = (innerTop - TWO_OFF).symbol()
+        val r2 = (innerTop - ONE_OFF).symbol()
+        val r4 = (innerTop + TWO_OFF).symbol()
+        val r5 = if (potentialTop == maxPotTop) " ${maxPotTop.symbol()}" else ""
+        return "[$r0 * $r1 $r2 ${innerTop.symbol()} * $r4$r5]"
+    }
 
 }

@@ -17,12 +17,9 @@ class ThreeOfAKindHand(
     : AbstractTHHand(THREE_OF_A_KIND) {
 
     init {
-        if (firstKicker == secondKicker) {
-            throw IllegalArgumentException("Kickers have same Rank: $firstKicker,$secondKicker")
-        }
-        if (tokRank==firstKicker || tokRank==secondKicker) {
-            throw IllegalArgumentException("Rank of kickers can't be equal to tokRank: $tokRank")
-        }
+        require(firstKicker != secondKicker) { "Kickers have same Rank: $firstKicker,$secondKicker" }
+        require(tokRank != firstKicker && tokRank != secondKicker)
+        { "Rank of kickers can't be equal to tokRank: $tokRank" }
     }
 
     val kickers = listOf(firstKicker, secondKicker)
@@ -30,9 +27,7 @@ class ThreeOfAKindHand(
             .toImmutableList()
 
     override fun innerCompareTo(ce: CardsEvaluation): Int {
-        if (ce !is ThreeOfAKindHand) {
-            throw IllegalArgumentException("Comparable only to an instance of ThreeOfAKindHand")
-        }
+        require(ce is ThreeOfAKindHand) { "Comparable only to an instance of ThreeOfAKindHand" }
         return compareBy(ThreeOfAKindHand::tokRank)
                 .thenBy(OrderedRankListComparator(), ThreeOfAKindHand::kickers)
                 .compare(this, ce)

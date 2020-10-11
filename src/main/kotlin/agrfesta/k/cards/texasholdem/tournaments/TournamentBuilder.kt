@@ -46,8 +46,8 @@ class TournamentBuilder(private val rndGenerator: RandomGenerator,
     }
 
     fun build(initialStack: Int, payments: IncreasingGamePayments): Tournament {
-        if (subscriptions.isEmpty()) throw IllegalStateException("Unable to create a tournament with zero players!")
-        if (subscriptions.size == 1) throw IllegalStateException("Unable to create a tournament with only one player!")
+        check(subscriptions.isNotEmpty()) { "Unable to create a tournament with zero players!" }
+        check(subscriptions.size != 1) { "Unable to create a tournament with only one player!" }
         return tournamentImplementation.invoke(
                 subscriptions, initialStack, payments, buttonProvider, gameProvider, observer)
     }
@@ -59,7 +59,6 @@ fun tournamentBuilder() = TournamentBuilder(SimpleRandomGenerator(), { payments,
             .withPayments(payments)
             .withTable(table)
             .build()
-    //GameBuilder().build(payments, table)
 }, { subscriptions, initialStack, payments, buttonProvider, gameProvider, observer ->
     TournamentImpl(subscriptions, initialStack, payments, buttonProvider, gameProvider, observer)
 })

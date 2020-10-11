@@ -1,10 +1,10 @@
 package agrfesta.k.cards.texasholdem.rules.hands
 
-import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
-import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.STRAIGHT_FLUSH
 import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.playingcards.cards.Seed
 import agrfesta.k.cards.playingcards.suits.FIVE
+import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
+import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.STRAIGHT_FLUSH
 
 class StraightFlushHand(
         private val straightTop: Rank,
@@ -12,15 +12,11 @@ class StraightFlushHand(
     : AbstractTHHand(STRAIGHT_FLUSH) {
 
     init {
-        if (straightTop < FIVE) {
-            throw IllegalArgumentException("The minimum Straight top is FIVE, straightTop: $straightTop")
-        }
+        require(straightTop >= FIVE) { "The minimum Straight top is FIVE, straightTop: $straightTop" }
     }
 
     override fun innerCompareTo(ce: CardsEvaluation): Int {
-        if (ce !is StraightFlushHand) {
-            throw IllegalArgumentException("Comparable only to an instance of StraightFlushHand")
-        }
+        require(ce is StraightFlushHand) { "Comparable only to an instance of StraightFlushHand" }
         return compareBy(StraightFlushHand::straightTop)
                 .compare(this, ce)
     }

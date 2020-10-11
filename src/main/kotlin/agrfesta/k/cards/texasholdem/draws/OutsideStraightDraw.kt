@@ -19,12 +19,8 @@ import agrfesta.k.cards.texasholdem.utils.TWO_OFF
 data class OutsideStraightDraw(private val top: Rank): Draw {
 
     init {
-        if (top < FIVE) {
-            throw IllegalArgumentException("The minimum Outside Straight Draw top is FIVE, top: $top")
-        }
-        if (top > KING) {
-            throw IllegalArgumentException("The maximum Outside Straight Draw top is KING, top: $top")
-        }
+        require(top >= FIVE) { "The minimum Outside Straight Draw top is FIVE, top: $top" }
+        require(top <= KING) { "The maximum Outside Straight Draw top is KING, top: $top" }
     }
 
     override fun toString(): String = StringBuilder("[* ${top.symbol()}")

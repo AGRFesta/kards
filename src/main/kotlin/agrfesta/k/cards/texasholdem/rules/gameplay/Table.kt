@@ -4,10 +4,7 @@ class Table<T>(playersList: List<T>, val button: Int) {
     val players: List<T> = playersList.toList()
 
     init {
-        if (players.size < 2) {
-            throw IllegalArgumentException(
-                    "The minimum number of players for a Table is 2, actual number: ${players.size}")
-        }
+        require(players.size >= 2) { "The minimum number of players for a Table is 2, actual number: ${players.size}" }
     }
 
     fun getPlayer(position: Position): T {

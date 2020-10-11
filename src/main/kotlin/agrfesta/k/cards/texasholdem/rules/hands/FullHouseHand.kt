@@ -13,15 +13,11 @@ class FullHouseHand (
     : AbstractTHHand(FULL_HOUSE) {
 
     init {
-        if (threeRank == twoRank) {
-            throw IllegalArgumentException("Ranks can't be equal: $threeRank")
-        }
+        require(threeRank != twoRank) { "Ranks can't be equal: $threeRank" }
     }
 
     override fun innerCompareTo(ce: CardsEvaluation): Int {
-        if (ce !is FullHouseHand) {
-            throw IllegalArgumentException("Comparable only to an instance of FullHouseHand")
-        }
+        require(ce is FullHouseHand) { "Comparable only to an instance of FullHouseHand" }
         return compareBy(FullHouseHand::threeRank)
                 .thenBy(FullHouseHand::twoRank)
                 .compare(this, ce)

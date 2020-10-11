@@ -19,39 +19,31 @@ import agrfesta.k.cards.texasholdem.utils.TWO_OFF
 
 data class InsideStraightDraw(val top: Rank, val missing: Rank) : Draw {
 
-  init {
-    if (top < FIVE) {
-      throw IllegalArgumentException("The minimum Inside Straight Draw top is FIVE, top: $top")
-    }
-    if (top == FIVE) {
-      if (missing > top) {
-        throw IllegalArgumentException("The missing Rank can't be greater than top: missing=$missing, top=$top")
-      }
-    } else if (missing >= top) {
-      throw IllegalArgumentException(
-          "The missing Rank can't be greater than or equal to top: missing=$missing, top=$top")
-    }
-    val tail = if (top == FIVE) ACE else top - FOUR_OFF
-    if (top == ACE) {
-      if (missing < TEN) {
-        throw IllegalArgumentException(
-            "The missing Rank can't be lesser than tail: missing=$missing, tail=$tail")
-      }
-    } else if (tail != ACE) {
-      if (missing <= tail) {
-        throw IllegalArgumentException(
-            "The missing Rank can't be lesser than or equal to tail: missing=$missing, tail=$tail")
-      }
-    }
-  }
+    init {
+        require(top >= FIVE) { "The minimum Inside Straight Draw top is FIVE, top: $top" }
+        if (top == FIVE) {
+            require(missing <= top) { "The missing Rank can't be greater than top: missing=$missing, top=$top" }
+        } else if (missing >= top) {
+            require(missing < top)
+            { "The missing Rank can't be greater than or equal to top: missing=$missing, top=$top" }
+        }
 
-  private fun stringIfMissing(rank: Rank) = if (rank == missing) "*" else rank.symbol().toString()
-  override fun toString(): String = StringBuilder("[${top.symbol()}")
-      .append(" ${stringIfMissing(top - ONE_OFF)}")
-      .append(" ${stringIfMissing(top - TWO_OFF)}")
-      .append(" ${stringIfMissing(top - THREE_OFF)}")
-      .append(" ${stringIfMissing(top - FOUR_OFF)}]")
-      .toString()
+        val tail = if (top == FIVE) ACE else top - FOUR_OFF
+        if (top == ACE) {
+            require(missing >= TEN) { "The missing Rank can't be lesser than tail: missing=$missing, tail=$tail" }
+        } else if (tail != ACE) {
+            require(missing > tail)
+            { "The missing Rank can't be lesser than or equal to tail: missing=$missing, tail=$tail" }
+        }
+    }
+
+    private fun stringIfMissing(rank: Rank) = if (rank == missing) "*" else rank.symbol().toString()
+    override fun toString(): String = StringBuilder("[${top.symbol()}")
+            .append(" ${stringIfMissing(top - ONE_OFF)}")
+            .append(" ${stringIfMissing(top - TWO_OFF)}")
+            .append(" ${stringIfMissing(top - THREE_OFF)}")
+            .append(" ${stringIfMissing(top - FOUR_OFF)}]")
+            .toString()
 }
 
 
