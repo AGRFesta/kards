@@ -8,6 +8,6 @@ class PotBuilder {
         return this
     }
 
-    fun build(): MutableMap<InGamePlayer,Int> = pot
+    fun build(): Pot = pot
 
 }

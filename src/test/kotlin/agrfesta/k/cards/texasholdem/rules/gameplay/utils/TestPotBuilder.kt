@@ -4,6 +4,7 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.FOLD
+import agrfesta.k.cards.texasholdem.rules.gameplay.Pot
 import agrfesta.k.cards.texasholdem.rules.gameplay.receiveFrom
 
 /**
@@ -29,6 +30,6 @@ class TestPotBuilder {
         return this
     }
 
-    fun build(): MutableMap<InGamePlayer, Int> = pot
+    fun build(): Pot = pot
 
 }

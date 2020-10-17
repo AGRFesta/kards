@@ -6,7 +6,7 @@ import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluator
 
 interface Showdown {
-    fun execute(pot: MutableMap<InGamePlayer,Int>, board: Board)
+    fun execute(pot: Pot, board: Board)
 }
 
 class ShowdownImpl(
@@ -17,7 +17,7 @@ class ShowdownImpl(
 
     private val playersPrizes: MutableMap<Player,Int?> = mutableMapOf()
 
-    override fun execute(pot: MutableMap<InGamePlayer,Int>, board: Board) {
+    override fun execute(pot: Pot, board: Board) {
         val playersHands = pot.players()
                 .filter { !it.hasFolded() }
                 .map { it to evaluator.evaluate(it.cards + board.cards()) }
@@ -30,7 +30,7 @@ class ShowdownImpl(
         )
     }
 
-    private fun process(pot: MutableMap<InGamePlayer,Int>, playersHands: Map<InGamePlayer,CardsEvaluation>) {
+    private fun process(pot: Pot, playersHands: Map<InGamePlayer,CardsEvaluation>) {
         playersHands.entries
                 .filter { pot.containsKey(it.key) }
                 .groupBy( { it.value }, { it.key } )

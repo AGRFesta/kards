@@ -19,14 +19,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-private fun dealerMock(collectPotBody: () -> MutableMap<InGamePlayer, Int>): Dealer {
+private fun dealerMock(collectPotBody: () -> Pot): Dealer {
     val dealer = mockk<Dealer>()
     every { dealer.collectPot() } returns collectPotBody.invoke()
     return dealer
 }
 
-class ShowdownMock(private val showdownBody: (MutableMap<InGamePlayer, Int>, Board) -> Unit) : Showdown {
-    override fun execute(pot: MutableMap<InGamePlayer, Int>, board: Board) = showdownBody.invoke(pot, board)
+class ShowdownMock(private val showdownBody: (Pot, Board) -> Unit) : Showdown {
+    override fun execute(pot: Pot, board: Board) = showdownBody.invoke(pot, board)
 }
 
 @DisplayName("Game tests")
@@ -38,7 +38,7 @@ class GameTest {
     private var dave = anInGamePlayer()
     private val dealerFactory = mockk<DealerFactory>()
 
-    private val defaultDealer: () -> MutableMap<InGamePlayer, Int> = {
+    private val defaultDealer: () -> Pot = {
         assert(false) { "The game is not following the correct phases sequence" }
         buildPot()
     }
@@ -61,13 +61,13 @@ class GameTest {
     fun inPreFlopPhaseTakesTwoCardsFromDeckForEachPlayerAtTheTable() {
         val deck = DeckListImpl(cardList("Ah", "Ac", "3h", "5s", "Kh", "Qc"))
         val table = Table(listOf(alex, poly, jane), 0)
-        val preFlopDealer: () -> MutableMap<InGamePlayer, Int> = {
+        val preFlopDealer: () -> Pot = {
             alex.status = PlayerStatus.RAISE
             poly.status = PlayerStatus.FOLD
             jane.status = PlayerStatus.FOLD
             buildPot()
         }
-        val flopDealer: () -> MutableMap<InGamePlayer, Int> = {
+        val flopDealer: () -> Pot = {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
@@ -87,7 +87,7 @@ class GameTest {
     @DisplayName("Game story: Alex is the remaining player in pre-flop and takes all the pot")
     fun gameStory000() {
         val table = Table(listOf(alex, poly), 0)
-        val preFlopDealer: () -> MutableMap<InGamePlayer, Int> = {
+        val preFlopDealer: () -> Pot = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex, 500)
@@ -95,7 +95,7 @@ class GameTest {
             pot.receiveFrom(poly, 200)
             pot
         }
-        val flopDealer: () -> MutableMap<InGamePlayer, Int> = {
+        val flopDealer: () -> Pot = {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
@@ -118,7 +118,7 @@ class GameTest {
     @DisplayName("Game story: Alex is the remaining player at flop and takes all the pot")
     fun gameStory001() {
         val table = Table(listOf(alex, poly, jane), 0)
-        val preFlopDealer: () -> MutableMap<InGamePlayer, Int> = {
+        val preFlopDealer: () -> Pot = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex, 200)
@@ -127,7 +127,7 @@ class GameTest {
             jane.status = PlayerStatus.FOLD
             pot
         }
-        val flopDealer: () -> MutableMap<InGamePlayer, Int> = {
+        val flopDealer: () -> Pot = {
             val pot = buildPot()
             alex.status = PlayerStatus.RAISE
             pot.receiveFrom(alex, 400)
@@ -135,7 +135,7 @@ class GameTest {
             pot.receiveFrom(poly, 200)
             pot
         }
-        val turnDealer: () -> MutableMap<InGamePlayer, Int> = {
+        val turnDealer: () -> Pot = {
             assert(false) { "The game should finish at flop but is collecting pot at turn" }
             buildPot()
         }
@@ -145,7 +145,7 @@ class GameTest {
             dealerMock(preFlopDealer)
         }
         every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
-            assertThat(firstArg<MutableMap<InGamePlayer,Int>>()).containsOnly(poly to 200, alex to 200)
+            assertThat(firstArg<Pot>()).containsOnly(poly to 200, alex to 200)
             assertThat(secondArg<GameContext>().table === table).isTrue()
             assertThat(secondArg<GameContext>().payments === payments).isTrue()
             when (secondArg<GameContext>().board) {
@@ -183,7 +183,7 @@ class GameTest {
             it.receiveRaiseFrom(alex, 200)
                     .receiveFoldFrom(dave)
         }
-        val riverDealer: () -> MutableMap<InGamePlayer, Int> = {
+        val riverDealer: () -> Pot = {
             assert(false) { "The game should finish at turn but is collecting pot at river" }
             buildPot()
         }
@@ -197,12 +197,12 @@ class GameTest {
             assertThat(secondArg<GameContext>().payments === payments).isTrue()
             when (secondArg<GameContext>().board) {
                 is FlopBoard -> {
-                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                    assertThat(firstArg<Pot>())
                             .containsOnly(poly to 200, alex to 200, dave to 200)
                     dealerMock(flopDealer)
                 }
                 is TurnBoard -> {
-                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                    assertThat(firstArg<Pot>())
                             .containsOnly(poly to 200, alex to 400, dave to 400)
                     dealerMock(turnDealer)
                 }
@@ -253,17 +253,17 @@ class GameTest {
             assertThat(secondArg<GameContext>()).has(table, payments)
             when (secondArg<GameContext>().board) {
                 is FlopBoard -> {
-                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                    assertThat(firstArg<Pot>())
                             .containsOnly(poly to 200, alex to 200, dave to 200)
                     dealerMock(flopDealer)
                 }
                 is TurnBoard -> {
-                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                    assertThat(firstArg<Pot>())
                             .containsOnly(poly to 200, alex to 400, dave to 400)
                     dealerMock(turnDealer)
                 }
                 is RiverBoard -> {
-                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                    assertThat(firstArg<Pot>())
                             .containsOnly(poly to 200, alex to 600, dave to 600)
                     dealerMock(riverDealer)
                 }
@@ -313,17 +313,17 @@ class GameTest {
             assertThat(secondArg<GameContext>()).has(table, payments)
             when (secondArg<GameContext>().board) {
                 is FlopBoard -> {
-                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                    assertThat(firstArg<Pot>())
                             .containsOnly(poly to 200, alex to 200, dave to 200)
                     dealerMock(flopDealer)
                 }
                 is TurnBoard -> {
-                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                    assertThat(firstArg<Pot>())
                             .containsOnly(poly to 200, alex to 400, dave to 400)
                     dealerMock(turnDealer)
                 }
                 is RiverBoard -> {
-                    assertThat(firstArg<MutableMap<InGamePlayer,Int>>())
+                    assertThat(firstArg<Pot>())
                             .containsOnly(poly to 200, alex to 600, dave to 600)
                     dealerMock(riverDealer)
                 }
@@ -345,7 +345,7 @@ class GameTest {
         assertThat(dave.stack).isEqualTo(200)
     }
 
-    private fun buildPotFromActions(core: (TestPotBuilder) -> TestPotBuilder): () -> MutableMap<InGamePlayer, Int> = {
+    private fun buildPotFromActions(core: (TestPotBuilder) -> TestPotBuilder): () -> Pot = {
         core.invoke(TestPotBuilder()).build()
     }
 
