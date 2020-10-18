@@ -9,6 +9,7 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 import agrfesta.k.cards.texasholdem.rules.gameplay.aStrategy
 import agrfesta.k.cards.texasholdem.rules.gameplay.get
 import agrfesta.k.cards.texasholdem.rules.gameplay.isSittingOn
+import agrfesta.k.cards.texasholdem.tournaments.TournamentBuilder.Companion.buildingTournament
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.extracting
@@ -49,15 +50,17 @@ class TournamentImplTest {
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
-        val result = tournamentBuilder()
-                .subscriptions(poly, jane, alex, dave)
-                .buttonProvider { 2 } // button of first game in position 2
-                .gameProvider { igp, table, _ ->
+        val result = buildingTournament()
+                .withAnInitialStackOf(2000)
+                .withPayments(payments)
+                .withSubscribers(poly, jane, alex, dave)
+                .withButtonProvider { 2 } // button of first game in position 2
+                .withGameProvider { igp, table, _ ->
                     assertThat(igp === payments).isTrue()
                     tables.add(table)
                     mockedGames[counter++].invoke(table.players)
                 }
-                .build(2000, payments)
+                .build()
                 .play()
 
         assertThat(alex).isSittingOn(tables[0], Position.BUTTON)
@@ -97,15 +100,17 @@ class TournamentImplTest {
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
-        val result = tournamentBuilder()
-                .subscriptions(poly, jane, alex)
-                .buttonProvider { 2 } // button of first game in position 2
-                .gameProvider { igp, table, _ ->
+        val result = buildingTournament()
+                .withAnInitialStackOf(2000)
+                .withPayments(payments)
+                .withSubscribers(poly, jane, alex)
+                .withButtonProvider { 2 } // button of first game in position 2
+                .withGameProvider { igp, table, _ ->
                     assertThat(igp === payments).isTrue()
                     tables.add(table)
                     mockedGames[counter++].invoke(table.players)
                 }
-                .build(2000, payments)
+                .build()
                 .play()
 
         assertThat(tables[0].players).extracting { it.player }.containsOnly(alex,jane,poly)
@@ -145,15 +150,17 @@ class TournamentImplTest {
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
-        val result = tournamentBuilder()
-                .subscriptions(poly, jane, alex)
-                .buttonProvider { 2 } // button of first game in position 2
-                .gameProvider { igp, table, _ ->
+        val result = buildingTournament()
+                .withAnInitialStackOf(2000)
+                .withPayments(payments)
+                .withSubscribers(poly, jane, alex)
+                .withButtonProvider { 2 } // button of first game in position 2
+                .withGameProvider { igp, table, _ ->
                     assertThat(igp === payments).isTrue()
                     tables.add(table)
                     mockedGames[counter++].invoke(table.players)
                 }
-                .build(2000, payments)
+                .build()
                 .play()
 
         assertThat(result.size).isEqualTo(3)
@@ -191,15 +198,17 @@ class TournamentImplTest {
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
-        val result = tournamentBuilder()
-                .subscriptions(poly, jane, alex)
-                .buttonProvider { 2 } // button of first game in position 2
-                .gameProvider { igp, table, _ ->
+        val result = buildingTournament()
+                .withAnInitialStackOf(2000)
+                .withPayments(payments)
+                .withSubscribers(poly, jane, alex)
+                .withButtonProvider { 2 } // button of first game in position 2
+                .withGameProvider { igp, table, _ ->
                     assertThat(igp === payments).isTrue()
                     tables.add(table)
                     mockedGames[counter++].invoke(table.players)
                 }
-                .build(2000, payments)
+                .build()
                 .play()
 
         assertThat(result.size).isEqualTo(2)
@@ -236,15 +245,17 @@ class TournamentImplTest {
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
-        val result = tournamentBuilder()
-                .subscriptions(poly, jane, alex)
-                .buttonProvider { 2 } // button of first game in position 2
-                .gameProvider { igp, table, _ ->
+        val result = buildingTournament()
+                .withAnInitialStackOf(2000)
+                .withPayments(payments)
+                .withSubscribers(poly, jane, alex)
+                .withButtonProvider { 2 } // button of first game in position 2
+                .withGameProvider { igp, table, _ ->
                     assertThat(igp === payments).isTrue()
                     tables.add(table)
                     mockedGames[counter++].invoke(table.players)
                 }
-                .build(2000, payments)
+                .build()
                 .play()
 
         assertThat(tables[0].players).extracting { it.status }

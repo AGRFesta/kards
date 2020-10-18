@@ -9,56 +9,89 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildin
 import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
+import kotlin.properties.Delegates
 
-class TournamentBuilder(private val rndGenerator: RandomGenerator,
-                        defaultGameProvider: (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game,
-                        private val tournamentImplementation: (
-                                Set<Player>, Int, IncreasingGamePayments,
-                                (Int) -> Int,
-                                (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game,
-                                TournamentObserver?) -> Tournament) {
+typealias GameProvider = (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game
+typealias TournamentImplementer =
+        (Set<Player>, Int, IncreasingGamePayments, (Int) -> Int, GameProvider, TournamentObserver?) -> Tournament
+
+val defaultGameProvider: GameProvider = { payments, table, _ ->
+    buildingAGame()
+            .withPayments(payments)
+            .withTable(table)
+            .build()
+}
+
+interface InitialStackStep {
+    fun withAnInitialStackOf(initialStack: Int): PaymentsStep
+}
+interface PaymentsStep {
+    fun withPayments(payments: IncreasingGamePayments): TournamentBuilder
+}
+
+class TournamentBuilder private constructor(): InitialStackStep, PaymentsStep {
+    private var rndGenerator: RandomGenerator = SimpleRandomGenerator()
     private var observer: TournamentObserver? = null
+    private var gameProvider = defaultGameProvider
+    private var tournamentImplementation: TournamentImplementer = ::TournamentImpl
+    private var buttonProvider: (Int) -> Int = { rndGenerator.nextInt(it) } // Random position
 
     private val subscriptions: MutableSet<Player> = mutableSetOf()
 
-    private var buttonProvider: (Int) -> Int = { rndGenerator.nextInt(it) } // Random position
-    private var gameProvider = defaultGameProvider
+    private var initialStack by Delegates.notNull<Int>()
+    private lateinit var payments: IncreasingGamePayments
 
-    fun subscriptions(vararg players: Player): TournamentBuilder {
+    companion object {
+        fun buildingTournament(): InitialStackStep = TournamentBuilder()
+    }
+
+    fun withSubscribers(vararg players: Player): TournamentBuilder {
         subscriptions.addAll(players)
         return this
     }
 
-    fun buttonProvider(provider: (Int) -> Int): TournamentBuilder {
+    fun withRandomGenerator(rndGenerator: RandomGenerator): TournamentBuilder {
+        this.rndGenerator = rndGenerator
+        return this
+    }
+
+    fun withButtonProvider(provider: (Int) -> Int): TournamentBuilder {
         this.buttonProvider = provider
         return this
     }
 
-    fun observer(observer: TournamentObserver): TournamentBuilder {
+    fun observerBy(observer: TournamentObserver): TournamentBuilder {
         this.observer = observer
         return this
     }
 
-    fun gameProvider(provider: (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game)
-            : TournamentBuilder {
+    fun withGameProvider(provider: GameProvider): TournamentBuilder {
         this.gameProvider = provider
         return this
     }
 
-    fun build(initialStack: Int, payments: IncreasingGamePayments): Tournament {
+    fun implementedBy(tournamentImplementation: TournamentImplementer): TournamentBuilder {
+        this.tournamentImplementation = tournamentImplementation
+        return this
+    }
+
+    override fun withAnInitialStackOf(initialStack: Int): PaymentsStep {
+        this.initialStack = initialStack
+        return this
+    }
+
+    override fun withPayments(payments: IncreasingGamePayments): TournamentBuilder {
+        this.payments = payments
+        return this
+    }
+
+    fun build(): Tournament {
         check(subscriptions.isNotEmpty()) { "Unable to create a tournament with zero players!" }
         check(subscriptions.size != 1) { "Unable to create a tournament with only one player!" }
         return tournamentImplementation.invoke(
                 subscriptions, initialStack, payments, buttonProvider, gameProvider, observer)
     }
 
-}
 
-fun tournamentBuilder() = TournamentBuilder(SimpleRandomGenerator(), { payments, table, _ ->
-    buildingAGame()
-            .withPayments(payments)
-            .withTable(table)
-            .build()
-}, { subscriptions, initialStack, payments, buttonProvider, gameProvider, observer ->
-    TournamentImpl(subscriptions, initialStack, payments, buttonProvider, gameProvider, observer)
-})
+
+}
