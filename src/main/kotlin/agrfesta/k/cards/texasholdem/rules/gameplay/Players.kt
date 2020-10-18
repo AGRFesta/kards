@@ -3,19 +3,23 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 
-data class Player(val name: String, val strategy: PlayerStrategyInterface) {
+data class Player(val name: String, val strategy: PlayerStrategyInterface): SeatName {
     override fun toString() = "$name{$strategy}"
+    override fun getSeatName() = name
 }
 
-class Opponent(val name: String, val stack: Int, val status: PlayerStatus) {
+interface SeatName {
+    fun getSeatName(): String
+}
+
+class Opponent(val name: String, val stack: Int, val status: PlayerStatus): SeatName {
     override fun toString() = "$name[$stack]"
+    override fun getSeatName() = name
 }
 
-class InGamePlayer(
-        val player: Player,
-        var stack: Int
-    ): PlayerStrategyInterface {
+class InGamePlayer(val player: Player, var stack: Int): PlayerStrategyInterface, SeatName {
     val name = player.name
+
     var status: PlayerStatus = PlayerStatus.NONE
 
     var cards: Set<Card> = setOf() //TODO check that are exactly two
@@ -46,6 +50,8 @@ class InGamePlayer(
     fun asOwnPlayer() = OwnPlayer(name, cards, stack)
 
     override fun act(context: PlayerGameContext): Action = player.strategy.act(context)
+    override fun getSeatName() = name
+
     override fun toString(): String = "$player ($stack)"
 
 }

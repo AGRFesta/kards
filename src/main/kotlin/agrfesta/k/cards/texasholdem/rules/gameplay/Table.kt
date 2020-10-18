@@ -1,20 +1,19 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-class Table<T>(playersList: List<T>, val button: Int) {
+class Table<T: SeatName>(playersList: List<T>, val button: Int) {
     val players: List<T> = playersList.toList()
 
     init {
         require(players.size >= 2) { "The minimum number of players for a Table is 2, actual number: ${players.size}" }
     }
 
-    fun getPlayer(position: Position): T {
-        return players[position.pos(this)]
-    }
+    fun getPlayerByPosition(position: Position): T = players[position.pos(this)]
+    fun findPlayerBySeatName(seatName: String): T? = players.firstOrNull { it.getSeatName() == seatName }
 
     fun iterateFromSB(): TableIterator<T> = TableIterator(players, Position.SMALL_BLIND.pos(this))
     fun iterateFromUTG(): TableIterator<T> = TableIterator(players, Position.UNDER_THE_GUN.pos(this))
 
-    fun <M> map(function: (T) -> M): Table<M> = Table(players.map(function), button)
+    fun <M: SeatName> map(function: (T) -> M): Table<M> = Table(players.map(function), button)
 }
 
 class TableIterator<T>(private val players: List<T>,
@@ -22,12 +21,12 @@ class TableIterator<T>(private val players: List<T>,
     fun next(): T = players[actualPosition++ % players.size]
 }
 
-private fun <T> getSBPosition(table: Table<T>): Int =
+private fun <T: SeatName> getSBPosition(table: Table<T>): Int =
         if (table.players.size == 2) (table.button % table.players.size + table.players.size) % table.players.size
         else ((table.button % table.players.size + table.players.size) % table.players.size + 1) % table.players.size
 
-private fun <T> getBBPosition(table: Table<T>): Int = (getSBPosition(table) + 1) % table.players.size
-private fun <T> getUTGPosition(table: Table<T>): Int =
+private fun <T: SeatName> getBBPosition(table: Table<T>): Int = (getSBPosition(table) + 1) % table.players.size
+private fun <T: SeatName> getUTGPosition(table: Table<T>): Int =
         if (table.players.size == 2) getSBPosition(table)
         else (getBBPosition(table) + 1) % table.players.size
 

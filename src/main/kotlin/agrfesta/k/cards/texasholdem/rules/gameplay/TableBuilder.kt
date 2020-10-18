@@ -1,24 +1,24 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-class TableBuilder {
-    private val players: MutableList<InGamePlayer> = mutableListOf()
+class TableBuilder<T: SeatName> {
+    private val players: MutableList<T> = mutableListOf()
     private var button: Int = 0
 
-    fun withPlayer(playerName: String, stack: Int, strategy: PlayerStrategyInterface)
-            : TableBuilder {
-        require(!players.contains(playerName)) { "Player '$playerName' is already sitting at the table!" }
-        players.add(InGamePlayer(Player(playerName,strategy), stack))
+    fun withPlayers(vararg players: T): TableBuilder<T> {
+        players.forEach {
+            require(this.players.firstOrNull { p -> p.getSeatName() == it.getSeatName() } == null)
+            { "Player '${it.getSeatName()}' is already sitting at the table!" }
+        }
+        this.players.addAll(players)
         return this
     }
-    fun buttonStartsFrom(position: Int): TableBuilder {
+    fun withButtonInPosition(position: Int): TableBuilder<T> {
         this.button = position
         return this
     }
 
-    fun build(): Table<InGamePlayer> = Table(players, button)
+    fun build(): Table<T> = Table(players, button)
 
 }
 
-private fun MutableList<InGamePlayer>.contains(player: String) = this.any { it.player.name == player }
-
-fun buildingTable() = TableBuilder()
+fun <T: SeatName> buildingTable() = TableBuilder<T>()

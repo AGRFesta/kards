@@ -133,8 +133,8 @@ class PreFlopDealer(
 
     override fun createPot(): Pot {
         val pot = buildPot()
-        pot.receiveFrom(context.table.getPlayer(Position.SMALL_BLIND), context.payments.sb())
-        pot.receiveFrom(context.table.getPlayer(Position.BIG_BLIND), context.payments.bb())
+        pot.receiveFrom(context.table.getPlayerByPosition(Position.SMALL_BLIND), context.payments.sb())
+        pot.receiveFrom(context.table.getPlayerByPosition(Position.BIG_BLIND), context.payments.bb())
         context.payments.ante()?.let { ante -> context.table.players.forEach { pot.receiveFrom(it, ante) } }
         amountRequired = context.payments.bb()
         return pot
