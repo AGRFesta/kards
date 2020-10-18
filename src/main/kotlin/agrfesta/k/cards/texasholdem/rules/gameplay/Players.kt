@@ -16,6 +16,10 @@ class Opponent(val name: String, val stack: Int, val status: PlayerStatus): Seat
     override fun toString() = "$name[$stack]"
     override fun getSeatName() = name
 }
+class PlayerStack(val player: Player, val stack: Int): SeatName {
+    override fun toString() = "${player.name}[$stack]"
+    override fun getSeatName() = player.getSeatName()
+}
 
 class InGamePlayer(val player: Player, var stack: Int): PlayerStrategyInterface, SeatName {
     val name = player.name

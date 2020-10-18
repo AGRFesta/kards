@@ -51,7 +51,7 @@ class ShowdownObserverTest {
 
         verify(exactly = 1) { observerMock.notifyResult(any()) }
         assertThat(result.isCaptured).isTrue()
-        assertThat(result.captured).extracting({it.player},{it.evaluation},{it.prize})
+        assertThat(result.captured).extracting({it.player.player},{it.evaluation},{it.prize})
                 .containsOnly(Triple(alex.player, PairHand(ACE, JACK,TEN,NINE), 400),
                               Triple(poly.player, PairHand(JACK, ACE,NINE,EIGHT), null),
                               Triple(jane.player, ThreeOfAKindHand(NINE, ACE,JACK), 300)
