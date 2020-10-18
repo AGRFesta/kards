@@ -3,6 +3,7 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 import agrfesta.k.cards.playingcards.deck.Deck
 import agrfesta.k.cards.texasholdem.observers.DealerObserver
 import agrfesta.k.cards.texasholdem.observers.GameObserver
+import agrfesta.k.cards.texasholdem.observers.GameResult
 import agrfesta.k.cards.texasholdem.playercontext.PlayerAction
 
 interface Game {
@@ -39,7 +40,7 @@ class GameImpl(
     private fun findWinner(players: List<InGamePlayer>): InGamePlayer? {
         val winner = players.findWinner()
         if (winner != null) {
-            observer?.notifyWinner(winner.player, pot.amount())
+            observer?.notifyWinner( GameResult(winner.player, pot.amount(), players.toPlayerStack() ))
             winner.receive(pot.amount())
         }
         return winner

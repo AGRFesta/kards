@@ -8,7 +8,6 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.EmptyBoard
 import agrfesta.k.cards.texasholdem.rules.gameplay.FlopBoard
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameContext
-import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
 import agrfesta.k.cards.texasholdem.rules.gameplay.Pot
 import agrfesta.k.cards.texasholdem.rules.gameplay.RiverBoard
@@ -49,11 +48,11 @@ class GameObserverTest {
         poly = anInGamePlayer("Poly",1000)
     }
 
-    private fun observerMock(winner: CapturingSlot<Player>, prize: CapturingSlot<Int>, boards: MutableList<Board>)
+    private fun observerMock(result: CapturingSlot<GameResult>, boards: MutableList<Board>)
             : GameObserver {
         val observerMock = mockk<GameObserver>()
         every { observerMock.notifyStartingPhase(capture(boards)) } just Runs
-        every { observerMock.notifyWinner(capture(winner),capture(prize)) } just Runs
+        every { observerMock.notifyWinner(capture(result)) } just Runs
         return observerMock
     }
     private fun dealerMock(collectPotBody: () -> Pot): Dealer {
@@ -93,9 +92,8 @@ class GameObserverTest {
         every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(flopDealer) }
 
         val boards = mutableListOf<Board>()
-        val winner = slot<Player>()
-        val prize = slot<Int>()
-        val observerMock = observerMock(winner, prize, boards)
+        val result = slot<GameResult>()
+        val observerMock = observerMock(result, boards)
 
         buildingAGame()
                 .withPayments(payments)
@@ -107,15 +105,15 @@ class GameObserverTest {
                 .play()
 
         verify(exactly = 1) { observerMock.notifyStartingPhase(any()) }
-        verify(exactly = 1) { observerMock.notifyWinner(any(),any()) }
+        verify(exactly = 1) { observerMock.notifyWinner(any()) }
         verify(exactly = 0) { observerMock.notifyResult(any()) } // No showdown
 
         assertThat(boards).hasSize(1)
         assertThat(boards[0]).isInstanceOf(EmptyBoard::class)
         assertThat(boards[0].cards()).isEmpty()
 
-        assertThat(winner.captured).isEqualTo(alex.player)
-        assertThat(prize.captured).isEqualTo(300)
+        assertThat(result.captured.winner).isEqualTo(alex.player)
+        assertThat(result.captured.prize).isEqualTo(300)
     }
 
     @Test
@@ -154,9 +152,8 @@ class GameObserverTest {
         }
 
         val boards = mutableListOf<Board>()
-        val winner = slot<Player>()
-        val prize = slot<Int>()
-        val observerMock = observerMock(winner, prize, boards)
+        val result = slot<GameResult>()
+        val observerMock = observerMock(result, boards)
 
         buildingAGame()
                 .withPayments(payments)
@@ -168,7 +165,7 @@ class GameObserverTest {
                 .play()
 
         verify(exactly = 2) { observerMock.notifyStartingPhase(any()) }
-        verify(exactly = 1) { observerMock.notifyWinner(any(),any()) }
+        verify(exactly = 1) { observerMock.notifyWinner(any()) }
         verify(exactly = 0) { observerMock.notifyResult(any()) } // No showdown
 
         assertThat(boards).hasSize(2)
@@ -177,8 +174,8 @@ class GameObserverTest {
         assertThat(boards[1]).isInstanceOf(FlopBoard::class)
         assertThat(boards[1].cards()).containsOnly(*cards("Jh","Js","7h"))
 
-        assertThat(winner.captured).isEqualTo(alex.player)
-        assertThat(prize.captured).isEqualTo(1000)
+        assertThat(result.captured.winner).isEqualTo(alex.player)
+        assertThat(result.captured.prize).isEqualTo(1000)
     }
 
     @Test
@@ -218,9 +215,8 @@ class GameObserverTest {
         }
 
         val boards = mutableListOf<Board>()
-        val winner = slot<Player>()
-        val prize = slot<Int>()
-        val observerMock = observerMock(winner, prize, boards)
+        val result = slot<GameResult>()
+        val observerMock = observerMock(result, boards)
 
         buildingAGame()
                 .withPayments(payments)
@@ -232,7 +228,7 @@ class GameObserverTest {
                 .play()
 
         verify(exactly = 3) { observerMock.notifyStartingPhase(any()) }
-        verify(exactly = 1) { observerMock.notifyWinner(any(),any()) }
+        verify(exactly = 1) { observerMock.notifyWinner(any()) }
         verify(exactly = 0) { observerMock.notifyResult(any()) } // No showdown
 
         assertThat(boards).hasSize(3)
@@ -243,8 +239,8 @@ class GameObserverTest {
         assertThat(boards[2]).isInstanceOf(TurnBoard::class)
         assertThat(boards[2].cards()).containsOnly(*cards("Jh","Js","7h", "5d"))
 
-        assertThat(winner.captured).isEqualTo(alex.player)
-        assertThat(prize.captured).isEqualTo(1100)
+        assertThat(result.captured.winner).isEqualTo(alex.player)
+        assertThat(result.captured.prize).isEqualTo(1100)
     }
 
     @Test
@@ -280,9 +276,8 @@ class GameObserverTest {
         }
 
         val boards = mutableListOf<Board>()
-        val winner = slot<Player>()
-        val prize = slot<Int>()
-        val observerMock = observerMock(winner, prize, boards)
+        val result = slot<GameResult>()
+        val observerMock = observerMock(result, boards)
 
         buildingAGame()
                 .withPayments(payments)
@@ -294,7 +289,7 @@ class GameObserverTest {
                 .play()
 
         verify(exactly = 4) { observerMock.notifyStartingPhase(any()) }
-        verify(exactly = 1) { observerMock.notifyWinner(any(),any()) }
+        verify(exactly = 1) { observerMock.notifyWinner(any()) }
         verify(exactly = 0) { observerMock.notifyResult(any()) } // No showdown
 
         assertThat(boards).hasSize(4)
@@ -307,8 +302,8 @@ class GameObserverTest {
         assertThat(boards[3]).isInstanceOf(RiverBoard::class)
         assertThat(boards[3].cards()).containsOnly(*cards("Jh","Js","7h", "5d", "Td"))
 
-        assertThat(winner.captured).isEqualTo(alex.player)
-        assertThat(prize.captured).isEqualTo(900)
+        assertThat(result.captured.winner).isEqualTo(alex.player)
+        assertThat(result.captured.prize).isEqualTo(900)
     }
 
     @Test
@@ -341,7 +336,7 @@ class GameObserverTest {
                 .play()
 
         verify(exactly = 4) { observerMock.notifyStartingPhase(any()) }
-        verify(exactly = 0) { observerMock.notifyWinner(any(),any()) } // winner at showdown
+        verify(exactly = 0) { observerMock.notifyWinner(any()) } // winner at showdown
         verify(exactly = 1) { observerMock.notifyResult(any()) }
 
         assertThat(boards).hasSize(4)
