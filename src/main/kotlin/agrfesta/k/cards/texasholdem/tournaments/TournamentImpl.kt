@@ -1,9 +1,12 @@
 package agrfesta.k.cards.texasholdem.tournaments
 
 import agrfesta.k.cards.texasholdem.observers.GameObserver
+import agrfesta.k.cards.texasholdem.observers.GameResult
+import agrfesta.k.cards.texasholdem.observers.ShowdownPlayerResult
 import agrfesta.k.cards.texasholdem.observers.TournamentObserver
+import agrfesta.k.cards.texasholdem.observers.multipleGameObserversOf
 import agrfesta.k.cards.texasholdem.observers.toRanking
-import agrfesta.k.cards.texasholdem.rules.gameplay.Game
+import agrfesta.k.cards.texasholdem.rules.gameplay.Board
 import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
@@ -18,8 +21,9 @@ class TournamentImpl(subscriptions: Set<Player>,
                      private val initialStack: Int,
                      private val payments: IncreasingGamePayments,
                      private val buttonProvider: (Int) -> Int,
-                     private val gameProvider: (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game,
-                     private val observer: TournamentObserver? ): Tournament {
+                     private val gameProvider: GameProvider,
+                     private val observer: TournamentObserver? ): Tournament, GameObserver {
+    private val gameObservers = multipleGameObserversOf(this, observer)
     private val losers: MutableList<Set<Player>> = mutableListOf()
     private val players: MutableList<InGamePlayer> = subscriptions
             .map { player -> InGamePlayer(player,initialStack) }
@@ -39,7 +43,7 @@ class TournamentImpl(subscriptions: Set<Player>,
     private fun playGame(button: Int) {
         val initialStacks: Map<Player,Int> = players.map { it.player to it.stack }.toMap()
         val table = Table(players,button)
-        val game = gameProvider.invoke(payments,table,observer)
+        val game = gameProvider.invoke(payments, table, gameObservers)
         game.play()
         removeLosers(initialStacks)
         players.forEach { it.status = PlayerStatus.NONE }
@@ -60,6 +64,18 @@ class TournamentImpl(subscriptions: Set<Player>,
                 .entries.sortedBy { it.key }
                 .map { it.value }
         )
+    }
+
+    override fun notifyWinner(result: GameResult) {
+        TODO("Not yet implemented")
+    }
+
+    override fun notifyStartingPhase(board: Board) {
+        TODO("Not yet implemented")
+    }
+
+    override fun notifyResult(result: Collection<ShowdownPlayerResult>) {
+        TODO("Not yet implemented")
     }
 
 }
