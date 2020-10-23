@@ -2,8 +2,6 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.playercontext.PlayerAction
 
-//TODO should implement a check for a coherence between board and history, example: a bord pre-flop can't have a history
-// at Turn
 class GameContext(val table: Table<InGamePlayer>,
                   val payments: GamePayments,
                   val board: Board,

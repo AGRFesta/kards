@@ -62,7 +62,6 @@ class GameImpl(
     }
 
     override fun notifyActions(phase: GamePhase, actions: List<PlayerAction>) {
-        //TODO maybe check that phase is coherent with actual context
         context = context.add(actions)
     }
 }

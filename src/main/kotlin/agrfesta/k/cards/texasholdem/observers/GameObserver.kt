@@ -9,20 +9,4 @@ interface GameObserver: ShowdownObserver {
     fun notifyStartingPhase(board: Board)
 }
 
-class MultipleGameObserverAdapter(private val observers: Set<GameObserver?>): GameObserver {
-    override fun notifyWinner(result: GameResult) {
-        observers.forEach { it?.notifyWinner(result) }
-    }
-
-    override fun notifyStartingPhase(board: Board) {
-        observers.forEach { it?.notifyStartingPhase(board) }
-    }
-
-    override fun notifyResult(result: Collection<ShowdownPlayerResult>) {
-        observers.forEach { it?.notifyResult(result) }
-    }
-}
-fun multipleGameObserversOf(vararg observers: GameObserver?): GameObserver =
-        MultipleGameObserverAdapter(observers.toSet())
-
 class GameResult(val winner: Player, val prize: Int, val players: List<PlayerStack>)
