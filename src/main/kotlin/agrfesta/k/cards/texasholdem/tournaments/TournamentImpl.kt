@@ -1,10 +1,10 @@
 package agrfesta.k.cards.texasholdem.tournaments
 
 import agrfesta.k.cards.texasholdem.observers.TournamentObserver
-import agrfesta.k.cards.texasholdem.observers.toRanking
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStack
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
+import agrfesta.k.cards.texasholdem.rules.gameplay.toRanking
 import agrfesta.k.cards.texasholdem.utils.circularPos
 
 interface Tournament {
