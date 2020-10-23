@@ -8,17 +8,20 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.EmptyBoard
 import agrfesta.k.cards.texasholdem.rules.gameplay.FlopBoard
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameContext
+import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStack
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
 import agrfesta.k.cards.texasholdem.rules.gameplay.Pot
 import agrfesta.k.cards.texasholdem.rules.gameplay.RiverBoard
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 import agrfesta.k.cards.texasholdem.rules.gameplay.TurnBoard
 import agrfesta.k.cards.texasholdem.rules.gameplay.aGamePayments
-import agrfesta.k.cards.texasholdem.rules.gameplay.anInGamePlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.aPlayerWithName
 import agrfesta.k.cards.texasholdem.rules.gameplay.buildPot
 import agrfesta.k.cards.texasholdem.rules.gameplay.cardList
 import agrfesta.k.cards.texasholdem.rules.gameplay.cards
-import agrfesta.k.cards.texasholdem.rules.gameplay.receiveFrom
+import agrfesta.k.cards.texasholdem.rules.gameplay.utils.BuilderEnrich
+import agrfesta.k.cards.texasholdem.rules.gameplay.utils.dealerMockFromBuilder
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.hasSize
@@ -39,13 +42,13 @@ import org.junit.jupiter.api.Test
 @DisplayName("Game Observer tests")
 class GameObserverTest {
     private val payments = aGamePayments()
-    private var alex = anInGamePlayer()
-    private var poly = anInGamePlayer()
+    private lateinit var alex: PlayerStack
+    private lateinit var poly: PlayerStack
 
     @BeforeEach
     fun init() {
-        alex = anInGamePlayer("Alex",1000)
-        poly = anInGamePlayer("Poly",1000)
+        alex = PlayerStack(aPlayerWithName("Alex"),1000)
+        poly = PlayerStack(aPlayerWithName("Poly"),1000)
     }
 
     private fun observerMock(result: CapturingSlot<GameResult>, boards: MutableList<Board>)
@@ -55,18 +58,18 @@ class GameObserverTest {
         every { observerMock.notifyWinner(capture(result)) } just Runs
         return observerMock
     }
-    private fun dealerMock(collectPotBody: () -> Pot): Dealer {
+    private fun dealerMock(gameContext: GameContext, collectPotBody: (Table<InGamePlayer>) -> Pot): Dealer {
         val dealer = mockk<Dealer>()
-        every { dealer.collectPot() } returns collectPotBody.invoke()
+        every { dealer.collectPot() } returns collectPotBody.invoke(gameContext.table)
         return dealer
     }
-    private val defaultDealer: () -> Pot = {
+    private val defaultDealer: (Table<InGamePlayer>) -> Pot = {
         assert(false) { "The game is not following the correct phases sequence" }
         buildPot()
     }
-    private val allChecksDealer: () -> Pot = {
-        alex.status = PlayerStatus.CALL
-        poly.status = PlayerStatus.CALL
+    private val allChecksDealer: (Table<InGamePlayer>) -> Pot = {
+        it.findPlayerBySeatName(alex.getSeatName())?.status = PlayerStatus.CALL
+        it.findPlayerBySeatName(poly.getSeatName())?.status = PlayerStatus.CALL
         buildPot()
     }
 
@@ -75,21 +78,19 @@ class GameObserverTest {
     fun gameObserverStory000() {
         val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac","3h","5s"))
-        val preFlopDealer: () -> Pot = {
-            val pot = buildPot()
-            pot.receiveFrom(alex,200)
-            pot.receiveFrom(poly,100)
-            alex.status = PlayerStatus.RAISE
-            poly.status = PlayerStatus.FOLD
-            pot
+        val preFlopDealer: BuilderEnrich = {
+            it.receiveCallFrom(poly.player, 100)
+                    .receiveRaiseFrom(alex.player, 200)
+                    .receiveFoldFrom(poly.player)
         }
-        val flopDealer: () -> Pot = {
+        val flopDealer: (Table<InGamePlayer>) -> Pot = {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
         val dealerFactory = mockk<DealerFactory>()
-        every { dealerFactory.preFlopDealer(any(),any()) } answers { dealerMock(preFlopDealer) }
-        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(flopDealer) }
+        every { dealerFactory.preFlopDealer(any(),any()) } answers
+                { dealerMockFromBuilder(firstArg(), preFlopDealer) }
+        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(firstArg(), flopDealer) }
 
         val boards = mutableListOf<Board>()
         val result = slot<GameResult>()
@@ -121,33 +122,27 @@ class GameObserverTest {
     fun gameObserverStory001() {
         val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac", "3h","5s", "Jh","Js","7h"))
-        val preFlopDealer: () -> Pot = {
-            val pot = buildPot()
-            pot.receiveFrom(alex,200)
-            pot.receiveFrom(poly,200)
-            alex.status = PlayerStatus.CALL
-            poly.status = PlayerStatus.CALL
-            pot
+        val preFlopDealer: BuilderEnrich = {
+            it.receiveCallFrom(alex.player, 200)
+                    .receiveRaiseFrom(poly.player, 200)
         }
-        val flopDealer: () -> Pot = {
-            val pot = buildPot()
-            pot.receiveFrom(alex,400)
-            pot.receiveFrom(poly,200)
-            alex.status = PlayerStatus.RAISE
-            poly.status = PlayerStatus.FOLD
-            pot
+        val flopDealer: BuilderEnrich = {
+            it.receiveCallFrom(poly.player, 200)
+                    .receiveRaiseFrom(alex.player, 400)
+                    .receiveFoldFrom(poly.player)
         }
-        val turnDealer: () -> Pot = {
+        val turnDealer: (Table<InGamePlayer>) -> Pot = {
             assert(false) { "The game should finish at flop but is collecting pot at turn" }
             buildPot()
         }
         val dealerFactory = mockk<DealerFactory>()
-        every { dealerFactory.preFlopDealer(any(),any()) } returns dealerMock(preFlopDealer)
+        every { dealerFactory.preFlopDealer(any(),any()) } answers
+                { dealerMockFromBuilder(firstArg(), preFlopDealer) }
         every { dealerFactory.postFlopDealer(any(),any(),any()) } answers {
             when (secondArg<GameContext>().board) {
-                is FlopBoard -> dealerMock(flopDealer)
-                is TurnBoard -> dealerMock(turnDealer)
-                else -> dealerMock(defaultDealer)
+                is FlopBoard -> dealerMockFromBuilder(secondArg(), flopDealer)
+                is TurnBoard -> dealerMock(firstArg(), turnDealer)
+                else -> dealerMock(firstArg(), defaultDealer)
             }
         }
 
@@ -183,34 +178,28 @@ class GameObserverTest {
     fun gameObserverStory002() {
         val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac", "3h","5s", "Jh","Js","7h", "5d"))
-        val preFlopDealer: () -> Pot = {
-            val pot = buildPot()
-            pot.receiveFrom(alex,200)
-            pot.receiveFrom(poly,200)
-            alex.status = PlayerStatus.CALL
-            poly.status = PlayerStatus.CALL
-            pot
+        val preFlopDealer: BuilderEnrich = {
+            it.receiveCallFrom(alex.player, 200)
+                    .receiveCallFrom(poly.player, 200)
         }
-        val turnDealer: () -> Pot = {
-            val pot = buildPot()
-            pot.receiveFrom(alex,500)
-            pot.receiveFrom(poly,200)
-            alex.status = PlayerStatus.RAISE
-            poly.status = PlayerStatus.FOLD
-            pot
+        val turnDealer: BuilderEnrich = {
+            it.receiveCallFrom(poly.player, 200)
+                    .receiveRaiseFrom(alex.player, 500)
+                    .receiveFoldFrom(poly.player)
         }
-        val riverDealer: () -> Pot = {
+        val riverDealer: (Table<InGamePlayer>) -> Pot = {
             assert(false) { "The game should finish at turn but is collecting pot at river" }
             buildPot()
         }
         val dealerFactory = mockk<DealerFactory>()
-        every { dealerFactory.preFlopDealer(any(),any()) } returns dealerMock(preFlopDealer)
+        every { dealerFactory.preFlopDealer(any(),any()) } answers
+                { dealerMockFromBuilder(firstArg(), preFlopDealer) }
         every { dealerFactory.postFlopDealer(any(),any(),any()) } answers {
             when (secondArg<GameContext>().board) {
-                is FlopBoard -> dealerMock(allChecksDealer)
-                is TurnBoard -> dealerMock(turnDealer)
-                is RiverBoard -> dealerMock(riverDealer)
-                else -> dealerMock(defaultDealer)
+                is FlopBoard -> dealerMock(secondArg(), allChecksDealer)
+                is TurnBoard -> dealerMockFromBuilder(secondArg(), turnDealer)
+                is RiverBoard -> dealerMock(secondArg(), riverDealer)
+                else -> dealerMock(secondArg(), defaultDealer)
             }
         }
 
@@ -248,30 +237,24 @@ class GameObserverTest {
     fun gameObserverStory003() {
         val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac", "3h","5s", "Jh","Js","7h", "5d", "Td"))
-        val preFlopDealer: () -> Pot = {
-            val pot = buildPot()
-            pot.receiveFrom(alex,200)
-            pot.receiveFrom(poly,200)
-            alex.status = PlayerStatus.CALL
-            poly.status = PlayerStatus.CALL
-            pot
+        val preFlopDealer: BuilderEnrich = {
+            it.receiveCallFrom(alex.player, 200)
+                    .receiveCallFrom(poly.player, 200)
         }
-        val riverDealer: () -> Pot = {
-            val pot = buildPot()
-            pot.receiveFrom(alex,300)
-            pot.receiveFrom(poly,200)
-            alex.status = PlayerStatus.RAISE
-            poly.status = PlayerStatus.FOLD
-            pot
+        val riverDealer: BuilderEnrich = {
+            it.receiveCallFrom(poly.player, 200)
+                    .receiveRaiseFrom(alex.player, 300)
+                    .receiveFoldFrom(poly.player)
         }
         val dealerFactory = mockk<DealerFactory>()
-        every { dealerFactory.preFlopDealer(any(),any()) } returns dealerMock(preFlopDealer)
+        every { dealerFactory.preFlopDealer(any(),any()) } answers
+                { dealerMockFromBuilder(firstArg(), preFlopDealer) }
         every { dealerFactory.postFlopDealer(any(),any(),any()) } answers {
             when (secondArg<GameContext>().board) {
-                is FlopBoard -> dealerMock(allChecksDealer)
-                is TurnBoard -> dealerMock(allChecksDealer)
-                is RiverBoard -> dealerMock(riverDealer)
-                else -> dealerMock(defaultDealer)
+                is FlopBoard -> dealerMock(secondArg(), allChecksDealer)
+                is TurnBoard -> dealerMock(secondArg(), allChecksDealer)
+                is RiverBoard -> dealerMockFromBuilder(secondArg(), riverDealer)
+                else -> dealerMock(secondArg(), defaultDealer)
             }
         }
 
@@ -311,10 +294,9 @@ class GameObserverTest {
     fun gameObserverStory004() {
         val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac", "3h","5s", "Jh","Js","7h", "5d", "Td"))
-        val preFlopDealer: () -> Pot = {
-            alex.status = PlayerStatus.CALL
-            poly.status = PlayerStatus.CALL
-            buildPot()
+        val preFlopDealer: BuilderEnrich = {
+            it.receiveCallFrom(alex.player, 200)
+                    .receiveCallFrom(poly.player, 200)
         }
 
         val boards = mutableListOf<Board>()
@@ -323,8 +305,10 @@ class GameObserverTest {
         every { observerMock.notifyResult(any()) } just Runs
 
         val dealerFactory = mockk<DealerFactory>()
-        every { dealerFactory.preFlopDealer(any(),any()) } returns dealerMock(preFlopDealer)
-        every { dealerFactory.postFlopDealer(any(),any(),any()) } returns dealerMock(allChecksDealer)
+        every { dealerFactory.preFlopDealer(any(),any()) } answers
+                { dealerMockFromBuilder(firstArg(), preFlopDealer) }
+        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers
+                { dealerMock(secondArg(), allChecksDealer) }
 
         buildingAGame()
                 .withPayments(payments)

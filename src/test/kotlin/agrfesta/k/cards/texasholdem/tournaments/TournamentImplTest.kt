@@ -3,11 +3,11 @@ package agrfesta.k.cards.texasholdem.tournaments
 import agrfesta.k.cards.texasholdem.rules.gameplay.Game
 import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
-import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStack
 import agrfesta.k.cards.texasholdem.rules.gameplay.Position
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
+import agrfesta.k.cards.texasholdem.rules.gameplay.aPlayerCardsSet
 import agrfesta.k.cards.texasholdem.rules.gameplay.aStrategy
-import agrfesta.k.cards.texasholdem.rules.gameplay.get
 import agrfesta.k.cards.texasholdem.rules.gameplay.isSittingOn
 import agrfesta.k.cards.texasholdem.tournaments.TournamentBuilder.Companion.buildingTournament
 import assertk.assertThat
@@ -33,20 +33,12 @@ class TournamentImplTest {
         val dave = Player("Dave", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
-        val mockedGames = listOf< (List<InGamePlayer>) -> Game >(
-                { mockk(relaxed = true) },
-                { mockk(relaxed = true) },
-                { mockk(relaxed = true) },
-                { mockk(relaxed = true) },
-                { players ->
-                    val game = mockk<Game>()
-                    every { game.play() } answers {
-                        players.get(poly)?.stack = 0
-                        players.get(jane)?.stack = 0
-                        players.get(dave)?.stack = 0
-                    }
-                    game
-                }
+        val mockedGames = listOf(
+                aMockGameWithResult(poly to 100, jane to 100, alex to 100, dave to 100),
+                aMockGameWithResult(poly to 100, jane to 100, alex to 100, dave to 100),
+                aMockGameWithResult(poly to 100, jane to 100, alex to 100, dave to 100),
+                aMockGameWithResult(poly to 100, jane to 100, alex to 100, dave to 100),
+                aMockGameWithResult(poly to 0, jane to 0, alex to 100, dave to 0)
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
@@ -56,9 +48,10 @@ class TournamentImplTest {
                 .withSubscribers(poly, jane, alex, dave)
                 .withButtonProvider { 2 } // button of first game in position 2
                 .withGameProvider { igp, table, _ ->
+                    val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
                     assertThat(igp === payments).isTrue()
-                    tables.add(table)
-                    mockedGames[counter++].invoke(table.players)
+                    tables.add(inGameTable)
+                    mockedGames[counter++]
                 }
                 .build()
                 .play()
@@ -82,21 +75,9 @@ class TournamentImplTest {
         val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
-        val mockedGames = listOf< (List<InGamePlayer>) -> Game >(
-                { players ->
-                    val game = mockk<Game>()
-                    every { game.play() } answers {
-                        players.get(alex)?.stack = 0
-                    }
-                    game
-                },
-                { players ->
-                    val game = mockk<Game>()
-                    every { game.play() } answers {
-                        players.get(poly)?.stack = 0
-                    }
-                    game
-                }
+        val mockedGames = listOf(
+                aMockGameWithResult(poly to 100, jane to 100, alex to 0),
+                aMockGameWithResult(poly to 0, jane to 100)
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
@@ -106,9 +87,10 @@ class TournamentImplTest {
                 .withSubscribers(poly, jane, alex)
                 .withButtonProvider { 2 } // button of first game in position 2
                 .withGameProvider { igp, table, _ ->
+                    val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
                     assertThat(igp === payments).isTrue()
-                    tables.add(table)
-                    mockedGames[counter++].invoke(table.players)
+                    tables.add(inGameTable)
+                    mockedGames[counter++]
                 }
                 .build()
                 .play()
@@ -130,23 +112,9 @@ class TournamentImplTest {
         val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
-        val mockedGames = listOf< (List<InGamePlayer>) -> Game >(
-                { players ->
-                    val game = mockk<Game>()
-                    every { game.play() } answers {
-                        players.get(alex)?.stack = 1500
-                        players.get(jane)?.stack = 1000
-                    }
-                    game
-                },
-                { players ->
-                    val game = mockk<Game>()
-                    every { game.play() } answers {
-                        players.get(alex)?.stack = 0
-                        players.get(jane)?.stack = 0
-                    }
-                    game
-                }
+        val mockedGames = listOf(
+                aMockGameWithResult(poly to 100, jane to 1000, alex to 1500),
+                aMockGameWithResult(poly to 100, jane to 0, alex to 0)
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
@@ -156,9 +124,10 @@ class TournamentImplTest {
                 .withSubscribers(poly, jane, alex)
                 .withButtonProvider { 2 } // button of first game in position 2
                 .withGameProvider { igp, table, _ ->
+                    val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
                     assertThat(igp === payments).isTrue()
-                    tables.add(table)
-                    mockedGames[counter++].invoke(table.players)
+                    tables.add(inGameTable)
+                    mockedGames[counter++]
                 }
                 .build()
                 .play()
@@ -178,23 +147,9 @@ class TournamentImplTest {
         val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
-        val mockedGames = listOf< (List<InGamePlayer>) -> Game >(
-                { players ->
-                    val game = mockk<Game>()
-                    every { game.play() } answers {
-                        players.get(alex)?.stack = 1000
-                        players.get(jane)?.stack = 1000
-                    }
-                    game
-                },
-                { players ->
-                    val game = mockk<Game>()
-                    every { game.play() } answers {
-                        players.get(alex)?.stack = 0
-                        players.get(jane)?.stack = 0
-                    }
-                    game
-                }
+        val mockedGames = listOf(
+                aMockGameWithResult(poly to 100, jane to 1000, alex to 1000),
+                aMockGameWithResult(poly to 100, jane to 0, alex to 0)
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
@@ -204,9 +159,10 @@ class TournamentImplTest {
                 .withSubscribers(poly, jane, alex)
                 .withButtonProvider { 2 } // button of first game in position 2
                 .withGameProvider { igp, table, _ ->
+                    val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
                     assertThat(igp === payments).isTrue()
-                    tables.add(table)
-                    mockedGames[counter++].invoke(table.players)
+                    tables.add(inGameTable)
+                    mockedGames[counter++]
                 }
                 .build()
                 .play()
@@ -216,55 +172,12 @@ class TournamentImplTest {
         assertThat(result[1]).containsOnly(alex,jane) // seconds
     }
 
-    @Test
-    @DisplayName("Every game reset the initial status of the players")
-    fun everyGameResetTheInitialPlayersStatus() {
-        val alex = Player("Alex", aStrategy())
-        val poly = Player("Poly", aStrategy())
-        val jane = Player("Jane", aStrategy())
-        var counter = 0
-        val payments = mockk<IncreasingGamePayments>(relaxed = true)
-        val mockedGames = listOf< (List<InGamePlayer>) -> Game >(
-                { players ->
-                    val game = mockk<Game>()
-                    every { game.play() } answers {
-                        players.get(alex)?.status = PlayerStatus.ALL_IN
-                        players.get(jane)?.status = PlayerStatus.FOLD
-                        players.get(poly)?.status = PlayerStatus.RAISE
-                    }
-                    game
-                },
-                { players ->
-                    val game = mockk<Game>()
-                    every { game.play() } answers {
-                        players.get(alex)?.stack = 0
-                        players.get(jane)?.stack = 0
-                    }
-                    game
-                }
-        )
-        val tables = mutableListOf<Table<InGamePlayer>>()
+}
 
-        val result = buildingTournament()
-                .withAnInitialStackOf(2000)
-                .withPayments(payments)
-                .withSubscribers(poly, jane, alex)
-                .withButtonProvider { 2 } // button of first game in position 2
-                .withGameProvider { igp, table, _ ->
-                    assertThat(igp === payments).isTrue()
-                    tables.add(table)
-                    mockedGames[counter++].invoke(table.players)
-                }
-                .build()
-                .play()
-
-        assertThat(tables[0].players).extracting { it.status }
-                .containsOnly(PlayerStatus.NONE,PlayerStatus.NONE,PlayerStatus.NONE)
-        assertThat(tables[1].players).extracting { it.status }
-                .containsOnly(PlayerStatus.NONE,PlayerStatus.NONE,PlayerStatus.NONE)
-
-        assertThat(result.size).isEqualTo(2)
-        assertThat(result).theWinnerIs(poly)
-        assertThat(result[1]).containsOnly(alex,jane) // seconds
+private fun aMockGameWithResult(vararg pairs: Pair<Player,Int>): Game {
+    val game = mockk<Game>()
+    every { game.play() } answers {
+        pairs.map { PlayerStack(it.first, it.second) }.toList()
     }
+    return game
 }

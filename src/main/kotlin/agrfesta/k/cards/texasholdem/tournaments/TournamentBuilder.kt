@@ -6,12 +6,12 @@ import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.TournamentObserver
 import agrfesta.k.cards.texasholdem.rules.gameplay.Game
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
-import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStack
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 import kotlin.properties.Delegates
 
-typealias GameProvider = (IncreasingGamePayments, Table<InGamePlayer>, GameObserver?) -> Game
+typealias GameProvider = (IncreasingGamePayments, Table<PlayerStack>, GameObserver?) -> Game
 typealias TournamentImplementer =
         (Set<Player>, Int, IncreasingGamePayments, (Int) -> Int, GameProvider, TournamentObserver?) -> Tournament
 
@@ -91,7 +91,5 @@ class TournamentBuilder private constructor(): InitialStackStep, PaymentsStep {
         return tournamentImplementation.invoke(
                 subscriptions, initialStack, payments, buttonProvider, gameProvider, observer)
     }
-
-
 
 }

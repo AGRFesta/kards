@@ -1,7 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
-import agrfesta.k.cards.playingcards.deck.Deck
-import agrfesta.k.cards.playingcards.deck.DeckImpl
+import agrfesta.k.cards.playingcards.suits.Suit
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
@@ -19,12 +18,11 @@ import org.junit.jupiter.api.Test
 
 class GameMockImpl(
         val context: GameContext,
-        val deck: Deck,
         val dealerFactory: DealerFactory,
         val showdown: Showdown,
         val observer: GameObserver?
 ): Game {
-    override fun play() {/*...*/}
+    override fun play(): List<PlayerStack> = listOf()
 }
 
 @DisplayName("GameBuilder tests")
@@ -35,7 +33,7 @@ class GameBuilderTest {
     fun defaultGameImplementationIsGameImpl() {
         val game = buildingAGame()
                 .withPayments(aGamePayments())
-                .withTable(aTable())
+                .withTable(aTable().map { PlayerStack(it.player, it.stack) })
                 .build()
         assertThat(game).isInstanceOf(GameImpl::class)
     }
@@ -45,12 +43,11 @@ class GameBuilderTest {
     fun defaultDeckImplementationIsAutoShufflingDeck() {
         val game = buildingAGame()
                 .withPayments(aGamePayments())
-                .withTable(aTable())
+                .withTable(aTable().map { PlayerStack(it.player, it.stack) })
                 .implementedBy( ::GameMockImpl )
                 .build()
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
-            assertThat(game.deck).isInstanceOf(DeckImpl::class)
             assertThat(game.dealerFactory).isInstanceOf(DealerFactoryImpl::class)
             assertThat(game.showdown).isInstanceOf(Showdown::class)
             assertThat(game.observer).isNull()
@@ -61,7 +58,7 @@ class GameBuilderTest {
     @DisplayName("Builder inject in Game provided GamePayments and Table")
     fun builderInjectInGameProvidedGamePaymentsAndTable() {
         val payments = aGamePayments()
-        val table = aTable()
+        val table = aTable().map { PlayerStack(it.player, it.stack) }
         val game = buildingAGame()
                 .withPayments(payments)
                 .withTable(table)
@@ -70,19 +67,19 @@ class GameBuilderTest {
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
             assertThat(game.context.payments === payments).isTrue()
-            assertThat(game.context.table === table).isTrue()
+            assertThat(game.context.table).hasSameContentOf(table)
         }
     }
 
     @Test
     @DisplayName("Builder inject provided internal implementations")
     fun builderInjectProvidedInternalImplementations() {
-        val deck = aDeck()
+        val deck = Suit.FRENCH.createDeck()
         val showdown = mockk<Showdown>()
         val dealerFactory = mockk<DealerFactory>()
         val game = buildingAGame()
                 .withPayments(aGamePayments())
-                .withTable(aTable())
+                .withTable(aTable().map { PlayerStack(it.player, it.stack) })
                 .withDeck(deck)
                 .withDealerFactory(dealerFactory)
                 .showdown(showdown)
@@ -90,7 +87,6 @@ class GameBuilderTest {
                 .build()
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
-            assertThat(game.deck === deck).isTrue()
             assertThat(game.dealerFactory === dealerFactory).isTrue()
             assertThat(game.showdown === showdown).isTrue()
         }
@@ -103,7 +99,7 @@ class GameBuilderTest {
         every { observerMock.notifyResult(any()) } just Runs
         val game = buildingAGame()
                 .withPayments(aGamePayments())
-                .withTable(aTable())
+                .withTable(aTable().map { PlayerStack(it.player, it.stack) })
                 .observedBy(observerMock)
                 .implementedBy( ::GameMockImpl )
                 .build()
@@ -125,7 +121,7 @@ class GameBuilderTest {
         every { observerMock.notifyResult(any()) } just Runs
         val game = buildingAGame()
                 .withPayments(aGamePayments())
-                .withTable(aTable())
+                .withTable(aTable().map { PlayerStack(it.player, it.stack) })
                 .showdown(showdown)
                 .observedBy(observerMock)
                 .implementedBy( ::GameMockImpl )
@@ -145,7 +141,7 @@ class GameBuilderTest {
         every { observerMock.notifyResult(any()) } just Runs
         val game = buildingAGame()
                 .withPayments(aGamePayments())
-                .withTable(aTable())
+                .withTable(aTable().map { PlayerStack(it.player, it.stack) })
                 .showdown { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }
                 .observedBy(observerMock)
                 .implementedBy( ::GameMockImpl )

@@ -11,7 +11,7 @@ interface PaymentsStep {
     fun withPayments(sb: Int, bb: Int, ante: Int? = null): TableStep
 }
 interface TableStep {
-    fun withTable(table: Table<InGamePlayer>): GameBuilder
+    fun withTable(table: Table<PlayerStack>): GameBuilder
 }
 
 class GameBuilder private constructor(): PaymentsStep, TableStep {
@@ -21,10 +21,10 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
     private var showdownProvider: (ShowdownObserver?) -> Showdown = { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }
 
     private var dealerFactory: DealerFactory = DealerFactoryImpl()
-    private var implementation: (GameContext, Deck, DealerFactory, Showdown, GameObserver?) -> Game = ::GameImpl
+    private var implementation: (GameContext, DealerFactory, Showdown, GameObserver?) -> Game = ::GameImpl
 
     private lateinit var payments: GamePayments
-    private lateinit var table: Table<InGamePlayer>
+    private lateinit var table: Table<PlayerStack>
 
     companion object {
         fun buildingAGame(): PaymentsStep = GameBuilder()
@@ -53,7 +53,7 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
         return this
     }
 
-    fun implementedBy(implementation: (GameContext, Deck, dealerFactory: DealerFactory,
+    fun implementedBy(implementation: (GameContext, dealerFactory: DealerFactory,
                                        Showdown, GameObserver?) -> Game): GameBuilder {
         this.implementation = implementation
         return this
@@ -68,15 +68,15 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
         return this
     }
 
-    override fun withTable(table: Table<InGamePlayer>): GameBuilder {
+    override fun withTable(table: Table<PlayerStack>): GameBuilder {
         this.table = table
         return this
     }
 
     fun build(): Game {
-        val context = GameContext(table, payments, EmptyBoard(deck), mapOf())
-        return implementation.invoke(context, deck, dealerFactory,
-                showdownProvider.invoke(observer), observer)
+        val inGameTable = table.map { InGamePlayer(it.player, it.stack, deck.draw(2).toSet()) }
+        val context = GameContext(inGameTable, payments, EmptyBoard(deck), mapOf())
+        return implementation.invoke(context, dealerFactory, showdownProvider.invoke(observer), observer)
     }
 
 }

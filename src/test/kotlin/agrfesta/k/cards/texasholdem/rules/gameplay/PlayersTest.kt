@@ -31,7 +31,7 @@ class PlayersTest {
     @Test
     @DisplayName("Player's status is CALL -> player has not fold")
     fun ifPlayerStatusIsCallHasFoldedIsFalse() {
-        val player = InGamePlayer(Player("Alex",aStrategy()), 1000)
+        val player = InGamePlayer(Player("Alex",aStrategy()), 1000, aPlayerCardsSet())
         player.status = CALL
         assertThat(player.hasFolded()).isFalse()
     }
@@ -51,7 +51,7 @@ class PlayersTest {
     @Test
     @DisplayName("Player's status is RAISE -> player can take part to the game")
     fun ifPlayerStatusIsRaiseIsActive() {
-        val player = InGamePlayer(Player("Alex",aStrategy()), 1000)
+        val player = InGamePlayer(Player("Alex",aStrategy()), 1000, aPlayerCardsSet())
         player.status = RAISE
         assertThat(player.isActive()).isTrue()
     }
@@ -59,21 +59,21 @@ class PlayersTest {
     @Test
     @DisplayName("Player with a stack of 1000 receive 200 -> player have a stack of 1200")
     fun playerReceiveAPositiveAmount() {
-        val player = InGamePlayer(Player("Alex",aStrategy()), 1000)
+        val player = InGamePlayer(Player("Alex",aStrategy()), 1000, aPlayerCardsSet())
         player.receive(200)
         assertThat(player.stack).isEqualTo(1200)
     }
     @Test
     @DisplayName("Player with a stack of 1000 receive 0 -> player have a stack of 1000")
     fun playerReceiveAZeroAmount() {
-        val player = InGamePlayer(Player("Alex",aStrategy()), 1000)
+        val player = InGamePlayer(Player("Alex",aStrategy()), 1000, aPlayerCardsSet())
         player.receive(0)
         assertThat(player.stack).isEqualTo(1000)
     }
     @Test
     @DisplayName("Player receives -200 -> raise and Exception")
     fun playerReceiveANegativeAmountRaisesAnException() {
-        val player = InGamePlayer(Player("Alex",aStrategy()), 1000)
+        val player = InGamePlayer(Player("Alex",aStrategy()), 1000, aPlayerCardsSet())
 
         val failure = assertThat {
             player.receive(-200)
@@ -86,7 +86,7 @@ class PlayersTest {
     @DisplayName("Player with a stack of 200 pays 500 -> effective payment is 200 player have a stack of 0 and is " +
             "ALL-IN")
     fun playerPayAPositiveAmountGreaterThanStack() {
-        val player = InGamePlayer(Player("Alex",aStrategy()), 200)
+        val player = InGamePlayer(Player("Alex",aStrategy()), 200, aPlayerCardsSet())
         val payed = player.pay(500)
         assertThat(player.stack).isEqualTo(0)
         assertThat(player.status).isEqualTo(ALL_IN)
@@ -96,7 +96,7 @@ class PlayersTest {
     @DisplayName("Player with a stack of 500 pays 500 -> effective payment is 500 player have a stack of 0 and is " +
             "ALL-IN")
     fun playerPayAPositiveAmountEqualToStack() {
-        val player = InGamePlayer(Player("Alex",aStrategy()), 500)
+        val player = InGamePlayer(Player("Alex",aStrategy()), 500, aPlayerCardsSet())
         val payed = player.pay(500)
         assertThat(player.stack).isEqualTo(0)
         assertThat(player.status).isEqualTo(ALL_IN)
@@ -106,7 +106,7 @@ class PlayersTest {
     @DisplayName("Player with a stack of 1000 pays 500 -> effective payment is 500 player have a stack of 500, the " +
             "status doesn't change")
     fun playerPayAPositiveAmountLessThanStack() {
-        val player = InGamePlayer(Player("Alex",aStrategy()), 1000)
+        val player = InGamePlayer(Player("Alex",aStrategy()), 1000, aPlayerCardsSet())
         assertThat(player.status).isEqualTo(NONE)
         val payed = player.pay(500)
         assertThat(player.stack).isEqualTo(500)
@@ -116,7 +116,7 @@ class PlayersTest {
     @Test
     @DisplayName("Player pays -200 -> raise and Exception")
     fun playerPaysANegativeAmountRaisesAnException() {
-        val player = InGamePlayer(Player("Alex",aStrategy()), 1000)
+        val player = InGamePlayer(Player("Alex",aStrategy()), 1000, aPlayerCardsSet())
 
         val failure = assertThat {
             player.pay(-200)
@@ -135,7 +135,7 @@ class PlayersTest {
         val strategy = object : PlayerStrategyInterface {
             override fun act(context: PlayerGameContext): Action = action
         }
-        val player = InGamePlayer(Player("Alex",strategy), 1000)
+        val player = InGamePlayer(Player("Alex",strategy), 1000, aPlayerCardsSet())
         assertThat(player.act(aPlayerContext())).isEqualTo(action)
     }
 

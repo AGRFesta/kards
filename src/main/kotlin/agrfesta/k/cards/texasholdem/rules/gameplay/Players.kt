@@ -21,12 +21,14 @@ class PlayerStack(val player: Player, val stack: Int): SeatName {
     override fun getSeatName() = player.getSeatName()
 }
 
-class InGamePlayer(val player: Player, var stack: Int): PlayerStrategyInterface, SeatName {
+class InGamePlayer(val player: Player, var stack: Int, val cards: Set<Card>): PlayerStrategyInterface, SeatName {
     val name = player.name
 
     var status: PlayerStatus = PlayerStatus.NONE
 
-    var cards: Set<Card> = setOf() //TODO check that are exactly two
+    init {
+        require(cards.size == 2) { "An InGamePlayer must hold two cards, received ${cards.size}" }
+    }
 
     /// A Player that is out of the Game
     fun hasFolded(): Boolean = status == PlayerStatus.FOLD

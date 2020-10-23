@@ -2,28 +2,20 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.DeckListImpl
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
-import agrfesta.k.cards.texasholdem.rules.gameplay.utils.TestPotBuilder
-import assertk.Assert
+import agrfesta.k.cards.texasholdem.rules.gameplay.utils.BuilderEnrich
+import agrfesta.k.cards.texasholdem.rules.gameplay.utils.dealerMockFromBuilder
+import agrfesta.k.cards.texasholdem.rules.gameplay.utils.getPlayer
 import assertk.assertThat
 import assertk.assertions.containsOnly
-import assertk.assertions.isEqualTo
+import assertk.assertions.extracting
 import assertk.assertions.isInstanceOf
-import assertk.assertions.isSameAs
-import assertk.assertions.isTrue
-import assertk.assertions.prop
+import io.mockk.MockKAnswerScope
 import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-
-private fun dealerMock(collectPotBody: () -> Pot): Dealer {
-    val dealer = mockk<Dealer>()
-    every { dealer.collectPot() } returns collectPotBody.invoke()
-    return dealer
-}
 
 class ShowdownMock(private val showdownBody: (Pot, Board) -> Unit) : Showdown {
     override fun execute(pot: Pot, board: Board) = showdownBody.invoke(pot, board)
@@ -32,23 +24,15 @@ class ShowdownMock(private val showdownBody: (Pot, Board) -> Unit) : Showdown {
 @DisplayName("Game tests")
 class GameTest {
     private val payments = aGamePayments()
-    private var alex = anInGamePlayer()
-    private var poly = anInGamePlayer()
-    private var jane = anInGamePlayer()
-    private var dave = anInGamePlayer()
+    private var alex = aPlayerWithName("Alex")
+    private var poly = aPlayerWithName("Poly")
+    private var jane = aPlayerWithName("Jane")
+    private var dave = aPlayerWithName("Dave")
     private val dealerFactory = mockk<DealerFactory>()
 
-    private val defaultDealer: () -> Pot = {
+    private val defaultDealer: (Table<InGamePlayer>) -> Pot = {
         assert(false) { "The game is not following the correct phases sequence" }
         buildPot()
-    }
-
-    @BeforeEach
-    fun init() {
-        alex = anInGamePlayer("Alex", 1000)
-        poly = anInGamePlayer("Poly", 1000)
-        jane = anInGamePlayer("Jane", 1000)
-        dave = anInGamePlayer("Dave", 1000)
     }
 
     @AfterEach
@@ -60,22 +44,23 @@ class GameTest {
     @DisplayName("In pre-flop phase takes two cards from deck for each player at the table")
     fun inPreFlopPhaseTakesTwoCardsFromDeckForEachPlayerAtTheTable() {
         val deck = DeckListImpl(cardList("Ah", "Ac", "3h", "5s", "Kh", "Qc"))
-        val table = Table(listOf(alex, poly, jane), 0)
-        val preFlopDealer: () -> Pot = {
-            alex.status = PlayerStatus.RAISE
-            poly.status = PlayerStatus.FOLD
-            jane.status = PlayerStatus.FOLD
+        val table = aTableWith(alex, poly, jane)
+        val preFlopDealer: (Table<InGamePlayer>) -> Pot = {
+            it.findPlayerBySeatName(alex.getSeatName())?.status = PlayerStatus.RAISE
+            it.findPlayerBySeatName(poly.getSeatName())?.status = PlayerStatus.FOLD
+            it.findPlayerBySeatName(jane.getSeatName())?.status = PlayerStatus.FOLD
             buildPot()
         }
-        val flopDealer: () -> Pot = {
+        val flopDealer: (Table<InGamePlayer>) -> Pot = {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
         every { dealerFactory.preFlopDealer(any(),any()) }  answers {
-            assertThat(alex.cards).containsOnly(*cards("Ah", "Ac"))
-            dealerMock(preFlopDealer)
+            assertThat(firstArg<GameContext>().table.findPlayerBySeatName(alex.getSeatName())?.cards ?: setOf() )
+                    .containsOnly(*cards("Ah", "Ac"))
+            dealerMock(firstArg(), preFlopDealer)
         }
-        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(flopDealer) }
+        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(secondArg(), flopDealer) }
 
         buildingATestGame(table)
                 .withDeck(deck)
@@ -86,277 +71,273 @@ class GameTest {
     @Test
     @DisplayName("Game story: Alex is the remaining player in pre-flop and takes all the pot")
     fun gameStory000() {
-        val table = Table(listOf(alex, poly), 0)
-        val preFlopDealer: () -> Pot = {
-            val pot = buildPot()
-            alex.status = PlayerStatus.RAISE
-            pot.receiveFrom(alex, 500)
-            poly.status = PlayerStatus.FOLD
-            pot.receiveFrom(poly, 200)
-            pot
+        val table = aTableWith(alex, poly)
+        val preFlopDealer: BuilderEnrich = {
+            it.receiveCallFrom(poly, 200)
+                    .receiveRaiseFrom(alex, 500)
+                    .receiveFoldFrom(poly)
         }
-        val flopDealer: () -> Pot = {
+        val flopDealer: (Table<InGamePlayer>) -> Pot = {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
             buildPot()
         }
         every { dealerFactory.preFlopDealer(any(),any()) }  answers {
-            assertThat(firstArg<GameContext>()).has(table, payments)
             assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
-            dealerMock(preFlopDealer)
+            dealerMockFromBuilder(firstArg(), preFlopDealer)
         }
-        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(flopDealer) }
+        every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(secondArg(), flopDealer) }
 
-        buildingATestGame(table)
+        val result = buildingATestGame(table)
                 .build()
                 .play()
 
-        assertThat(alex.stack).isEqualTo(1200)
-        assertThat(poly.stack).isEqualTo(800)
+        assertThat(result).extracting { it.player to it.stack }
+                .containsOnly(alex to 1200, poly to 800)
     }
 
     @Test
     @DisplayName("Game story: Alex is the remaining player at flop and takes all the pot")
     fun gameStory001() {
-        val table = Table(listOf(alex, poly, jane), 0)
-        val preFlopDealer: () -> Pot = {
-            val pot = buildPot()
-            alex.status = PlayerStatus.RAISE
-            pot.receiveFrom(alex, 200)
-            poly.status = PlayerStatus.CALL
-            pot.receiveFrom(poly, 200)
-            jane.status = PlayerStatus.FOLD
-            pot
+        val table = aTableWith(alex, poly, jane)
+        val preFlopDealer: BuilderEnrich = {
+            it.receiveRaiseFrom(alex, 200)
+                    .receiveCallFrom(poly, 200)
+                    .receiveFoldFrom(jane)
         }
-        val flopDealer: () -> Pot = {
-            val pot = buildPot()
-            alex.status = PlayerStatus.RAISE
-            pot.receiveFrom(alex, 400)
-            poly.status = PlayerStatus.FOLD
-            pot.receiveFrom(poly, 200)
-            pot
+
+        val flopDealer: BuilderEnrich = {
+            it.receiveCallFrom(poly, 200)
+                    .receiveRaiseFrom(alex, 400)
+                    .receiveFoldFrom(poly)
         }
-        val turnDealer: () -> Pot = {
+
+        val turnDealer: (Table<InGamePlayer>) -> Pot = {
             assert(false) { "The game should finish at flop but is collecting pot at turn" }
             buildPot()
         }
-        every { dealerFactory.preFlopDealer(any(),any()) }  answers {
-            assertThat(firstArg<GameContext>()).has(table, payments)
+        every { dealerFactory.preFlopDealer(any(),any()) } answers {
             assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
-            dealerMock(preFlopDealer)
+            dealerMockFromBuilder(firstArg(), preFlopDealer)
         }
         every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
-            assertThat(firstArg<Pot>()).containsOnly(poly to 200, alex to 200)
-            assertThat(secondArg<GameContext>().table === table).isTrue()
-            assertThat(secondArg<GameContext>().payments === payments).isTrue()
+            assertThat(firstArg<Pot>()).containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 200)
             when (secondArg<GameContext>().board) {
-                is FlopBoard -> dealerMock(flopDealer)
-                is TurnBoard -> dealerMock(turnDealer)
-                else -> dealerMock(defaultDealer)
+                is FlopBoard -> dealerMockFromBuilder(secondArg(), flopDealer)
+                is TurnBoard -> dealerMock(secondArg(), turnDealer)
+                else -> dealerMock(secondArg(), defaultDealer)
             }
         }
 
-        buildingATestGame(table)
+        val result = buildingATestGame(table)
                 .build()
                 .play()
 
-        assertThat(alex.stack).isEqualTo(1400)
-        assertThat(poly.stack).isEqualTo(600)
-        assertThat(jane.stack).isEqualTo(1000)
+        assertThat(result).extracting { it.player to it.stack }
+                .containsOnly(alex to 1400, poly to 600, jane to 1000)
+
     }
 
     @Test
     @DisplayName("Game story: Alex is the remaining player at turn and takes all the pot")
     fun gameStory002() {
-        val table = Table(listOf(alex, poly, jane, dave), 0)
-        val preFlopDealer = buildPotFromActions {
+        val table = aTableWith(alex, poly, jane, dave)
+        val preFlopDealer: BuilderEnrich = {
             it.receiveRaiseFrom(alex, 200)
                     .receiveCallFrom(poly, 200)
                     .receiveFoldFrom(jane)
                     .receiveCallFrom(dave, 200)
         }
-        val flopDealer = buildPotFromActions {
+        val flopDealer: BuilderEnrich = {
             it.receiveRaiseFrom(alex, 200)
                     .receiveFoldFrom(poly)
                     .receiveCallFrom(dave, 200)
         }
-        val turnDealer = buildPotFromActions {
+        val turnDealer: BuilderEnrich = {
             it.receiveRaiseFrom(alex, 200)
                     .receiveFoldFrom(dave)
         }
-        val riverDealer: () -> Pot = {
+        val riverDealer: (Table<InGamePlayer>) -> Pot = {
             assert(false) { "The game should finish at turn but is collecting pot at river" }
             buildPot()
         }
         every { dealerFactory.preFlopDealer(any(),any()) }  answers {
-            assertThat(firstArg<GameContext>()).has(table, payments)
             assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
-            dealerMock(preFlopDealer)
+            dealerMockFromBuilder(firstArg(), preFlopDealer)
         }
         every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
-            assertThat(secondArg<GameContext>().table === table).isTrue()
-            assertThat(secondArg<GameContext>().payments === payments).isTrue()
             when (secondArg<GameContext>().board) {
                 is FlopBoard -> {
                     assertThat(firstArg<Pot>())
-                            .containsOnly(poly to 200, alex to 200, dave to 200)
-                    dealerMock(flopDealer)
+                            .containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 200,
+                                    getPlayer(dave) to 200)
+                    dealerMockFromBuilder(secondArg(), flopDealer)
                 }
                 is TurnBoard -> {
                     assertThat(firstArg<Pot>())
-                            .containsOnly(poly to 200, alex to 400, dave to 400)
-                    dealerMock(turnDealer)
+                            .containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 400,
+                                    getPlayer(dave) to 400)
+                    dealerMockFromBuilder(secondArg(), turnDealer)
                 }
-                is RiverBoard -> dealerMock(riverDealer)
-                else -> dealerMock(defaultDealer)
+                is RiverBoard -> dealerMock(firstArg(), riverDealer)
+                else -> dealerMock(secondArg(), defaultDealer)
             }
         }
 
-        buildingATestGame(table)
+        val result = buildingATestGame(table)
                 .build()
                 .play()
 
-        assertThat(alex.stack).isEqualTo(1600)
-        assertThat(poly.stack).isEqualTo(800)
-        assertThat(jane.stack).isEqualTo(1000)
-        assertThat(dave.stack).isEqualTo(600)
+        assertThat(result).extracting { it.player to it.stack }
+                .containsOnly(alex to 1600,poly to 800, jane to 1000, dave to 600)
     }
 
     @Test
     @DisplayName("Game story: Alex is the remaining player at river and takes all the pot")
     fun gameStory003() {
-        val table = Table(listOf(alex, poly, jane, dave), 0)
-        val preFlopDealer = buildPotFromActions {
+        val table = aTableWith(alex, poly, jane, dave)
+        val preFlopDealer: BuilderEnrich = {
             it.receiveRaiseFrom(alex, 200)
                     .receiveCallFrom(poly, 200)
                     .receiveFoldFrom(jane)
                     .receiveCallFrom(dave, 200)
         }
-        val flopDealer = buildPotFromActions {
+        val flopDealer: BuilderEnrich = {
             it.receiveRaiseFrom(alex, 200)
                     .receiveFoldFrom(poly)
                     .receiveCallFrom(dave, 200)
         }
-        val turnDealer = buildPotFromActions {
+        val turnDealer: BuilderEnrich = {
             it.receiveRaiseFrom(alex, 200)
                     .receiveCallFrom(dave, 200)
         }
-        val riverDealer = buildPotFromActions {
+        val riverDealer: BuilderEnrich = {
             it.receiveRaiseFrom(alex, 200)
                     .receiveFoldFrom(dave)
         }
         every { dealerFactory.preFlopDealer(any(),any()) }  answers {
-            assertThat(firstArg<GameContext>()).has(table, payments)
             assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
-            dealerMock(preFlopDealer)
+            dealerMockFromBuilder(firstArg(), preFlopDealer)
         }
         every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
-            assertThat(secondArg<GameContext>()).has(table, payments)
             when (secondArg<GameContext>().board) {
                 is FlopBoard -> {
                     assertThat(firstArg<Pot>())
-                            .containsOnly(poly to 200, alex to 200, dave to 200)
-                    dealerMock(flopDealer)
+                            .containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 200,
+                                    getPlayer(dave) to 200)
+                    dealerMockFromBuilder(secondArg(), flopDealer)
                 }
                 is TurnBoard -> {
                     assertThat(firstArg<Pot>())
-                            .containsOnly(poly to 200, alex to 400, dave to 400)
-                    dealerMock(turnDealer)
+                            .containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 400,
+                                    getPlayer(dave) to 400)
+                    dealerMockFromBuilder(secondArg(), turnDealer)
                 }
                 is RiverBoard -> {
                     assertThat(firstArg<Pot>())
-                            .containsOnly(poly to 200, alex to 600, dave to 600)
-                    dealerMock(riverDealer)
+                            .containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 600,
+                                    getPlayer(dave) to 600)
+                    dealerMockFromBuilder(secondArg(), riverDealer)
                 }
-                else -> dealerMock(defaultDealer)
+                else -> dealerMock(secondArg(), defaultDealer)
             }
         }
 
-        buildingATestGame(table)
+        val result = buildingATestGame(table)
                 .build()
                 .play()
 
-        assertThat(alex.stack).isEqualTo(1800)
-        assertThat(poly.stack).isEqualTo(800)
-        assertThat(jane.stack).isEqualTo(1000)
-        assertThat(dave.stack).isEqualTo(400)
+        assertThat(result).extracting { it.player to it.stack }
+                .containsOnly(alex to 1800,poly to 800, jane to 1000, dave to 400)
     }
 
     @Test
     @DisplayName("Game story: Alex wins the pot at showdown")
     fun gameStory004() {
-        val table = Table(listOf(alex, poly, jane, dave), 0)
-        val preFlopDealer = buildPotFromActions {
+        val table = aTableWith(alex, poly, jane, dave)
+        val preFlopDealer: BuilderEnrich = {
             it.receiveRaiseFrom(alex, 200)
                     .receiveCallFrom(poly, 200)
                     .receiveFoldFrom(jane)
                     .receiveCallFrom(dave, 200)
         }
-        val flopDealer = buildPotFromActions {
+
+        val flopDealer: BuilderEnrich = {
             it.receiveRaiseFrom(alex, 200)
                     .receiveFoldFrom(poly)
                     .receiveCallFrom(dave, 200)
         }
-        val turnDealer = buildPotFromActions {
+
+        val turnDealer: BuilderEnrich = {
             it.receiveRaiseFrom(alex, 200)
                     .receiveCallFrom(dave, 200)
         }
-        val riverDealer = buildPotFromActions {
+
+        val riverDealer: BuilderEnrich = {
             it.receiveRaiseFrom(alex, 200)
                     .receiveCallFrom(dave, 200)
         }
+
         every { dealerFactory.preFlopDealer(any(),any()) }  answers {
-            assertThat(firstArg<GameContext>()).has(table, payments)
             assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
-            dealerMock(preFlopDealer)
+            dealerMockFromBuilder(firstArg(), preFlopDealer)
         }
         every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
-            assertThat(secondArg<GameContext>()).has(table, payments)
             when (secondArg<GameContext>().board) {
                 is FlopBoard -> {
                     assertThat(firstArg<Pot>())
-                            .containsOnly(poly to 200, alex to 200, dave to 200)
-                    dealerMock(flopDealer)
+                            .containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 200, getPlayer(dave) to 200)
+                    dealerMockFromBuilder(secondArg(), flopDealer)
                 }
                 is TurnBoard -> {
                     assertThat(firstArg<Pot>())
-                            .containsOnly(poly to 200, alex to 400, dave to 400)
-                    dealerMock(turnDealer)
+                            .containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 400, getPlayer(dave) to 400)
+                    dealerMockFromBuilder(secondArg(), turnDealer)
                 }
                 is RiverBoard -> {
                     assertThat(firstArg<Pot>())
-                            .containsOnly(poly to 200, alex to 600, dave to 600)
-                    dealerMock(riverDealer)
+                            .containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 600, getPlayer(dave) to 600)
+                    dealerMockFromBuilder(secondArg(), riverDealer)
                 }
-                else -> dealerMock(defaultDealer)
+                else -> dealerMock(secondArg(), defaultDealer)
             }
         }
 
-        buildingATestGame(table)
+        val result = buildingATestGame(table)
                 .showdown(ShowdownMock { pot, board ->
                     assertThat(board).isInstanceOf(RiverBoard::class)
-                    assertThat(pot).containsOnly(poly to 200, alex to 800, dave to 800)
+                    assertThat(pot).containsOnly(
+                            pot.getPlayer(poly) to 200,
+                            pot.getPlayer(alex) to 800,
+                            pot.getPlayer(dave) to 800)
                 })
                 .build()
                 .play()
 
-        assertThat(alex.stack).isEqualTo(200)
-        assertThat(poly.stack).isEqualTo(800)
-        assertThat(jane.stack).isEqualTo(1000)
-        assertThat(dave.stack).isEqualTo(200)
-    }
+        assertThat(result).extracting { it.player to it.stack }
+                .containsOnly(alex to 200,poly to 800, jane to 1000, dave to 200)
 
-    private fun buildPotFromActions(core: (TestPotBuilder) -> TestPotBuilder): () -> Pot = {
-        core.invoke(TestPotBuilder()).build()
-    }
-
-    private fun Assert<GameContext>.has(table: Table<InGamePlayer>, payments: GamePayments) {
-        prop(GameContext::table).isSameAs(table)
-        prop(GameContext::payments).isSameAs(payments)
     }
 
     private fun buildingATestGame(table: Table<InGamePlayer>): GameBuilder = buildingAGame()
             .withPayments(payments)
-            .withTable(table)
+            .withTable(table.map { PlayerStack(it.player, it.stack) })
             .withDealerFactory(dealerFactory)
 
+}
+
+private fun dealerMock(context: GameContext, collectPotBody: (Table<InGamePlayer>) -> Pot): Dealer {
+    val dealer = mockk<Dealer>()
+    every { dealer.collectPot() } returns collectPotBody.invoke(context.table)
+    return dealer
+}
+
+fun <T,B> MockKAnswerScope<T, B>.getPlayer(player: Player): InGamePlayer {
+    return secondArg<GameContext>().getPlayer(player)
+}
+
+fun aTableWith(vararg players: Player): Table<InGamePlayer> {
+    val inGamePlayers = players
+            .map { InGamePlayer(it, 1000, aPlayerCardsSet()) }
+            .toList()
+    return Table(inGamePlayers, 0)
 }

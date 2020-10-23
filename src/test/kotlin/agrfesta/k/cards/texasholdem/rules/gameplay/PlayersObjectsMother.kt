@@ -1,6 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 import io.mockk.every
 import io.mockk.mockk
@@ -38,10 +39,11 @@ fun fold(): Action = FoldAction()
 fun aPlayer() = Player("APlayer", aStrategy())
 fun aPlayerWithName(name: String) = Player(name, aStrategy())
 
-fun anInGamePlayer() = InGamePlayer(aPlayer(), 1000)
-fun anInGamePlayer(name: String) = InGamePlayer(aPlayerWithName(name), 1000)
-fun anInGamePlayer(stack: Int) = InGamePlayer(aPlayer(), stack)
-fun anInGamePlayer(name: String, stack: Int) = InGamePlayer(aPlayerWithName(name), stack)
+fun aPlayerCardsSet() = frenchCardsSet("7s","2c")
+
+fun anInGamePlayer() = InGamePlayer(aPlayer(), 1000, aPlayerCardsSet())
+fun anInGamePlayer(name: String) = InGamePlayer(aPlayerWithName(name), 1000, aPlayerCardsSet())
+fun anInGamePlayer(stack: Int) = InGamePlayer(aPlayer(), stack, aPlayerCardsSet())
 fun anInGamePlayer(name: String, stack: Int, status: PlayerStatus, cards: Set<Card>) = PlayerTestBuilder()
         .player(Player(name, aStrategy()))
         .stack(stack)
@@ -49,7 +51,7 @@ fun anInGamePlayer(name: String, stack: Int, status: PlayerStatus, cards: Set<Ca
         .cards(cards)
         .build()
 fun anInGamePlayer(name: String, stack: Int, strategy: PlayerStrategyInterface) =
-        InGamePlayer(Player(name,strategy), stack)
+        InGamePlayer(Player(name,strategy), stack, aPlayerCardsSet())
 fun anInGamePlayer(name: String, stack: Int, status: PlayerStatus, strategy: PlayerStrategyInterface) =
         PlayerTestBuilder()
                 .player(Player(name,strategy))
