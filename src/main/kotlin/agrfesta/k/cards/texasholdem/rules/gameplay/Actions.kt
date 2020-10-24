@@ -9,26 +9,11 @@ interface Action {
     fun getType(): ActionType
 }
 
-//TODO replace all these implementations with a single ActionImpl
-class CallAction(private val amount: Int? = null): Action {
-    override fun getAmount(): Int? = amount
-    override fun getType() = ActionType.Call
-    override fun toString(): String = "CALL"
+data class ActionImpl(private val type: ActionType, private val amount: Int? = null): Action {
+    override fun getAmount() = amount
+    override fun getType() = type
+    override fun toString() = "$type${ if (amount!=null) " $amount" else "" }"
 }
-
-class RaiseAction(private val amount: Int): Action {
-    override fun getAmount(): Int? = amount
-    override fun getType() = ActionType.Raise
-    override fun toString(): String = "RAISE $amount"
-}
-
-class FoldAction: Action {
-    override fun getAmount(): Int? = null
-    override fun getType() = ActionType.Fold
-    override fun toString(): String = "FOLD"
-}
-
-//class CheckAction: Action {
-//    override fun getAmount(): Int? = null
-//    override fun toString(): String = "CHECK"
-//}
+fun fold() = ActionImpl(ActionType.Fold)
+fun call(amount: Int? = null) = ActionImpl(ActionType.Call, amount)
+fun raise(amount: Int) = ActionImpl(ActionType.Raise, amount)

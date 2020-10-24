@@ -52,9 +52,9 @@ abstract class AbstractDealer(
                         .toPlayerGameContext(player.asOwnPlayer(), pot.amount() + (prevPot()?.amount() ?: 0))
                 val action = player.act(gameContext)
                 actions.add(PlayerAction(player.player, action))
-                when (action) {
-                    is CallAction -> callEffect(player, pot)
-                    is RaiseAction -> raiseEffect(player, action, pot)
+                when (action.getType()) {
+                    ActionType.Call -> callEffect(player, pot)
+                    ActionType.Raise -> raiseEffect(player, action, pot)
                     else -> foldEffect(player)
                 }
             }
@@ -78,7 +78,7 @@ abstract class AbstractDealer(
         player.status = PlayerStatus.FOLD
     }
 
-    private fun raiseEffect(player: InGamePlayer, action: RaiseAction, pot: Pot) {
+    private fun raiseEffect(player: InGamePlayer, action: Action, pot: Pot) {
         val payed: Int = pot.payedBy(player)
         val minimumRaise = context.payments.bb()
         if (raisingPlayer != null && (amountRequired - payed < minimumRaise)) {

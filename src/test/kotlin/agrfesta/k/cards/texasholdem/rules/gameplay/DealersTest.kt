@@ -1,6 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
+import agrfesta.k.cards.texasholdem.playercontext.does
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.ALL_IN
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.FOLD
@@ -466,8 +467,7 @@ class DealersTest {
         assertThat(janeContexts[0].payments).isEqualTo(payments)
         assertThat(janeContexts[0].potAmount).isEqualTo(0)
         assertThat(janeContexts[0].history[GamePhase.PRE_FLOP] ?: error("Should be at Pre-Flop"))
-                .extracting({ it.player }, { it.action::class }, { it.action.getAmount() })
-                .containsOnly(Triple(alex.player, CallAction::class, null))
+                .containsOnly( alex.player does call() )
         assertThat(janeContexts[0].table.button).isEqualTo(0)
         assertThat(janeContexts[0].table.players).extracting({ it.name }, { it.stack }, { it.status })
                 .containsOnly(Triple("Alex", 2000, CALL),
@@ -479,9 +479,7 @@ class DealersTest {
         assertThat(alexContexts[1].payments).isEqualTo(payments)
         assertThat(alexContexts[1].potAmount).isEqualTo(100)
         assertThat(alexContexts[1].history[GamePhase.PRE_FLOP] ?: error("Should be at Pre-Flop"))
-                .extracting({ it.player }, { it.action::class }, { it.action.getAmount() })
-                .containsOnly(Triple(alex.player, CallAction::class, null),
-                        Triple(jane.player, RaiseAction::class, 100))
+                .containsOnly( alex.player does call(), jane.player does raise(100) )
         assertThat(alexContexts[1].table.button).isEqualTo(0)
         assertThat(alexContexts[1].table.players).extracting({ it.name }, { it.stack }, { it.status })
                 .containsOnly(Triple("Alex", 2000, CALL),
