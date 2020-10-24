@@ -16,7 +16,7 @@ class Opponent(val name: String, val stack: Int, val status: PlayerStatus): Seat
     override fun toString() = "$name[$stack]"
     override fun getSeatName() = name
 }
-class PlayerStack(val player: Player, val stack: Int): SeatName {
+data class PlayerStack(val player: Player, val stack: Int): SeatName {
     override fun toString() = "${player.name}[$stack]"
     override fun getSeatName() = player.getSeatName()
 }
@@ -88,6 +88,6 @@ fun List<InGamePlayer>.findWinner(): InGamePlayer? {
 }
 
 fun List<InGamePlayer>.get(player: Player): InGamePlayer? = this.find { it.player == player }
-fun List<InGamePlayer>.toPlayerStack(): List<PlayerStack> = this.map { PlayerStack(it.player,it.stack) }
+fun List<InGamePlayer>.toPlayerStack(): List<PlayerStack> = this.map { it.player owns it.stack }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

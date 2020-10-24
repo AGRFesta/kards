@@ -2,13 +2,16 @@ package agrfesta.k.cards.texasholdem.tournaments
 
 import agrfesta.k.cards.texasholdem.rules.gameplay.Game
 import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
-import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStack
 import agrfesta.k.cards.texasholdem.rules.gameplay.Position
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 import agrfesta.k.cards.texasholdem.rules.gameplay.aPlayerCardsSet
-import agrfesta.k.cards.texasholdem.rules.gameplay.aStrategy
+import agrfesta.k.cards.texasholdem.rules.gameplay.alex
+import agrfesta.k.cards.texasholdem.rules.gameplay.dave
 import agrfesta.k.cards.texasholdem.rules.gameplay.isSittingOn
+import agrfesta.k.cards.texasholdem.rules.gameplay.jane
+import agrfesta.k.cards.texasholdem.rules.gameplay.owns
+import agrfesta.k.cards.texasholdem.rules.gameplay.poly
 import agrfesta.k.cards.texasholdem.tournaments.TournamentBuilder.Companion.buildingTournament
 import assertk.assertThat
 import assertk.assertions.containsOnly
@@ -27,18 +30,14 @@ class TournamentImplTest {
     @DisplayName("Alex start a four players tournament from the Button, the second game from SB, third from BB, " +
             "fourth from UTG and final again from Button.")
     fun tournamentStory000() {
-        val alex = Player("Alex", aStrategy())
-        val poly = Player("Poly", aStrategy())
-        val jane = Player("Jane", aStrategy())
-        val dave = Player("Dave", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
         val mockedGames = listOf(
-                aMockGameWithResult(poly to 100, jane to 100, alex to 100, dave to 100),
-                aMockGameWithResult(poly to 100, jane to 100, alex to 100, dave to 100),
-                aMockGameWithResult(poly to 100, jane to 100, alex to 100, dave to 100),
-                aMockGameWithResult(poly to 100, jane to 100, alex to 100, dave to 100),
-                aMockGameWithResult(poly to 0, jane to 0, alex to 100, dave to 0)
+                aMockGameWithResult(poly owns 100, jane owns 100, alex owns 100, dave owns 100),
+                aMockGameWithResult(poly owns 100, jane owns 100, alex owns 100, dave owns 100),
+                aMockGameWithResult(poly owns 100, jane owns 100, alex owns 100, dave owns 100),
+                aMockGameWithResult(poly owns 100, jane owns 100, alex owns 100, dave owns 100),
+                aMockGameWithResult(poly owns 0, jane owns 0, alex owns 100, dave owns 0)
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
@@ -70,14 +69,11 @@ class TournamentImplTest {
     @DisplayName("In a three players tournament Alex goes all-in an lose, is the first eliminated player and won't " +
             "participate to remaining games.")
     fun tournamentStory001() {
-        val alex = Player("Alex", aStrategy())
-        val poly = Player("Poly", aStrategy())
-        val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
         val mockedGames = listOf(
-                aMockGameWithResult(poly to 100, jane to 100, alex to 0),
-                aMockGameWithResult(poly to 0, jane to 100)
+                aMockGameWithResult(poly owns 100, jane owns 100, alex owns 0),
+                aMockGameWithResult(poly owns 0, jane owns 100)
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
@@ -107,14 +103,11 @@ class TournamentImplTest {
     @DisplayName("In a three players tournament Alex and Jane go all-in with an initial stack of 1500 and 1000, they " +
             "both lose and are eliminated, Poly win the tournament, Alex second and Jane third.")
     fun tournamentStory002() {
-        val alex = Player("Alex", aStrategy())
-        val poly = Player("Poly", aStrategy())
-        val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
         val mockedGames = listOf(
-                aMockGameWithResult(poly to 100, jane to 1000, alex to 1500),
-                aMockGameWithResult(poly to 100, jane to 0, alex to 0)
+                aMockGameWithResult(poly owns 100, jane owns 1000, alex owns 1500),
+                aMockGameWithResult(poly owns 100, jane owns 0, alex owns 0)
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
@@ -142,14 +135,11 @@ class TournamentImplTest {
     @DisplayName("In a three players tournament Alex and Jane go all-in with an initial stack of 1000 and 1000, they " +
             "both lose and are eliminated, Poly win the tournament, Alex and Jane second.")
     fun tournamentStory003() {
-        val alex = Player("Alex", aStrategy())
-        val poly = Player("Poly", aStrategy())
-        val jane = Player("Jane", aStrategy())
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
         val mockedGames = listOf(
-                aMockGameWithResult(poly to 100, jane to 1000, alex to 1000),
-                aMockGameWithResult(poly to 100, jane to 0, alex to 0)
+                aMockGameWithResult(poly owns 100, jane owns 1000, alex owns 1000),
+                aMockGameWithResult(poly owns 100, jane owns 0, alex owns 0)
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
@@ -174,10 +164,8 @@ class TournamentImplTest {
 
 }
 
-private fun aMockGameWithResult(vararg pairs: Pair<Player,Int>): Game {
+private fun aMockGameWithResult(vararg elemnts: PlayerStack): Game {
     val game = mockk<Game>()
-    every { game.play() } answers {
-        pairs.map { PlayerStack(it.first, it.second) }.toList()
-    }
+    every { game.play() } answers { elemnts.toList() }
     return game
 }

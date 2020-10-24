@@ -320,7 +320,7 @@ class GameTest {
 
     private fun buildingATestGame(table: Table<InGamePlayer>): GameBuilder = buildingAGame()
             .withPayments(payments)
-            .withTable(table.map { PlayerStack(it.player, it.stack) })
+            .withTable(table.map { it.player owns it.stack })
             .withDealerFactory(dealerFactory)
 
 }

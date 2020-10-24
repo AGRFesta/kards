@@ -26,7 +26,7 @@ class ShowdownImpl(
         pot.decompose().forEach { process(it,playersHands) }
         observer?.notifyResult(
                 playersHands.entries
-                        .map { ShowdownPlayerResult(PlayerStack(it.key.player,it.key.stack),
+                        .map { ShowdownPlayerResult( it.key.player owns it.key.stack,
                                 playersPrizes[it.key.player], it.value) }
         )
     }

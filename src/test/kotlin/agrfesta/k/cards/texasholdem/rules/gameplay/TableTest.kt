@@ -11,9 +11,6 @@ import org.junit.jupiter.api.Test
 
 @DisplayName("Table tests")
 class TableTest {
-    private val alex = aPlayerWithName("Alex")
-    private val juno = aPlayerWithName("Juno")
-    private val maya = aPlayerWithName("Maya")
 
     @Test
     @DisplayName("creating a Table with one player -> raises an Exception")

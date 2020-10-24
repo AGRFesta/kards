@@ -9,17 +9,18 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.FlopBoard
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameContext
 import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
-import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStack
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
 import agrfesta.k.cards.texasholdem.rules.gameplay.Pot
 import agrfesta.k.cards.texasholdem.rules.gameplay.RiverBoard
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 import agrfesta.k.cards.texasholdem.rules.gameplay.TurnBoard
 import agrfesta.k.cards.texasholdem.rules.gameplay.aGamePayments
-import agrfesta.k.cards.texasholdem.rules.gameplay.aPlayerWithName
+import agrfesta.k.cards.texasholdem.rules.gameplay.alex
 import agrfesta.k.cards.texasholdem.rules.gameplay.buildPot
 import agrfesta.k.cards.texasholdem.rules.gameplay.cardList
 import agrfesta.k.cards.texasholdem.rules.gameplay.cards
+import agrfesta.k.cards.texasholdem.rules.gameplay.owns
+import agrfesta.k.cards.texasholdem.rules.gameplay.poly
 import agrfesta.k.cards.texasholdem.rules.gameplay.utils.BuilderEnrich
 import agrfesta.k.cards.texasholdem.rules.gameplay.utils.dealerMockFromBuilder
 import assertk.assertThat
@@ -35,21 +36,13 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 @DisplayName("Game Observer tests")
 class GameObserverTest {
     private val payments = aGamePayments()
-    private lateinit var alex: PlayerStack
-    private lateinit var poly: PlayerStack
-
-    @BeforeEach
-    fun init() {
-        alex = PlayerStack(aPlayerWithName("Alex"),1000)
-        poly = PlayerStack(aPlayerWithName("Poly"),1000)
-    }
+    val table = Table(listOf(alex owns 1000, poly owns 1000), 0)
 
     private fun observerMock(result: CapturingSlot<GameResult>, boards: MutableList<Board>)
             : GameObserver {
@@ -76,12 +69,11 @@ class GameObserverTest {
     @Test
     @DisplayName("A Game ends at pre-flop -> the observer is notified only at pre-flop and for the winner")
     fun gameObserverStory000() {
-        val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac","3h","5s"))
         val preFlopDealer: BuilderEnrich = {
-            it.receiveCallFrom(poly.player, 100)
-                    .receiveRaiseFrom(alex.player, 200)
-                    .receiveFoldFrom(poly.player)
+            it.receiveCallFrom(poly, 100)
+                    .receiveRaiseFrom(alex, 200)
+                    .receiveFoldFrom(poly)
         }
         val flopDealer: (Table<InGamePlayer>) -> Pot = {
             assert(false) { "The game should finish at pre-flop but is collecting pot at flop" }
@@ -113,23 +105,22 @@ class GameObserverTest {
         assertThat(boards[0]).isInstanceOf(EmptyBoard::class)
         assertThat(boards[0].cards()).isEmpty()
 
-        assertThat(result.captured.winner).isEqualTo(alex.player)
+        assertThat(result.captured.winner).isEqualTo(alex)
         assertThat(result.captured.prize).isEqualTo(300)
     }
 
     @Test
     @DisplayName("A Game ends at flop -> the observer is notified only at pre-flop, flop and for the winner")
     fun gameObserverStory001() {
-        val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac", "3h","5s", "Jh","Js","7h"))
         val preFlopDealer: BuilderEnrich = {
-            it.receiveCallFrom(alex.player, 200)
-                    .receiveRaiseFrom(poly.player, 200)
+            it.receiveCallFrom(alex, 200)
+                    .receiveRaiseFrom(poly, 200)
         }
         val flopDealer: BuilderEnrich = {
-            it.receiveCallFrom(poly.player, 200)
-                    .receiveRaiseFrom(alex.player, 400)
-                    .receiveFoldFrom(poly.player)
+            it.receiveCallFrom(poly, 200)
+                    .receiveRaiseFrom(alex, 400)
+                    .receiveFoldFrom(poly)
         }
         val turnDealer: (Table<InGamePlayer>) -> Pot = {
             assert(false) { "The game should finish at flop but is collecting pot at turn" }
@@ -169,23 +160,22 @@ class GameObserverTest {
         assertThat(boards[1]).isInstanceOf(FlopBoard::class)
         assertThat(boards[1].cards()).containsOnly(*cards("Jh","Js","7h"))
 
-        assertThat(result.captured.winner).isEqualTo(alex.player)
+        assertThat(result.captured.winner).isEqualTo(alex)
         assertThat(result.captured.prize).isEqualTo(1000)
     }
 
     @Test
     @DisplayName("A Game ends at turn -> the observer is notified only at pre-flop, flop, turn and for the winner")
     fun gameObserverStory002() {
-        val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac", "3h","5s", "Jh","Js","7h", "5d"))
         val preFlopDealer: BuilderEnrich = {
-            it.receiveCallFrom(alex.player, 200)
-                    .receiveCallFrom(poly.player, 200)
+            it.receiveCallFrom(alex, 200)
+                    .receiveCallFrom(poly, 200)
         }
         val turnDealer: BuilderEnrich = {
-            it.receiveCallFrom(poly.player, 200)
-                    .receiveRaiseFrom(alex.player, 500)
-                    .receiveFoldFrom(poly.player)
+            it.receiveCallFrom(poly, 200)
+                    .receiveRaiseFrom(alex, 500)
+                    .receiveFoldFrom(poly)
         }
         val riverDealer: (Table<InGamePlayer>) -> Pot = {
             assert(false) { "The game should finish at turn but is collecting pot at river" }
@@ -228,23 +218,22 @@ class GameObserverTest {
         assertThat(boards[2]).isInstanceOf(TurnBoard::class)
         assertThat(boards[2].cards()).containsOnly(*cards("Jh","Js","7h", "5d"))
 
-        assertThat(result.captured.winner).isEqualTo(alex.player)
+        assertThat(result.captured.winner).isEqualTo(alex)
         assertThat(result.captured.prize).isEqualTo(1100)
     }
 
     @Test
     @DisplayName("A Game ends at river -> the observer is notified in all phases and for the winner")
     fun gameObserverStory003() {
-        val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac", "3h","5s", "Jh","Js","7h", "5d", "Td"))
         val preFlopDealer: BuilderEnrich = {
-            it.receiveCallFrom(alex.player, 200)
-                    .receiveCallFrom(poly.player, 200)
+            it.receiveCallFrom(alex, 200)
+                    .receiveCallFrom(poly, 200)
         }
         val riverDealer: BuilderEnrich = {
-            it.receiveCallFrom(poly.player, 200)
-                    .receiveRaiseFrom(alex.player, 300)
-                    .receiveFoldFrom(poly.player)
+            it.receiveCallFrom(poly, 200)
+                    .receiveRaiseFrom(alex, 300)
+                    .receiveFoldFrom(poly)
         }
         val dealerFactory = mockk<DealerFactory>()
         every { dealerFactory.preFlopDealer(any(),any()) } answers
@@ -285,18 +274,17 @@ class GameObserverTest {
         assertThat(boards[3]).isInstanceOf(RiverBoard::class)
         assertThat(boards[3].cards()).containsOnly(*cards("Jh","Js","7h", "5d", "Td"))
 
-        assertThat(result.captured.winner).isEqualTo(alex.player)
+        assertThat(result.captured.winner).isEqualTo(alex)
         assertThat(result.captured.prize).isEqualTo(900)
     }
 
     @Test
     @DisplayName("A Game ends at showdown -> the observer is notified in all phases and with result of showdown")
     fun gameObserverStory004() {
-        val table = Table(listOf(alex,poly), 0)
         val deck = DeckListImpl(cardList("Ah","Ac", "3h","5s", "Jh","Js","7h", "5d", "Td"))
         val preFlopDealer: BuilderEnrich = {
-            it.receiveCallFrom(alex.player, 200)
-                    .receiveCallFrom(poly.player, 200)
+            it.receiveCallFrom(alex, 200)
+                    .receiveCallFrom(poly, 200)
         }
 
         val boards = mutableListOf<Board>()

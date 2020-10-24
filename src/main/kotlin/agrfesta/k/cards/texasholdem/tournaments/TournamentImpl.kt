@@ -4,6 +4,7 @@ import agrfesta.k.cards.texasholdem.observers.TournamentObserver
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStack
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
+import agrfesta.k.cards.texasholdem.rules.gameplay.owns
 import agrfesta.k.cards.texasholdem.rules.gameplay.toRanking
 import agrfesta.k.cards.texasholdem.utils.circularPos
 
@@ -19,7 +20,7 @@ class TournamentImpl(subscriptions: Set<Player>,
                      private val observer: TournamentObserver? ): Tournament {
     private val losers: MutableList<Set<Player>> = mutableListOf()
     private var players: List<PlayerStack> = subscriptions
-            .map { player -> PlayerStack(player,initialStack) }
+            .map { player -> player owns initialStack }
             .toMutableList()
 
     override fun play(): List<Set<Player>> {

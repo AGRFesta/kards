@@ -36,6 +36,8 @@ val alex = aPlayerWithName("Alex")
 val poly = aPlayerWithName("Poly")
 val jane = aPlayerWithName("Jane")
 val dave = aPlayerWithName("Dave")
+val maya = aPlayerWithName("Maya")
+val juno = aPlayerWithName("Juno")
 
 fun aPlayer() = Player("APlayer", aStrategy())
 fun aPlayerWithName(name: String) = Player(name, aStrategy())
