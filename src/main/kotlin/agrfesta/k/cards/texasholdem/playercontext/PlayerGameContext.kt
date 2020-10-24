@@ -17,10 +17,10 @@ class PlayerGameContext(
         val table: Table<Opponent>,
         val history: Map<GamePhase,List<PlayerAction>>) {
     fun getActions(phase: GamePhase) = history.getOrElse(phase){ emptyList() }
-    fun actualActions() = getActions(board.phase)
+    fun getActualActions() = getActions(board.phase)
 }
 
-class PlayerAction(val player: Player, val action: Action) {
+data class PlayerAction(val player: Player, val action: Action) {
     override fun toString() = "${player.name} $action"
 }
 infix fun Player.does(action: Action) = PlayerAction(this, action)

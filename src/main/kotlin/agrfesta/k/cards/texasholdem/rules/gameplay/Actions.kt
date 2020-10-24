@@ -9,6 +9,7 @@ interface Action {
     fun getType(): ActionType
 }
 
+//TODO replace all these implementations with a single ActionImpl
 class CallAction(private val amount: Int? = null): Action {
     override fun getAmount(): Int? = amount
     override fun getType() = ActionType.Call
