@@ -23,4 +23,4 @@ class PlayerGameContext(
 class PlayerAction(val player: Player, val action: Action) {
     override fun toString() = "${player.name} $action"
 }
-
+infix fun Player.does(action: Action) = PlayerAction(this, action)
