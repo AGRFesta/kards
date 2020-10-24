@@ -87,7 +87,6 @@ fun List<InGamePlayer>.findWinner(): InGamePlayer? {
     else null
 }
 
-fun List<InGamePlayer>.get(player: Player): InGamePlayer? = this.find { it.player == player }
 fun List<InGamePlayer>.toPlayerStack(): List<PlayerStack> = this.map { it.player owns it.stack }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
