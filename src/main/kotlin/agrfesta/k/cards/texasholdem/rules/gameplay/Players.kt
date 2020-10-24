@@ -29,7 +29,8 @@ class InGamePlayer(val player: Player, var stack: Int, val cards: Set<Card>): Pl
     var status: PlayerStatus = PlayerStatus.NONE
 
     init {
-        require(cards.size == 2) { "An InGamePlayer must hold two cards, received ${cards.size}" }
+        require(cards.size == 2) { "Must hold two cards, received ${cards.size}" }
+        require(stack >= 0) { "Can't have a negative stack, received $stack" }
     }
 
     /// A Player that is out of the Game
@@ -39,7 +40,7 @@ class InGamePlayer(val player: Player, var stack: Int, val cards: Set<Card>): Pl
     fun isActive(): Boolean = status!=PlayerStatus.FOLD && status!=PlayerStatus.ALL_IN
 
     fun receive(amount: Int) {
-        require(amount >= 0) { "Can't receive a negative amount" }
+        require(amount >= 0) { "Can't have a negative stack, received $amount" }
         stack += amount
     }
 

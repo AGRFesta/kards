@@ -9,7 +9,6 @@ import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 fun aDeck(): Deck = DeckListImpl(listOf())
 fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer(),anInGamePlayer()), 0)
 
-fun aContext(): GameContext = GameContext(aTable(), aGamePayments(), EmptyBoard(aDeck()), mapOf())
 fun aContext(table: Table<InGamePlayer>, payments: GamePayments): GameContext =
         GameContext(table, payments, EmptyBoard(aDeck()), mapOf())
 fun aPlayerContext(): PlayerGameContext = PlayerGameContext(anInGamePlayer().asOwnPlayer(),aGamePayments(),
