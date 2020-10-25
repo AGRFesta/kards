@@ -1,12 +1,12 @@
 package agrfesta.k.cards.texasholdem.tournaments
 
+import agrfesta.k.cards.playingcards.utils.circularIndexMapping
 import agrfesta.k.cards.texasholdem.observers.TournamentObserver
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStack
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 import agrfesta.k.cards.texasholdem.rules.gameplay.owns
 import agrfesta.k.cards.texasholdem.rules.gameplay.toRanking
-import agrfesta.k.cards.texasholdem.utils.circularPos
 
 interface Tournament {
     fun play(): List<Set<Player>>
@@ -28,7 +28,7 @@ class TournamentImpl(subscriptions: Set<Player>,
         while (players.size > 1) {
             playGame(button)
             payments.nextGame()
-            button = circularPos(button-1, players.size)
+            button = players.circularIndexMapping(button-1)
         }
         val winner = listOf(setOf(players[0].player))
         return winner + losers.reversed()
