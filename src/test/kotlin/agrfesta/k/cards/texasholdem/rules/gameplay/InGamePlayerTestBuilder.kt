@@ -2,25 +2,29 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.playingcards.cards.Card
 
-class PlayerTestBuilder {
-    private var player: Player = Player("aPlayer", aStrategy())
+class InGamePlayerTestBuilder private constructor() {
+    private var player = aPlayer()
     private var stack: Int = 1000
     private var status: PlayerStatus = PlayerStatus.NONE
     private var cards: Set<Card> = aPlayerCardsSet()
 
-    fun player(player: Player): PlayerTestBuilder {
+    companion object {
+        fun buildingAnInGamePlayer() = InGamePlayerTestBuilder()
+    }
+
+    fun forPlayer(player: Player): InGamePlayerTestBuilder {
         this.player = player
         return this
     }
-    fun stack(stack: Int): PlayerTestBuilder {
+    fun withAStackOf(stack: Int): InGamePlayerTestBuilder {
         this.stack = stack
         return this
     }
-    fun status(status: PlayerStatus): PlayerTestBuilder {
+    fun inStatus(status: PlayerStatus): InGamePlayerTestBuilder {
         this.status = status
         return this
     }
-    fun cards(cards: Set<Card>): PlayerTestBuilder {
+    fun withCards(cards: Set<Card>): InGamePlayerTestBuilder {
         this.cards = cards
         return this
     }
