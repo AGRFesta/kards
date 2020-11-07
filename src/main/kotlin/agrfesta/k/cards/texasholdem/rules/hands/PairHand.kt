@@ -8,7 +8,7 @@ import agrfesta.k.cards.texasholdem.utils.COUNT_THREE
 import kotlinx.collections.immutable.toImmutableList
 
 class PairHand(
-        private val pairRank: Rank,
+        val pairRank: Rank,
         firstKicker: Rank, secondKicker: Rank, thirdKicker: Rank)
     : AbstractTHHand(PAIR) {
 

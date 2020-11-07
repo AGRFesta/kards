@@ -8,8 +8,8 @@ import agrfesta.k.cards.texasholdem.utils.COUNT_THREE
 import agrfesta.k.cards.texasholdem.utils.COUNT_TWO
 
 class FullHouseHand (
-        private val threeRank: Rank,
-        private val twoRank: Rank)
+        val threeRank: Rank,
+        val twoRank: Rank)
     : AbstractTHHand(FULL_HOUSE) {
 
     init {

@@ -7,8 +7,8 @@ import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.STRAIGHT_FLUSH
 
 class StraightFlushHand(
-        private val straightTop: Rank,
-        private val seed: Seed)
+        val straightTop: Rank,
+        val seed: Seed)
     : AbstractTHHand(STRAIGHT_FLUSH) {
 
     init {

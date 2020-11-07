@@ -7,8 +7,8 @@ import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.FOUR_OF_A_KIND
 import agrfesta.k.cards.texasholdem.utils.COUNT_FOUR
 
 class FourOfAKindHand (
-        private val fokRank: Rank,
-        private val kicker: Rank)
+        val fokRank: Rank,
+        val kicker: Rank)
     : AbstractTHHand(FOUR_OF_A_KIND) {
 
     init {

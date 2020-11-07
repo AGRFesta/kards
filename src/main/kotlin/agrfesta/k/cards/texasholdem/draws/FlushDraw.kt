@@ -2,7 +2,6 @@ package agrfesta.k.cards.texasholdem.draws
 
 import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.playingcards.cards.Seed
-import kotlinx.collections.immutable.toImmutableList
 
 /*
     A flush draw, or four flush, is a hand with four cards of the same suit that may improve to a flush.
@@ -17,8 +16,8 @@ class FlushDraw(
         val seed: Seed) : Draw {
 
     val ranks = listOf(first, second, third, fourth)
-            .sorted().reversed()
-            .toImmutableList()
+            .sorted()
+            .reversed()
 
     init {
         val set = setOf(first, second, third, fourth)

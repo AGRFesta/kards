@@ -5,9 +5,9 @@ import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.TWO_PAIR
 
 class TwoPairHand(
-        private val majorPairRank: Rank,
-        private val minorPairRank: Rank,
-        private val kicker: Rank)
+        val majorPairRank: Rank,
+        val minorPairRank: Rank,
+        val kicker: Rank)
     : AbstractTHHand(TWO_PAIR) {
 
     init {

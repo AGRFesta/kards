@@ -16,7 +16,7 @@ import agrfesta.k.cards.texasholdem.utils.TWO_OFF
     (has four outs).
  */
 
-data class OutsideStraightDraw(private val top: Rank): Draw {
+data class OutsideStraightDraw(val top: Rank): Draw {
 
     init {
         require(top >= FIVE) { "The minimum Outside Straight Draw top is FIVE, top: $top" }

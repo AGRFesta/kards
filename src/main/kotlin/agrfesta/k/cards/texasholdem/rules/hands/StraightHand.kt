@@ -6,7 +6,7 @@ import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.STRAIGHT
 
 class StraightHand(
-        private val straightTop: Rank)
+        val straightTop: Rank)
     : AbstractTHHand(STRAIGHT) {
 
     init {

@@ -12,7 +12,7 @@ import agrfesta.k.cards.texasholdem.utils.SECOND_POS
 import kotlinx.collections.immutable.toImmutableList
 
 class ThreeOfAKindHand(
-        private val tokRank: Rank,
+        val tokRank: Rank,
         firstKicker: Rank, secondKicker: Rank)
     : AbstractTHHand(THREE_OF_A_KIND) {
 

@@ -15,8 +15,8 @@ import agrfesta.k.cards.texasholdem.utils.TWO_OFF
  */
 
 data class DoubleInsideStraightDraw(
-        private val innerTop: Rank,
-        private val potentialTop: Rank) : Draw {
+        val innerTop: Rank,
+        val potentialTop: Rank) : Draw {
 
     init {
         require(innerTop >= FIVE) { "The minimum Double Inside Straight Draw inner top is FIVE, inner top: $innerTop" }

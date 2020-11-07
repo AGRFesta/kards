@@ -6,7 +6,6 @@ import agrfesta.k.cards.texasholdem.rules.CardsEvaluation
 import agrfesta.k.cards.texasholdem.rules.OrderedRankListComparator
 import agrfesta.k.cards.texasholdem.rules.hands.THPokerHand.FLUSH
 import agrfesta.k.cards.texasholdem.utils.POKER_HAND_SIZE
-import kotlinx.collections.immutable.toImmutableList
 
 class FlushHand(
         first: Rank, second: Rank, third: Rank, fourth: Rank, fifth: Rank,
@@ -14,8 +13,8 @@ class FlushHand(
     : AbstractTHHand(FLUSH) {
 
     val ranks = listOf(first, second, third, fourth, fifth)
-            .sorted().reversed()
-            .toImmutableList()
+            .sorted()
+            .reversed()
 
     init {
         val set = setOf(first, second, third, fourth, fifth)

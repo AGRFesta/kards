@@ -11,7 +11,6 @@ import agrfesta.k.cards.texasholdem.utils.FOURTH_POS
 import agrfesta.k.cards.texasholdem.utils.POKER_HAND_SIZE
 import agrfesta.k.cards.texasholdem.utils.SECOND_POS
 import agrfesta.k.cards.texasholdem.utils.THIRD_POS
-import kotlinx.collections.immutable.toImmutableList
 
 class HighCardHand(
         firstKicker: Rank, secondKicker: Rank, thirdKicker: Rank, fourthKicker: Rank, fifthKicker: Rank)
@@ -26,8 +25,8 @@ class HighCardHand(
     }
 
     val kickers = listOf(firstKicker, secondKicker, thirdKicker, fourthKicker, fifthKicker)
-            .sorted().reversed()
-            .toImmutableList()
+            .sorted()
+            .reversed()
 
     override fun innerCompareTo(ce: CardsEvaluation): Int {
         require(ce is HighCardHand) { "Comparable only to an instance of HighCardHand" }
