@@ -56,7 +56,11 @@ class InGamePlayer(val player: Player, var stack: Int, val cards: Set<Card>): Pl
         return effectiveAmount
     }
 
-    fun asOwnPlayer() = OwnPlayer(name, cards, stack)
+    //TODO test
+    fun asOwnPlayer(actualPot: Pot) = OwnPlayer(name, cards, stack, calculateAmountToCall(actualPot))
+
+    //TODO test
+    fun calculateAmountToCall(pot: Pot): Int = (pot.maxContribution()?.amount ?: 0) - pot.payedBy(this)
 
     override fun act(context: PlayerGameContext): Action = player.strategy.act(context)
     override fun getSeatName() = name
@@ -73,7 +77,7 @@ interface PlayerStrategyInterface {
     fun act(context: PlayerGameContext): Action
 }
 
-class OwnPlayer(val name: String, val cards: Set<Card>, val stack: Int)
+class OwnPlayer(val name: String, val cards: Set<Card>, val stack: Int, val amountToCall: Int)
 
 /// List<Player> ///////////////////////////////////////////////////////////////////////////////////////////////////////
 

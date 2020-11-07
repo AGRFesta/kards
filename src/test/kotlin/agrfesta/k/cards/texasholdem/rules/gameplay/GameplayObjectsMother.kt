@@ -11,7 +11,7 @@ fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer(),anInGamePlayer
 
 fun aContext(table: Table<InGamePlayer>, payments: GamePayments): GameContext =
         GameContext(table, payments, EmptyBoard(aDeck()), mapOf())
-fun aPlayerContext(): PlayerGameContext = PlayerGameContext(anInGamePlayer().asOwnPlayer(),aGamePayments(),
+fun aPlayerContext(): PlayerGameContext = PlayerGameContext(anInGamePlayer().asOwnPlayer(buildPot()),aGamePayments(),
         EmptyBoard(aDeck()).info(), 0, aTable().map { it.asOpponent() }, mapOf())
 
 fun aGamePayments(): GamePayments = GamePaymentsFixedImpl(10, 20)
