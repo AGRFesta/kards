@@ -15,10 +15,11 @@ typealias GameProvider = (IncreasingGamePayments, Table<PlayerStack>, GameObserv
 typealias TournamentImplementer =
         (Set<Player>, Int, IncreasingGamePayments, (Int) -> Int, GameProvider, TournamentObserver?) -> Tournament
 
-val defaultGameProvider: GameProvider = { payments, table, _ ->
+val defaultGameProvider: GameProvider = { payments, table, observer ->
     buildingAGame()
             .withPayments(payments)
             .withTable(table)
+            .observedBy(observer)
             .build()
 }
 

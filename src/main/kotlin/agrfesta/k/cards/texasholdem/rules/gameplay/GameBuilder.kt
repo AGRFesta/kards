@@ -34,7 +34,7 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
         this.deck = deck
         return this
     }
-    fun observedBy(observer: GameObserver): GameBuilder {
+    fun observedBy(observer: GameObserver?): GameBuilder {
         this.observer = observer
         return this
     }
