@@ -6,7 +6,7 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.GamePayments
 import agrfesta.k.cards.texasholdem.rules.gameplay.GamePhase
 import agrfesta.k.cards.texasholdem.rules.gameplay.Opponent
 import agrfesta.k.cards.texasholdem.rules.gameplay.OwnPlayer
-import agrfesta.k.cards.texasholdem.rules.gameplay.Player
+import agrfesta.k.cards.texasholdem.rules.gameplay.SeatName
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 
 class PlayerGameContext(
@@ -20,7 +20,7 @@ class PlayerGameContext(
     fun getActualActions() = getActions(board.phase)
 }
 
-data class PlayerAction(val player: Player, val action: Action) {
-    override fun toString() = "${player.name} $action"
+data class PlayerAction(val playerName: String, val action: Action) {
+    override fun toString() = "$playerName $action"
 }
-infix fun Player.does(action: Action) = PlayerAction(this, action)
+infix fun SeatName.does(action: Action) = PlayerAction(this.getSeatName(), action)

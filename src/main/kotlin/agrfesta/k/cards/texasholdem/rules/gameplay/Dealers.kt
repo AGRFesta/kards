@@ -3,6 +3,7 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 import agrfesta.k.cards.texasholdem.observers.DealerObserver
 import agrfesta.k.cards.texasholdem.playercontext.PlayerAction
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
+import agrfesta.k.cards.texasholdem.playercontext.does
 
 interface Dealer {
     fun collectPot(): Pot
@@ -51,7 +52,7 @@ abstract class AbstractDealer(
                 val gameContext = context.add(actions)
                         .toPlayerGameContext(player.asOwnPlayer(pot), pot.amount() + (prevPot()?.amount() ?: 0))
                 val action = player.act(gameContext)
-                actions.add(PlayerAction(player.player, action))
+                actions.add(player does action)
                 when (action.getType()) {
                     ActionType.Call -> callEffect(player, pot)
                     ActionType.Raise -> raiseEffect(player, action, pot)
