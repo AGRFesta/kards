@@ -84,7 +84,10 @@ class CardsEvaluatorBaseImpl : CardsEvaluator {
   }
 
   private fun createFlushEvaluation(seed: Seed, cards: Collection<Card>): FlushHand {
-    val ranks = cards.take(POKER_HAND_SIZE).map { it.rank() }
+    val ranks = cards
+            .map { it.rank() }
+            .sortedDescending()
+            .take(POKER_HAND_SIZE)
     return FlushHand(ranks[FIRST_POS], ranks[SECOND_POS], ranks[THIRD_POS], ranks[FOURTH_POS], ranks[FIFTH_POS], seed)
   }
 

@@ -5,9 +5,11 @@ import agrfesta.k.cards.playingcards.suits.ACE
 import agrfesta.k.cards.playingcards.suits.EIGHT
 import agrfesta.k.cards.playingcards.suits.FIVE
 import agrfesta.k.cards.playingcards.suits.FOUR
+import agrfesta.k.cards.playingcards.suits.FrenchSeed.CLUBS
 import agrfesta.k.cards.playingcards.suits.FrenchSeed.HEARTS
 import agrfesta.k.cards.playingcards.suits.JACK
 import agrfesta.k.cards.playingcards.suits.KING
+import agrfesta.k.cards.playingcards.suits.QUEEN
 import agrfesta.k.cards.playingcards.suits.SEVEN
 import agrfesta.k.cards.playingcards.suits.SIX
 import agrfesta.k.cards.playingcards.suits.TEN
@@ -63,6 +65,8 @@ interface CardsEvaluatorTest {
                     .result(FlushHand(ACE,KING,SEVEN,FIVE,THREE, HEARTS)),
             willAssertThatCards("Ah","7h","Kh","3d","5c","3h","5h")
                     .result(FlushHand(ACE,KING,SEVEN,FIVE,THREE, HEARTS)),
+            willAssertThatCards("6c","Ac","Kc","Qc","7c","5c","Tc")
+                    .result(FlushHand(ACE,KING,QUEEN,TEN,SEVEN, CLUBS)),
 
             willAssertThatCards("7s","7h","7d","6d","4c","3h","5h")
                     .result(StraightHand(SEVEN)),
