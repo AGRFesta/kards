@@ -77,7 +77,9 @@ interface PlayerStrategyInterface {
     fun act(context: PlayerGameContext): Action
 }
 
-class OwnPlayer(val name: String, val cards: Set<Card>, val stack: Int, val amountToCall: Int)
+class OwnPlayer(val name: String, val cards: Set<Card>, val stack: Int, val amountToCall: Int): SeatName {
+    override fun getSeatName() = name
+}
 
 /// List<Player> ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
