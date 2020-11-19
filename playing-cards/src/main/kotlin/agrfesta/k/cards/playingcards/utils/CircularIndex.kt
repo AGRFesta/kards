@@ -53,3 +53,29 @@ fun <T> Array<T>.circularIndexMapping(value: Int): Int {
  * Throws [IllegalStateException] if [Array] is empty.
  */
 fun <T> Array<T>.circularIndex(value: Int): T = this[this.circularIndexMapping(value)]
+
+/**
+ * Will extract a sub-list from position [from] to [to] from the original [List] considering it circular.
+ * By default will include elements in position [from] and [to], [includedFrom] and [includedTo] can be used to
+ * include/exclude those positions in any combination.
+ *
+ * Throws [IllegalStateException] if [List] is empty.
+ */
+fun <T> List<T>.circularSubList(from: Int, to: Int, includedTo: Boolean = true, includedFrom: Boolean = true): List<T> {
+    val start = this.circularIndexMapping(from)
+    val end = this.circularIndexMapping(to)
+    val result = when {
+        start == end -> listOf(start)
+        start < end -> (start .. end)
+        else -> (start until this.size) + (0 .. end)
+    }
+            .map { this[it] }
+            .toMutableList()
+    if (result.size == 1) {
+        return if (includedFrom || includedTo) result
+        else emptyList()
+    }
+    if (!includedTo) result.removeAt(result.size-1)
+    if (!includedFrom) result.removeAt(0)
+    return result.toList()
+}

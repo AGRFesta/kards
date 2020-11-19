@@ -9,6 +9,7 @@ fun rankOf(symbol: Char) = object: Rank {
     override fun plus(increment: Int): Rank = this
     override fun minus(decrement: Int): Rank = this
     override fun compareTo(other: Rank): Int = -1
+    override fun toString() = symbol.toString()
 }
 
 fun seedOf(symbol: Char, ordinal: Int) = object: Seed {
