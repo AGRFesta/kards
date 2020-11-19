@@ -187,4 +187,22 @@ class TableTest {
         assertThat(table.findPlayerBySeatName("Maya")).isEqualTo(maya)
     }
 
+    @Test
+    @DisplayName("position(): table with [alex, poly], alex position -> returns 0")
+    fun position_twoPlayersTableFirstPosition_returns0() {
+        val table = buildingTable<Player>()
+                .withPlayers(alex, poly).build()
+        assertThat(table.position(alex)).isEqualTo(0)
+    }
+    @Test
+    @DisplayName("position(): table with [alex, poly], juno position -> throws an exception")
+    fun position_missingPlayer_throwsAnException() {
+        val table = buildingTable<Player>()
+                .withPlayers(alex, poly).build()
+
+        assertThat { assertThat(table.position(juno)) }
+                .isFailure()
+                .hasClass(NoSuchElementException::class)
+    }
+
 }
