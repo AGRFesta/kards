@@ -113,10 +113,8 @@ private fun GameContext.theOnlyActive(player: InGamePlayer): Boolean = this.tabl
 class PostFlopDealer(
         private val prevPot: Pot,
         private val context: GameContext,
-        observer: DealerObserver?
-) : AbstractDealer(context, observer) {
-    constructor(prevPot: Pot, context: GameContext) : this(prevPot, context, null)
-
+        observer: DealerObserver? = null )
+    : AbstractDealer(context, observer) {
     override fun prevPot(): Pot? = prevPot
     override fun createPot() = buildPot()
     override fun playersIterator(): TableIterator<InGamePlayer> = context.table.iterateFromSB()
@@ -124,9 +122,8 @@ class PostFlopDealer(
 
 class PreFlopDealer(
         private val context: GameContext,
-        observer: DealerObserver?
-) : AbstractDealer(context, observer) {
-    constructor(context: GameContext) : this(context, null)
+        observer: DealerObserver? = null )
+    : AbstractDealer(context, observer) {
 
     override fun createPot(): Pot {
         val pot = buildPot()
