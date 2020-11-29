@@ -52,6 +52,7 @@ abstract class AbstractDealer(
                 val gameContext = context.add(actions)
                         .toPlayerGameContext(player.asOwnPlayer(pot), pot.amount() + (prevPot()?.amount() ?: 0))
                 val action = player.act(gameContext)
+                observer?.notifyAction(gameContext, player does action)
                 actions.add(player does action)
                 when (action.getType()) {
                     ActionType.Call -> callEffect(player, pot)

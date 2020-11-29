@@ -1,5 +1,7 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
+import agrfesta.k.cards.texasholdem.observers.DealerObserver
+import agrfesta.k.cards.texasholdem.playercontext.PlayerAction
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 import agrfesta.k.cards.texasholdem.playercontext.does
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.ALL_IN
@@ -8,11 +10,15 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.FOLD
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.NONE
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.RAISE
 import assertk.assertThat
+import assertk.assertions.containsExactly
 import assertk.assertions.containsOnly
 import assertk.assertions.extracting
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -486,4 +492,32 @@ class DealersTest {
                         Triple("Jane", 1900, RAISE))
     }
 
+    @Test
+    @DisplayName("collectPot(): players act -> actions and related contexts are notified by observer")
+    fun postFlopStoryTestingActionNotify() {
+        val observedContexts = mutableListOf<PlayerGameContext>()
+        val observedPlayerActions = mutableListOf<PlayerAction>()
+        val observer = mockk<DealerObserver>(relaxed = true)
+        every { observer.notifyAction(
+                context = capture(observedContexts),
+                playerAction = capture(observedPlayerActions)) } answers { Unit }
+
+        val playerContexts = mutableListOf<PlayerGameContext>()
+        val alex = spyk( anInGamePlayer("Alex", 2000, aStrategy()) )
+        every { alex.act( context = capture(playerContexts) ) } answers { call() }
+        val jane = spyk( anInGamePlayer("Jane", 2000, aStrategy()) )
+        every { jane.act( context = capture(playerContexts) ) } answers { raise(100) }
+        val table = Table(listOf(alex, jane), 0)
+        val context = aContext(table, blinds(10, 20))
+        val dealer = PostFlopDealer(buildPot(), context, observer)
+
+        dealer.collectPot()
+
+        assertThat(playerContexts).isEqualTo(observedContexts)
+        assertThat(observedPlayerActions).containsExactly(
+                alex does call(),
+                jane does raise(100),
+                alex does call()
+        )
+    }
 }
