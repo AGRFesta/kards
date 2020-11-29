@@ -4,7 +4,7 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.Board
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStack
 
-interface GameObserver: ShowdownObserver {
+interface GameObserver: ShowdownObserver, DealerObserver {
     fun notifyWinner(result: GameResult) {}
     fun notifyStartingPhase(board: Board) {}
 }
