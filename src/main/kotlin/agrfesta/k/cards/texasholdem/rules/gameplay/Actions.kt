@@ -15,5 +15,5 @@ data class ActionImpl(private val type: ActionType, private val amount: Int? = n
     override fun toString() = "$type${ if (amount!=null) " $amount" else "" }"
 }
 fun fold() = ActionImpl(ActionType.Fold)
-fun call(amount: Int? = null) = ActionImpl(ActionType.Call, amount)
+fun call() = ActionImpl(ActionType.Call)
 fun raise(amount: Int) = ActionImpl(ActionType.Raise, amount)
