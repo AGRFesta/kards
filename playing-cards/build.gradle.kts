@@ -53,6 +53,11 @@ val dokkaJar by tasks.creating(Jar::class) {
 	from(tasks.dokka)
 }
 
+val sourcesJar by tasks.creating(Jar::class) {
+	archiveClassifier.set("sources")
+	from(sourceSets.getByName("main").allSource)
+}
+
 detekt {
 	reports {
 		html {
@@ -67,6 +72,7 @@ publishing {
 		create<MavenPublication>("default") {
 			from(components["java"])
 			artifact(dokkaJar)
+			artifact(sourcesJar)
 		}
 	}
 	repositories {
