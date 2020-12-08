@@ -1,5 +1,5 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.jvm.tasks.Jar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.3.61"
@@ -60,6 +60,11 @@ val dokkaJar by tasks.creating(Jar::class) {
     from(tasks.dokka)
 }
 
+val sourcesJar by tasks.creating(Jar::class) {
+    archiveClassifier.set("sources")
+    from(sourceSets.getByName("main").allSource)
+}
+
 tasks.dokka {
     outputFormat = "html"
     outputDirectory = "$buildDir/javadoc"
@@ -79,6 +84,7 @@ publishing {
         create<MavenPublication>("default") {
             from(components["java"])
             artifact(dokkaJar)
+            artifact(sourcesJar)
         }
     }
     repositories {
