@@ -3,6 +3,7 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 import agrfesta.k.cards.texasholdem.observers.DealerObserver
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.GameResult
+import agrfesta.k.cards.texasholdem.observers.multipleDealerObserverOf
 import agrfesta.k.cards.texasholdem.playercontext.PlayerAction
 
 interface Game {
@@ -48,7 +49,7 @@ class GameImpl(
 
     private fun findPreFlopWinner(): InGamePlayer? {
         observer?.notifyStartingPhase(context.board)
-        val dealer = dealerFactory.preFlopDealer(context, this)
+        val dealer = dealerFactory.preFlopDealer(context, multipleDealerObserverOf(this, observer))
         pot = dealer.collectPot()
         return findWinner(context.table.players)
     }
@@ -56,7 +57,7 @@ class GameImpl(
     private fun findWinner(): InGamePlayer? {
         context = context.nextPhase()
         observer?.notifyStartingPhase(context.board)
-        val dealer = dealerFactory.postFlopDealer(pot, context, this)
+        val dealer = dealerFactory.postFlopDealer(pot, context, multipleDealerObserverOf(this, observer))
         pot = pot + dealer.collectPot()
         return findWinner(context.table.players)
     }
