@@ -1,41 +1,13 @@
 package agrfesta.k.cards.texasholdem.observers
 
 import agrfesta.k.cards.texasholdem.DeckListImpl
-import agrfesta.k.cards.texasholdem.rules.gameplay.Board
-import agrfesta.k.cards.texasholdem.rules.gameplay.Dealer
-import agrfesta.k.cards.texasholdem.rules.gameplay.DealerFactory
-import agrfesta.k.cards.texasholdem.rules.gameplay.EmptyBoard
-import agrfesta.k.cards.texasholdem.rules.gameplay.FlopBoard
+import agrfesta.k.cards.texasholdem.rules.gameplay.*
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
-import agrfesta.k.cards.texasholdem.rules.gameplay.GameContext
-import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
-import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
-import agrfesta.k.cards.texasholdem.rules.gameplay.Pot
-import agrfesta.k.cards.texasholdem.rules.gameplay.RiverBoard
-import agrfesta.k.cards.texasholdem.rules.gameplay.Table
-import agrfesta.k.cards.texasholdem.rules.gameplay.TurnBoard
-import agrfesta.k.cards.texasholdem.rules.gameplay.aGamePayments
-import agrfesta.k.cards.texasholdem.rules.gameplay.alex
-import agrfesta.k.cards.texasholdem.rules.gameplay.buildPot
-import agrfesta.k.cards.texasholdem.rules.gameplay.cardList
-import agrfesta.k.cards.texasholdem.rules.gameplay.cards
-import agrfesta.k.cards.texasholdem.rules.gameplay.owns
-import agrfesta.k.cards.texasholdem.rules.gameplay.poly
 import agrfesta.k.cards.texasholdem.rules.gameplay.utils.BuilderEnrich
 import agrfesta.k.cards.texasholdem.rules.gameplay.utils.dealerMockFromBuilder
 import assertk.assertThat
-import assertk.assertions.containsOnly
-import assertk.assertions.hasSize
-import assertk.assertions.isEmpty
-import assertk.assertions.isEqualTo
-import assertk.assertions.isInstanceOf
-import io.mockk.CapturingSlot
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verify
+import assertk.assertions.*
+import io.mockk.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -44,10 +16,10 @@ class GameObserverTest {
     private val payments = aGamePayments()
     val table = Table(listOf(alex owns 1000, poly owns 1000), 0)
 
-    private fun observerMock(result: CapturingSlot<GameResult>, boards: MutableList<Board>)
+    private fun observerMock(result: CapturingSlot<GameResult>, contexts: MutableList<GameContext>)
             : GameObserver {
         val observerMock = mockk<GameObserver>()
-        every { observerMock.notifyStartingPhase(capture(boards)) } just Runs
+        every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         every { observerMock.notifyWinner(capture(result)) } just Runs
         return observerMock
     }
@@ -84,9 +56,9 @@ class GameObserverTest {
                 { dealerMockFromBuilder(firstArg(), preFlopDealer) }
         every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(firstArg(), flopDealer) }
 
-        val boards = mutableListOf<Board>()
+        val contexts = mutableListOf<GameContext>()
         val result = slot<GameResult>()
-        val observerMock = observerMock(result, boards)
+        val observerMock = observerMock(result, contexts)
 
         buildingAGame()
                 .withPayments(payments)
@@ -101,9 +73,9 @@ class GameObserverTest {
         verify(exactly = 1) { observerMock.notifyWinner(any()) }
         verify(exactly = 0) { observerMock.notifyResult(any()) } // No showdown
 
-        assertThat(boards).hasSize(1)
-        assertThat(boards[0]).isInstanceOf(EmptyBoard::class)
-        assertThat(boards[0].cards()).isEmpty()
+        assertThat(contexts).hasSize(1)
+        assertThat(contexts[0].board).isInstanceOf(EmptyBoard::class)
+        assertThat(contexts[0].board.cards()).isEmpty()
 
         assertThat(result.captured.winner).isEqualTo(alex)
         assertThat(result.captured.prize).isEqualTo(300)
@@ -137,9 +109,9 @@ class GameObserverTest {
             }
         }
 
-        val boards = mutableListOf<Board>()
+        val contexts = mutableListOf<GameContext>()
         val result = slot<GameResult>()
-        val observerMock = observerMock(result, boards)
+        val observerMock = observerMock(result, contexts)
 
         buildingAGame()
                 .withPayments(payments)
@@ -154,11 +126,11 @@ class GameObserverTest {
         verify(exactly = 1) { observerMock.notifyWinner(any()) }
         verify(exactly = 0) { observerMock.notifyResult(any()) } // No showdown
 
-        assertThat(boards).hasSize(2)
-        assertThat(boards[0]).isInstanceOf(EmptyBoard::class)
-        assertThat(boards[0].cards()).isEmpty()
-        assertThat(boards[1]).isInstanceOf(FlopBoard::class)
-        assertThat(boards[1].cards()).containsOnly(*cards("Jh","Js","7h"))
+        assertThat(contexts).hasSize(2)
+        assertThat(contexts[0].board).isInstanceOf(EmptyBoard::class)
+        assertThat(contexts[0].board.cards()).isEmpty()
+        assertThat(contexts[1].board).isInstanceOf(FlopBoard::class)
+        assertThat(contexts[1].board.cards()).containsOnly(*cards("Jh","Js","7h"))
 
         assertThat(result.captured.winner).isEqualTo(alex)
         assertThat(result.captured.prize).isEqualTo(1000)
@@ -193,9 +165,9 @@ class GameObserverTest {
             }
         }
 
-        val boards = mutableListOf<Board>()
+        val contexts = mutableListOf<GameContext>()
         val result = slot<GameResult>()
-        val observerMock = observerMock(result, boards)
+        val observerMock = observerMock(result, contexts)
 
         buildingAGame()
                 .withPayments(payments)
@@ -210,13 +182,13 @@ class GameObserverTest {
         verify(exactly = 1) { observerMock.notifyWinner(any()) }
         verify(exactly = 0) { observerMock.notifyResult(any()) } // No showdown
 
-        assertThat(boards).hasSize(3)
-        assertThat(boards[0]).isInstanceOf(EmptyBoard::class)
-        assertThat(boards[0].cards()).isEmpty()
-        assertThat(boards[1]).isInstanceOf(FlopBoard::class)
-        assertThat(boards[1].cards()).containsOnly(*cards("Jh","Js","7h"))
-        assertThat(boards[2]).isInstanceOf(TurnBoard::class)
-        assertThat(boards[2].cards()).containsOnly(*cards("Jh","Js","7h", "5d"))
+        assertThat(contexts).hasSize(3)
+        assertThat(contexts[0].board).isInstanceOf(EmptyBoard::class)
+        assertThat(contexts[0].board.cards()).isEmpty()
+        assertThat(contexts[1].board).isInstanceOf(FlopBoard::class)
+        assertThat(contexts[1].board.cards()).containsOnly(*cards("Jh","Js","7h"))
+        assertThat(contexts[2].board).isInstanceOf(TurnBoard::class)
+        assertThat(contexts[2].board.cards()).containsOnly(*cards("Jh","Js","7h", "5d"))
 
         assertThat(result.captured.winner).isEqualTo(alex)
         assertThat(result.captured.prize).isEqualTo(1100)
@@ -247,9 +219,9 @@ class GameObserverTest {
             }
         }
 
-        val boards = mutableListOf<Board>()
+        val contexts = mutableListOf<GameContext>()
         val result = slot<GameResult>()
-        val observerMock = observerMock(result, boards)
+        val observerMock = observerMock(result, contexts)
 
         buildingAGame()
                 .withPayments(payments)
@@ -264,15 +236,15 @@ class GameObserverTest {
         verify(exactly = 1) { observerMock.notifyWinner(any()) }
         verify(exactly = 0) { observerMock.notifyResult(any()) } // No showdown
 
-        assertThat(boards).hasSize(4)
-        assertThat(boards[0]).isInstanceOf(EmptyBoard::class)
-        assertThat(boards[0].cards()).isEmpty()
-        assertThat(boards[1]).isInstanceOf(FlopBoard::class)
-        assertThat(boards[1].cards()).containsOnly(*cards("Jh","Js","7h"))
-        assertThat(boards[2]).isInstanceOf(TurnBoard::class)
-        assertThat(boards[2].cards()).containsOnly(*cards("Jh","Js","7h", "5d"))
-        assertThat(boards[3]).isInstanceOf(RiverBoard::class)
-        assertThat(boards[3].cards()).containsOnly(*cards("Jh","Js","7h", "5d", "Td"))
+        assertThat(contexts).hasSize(4)
+        assertThat(contexts[0].board).isInstanceOf(EmptyBoard::class)
+        assertThat(contexts[0].board.cards()).isEmpty()
+        assertThat(contexts[1].board).isInstanceOf(FlopBoard::class)
+        assertThat(contexts[1].board.cards()).containsOnly(*cards("Jh","Js","7h"))
+        assertThat(contexts[2].board).isInstanceOf(TurnBoard::class)
+        assertThat(contexts[2].board.cards()).containsOnly(*cards("Jh","Js","7h", "5d"))
+        assertThat(contexts[3].board).isInstanceOf(RiverBoard::class)
+        assertThat(contexts[3].board.cards()).containsOnly(*cards("Jh","Js","7h", "5d", "Td"))
 
         assertThat(result.captured.winner).isEqualTo(alex)
         assertThat(result.captured.prize).isEqualTo(900)
@@ -287,9 +259,9 @@ class GameObserverTest {
                     .receiveCallFrom(poly, 200)
         }
 
-        val boards = mutableListOf<Board>()
+        val contexts = mutableListOf<GameContext>()
         val observerMock = mockk<GameObserver>()
-        every { observerMock.notifyStartingPhase(capture(boards)) } just Runs
+        every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         every { observerMock.notifyResult(any()) } just Runs
 
         val dealerFactory = mockk<DealerFactory>()
@@ -311,14 +283,14 @@ class GameObserverTest {
         verify(exactly = 0) { observerMock.notifyWinner(any()) } // winner at showdown
         verify(exactly = 1) { observerMock.notifyResult(any()) }
 
-        assertThat(boards).hasSize(4)
-        assertThat(boards[0]).isInstanceOf(EmptyBoard::class)
-        assertThat(boards[0].cards()).isEmpty()
-        assertThat(boards[1]).isInstanceOf(FlopBoard::class)
-        assertThat(boards[1].cards()).containsOnly(*cards("Jh","Js","7h"))
-        assertThat(boards[2]).isInstanceOf(TurnBoard::class)
-        assertThat(boards[2].cards()).containsOnly(*cards("Jh","Js","7h", "5d"))
-        assertThat(boards[3]).isInstanceOf(RiverBoard::class)
-        assertThat(boards[3].cards()).containsOnly(*cards("Jh","Js","7h", "5d", "Td"))
+        assertThat(contexts).hasSize(4)
+        assertThat(contexts[0].board).isInstanceOf(EmptyBoard::class)
+        assertThat(contexts[0].board.cards()).isEmpty()
+        assertThat(contexts[1].board).isInstanceOf(FlopBoard::class)
+        assertThat(contexts[1].board.cards()).containsOnly(*cards("Jh","Js","7h"))
+        assertThat(contexts[2].board).isInstanceOf(TurnBoard::class)
+        assertThat(contexts[2].board.cards()).containsOnly(*cards("Jh","Js","7h", "5d"))
+        assertThat(contexts[3].board).isInstanceOf(RiverBoard::class)
+        assertThat(contexts[3].board.cards()).containsOnly(*cards("Jh","Js","7h", "5d", "Td"))
     }
 }

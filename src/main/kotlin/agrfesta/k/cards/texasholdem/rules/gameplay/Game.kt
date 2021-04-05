@@ -48,7 +48,7 @@ class GameImpl(
     }
 
     private fun findPreFlopWinner(): InGamePlayer? {
-        observer?.notifyStartingPhase(context.board)
+        observer?.notifyStartingPhase(context)
         val dealer = dealerFactory.preFlopDealer(context, multipleDealerObserverOf(this, observer))
         pot = dealer.collectPot()
         return findWinner(context.table.players)
@@ -56,7 +56,7 @@ class GameImpl(
 
     private fun findWinner(): InGamePlayer? {
         context = context.nextPhase()
-        observer?.notifyStartingPhase(context.board)
+        observer?.notifyStartingPhase(context)
         val dealer = dealerFactory.postFlopDealer(pot, context, multipleDealerObserverOf(this, observer))
         pot = pot + dealer.collectPot()
         return findWinner(context.table.players)
