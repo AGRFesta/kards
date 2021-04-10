@@ -31,8 +31,10 @@ class DealersTest {
     }
 
     @Test
-    @DisplayName("Post flop (10/20) story: Alex calls, Jane raises 100, Alex raises 200, Jane calls")
-    fun postFlopStory001() {
+    @DisplayName("""collectPot(): Pre flop (10/20) Alex calls, Jane raises 100, Alex raises 200, Jane calls -> 
+        Alex paid 200 and Jane 200
+    """)
+    fun collectPotTest004() {
         val alex = anInGamePlayer("Alex", 2000, strategyMock(call(), raise(200)))
         val jane = anInGamePlayer("Jane", 2000, strategyMock(raise(100), call()))
         val table = Table(listOf(alex, jane), 0)
@@ -41,12 +43,12 @@ class DealersTest {
 
         val pot = dealer.collectPot()
 
-        assertThat(pot.payedBy(alex)).isEqualTo(300)
-        assertThat(pot.payedBy(jane)).isEqualTo(300)
+        assertThat(pot.payedBy(alex)).isEqualTo(200)
+        assertThat(pot.payedBy(jane)).isEqualTo(200)
         assertThat(alex.status).isEqualTo(RAISE)
         assertThat(jane.status).isEqualTo(CALL)
-        assertThat(alex.stack).isEqualTo(1700)
-        assertThat(jane.stack).isEqualTo(1700)
+        assertThat(alex.stack).isEqualTo(1800)
+        assertThat(jane.stack).isEqualTo(1800)
     }
 
     @Test
@@ -134,26 +136,28 @@ class DealersTest {
     }
 
     @Test
-    @DisplayName("Post flop (25/50) story: Alex raises 175, Jane all-in, Dave raises 200, Alex raises 200, Dave calls")
-    fun postFlopStory007() {
-        val alex = anInGamePlayer("Alex", 2000, strategyMock(raise(175), raise(200)))
+    @DisplayName("""collectPot(): Pre flop (25/50) Alex raises 175, Jane all-in, Dave raises 200, Alex raises 200, 
+        Dave calls -> Alex paid 200 and Jane 200
+    """)
+    fun collectPotTest005() {
+        val alex = anInGamePlayer("Alex", 2000, strategyMock(raise(175), raise(400)))
         val jane = anInGamePlayer("Jane", 200, strategyMock(raise(200)))
-        val dave = anInGamePlayer("Dave", 2000, strategyMock(raise(200), call()))
+        val dave = anInGamePlayer("Dave", 2000, strategyMock(raise(300), call()))
         val table = Table(listOf(alex, jane, dave), 2)
         val context = aContext(table, blinds(25, 50))
         val dealer = PostFlopDealer(buildPot(), context)
 
         val pot = dealer.collectPot()
 
-        assertThat(pot.payedBy(alex)).isEqualTo(600)
+        assertThat(pot.payedBy(alex)).isEqualTo(575)
         assertThat(pot.payedBy(jane)).isEqualTo(200)
-        assertThat(pot.payedBy(dave)).isEqualTo(600)
+        assertThat(pot.payedBy(dave)).isEqualTo(575)
         assertThat(alex.status).isEqualTo(RAISE)
         assertThat(jane.status).isEqualTo(ALL_IN)
         assertThat(dave.status).isEqualTo(CALL)
-        assertThat(alex.stack).isEqualTo(1400)
+        assertThat(alex.stack).isEqualTo(1425)
         assertThat(jane.stack).isEqualTo(0)
-        assertThat(dave.stack).isEqualTo(1400)
+        assertThat(dave.stack).isEqualTo(1425)
     }
 
     @Test
@@ -236,8 +240,10 @@ class DealersTest {
     }
 
     @Test
-    @DisplayName("Pre flop (50/100) story: Dave calls, Alex raises 200, Jane calls, Dave calls")
-    fun preFlopStory001() {
+    @DisplayName("""collectPot(): Pre flop (50/100) Dave calls, Alex raises 200, Jane calls, Dave calls -> 
+        Alex paid 250, Jane 250, Dave 250 
+    """)
+    fun collectPotTest001() {
         val alex = anInGamePlayer("Alex", 2000, strategyMock(raise(200)))
         val jane = anInGamePlayer("Jane", 2000, strategyMock(call()))
         val dave = anInGamePlayer("Dave", 2000, strategyMock(call(), call()))
@@ -247,20 +253,22 @@ class DealersTest {
 
         val pot = dealer.collectPot()
 
-        assertThat(pot.payedBy(alex)).isEqualTo(300)
-        assertThat(pot.payedBy(jane)).isEqualTo(300)
-        assertThat(pot.payedBy(dave)).isEqualTo(300)
+        assertThat(pot.payedBy(alex)).isEqualTo(250)
+        assertThat(pot.payedBy(jane)).isEqualTo(250)
+        assertThat(pot.payedBy(dave)).isEqualTo(250)
         assertThat(alex.status).isEqualTo(RAISE)
         assertThat(jane.status).isEqualTo(CALL)
         assertThat(dave.status).isEqualTo(CALL)
-        assertThat(alex.stack).isEqualTo(1700)
-        assertThat(jane.stack).isEqualTo(1700)
-        assertThat(dave.stack).isEqualTo(1700)
+        assertThat(alex.stack).isEqualTo(1750)
+        assertThat(jane.stack).isEqualTo(1750)
+        assertThat(dave.stack).isEqualTo(1750)
     }
 
     @Test
-    @DisplayName("Pre flop (50/100) story: Dave raises 300, Alex calls, Jane folds")
-    fun preFlopStory002() {
+    @DisplayName("""collectPot(): Pre flop (50/100) Dave raises 300, Alex calls, Jane folds -> 
+        Alex paid 300, Jane 100, Dave 300 
+    """)
+    fun collectPotTest002() {
         val alex = anInGamePlayer("Alex", 2000, strategyMock(call()))
         val jane = anInGamePlayer("Jane", 2000, strategyMock(fold()))
         val dave = anInGamePlayer("Dave", 2000, strategyMock(raise(300)))
@@ -270,22 +278,24 @@ class DealersTest {
 
         val pot = dealer.collectPot()
 
-        assertThat(pot.payedBy(alex)).isEqualTo(400)
+        assertThat(pot.payedBy(alex)).isEqualTo(300)
         assertThat(pot.payedBy(jane)).isEqualTo(100)
-        assertThat(pot.payedBy(dave)).isEqualTo(400)
+        assertThat(pot.payedBy(dave)).isEqualTo(300)
         assertThat(alex.status).isEqualTo(CALL)
         assertThat(jane.status).isEqualTo(FOLD)
         assertThat(dave.status).isEqualTo(RAISE)
-        assertThat(alex.stack).isEqualTo(1600)
+        assertThat(alex.stack).isEqualTo(1700)
         assertThat(jane.stack).isEqualTo(1900)
-        assertThat(dave.stack).isEqualTo(1600)
+        assertThat(dave.stack).isEqualTo(1700)
     }
 
     @Test
-    @DisplayName("Pre flop (50/100) story: Dave raises 300, Alex raises 300, Jane folds, Dave calls")
-    fun preFlopStory003() {
-        val alex = anInGamePlayer("Alex", 2000, strategyMock(raise(300)))
-        val jane = anInGamePlayer("Jane", 50, strategyMock(fold()))
+    @DisplayName("""collectPot(): Pre flop (50/100) Dave raises 300, Alex re-raises 600, Dave calls -> 
+        Alex paid 650, Jane 50, Dave 650 
+    """)
+    fun collectPotTest003() {
+        val alex = anInGamePlayer("Alex", 2000, strategyMock(raise(600)))
+        val jane = anInGamePlayer("Jane", 50, strategyMock())
         val dave = anInGamePlayer("Dave", 2000, strategyMock(raise(300), call()))
         val table = Table(listOf(alex, jane, dave), 2)
         val context = aContext(table, blinds(50, 100))
@@ -293,15 +303,15 @@ class DealersTest {
 
         val pot = dealer.collectPot()
 
-        assertThat(pot.payedBy(alex)).isEqualTo(700)
+        assertThat(pot.payedBy(alex)).isEqualTo(650)
         assertThat(pot.payedBy(jane)).isEqualTo(50)
-        assertThat(pot.payedBy(dave)).isEqualTo(700)
+        assertThat(pot.payedBy(dave)).isEqualTo(650)
         assertThat(alex.status).isEqualTo(RAISE)
         assertThat(jane.status).isEqualTo(ALL_IN)
         assertThat(dave.status).isEqualTo(CALL)
-        assertThat(alex.stack).isEqualTo(1300)
+        assertThat(alex.stack).isEqualTo(1350)
         assertThat(jane.stack).isEqualTo(0)
-        assertThat(dave.stack).isEqualTo(1300)
+        assertThat(dave.stack).isEqualTo(1350)
     }
 
     @Test
@@ -476,6 +486,29 @@ class DealersTest {
         assertThat(alexContexts[1].table.players).extracting({ it.name }, { it.stack }, { it.status })
                 .containsOnly(Triple("Alex", 2000, CALL),
                         Triple("Jane", 1900, RAISE))
+    }
+
+    @Test
+    @DisplayName("collectPot(): Alex raises 70, Jane folds, Dave calls -> Alex paid 70, Jane 10 and Dave 70")
+    fun collectPotTest010() {
+        val alex = anInGamePlayer("Alex", 2000, strategyMock(raise(70)))
+        val jane = anInGamePlayer("Jane", 2000, strategyMock(fold()))
+        val dave = anInGamePlayer("Dave", 2000, strategyMock(call()))
+        val table = Table(listOf(alex, jane, dave), 0)
+        val context = aContext(table, blinds(10, 20))
+        val dealer = PreFlopDealer(context)
+
+        val pot = dealer.collectPot()
+
+        assertThat(pot.payedBy(alex)).isEqualTo(70)
+        assertThat(pot.payedBy(jane)).isEqualTo(10)
+        assertThat(pot.payedBy(dave)).isEqualTo(70)
+        assertThat(alex.status).isEqualTo(RAISE)
+        assertThat(jane.status).isEqualTo(FOLD)
+        assertThat(dave.status).isEqualTo(CALL)
+        assertThat(alex.stack).isEqualTo(1930)
+        assertThat(jane.stack).isEqualTo(1990)
+        assertThat(dave.stack).isEqualTo(1930)
     }
 
 }

@@ -94,7 +94,7 @@ abstract class AbstractDealer(
             player.status = PlayerStatus.RAISE
             raisingPlayer = player
             val raiseAmount: Int = action.getAmount()?.coerceAtLeast(minimumRaise) ?: minimumRaise
-            val amount: Int = pot.receiveFrom(player, amountRequired - payed + raiseAmount)
+            val amount: Int = pot.receiveFrom(player, raiseAmount)
             val effectiveRaiseAmount: Int = amount - (amountRequired - payed)
             amountRequired += if (effectiveRaiseAmount > 0) effectiveRaiseAmount else 0
         }
