@@ -1,1 +1,1 @@
-rootProject.name = "playing-cards"
+rootProject.name = "k-playing-cards"
