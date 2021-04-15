@@ -13,7 +13,7 @@ plugins {
 val myMavenRepoWriteUrl: String by project
 
 group = "agrfesta.kcards"
-version = "0.1.0-SNAPSHOT"
+version = "0.1.0"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
