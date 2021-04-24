@@ -50,8 +50,6 @@ abstract class AbstractDealer(
             val player = iterator.next()
             if (context.hadToAct(player, pot)) {
                 val gameContext = createContext(player, actions, pot)
-//                val gameContext = context.add(actions)
-//                        .toPlayerGameContext(player.asOwnPlayer(pot), pot.amount() + (prevPot()?.amount() ?: 0))
                 val action = player.act(gameContext)
                 actions.add(player does action)
                 when (action.getType()) {
@@ -59,17 +57,18 @@ abstract class AbstractDealer(
                     ActionType.Raise -> raiseEffect(player, action, pot)
                     else -> foldEffect(player)
                 }
-                observer?.notifyAction(createContext(player, actions, pot), player does action)
+                observer?.notifyAction(
+                    createContext(player, actions, pot).map { it },
+                    player does action)
             }
         }
         observer?.notifyActions(context.board.info().phase, actions)
         return pot
     }
 
-    private fun createContext(player: InGamePlayer, actions: List<PlayerAction>, pot: Pot): PlayerGameContext {
-        return context.add(actions)
+    private fun createContext(player: InGamePlayer, actions: List<PlayerAction>, pot: Pot) =
+        context.add(actions)
             .toPlayerGameContext(player.asOwnPlayer(pot), pot.amount() + (prevPot()?.amount() ?: 0))
-    }
     private fun someoneHaveToAct(pot: Pot): Boolean = hadToAct(pot).isNotEmpty()
     private fun hadToAct(pot: Pot): List<InGamePlayer> {
         return context.table.players.filter { context.hadToAct(it, pot) }
@@ -120,7 +119,7 @@ class PostFlopDealer(
         private val context: GameContext,
         observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
-    override fun prevPot(): Pot? = prevPot
+    override fun prevPot() = prevPot
     override fun createPot() = buildPot()
     override fun playersIterator(): TableIterator<InGamePlayer> = context.table.iterateFromSB()
 }

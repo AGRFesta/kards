@@ -56,13 +56,11 @@ class InGamePlayer(val player: Player, var stack: Int, val cards: Set<Card>): Pl
         return effectiveAmount
     }
 
-    //TODO test
     fun asOwnPlayer(actualPot: Pot) = OwnPlayer(name, cards, stack, calculateAmountToCall(actualPot))
 
-    //TODO test
     fun calculateAmountToCall(pot: Pot): Int = (pot.maxContribution()?.amount ?: 0) - pot.payedBy(this)
 
-    override fun act(context: PlayerGameContext): Action = player.strategy.act(context)
+    override fun act(context: PlayerGameContext<OwnPlayer>): Action = player.strategy.act(context)
     override fun getSeatName() = name
 
     override fun toString(): String = "$player ($stack)"
@@ -74,7 +72,7 @@ enum class PlayerStatus {
 }
 
 interface PlayerStrategyInterface {
-    fun act(context: PlayerGameContext): Action
+    fun act(context: PlayerGameContext<OwnPlayer>): Action
 }
 
 class OwnPlayer(val name: String, val cards: Set<Card>, val stack: Int, val amountToCall: Int): SeatName {

@@ -2,9 +2,17 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 import agrfesta.k.cards.texasholdem.playercontext.does
-import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.*
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.ALL_IN
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.CALL
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.FOLD
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.NONE
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.RAISE
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.containsOnly
+import assertk.assertions.extracting
+import assertk.assertions.hasSize
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -437,8 +445,8 @@ class DealersTest {
     @DisplayName("Players receive a context to help them to act")
     fun playersReceiveAContextToHelpThemToAct() {
         val payments = blinds(10, 20)
-        val alexContexts = mutableListOf<PlayerGameContext>()
-        val janeContexts = mutableListOf<PlayerGameContext>()
+        val alexContexts = mutableListOf<PlayerGameContext<OwnPlayer>>()
+        val janeContexts = mutableListOf<PlayerGameContext<OwnPlayer>>()
         val alexStrategy = strategyMock(alexContexts, call(), fold())
         val janeStrategy = strategyMock(janeContexts, raise(100))
         val alex = anInGamePlayer("Alex", 2000, alexStrategy)
@@ -452,8 +460,8 @@ class DealersTest {
         assertThat(alexContexts).hasSize(2)
 
         assertThat(alexContexts[0].board.phase).isEqualTo(GamePhase.PRE_FLOP)
-        assertThat(alexContexts[0].me.name).isEqualTo("Alex")
-        assertThat(alexContexts[0].me.stack).isEqualTo(2000)
+        assertThat(alexContexts[0].hero.name).isEqualTo("Alex")
+        assertThat(alexContexts[0].hero.stack).isEqualTo(2000)
         assertThat(alexContexts[0].payments).isEqualTo(payments)
         assertThat(alexContexts[0].potAmount).isEqualTo(0)
         assertThat(alexContexts[0].history[GamePhase.PRE_FLOP] ?: error("Should be at Pre-Flop")).isEmpty()
@@ -464,8 +472,8 @@ class DealersTest {
 
         assertThat(janeContexts).hasSize(1)
         assertThat(janeContexts[0].board.phase).isEqualTo(GamePhase.PRE_FLOP)
-        assertThat(janeContexts[0].me.name).isEqualTo("Jane")
-        assertThat(janeContexts[0].me.stack).isEqualTo(2000)
+        assertThat(janeContexts[0].hero.name).isEqualTo("Jane")
+        assertThat(janeContexts[0].hero.stack).isEqualTo(2000)
         assertThat(janeContexts[0].payments).isEqualTo(payments)
         assertThat(janeContexts[0].potAmount).isEqualTo(0)
         assertThat(janeContexts[0].history[GamePhase.PRE_FLOP] ?: error("Should be at Pre-Flop"))
@@ -476,8 +484,8 @@ class DealersTest {
                         Triple("Jane", 2000, NONE))
 
         assertThat(alexContexts[1].board.phase).isEqualTo(GamePhase.PRE_FLOP)
-        assertThat(alexContexts[1].me.name).isEqualTo("Alex")
-        assertThat(alexContexts[1].me.stack).isEqualTo(2000)
+        assertThat(alexContexts[1].hero.name).isEqualTo("Alex")
+        assertThat(alexContexts[1].hero.stack).isEqualTo(2000)
         assertThat(alexContexts[1].payments).isEqualTo(payments)
         assertThat(alexContexts[1].potAmount).isEqualTo(100)
         assertThat(alexContexts[1].history[GamePhase.PRE_FLOP] ?: error("Should be at Pre-Flop"))
