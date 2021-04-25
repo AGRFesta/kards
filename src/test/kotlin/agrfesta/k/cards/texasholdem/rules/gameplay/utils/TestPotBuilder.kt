@@ -17,7 +17,7 @@ typealias BuilderEnrich = (TestPotBuilder) -> TestPotBuilder
 /**
  * Fluent Builder for test Pot created following a game logic
  */
-class TestPotBuilder(private val gameContext: GameContext) {
+class TestPotBuilder(private val gameContext: GameContext<InGamePlayer>) {
     private val pot = mutableMapOf<InGamePlayer,Int>()
 
     fun receiveFoldFrom(player: Player): TestPotBuilder {
@@ -46,7 +46,7 @@ class TestPotBuilder(private val gameContext: GameContext) {
 
 }
 
-fun GameContext.getPlayer(player: Player): InGamePlayer {
+fun GameContext<InGamePlayer>.getPlayer(player: Player): InGamePlayer {
     val inGamePlayer = this.table.findPlayerBySeatName(player.getSeatName())
     requireNotNull(inGamePlayer)
     return inGamePlayer
@@ -58,7 +58,7 @@ fun Pot.getPlayer(player: Player): InGamePlayer {
     return result
 }
 
-fun dealerMockFromBuilder(context: GameContext, enrich: BuilderEnrich): Dealer {
+fun dealerMockFromBuilder(context: GameContext<InGamePlayer>, enrich: BuilderEnrich): Dealer {
     val dealer = mockk<Dealer>()
     val pot =  enrich.invoke(TestPotBuilder(context)).build()
     every { dealer.collectPot() } returns pot

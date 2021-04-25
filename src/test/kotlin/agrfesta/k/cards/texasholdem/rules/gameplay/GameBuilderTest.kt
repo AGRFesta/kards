@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 class GameMockImpl(
-        val context: GameContext,
+        val context: GameContext<InGamePlayer>,
         val dealerFactory: DealerFactory,
         val showdown: Showdown,
         val observer: GameObserver?

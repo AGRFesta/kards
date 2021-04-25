@@ -10,7 +10,7 @@ import java.util.*
 fun aDeck(): Deck = DeckListImpl(listOf())
 fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer(),anInGamePlayer()), 0)
 
-fun aContext(table: Table<InGamePlayer>, payments: GamePayments): GameContext =
+fun aContext(table: Table<InGamePlayer>, payments: GamePayments): GameContext<InGamePlayer> =
         GameContext(UUID.randomUUID(), table, payments, EmptyBoard(aDeck()), mapOf())
 fun aPlayerContext(): PlayerGameContext<OwnPlayer> = PlayerGameContext(anInGamePlayer().asOwnPlayer(buildPot()),
     aGamePayments(), EmptyBoard(aDeck()).info(), 0, aTable().map { it.asOpponent() }, mapOf())

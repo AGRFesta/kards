@@ -23,7 +23,7 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
     private var showdownProvider: (ShowdownObserver?) -> Showdown = { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }
 
     private var dealerFactory: DealerFactory = DealerFactoryImpl()
-    private var implementation: (GameContext, DealerFactory, Showdown, GameObserver?) -> Game = ::GameImpl
+    private var implementation: (GameContext<InGamePlayer>, DealerFactory, Showdown, GameObserver?) -> Game = ::GameImpl
 
     private var uuidProvider: UuidProvider = { UUID.randomUUID() }
 
@@ -62,7 +62,7 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
         return this
     }
 
-    fun implementedBy(implementation: (GameContext, dealerFactory: DealerFactory,
+    fun implementedBy(implementation: (GameContext<InGamePlayer>, dealerFactory: DealerFactory,
                                        Showdown, GameObserver?) -> Game): GameBuilder {
         this.implementation = implementation
         return this

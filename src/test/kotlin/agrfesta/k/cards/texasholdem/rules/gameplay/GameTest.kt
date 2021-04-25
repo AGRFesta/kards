@@ -56,7 +56,7 @@ class GameTest {
             buildPot()
         }
         every { dealerFactory.preFlopDealer(any(),any()) }  answers {
-            assertThat(firstArg<GameContext>().table.findPlayerBySeatName(alex.getSeatName())?.cards ?: setOf() )
+            assertThat(firstArg<GameContext<InGamePlayer>>().table.findPlayerBySeatName(alex.getSeatName())?.cards ?: setOf() )
                     .containsOnly(*cards("Ah", "Ac"))
             dealerMock(firstArg(), preFlopDealer)
         }
@@ -82,7 +82,7 @@ class GameTest {
             buildPot()
         }
         every { dealerFactory.preFlopDealer(any(),any()) }  answers {
-            assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
+            assertThat(firstArg<GameContext<InGamePlayer>>().board).isInstanceOf(EmptyBoard::class)
             dealerMockFromBuilder(firstArg(), preFlopDealer)
         }
         every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(secondArg(), flopDealer) }
@@ -116,12 +116,12 @@ class GameTest {
             buildPot()
         }
         every { dealerFactory.preFlopDealer(any(),any()) } answers {
-            assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
+            assertThat(firstArg<GameContext<InGamePlayer>>().board).isInstanceOf(EmptyBoard::class)
             dealerMockFromBuilder(firstArg(), preFlopDealer)
         }
         every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
             assertThat(firstArg<Pot>()).containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 200)
-            when (secondArg<GameContext>().board) {
+            when (secondArg<GameContext<InGamePlayer>>().board) {
                 is FlopBoard -> dealerMockFromBuilder(secondArg(), flopDealer)
                 is TurnBoard -> dealerMock(secondArg(), turnDealer)
                 else -> dealerMock(secondArg(), defaultDealer)
@@ -161,11 +161,11 @@ class GameTest {
             buildPot()
         }
         every { dealerFactory.preFlopDealer(any(),any()) }  answers {
-            assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
+            assertThat(firstArg<GameContext<InGamePlayer>>().board).isInstanceOf(EmptyBoard::class)
             dealerMockFromBuilder(firstArg(), preFlopDealer)
         }
         every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
-            when (secondArg<GameContext>().board) {
+            when (secondArg<GameContext<InGamePlayer>>().board) {
                 is FlopBoard -> {
                     assertThat(firstArg<Pot>())
                             .containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 200,
@@ -215,11 +215,11 @@ class GameTest {
                     .receiveFoldFrom(dave)
         }
         every { dealerFactory.preFlopDealer(any(),any()) }  answers {
-            assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
+            assertThat(firstArg<GameContext<InGamePlayer>>().board).isInstanceOf(EmptyBoard::class)
             dealerMockFromBuilder(firstArg(), preFlopDealer)
         }
         every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
-            when (secondArg<GameContext>().board) {
+            when (secondArg<GameContext<InGamePlayer>>().board) {
                 is FlopBoard -> {
                     assertThat(firstArg<Pot>())
                             .containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 200,
@@ -278,11 +278,11 @@ class GameTest {
         }
 
         every { dealerFactory.preFlopDealer(any(),any()) }  answers {
-            assertThat(firstArg<GameContext>().board).isInstanceOf(EmptyBoard::class)
+            assertThat(firstArg<GameContext<InGamePlayer>>().board).isInstanceOf(EmptyBoard::class)
             dealerMockFromBuilder(firstArg(), preFlopDealer)
         }
         every { dealerFactory.postFlopDealer(any(),any(),any()) }  answers {
-            when (secondArg<GameContext>().board) {
+            when (secondArg<GameContext<InGamePlayer>>().board) {
                 is FlopBoard -> {
                     assertThat(firstArg<Pot>())
                             .containsOnly(getPlayer(poly) to 200, getPlayer(alex) to 200, getPlayer(dave) to 200)
@@ -325,14 +325,14 @@ class GameTest {
 
 }
 
-private fun dealerMock(context: GameContext, collectPotBody: (Table<InGamePlayer>) -> Pot): Dealer {
+private fun dealerMock(context: GameContext<InGamePlayer>, collectPotBody: (Table<InGamePlayer>) -> Pot): Dealer {
     val dealer = mockk<Dealer>()
     every { dealer.collectPot() } returns collectPotBody.invoke(context.table)
     return dealer
 }
 
 fun <T,B> MockKAnswerScope<T, B>.getPlayer(player: Player): InGamePlayer {
-    return secondArg<GameContext>().getPlayer(player)
+    return secondArg<GameContext<InGamePlayer>>().getPlayer(player)
 }
 
 fun aTableWith(vararg players: Player): Table<InGamePlayer> {
