@@ -5,6 +5,8 @@ import agrfesta.k.cards.playingcards.suits.Suit.FRENCH
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.ShowdownObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
+import agrfesta.k.cards.texasholdem.utils.UuidProvider
+import java.util.*
 
 interface PaymentsStep {
     fun withPayments(payments: GamePayments): TableStep
@@ -22,6 +24,8 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
 
     private var dealerFactory: DealerFactory = DealerFactoryImpl()
     private var implementation: (GameContext, DealerFactory, Showdown, GameObserver?) -> Game = ::GameImpl
+
+    private var uuidProvider: UuidProvider = { UUID.randomUUID() }
 
     private lateinit var payments: GamePayments
     private lateinit var table: Table<PlayerStack>
@@ -53,6 +57,11 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
         return this
     }
 
+    fun withUuidProvider(uuidProvider: UuidProvider): GameBuilder {
+        this.uuidProvider = uuidProvider
+        return this
+    }
+
     fun implementedBy(implementation: (GameContext, dealerFactory: DealerFactory,
                                        Showdown, GameObserver?) -> Game): GameBuilder {
         this.implementation = implementation
@@ -75,7 +84,7 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
 
     fun build(): Game {
         val inGameTable = table.map { InGamePlayer(it.player, it.stack, deck.draw(2).toSet()) }
-        val context = GameContext(inGameTable, payments, EmptyBoard(deck), mapOf())
+        val context = GameContext(uuidProvider.invoke(), inGameTable, payments, EmptyBoard(deck), mapOf())
         return implementation.invoke(context, dealerFactory, showdownProvider.invoke(observer), observer)
     }
 

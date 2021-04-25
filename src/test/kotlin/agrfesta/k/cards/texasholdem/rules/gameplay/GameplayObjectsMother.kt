@@ -5,12 +5,13 @@ import agrfesta.k.cards.playingcards.deck.Deck
 import agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import agrfesta.k.cards.texasholdem.DeckListImpl
 import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
+import java.util.*
 
 fun aDeck(): Deck = DeckListImpl(listOf())
 fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer(),anInGamePlayer()), 0)
 
 fun aContext(table: Table<InGamePlayer>, payments: GamePayments): GameContext =
-        GameContext(table, payments, EmptyBoard(aDeck()), mapOf())
+        GameContext(UUID.randomUUID(), table, payments, EmptyBoard(aDeck()), mapOf())
 fun aPlayerContext(): PlayerGameContext<OwnPlayer> = PlayerGameContext(anInGamePlayer().asOwnPlayer(buildPot()),
     aGamePayments(), EmptyBoard(aDeck()).info(), 0, aTable().map { it.asOpponent() }, mapOf())
 

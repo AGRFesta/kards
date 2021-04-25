@@ -1,5 +1,9 @@
 package agrfesta.k.cards.texasholdem.utils
 
+import java.util.*
+
+typealias UuidProvider = () -> UUID
+
 // Positions
 const val FIRST_POS = 0
 const val SECOND_POS = 1

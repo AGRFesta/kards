@@ -5,19 +5,22 @@ import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.GameResult
 import agrfesta.k.cards.texasholdem.observers.multipleDealerObserverOf
 import agrfesta.k.cards.texasholdem.playercontext.PlayerAction
+import java.util.*
 
 interface Game {
+    fun getId(): UUID
     fun play(): List<PlayerStack>
 }
 
 class GameImpl(
-        initialContext: GameContext,
+        private var context: GameContext,
         private val dealerFactory: DealerFactory,
         private val showdown: Showdown,
         private val observer: GameObserver?
 ) : Game, DealerObserver {
     private var pot = buildPot()
-    private var context = initialContext
+
+    override fun getId() = context.uuid
 
     override fun play(): List<PlayerStack> {
         // Pre-Flop

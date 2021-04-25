@@ -4,7 +4,9 @@ import agrfesta.k.cards.playingcards.suits.Suit
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
+import agrfesta.k.cards.texasholdem.utils.UuidProvider
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
@@ -15,6 +17,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import java.util.*
 
 class GameMockImpl(
         val context: GameContext,
@@ -22,6 +25,7 @@ class GameMockImpl(
         val showdown: Showdown,
         val observer: GameObserver?
 ): Game {
+    override fun getId() = context.uuid
     override fun play(): List<PlayerStack> = listOf()
 }
 
@@ -151,6 +155,22 @@ class GameBuilderTest {
             game.showdown.execute(buildPot(),EmptyBoard(aDeck()))
             verify(exactly = 1) { observerMock.notifyResult(any()) }
         }
+    }
+
+    @Test
+    @DisplayName("build(): building providing a uuid provider -> built game with uuid provided")
+    fun buildTest000() {
+        val uuid = UUID.randomUUID()
+        val uuidProvider: UuidProvider = mockk()
+        every { uuidProvider.invoke() } answers { uuid }
+
+        val game = buildingAGame()
+            .withPayments(aGamePayments())
+            .withTable(aTable().map { it.player owns it.stack })
+            .withUuidProvider(uuidProvider)
+            .build()
+
+        assertThat(game.getId()).isEqualTo(uuid)
     }
 
 }
