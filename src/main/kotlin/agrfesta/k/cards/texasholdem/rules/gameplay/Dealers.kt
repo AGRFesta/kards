@@ -10,23 +10,23 @@ interface Dealer {
 }
 
 interface DealerFactory {
-    fun preFlopDealer(context: GameContext<InGamePlayer>, observer: DealerObserver?): Dealer
-    fun postFlopDealer(prevPot: Pot, context: GameContext<InGamePlayer>, observer: DealerObserver?): Dealer
+    fun preFlopDealer(context: GameContext<InGamePlayer, BoardInSequence>, observer: DealerObserver?): Dealer
+    fun postFlopDealer(prevPot: Pot, context: GameContext<InGamePlayer, BoardInSequence>, observer: DealerObserver?): Dealer
 }
 class DealerFactoryImpl: DealerFactory {
 
-    override fun preFlopDealer(context: GameContext<InGamePlayer>, observer: DealerObserver?): Dealer {
+    override fun preFlopDealer(context: GameContext<InGamePlayer, BoardInSequence>, observer: DealerObserver?): Dealer {
         return PreFlopDealer(context, observer)
     }
 
-    override fun postFlopDealer(prevPot: Pot, context: GameContext<InGamePlayer>, observer: DealerObserver?): Dealer {
+    override fun postFlopDealer(prevPot: Pot, context: GameContext<InGamePlayer, BoardInSequence>, observer: DealerObserver?): Dealer {
         return PostFlopDealer(prevPot, context, observer)
     }
 
 }
 
 abstract class AbstractDealer(
-        private val context: GameContext<InGamePlayer>,
+        private val context: GameContext<InGamePlayer, BoardInSequence>,
         private val observer: DealerObserver?) : Dealer {
     init {
         context.table.players
@@ -100,23 +100,23 @@ abstract class AbstractDealer(
     }
 }
 
-private fun GameContext<InGamePlayer>.toPlayerGameContext(me: OwnPlayer, potAmount: Int) = PlayerGameContext(
+private fun GameContext<InGamePlayer, BoardInSequence>.toPlayerGameContext(me: OwnPlayer, potAmount: Int) = PlayerGameContext(
         me, this.payments, this.board, potAmount, this.table.map { it.asOpponent() }, this.history)
 
-private fun GameContext<InGamePlayer>.hadToAct(player: InGamePlayer, pot: Pot): Boolean {
+private fun GameContext<InGamePlayer, BoardInSequence>.hadToAct(player: InGamePlayer, pot: Pot): Boolean {
     val hadToPay = player.calculateAmountToCall(pot) > 0
     return player.isActive()
             && (!theOnlyActive(player) || hadToPay)
             && (player.status == PlayerStatus.NONE || hadToPay)
 }
 
-private fun GameContext<InGamePlayer>.theOnlyActive(player: InGamePlayer): Boolean = this.table.players
+private fun GameContext<InGamePlayer, BoardInSequence>.theOnlyActive(player: InGamePlayer): Boolean = this.table.players
         .filter { player !== it }
         .none { it.isActive() }
 
 class PostFlopDealer(
         private val prevPot: Pot,
-        private val context: GameContext<InGamePlayer>,
+        private val context: GameContext<InGamePlayer, BoardInSequence>,
         observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
     override fun prevPot() = prevPot
@@ -125,7 +125,7 @@ class PostFlopDealer(
 }
 
 class PreFlopDealer(
-        private val context: GameContext<InGamePlayer>,
+        private val context: GameContext<InGamePlayer, BoardInSequence>,
         observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
 

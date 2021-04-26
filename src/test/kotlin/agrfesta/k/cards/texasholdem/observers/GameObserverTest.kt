@@ -1,6 +1,7 @@
 package agrfesta.k.cards.texasholdem.observers
 
 import agrfesta.k.cards.texasholdem.DeckListImpl
+import agrfesta.k.cards.texasholdem.rules.gameplay.BoardInSequence
 import agrfesta.k.cards.texasholdem.rules.gameplay.Dealer
 import agrfesta.k.cards.texasholdem.rules.gameplay.DealerFactory
 import agrfesta.k.cards.texasholdem.rules.gameplay.EmptyBoard
@@ -43,14 +44,14 @@ class GameObserverTest {
     private val payments = aGamePayments()
     val table = Table(listOf(alex owns 1000, poly owns 1000), 0)
 
-    private fun observerMock(result: CapturingSlot<GameResult>, contexts: MutableList<GameContext<InGamePlayer>>)
+    private fun observerMock(result: CapturingSlot<GameResult>, contexts: MutableList<GameContext<InGamePlayer, BoardInSequence>>)
             : GameObserver {
         val observerMock = mockk<GameObserver>()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         every { observerMock.notifyWinner(capture(result)) } just Runs
         return observerMock
     }
-    private fun dealerMock(gameContext: GameContext<InGamePlayer>, collectPotBody: (Table<InGamePlayer>) -> Pot): Dealer {
+    private fun dealerMock(gameContext: GameContext<InGamePlayer, BoardInSequence>, collectPotBody: (Table<InGamePlayer>) -> Pot): Dealer {
         val dealer = mockk<Dealer>()
         every { dealer.collectPot() } returns collectPotBody.invoke(gameContext.table)
         return dealer
@@ -83,7 +84,7 @@ class GameObserverTest {
                 { dealerMockFromBuilder(firstArg(), preFlopDealer) }
         every { dealerFactory.postFlopDealer(any(),any(),any()) } answers { dealerMock(firstArg(), flopDealer) }
 
-        val contexts = mutableListOf<GameContext<InGamePlayer>>()
+        val contexts = mutableListOf<GameContext<InGamePlayer, BoardInSequence>>()
         val result = slot<GameResult>()
         val observerMock = observerMock(result, contexts)
 
@@ -129,14 +130,14 @@ class GameObserverTest {
         every { dealerFactory.preFlopDealer(any(),any()) } answers
                 { dealerMockFromBuilder(firstArg(), preFlopDealer) }
         every { dealerFactory.postFlopDealer(any(),any(),any()) } answers {
-            when (secondArg<GameContext<InGamePlayer>>().board) {
+            when (secondArg<GameContext<InGamePlayer, BoardInSequence>>().board) {
                 is FlopBoard -> dealerMockFromBuilder(secondArg(), flopDealer)
                 is TurnBoard -> dealerMock(firstArg(), turnDealer)
                 else -> dealerMock(firstArg(), defaultDealer)
             }
         }
 
-        val contexts = mutableListOf<GameContext<InGamePlayer>>()
+        val contexts = mutableListOf<GameContext<InGamePlayer, BoardInSequence>>()
         val result = slot<GameResult>()
         val observerMock = observerMock(result, contexts)
 
@@ -184,7 +185,7 @@ class GameObserverTest {
         every { dealerFactory.preFlopDealer(any(),any()) } answers
                 { dealerMockFromBuilder(firstArg(), preFlopDealer) }
         every { dealerFactory.postFlopDealer(any(),any(),any()) } answers {
-            when (secondArg<GameContext<InGamePlayer>>().board) {
+            when (secondArg<GameContext<InGamePlayer, BoardInSequence>>().board) {
                 is FlopBoard -> dealerMock(secondArg(), allChecksDealer)
                 is TurnBoard -> dealerMockFromBuilder(secondArg(), turnDealer)
                 is RiverBoard -> dealerMock(secondArg(), riverDealer)
@@ -192,7 +193,7 @@ class GameObserverTest {
             }
         }
 
-        val contexts = mutableListOf<GameContext<InGamePlayer>>()
+        val contexts = mutableListOf<GameContext<InGamePlayer, BoardInSequence>>()
         val result = slot<GameResult>()
         val observerMock = observerMock(result, contexts)
 
@@ -238,7 +239,7 @@ class GameObserverTest {
         every { dealerFactory.preFlopDealer(any(),any()) } answers
                 { dealerMockFromBuilder(firstArg(), preFlopDealer) }
         every { dealerFactory.postFlopDealer(any(),any(),any()) } answers {
-            when (secondArg<GameContext<InGamePlayer>>().board) {
+            when (secondArg<GameContext<InGamePlayer, BoardInSequence>>().board) {
                 is FlopBoard -> dealerMock(secondArg(), allChecksDealer)
                 is TurnBoard -> dealerMock(secondArg(), allChecksDealer)
                 is RiverBoard -> dealerMockFromBuilder(secondArg(), riverDealer)
@@ -246,7 +247,7 @@ class GameObserverTest {
             }
         }
 
-        val contexts = mutableListOf<GameContext<InGamePlayer>>()
+        val contexts = mutableListOf<GameContext<InGamePlayer, BoardInSequence>>()
         val result = slot<GameResult>()
         val observerMock = observerMock(result, contexts)
 
@@ -286,7 +287,7 @@ class GameObserverTest {
                     .receiveCallFrom(poly, 200)
         }
 
-        val contexts = mutableListOf<GameContext<InGamePlayer>>()
+        val contexts = mutableListOf<GameContext<InGamePlayer, BoardInSequence>>()
         val observerMock = mockk<GameObserver>()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         every { observerMock.notifyResult(any()) } just Runs

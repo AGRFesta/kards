@@ -10,7 +10,7 @@ import java.util.*
 fun aDeck(): Deck = DeckListImpl(listOf())
 fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer(),anInGamePlayer()), 0)
 
-fun aContext(table: Table<InGamePlayer>, payments: GamePayments): GameContext<InGamePlayer> =
+fun aContext(table: Table<InGamePlayer>, payments: GamePayments): GameContext<InGamePlayer, BoardInSequence> =
         GameContext(UUID.randomUUID(), table, payments, EmptyBoard(aDeck()), mapOf())
 fun aPlayerContext(): PlayerGameContext<OwnPlayer, Board> = PlayerGameContext(anInGamePlayer().asOwnPlayer(buildPot()),
     aGamePayments(), EmptyBoard(aDeck()), 0, aTable().map { it.asOpponent() }, mapOf())
@@ -27,12 +27,4 @@ fun board(vararg strings: String): Board = object : Board {
         5 -> GamePhase.RIVER
         else -> throw IllegalArgumentException("Unable to get phase from invalid board, cards:${cards()}")
     }
-//    override fun next(): Board = this
-//    override fun info(): BoardInfo = when (cards().size) {
-//        0 -> BoardInfo(cards(), GamePhase.PRE_FLOP)
-//        3 -> BoardInfo(cards(), GamePhase.FLOP)
-//        4 -> BoardInfo(cards(), GamePhase.TURN)
-//        5 -> BoardInfo(cards(), GamePhase.RIVER)
-//        else -> throw IllegalArgumentException("Unable to get info from invalid board, cards:${cards()}")
-//    }
 }

@@ -13,7 +13,7 @@ interface Game {
 }
 
 class GameImpl(
-        private var context: GameContext<InGamePlayer>,
+        private var context: GameContext<InGamePlayer, BoardInSequence>,
         private val dealerFactory: DealerFactory,
         private val showdown: Showdown,
         private val observer: GameObserver?

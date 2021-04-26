@@ -1,5 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay.utils
 
+import agrfesta.k.cards.texasholdem.rules.gameplay.BoardInSequence
 import agrfesta.k.cards.texasholdem.rules.gameplay.Dealer
 import agrfesta.k.cards.texasholdem.rules.gameplay.GameContext
 import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
@@ -17,7 +18,7 @@ typealias BuilderEnrich = (TestPotBuilder) -> TestPotBuilder
 /**
  * Fluent Builder for test Pot created following a game logic
  */
-class TestPotBuilder(private val gameContext: GameContext<InGamePlayer>) {
+class TestPotBuilder(private val gameContext: GameContext<InGamePlayer, BoardInSequence>) {
     private val pot = mutableMapOf<InGamePlayer,Int>()
 
     fun receiveFoldFrom(player: Player): TestPotBuilder {
@@ -46,7 +47,7 @@ class TestPotBuilder(private val gameContext: GameContext<InGamePlayer>) {
 
 }
 
-fun GameContext<InGamePlayer>.getPlayer(player: Player): InGamePlayer {
+fun GameContext<InGamePlayer, BoardInSequence>.getPlayer(player: Player): InGamePlayer {
     val inGamePlayer = this.table.findPlayerBySeatName(player.getSeatName())
     requireNotNull(inGamePlayer)
     return inGamePlayer
@@ -58,7 +59,7 @@ fun Pot.getPlayer(player: Player): InGamePlayer {
     return result
 }
 
-fun dealerMockFromBuilder(context: GameContext<InGamePlayer>, enrich: BuilderEnrich): Dealer {
+fun dealerMockFromBuilder(context: GameContext<InGamePlayer, BoardInSequence>, enrich: BuilderEnrich): Dealer {
     val dealer = mockk<Dealer>()
     val pot =  enrich.invoke(TestPotBuilder(context)).build()
     every { dealer.collectPot() } returns pot
