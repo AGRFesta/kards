@@ -7,12 +7,12 @@ class GameContext<T: SeatName>(
     val uuid: UUID,
     val table: Table<T>,
     val payments: GamePayments,
-    val board: Board,
+    val board: BoardInSequence,
     val history: Map<GamePhase,List<PlayerAction>>) {
 
     fun add(actions: List<PlayerAction>): GameContext<T> {
         val newHistory = history.toMutableMap()
-        newHistory[board.info().phase] = actions.toList()
+        newHistory[board.phase()] = actions.toList()
         return GameContext(uuid, table, payments, board, newHistory)
     }
 

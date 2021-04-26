@@ -50,7 +50,7 @@ abstract class AbstractDealer(
             val player = iterator.next()
             if (context.hadToAct(player, pot)) {
                 val gameContext = createContext(player, actions, pot)
-                val action = player.act(gameContext)
+                val action = player.act( gameContext.map { it } )
                 actions.add(player does action)
                 when (action.getType()) {
                     ActionType.Call -> callEffect(player, pot)
@@ -62,7 +62,7 @@ abstract class AbstractDealer(
                     player does action)
             }
         }
-        observer?.notifyActions(context.board.info().phase, actions)
+        observer?.notifyActions(context.board.phase(), actions)
         return pot
     }
 
@@ -101,7 +101,7 @@ abstract class AbstractDealer(
 }
 
 private fun GameContext<InGamePlayer>.toPlayerGameContext(me: OwnPlayer, potAmount: Int) = PlayerGameContext(
-        me, this.payments, this.board.info(), potAmount, this.table.map { it.asOpponent() }, this.history)
+        me, this.payments, this.board, potAmount, this.table.map { it.asOpponent() }, this.history)
 
 private fun GameContext<InGamePlayer>.hadToAct(player: InGamePlayer, pot: Pot): Boolean {
     val hadToPay = player.calculateAmountToCall(pot) > 0

@@ -1,6 +1,6 @@
 package agrfesta.k.cards.texasholdem.playercontext
 
-import agrfesta.k.cards.texasholdem.rules.gameplay.BoardInfo
+import agrfesta.k.cards.texasholdem.rules.gameplay.Board
 import agrfesta.k.cards.texasholdem.rules.gameplay.GamePhase.FLOP
 import agrfesta.k.cards.texasholdem.rules.gameplay.GamePhase.PRE_FLOP
 import agrfesta.k.cards.texasholdem.rules.gameplay.GamePhase.RIVER
@@ -54,9 +54,12 @@ class PlayerGameContextTest {
     @Test
     @DisplayName("getActualActions(): game is at flop -> returns history of the flop")
     fun gameIsAtFlopReturnsHistoryOfTheFlop() {
-        val boardInfo = BoardInfo(aPlayerCardsSet(), FLOP)
+        val board = object: Board {
+            override fun cards() = aPlayerCardsSet()
+            override fun phase() = FLOP
+        }
         val context = buildingAPlayerGameContext()
-                .withBoard(boardInfo)
+                .withBoard(board)
                 .withPreFlopHistoryWhere( alex does call(), dave does fold(), poly does fold(), jane does fold() )
                 .withFlopHistoryWhere( alex does call(), dave does fold() )
                 .build()

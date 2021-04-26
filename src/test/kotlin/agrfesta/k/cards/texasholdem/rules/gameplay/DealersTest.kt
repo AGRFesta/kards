@@ -445,8 +445,8 @@ class DealersTest {
     @DisplayName("Players receive a context to help them to act")
     fun playersReceiveAContextToHelpThemToAct() {
         val payments = blinds(10, 20)
-        val alexContexts = mutableListOf<PlayerGameContext<OwnPlayer>>()
-        val janeContexts = mutableListOf<PlayerGameContext<OwnPlayer>>()
+        val alexContexts = mutableListOf<PlayerGameContext<OwnPlayer, Board>>()
+        val janeContexts = mutableListOf<PlayerGameContext<OwnPlayer, Board>>()
         val alexStrategy = strategyMock(alexContexts, call(), fold())
         val janeStrategy = strategyMock(janeContexts, raise(100))
         val alex = anInGamePlayer("Alex", 2000, alexStrategy)
@@ -459,7 +459,7 @@ class DealersTest {
 
         assertThat(alexContexts).hasSize(2)
 
-        assertThat(alexContexts[0].board.phase).isEqualTo(GamePhase.PRE_FLOP)
+        assertThat(alexContexts[0].board.phase()).isEqualTo(GamePhase.PRE_FLOP)
         assertThat(alexContexts[0].hero.name).isEqualTo("Alex")
         assertThat(alexContexts[0].hero.stack).isEqualTo(2000)
         assertThat(alexContexts[0].payments).isEqualTo(payments)
@@ -471,7 +471,7 @@ class DealersTest {
                         Triple("Jane", 2000, NONE))
 
         assertThat(janeContexts).hasSize(1)
-        assertThat(janeContexts[0].board.phase).isEqualTo(GamePhase.PRE_FLOP)
+        assertThat(janeContexts[0].board.phase()).isEqualTo(GamePhase.PRE_FLOP)
         assertThat(janeContexts[0].hero.name).isEqualTo("Jane")
         assertThat(janeContexts[0].hero.stack).isEqualTo(2000)
         assertThat(janeContexts[0].payments).isEqualTo(payments)
@@ -483,7 +483,7 @@ class DealersTest {
                 .containsOnly(Triple("Alex", 2000, CALL),
                         Triple("Jane", 2000, NONE))
 
-        assertThat(alexContexts[1].board.phase).isEqualTo(GamePhase.PRE_FLOP)
+        assertThat(alexContexts[1].board.phase()).isEqualTo(GamePhase.PRE_FLOP)
         assertThat(alexContexts[1].hero.name).isEqualTo("Alex")
         assertThat(alexContexts[1].hero.stack).isEqualTo(2000)
         assertThat(alexContexts[1].payments).isEqualTo(payments)

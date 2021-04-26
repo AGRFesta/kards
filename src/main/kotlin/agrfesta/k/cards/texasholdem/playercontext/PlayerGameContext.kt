@@ -1,26 +1,33 @@
 package agrfesta.k.cards.texasholdem.playercontext
 
 import agrfesta.k.cards.texasholdem.rules.gameplay.Action
-import agrfesta.k.cards.texasholdem.rules.gameplay.BoardInfo
+import agrfesta.k.cards.texasholdem.rules.gameplay.Board
 import agrfesta.k.cards.texasholdem.rules.gameplay.GamePayments
 import agrfesta.k.cards.texasholdem.rules.gameplay.GamePhase
 import agrfesta.k.cards.texasholdem.rules.gameplay.Opponent
 import agrfesta.k.cards.texasholdem.rules.gameplay.SeatName
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 
-class PlayerGameContext<T: SeatName>(
+class PlayerGameContext<T: SeatName, B: Board>(
     val hero: T,
     val payments: GamePayments,
-    val board: BoardInfo,
+    val board: B,
     val potAmount: Int,
     val table: Table<Opponent>,
     val history: Map<GamePhase,List<PlayerAction>>) {
 
     fun getActions(phase: GamePhase) = history.getOrElse(phase){ emptyList() }
-    fun getActualActions() = getActions(board.phase)
+    fun getActualActions() = getActions(board.phase())
 
-    fun <N: SeatName> map(heroMapper: (T) -> N): PlayerGameContext<N> =
-        PlayerGameContext( heroMapper.invoke(hero), payments, board, potAmount, table, history )
+    fun <N: SeatName, M: Board> map(
+        heroMapper: ((T) -> N)? = null,
+        boardMapper: ((B) -> M)? = null ):
+            PlayerGameContext<N, M> =
+        PlayerGameContext(
+            heroMapper?.invoke(hero) ?: hero as N,
+            payments,
+            boardMapper?.invoke(board) ?: board as M,
+            potAmount, table, history )
 
 }
 
