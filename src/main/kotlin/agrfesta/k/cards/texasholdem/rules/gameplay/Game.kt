@@ -4,7 +4,6 @@ import agrfesta.k.cards.texasholdem.observers.DealerObserver
 import agrfesta.k.cards.texasholdem.observers.GameObserver
 import agrfesta.k.cards.texasholdem.observers.GameResult
 import agrfesta.k.cards.texasholdem.observers.multipleDealerObserverOf
-import agrfesta.k.cards.texasholdem.playercontext.PlayerAction
 import java.util.*
 
 interface Game {

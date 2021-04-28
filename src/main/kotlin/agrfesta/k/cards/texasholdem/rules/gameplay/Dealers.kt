@@ -1,9 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.texasholdem.observers.DealerObserver
-import agrfesta.k.cards.texasholdem.playercontext.PlayerAction
-import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
-import agrfesta.k.cards.texasholdem.playercontext.does
 
 interface Dealer {
     fun collectPot()
@@ -49,25 +46,19 @@ abstract class AbstractDealer(
         while (someoneHaveToAct(pot)) {
             val player = iterator.next()
             if (context.hadToAct(player, pot)) {
-                val gameContext = createContext(player, actions, pot)
-                val action = player.act( gameContext.map { it } )
+                val action = player.act( context.map { it } )
                 actions.add(player does action)
                 when (action.getType()) {
                     ActionType.Call -> callEffect(player, pot)
                     ActionType.Raise -> raiseEffect(player, action, pot)
                     else -> foldEffect(player)
                 }
-                observer?.notifyAction(
-                    createContext(player, actions, pot).map { it },
-                    player does action)
+                observer?.notifyAction(context.map { it }, player does action)
             }
         }
         observer?.notifyActions(context.board.phase(), actions)
     }
 
-    private fun createContext(player: InGamePlayer, actions: List<PlayerAction>, pot: Pot) =
-        context.add(actions)
-            .toPlayerGameContext(player.asOwnPlayer(pot), context.getGlobalPot().amount())
     private fun someoneHaveToAct(pot: Pot): Boolean = hadToAct(pot).isNotEmpty()
     private fun hadToAct(pot: Pot): List<InGamePlayer> {
         return context.table.players.filter { context.hadToAct(it, pot) }
@@ -98,9 +89,6 @@ abstract class AbstractDealer(
         }
     }
 }
-
-private fun GameContext<InGamePlayer, BoardInSequence>.toPlayerGameContext(me: OwnPlayer, potAmount: Int) =
-    PlayerGameContext(me, this.payments, this.board, potAmount, this.table.map { it.asOpponent() }, this.history)
 
 private fun GameContext<InGamePlayer, BoardInSequence>.hadToAct(player: InGamePlayer, pot: Pot): Boolean {
     val hadToPay = player.calculateAmountToCall(pot) > 0

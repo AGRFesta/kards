@@ -1,7 +1,6 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.playingcards.cards.Card
-import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 
 data class Player(val name: String, val strategy: PlayerStrategyInterface): SeatName {
     override fun toString() = "$name{$strategy}"
@@ -60,7 +59,7 @@ class InGamePlayer(val player: Player, var stack: Int, val cards: Set<Card>): Pl
 
     fun calculateAmountToCall(pot: Pot): Int = (pot.maxContribution()?.amount ?: 0) - pot.payedBy(this)
 
-    override fun act(context: PlayerGameContext<OwnPlayer, Board>): Action = player.strategy.act(context)
+    override fun act(context: GameContext<Opponent, Board>): Action = player.strategy.act(context)
     override fun getSeatName() = name
 
     override fun toString(): String = "$player ($stack)"
@@ -72,7 +71,7 @@ enum class PlayerStatus {
 }
 
 interface PlayerStrategyInterface {
-    fun act(context: PlayerGameContext<OwnPlayer, Board>): Action
+    fun act(context: GameContext<Opponent, Board>): Action
 }
 
 class OwnPlayer(val name: String, val cards: Set<Card>, val stack: Int, val amountToCall: Int): SeatName {
