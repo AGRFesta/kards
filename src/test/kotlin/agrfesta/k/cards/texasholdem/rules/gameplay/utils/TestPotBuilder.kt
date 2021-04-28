@@ -10,7 +10,6 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.FOLD
 import agrfesta.k.cards.texasholdem.rules.gameplay.Pot
 import agrfesta.k.cards.texasholdem.rules.gameplay.receiveFrom
-import io.mockk.every
 import io.mockk.mockk
 
 typealias BuilderEnrich = (TestPotBuilder) -> TestPotBuilder
@@ -62,6 +61,6 @@ fun Pot.getPlayer(player: Player): InGamePlayer {
 fun dealerMockFromBuilder(context: GameContext<InGamePlayer, BoardInSequence>, enrich: BuilderEnrich): Dealer {
     val dealer = mockk<Dealer>()
     val pot =  enrich.invoke(TestPotBuilder(context)).build()
-    every { dealer.collectPot() } returns pot
+    //every { dealer.collectPot() } returns pot
     return dealer
 }

@@ -6,12 +6,12 @@ import agrfesta.k.cards.texasholdem.playercontext.PlayerGameContext
 import agrfesta.k.cards.texasholdem.playercontext.does
 
 interface Dealer {
-    fun collectPot(): Pot
+    fun collectPot()
 }
 
 interface DealerFactory {
     fun preFlopDealer(context: GameContext<InGamePlayer, BoardInSequence>, observer: DealerObserver?): Dealer
-    fun postFlopDealer(prevPot: Pot, context: GameContext<InGamePlayer, BoardInSequence>, observer: DealerObserver?): Dealer
+    fun postFlopDealer(context: GameContext<InGamePlayer, BoardInSequence>, observer: DealerObserver?): Dealer
 }
 class DealerFactoryImpl: DealerFactory {
 
@@ -19,8 +19,8 @@ class DealerFactoryImpl: DealerFactory {
         return PreFlopDealer(context, observer)
     }
 
-    override fun postFlopDealer(prevPot: Pot, context: GameContext<InGamePlayer, BoardInSequence>, observer: DealerObserver?): Dealer {
-        return PostFlopDealer(prevPot, context, observer)
+    override fun postFlopDealer(context: GameContext<InGamePlayer, BoardInSequence>, observer: DealerObserver?): Dealer {
+        return PostFlopDealer(context, observer)
     }
 
 }
@@ -37,12 +37,12 @@ abstract class AbstractDealer(
     protected var amountRequired: Int = 0
     private var raisingPlayer: InGamePlayer? = null
 
-    protected abstract fun prevPot(): Pot?
-    protected abstract fun createPot(): Pot
+    protected abstract fun initPot(pot: Pot)
     protected abstract fun playersIterator(): TableIterator<InGamePlayer>
 
-    override fun collectPot(): Pot {
-        val pot = createPot()
+    override fun collectPot() {
+        val pot = context.getActualPot()
+        initPot(pot)
         val iterator = playersIterator()
         val actions: MutableList<PlayerAction> = mutableListOf()
 
@@ -63,12 +63,11 @@ abstract class AbstractDealer(
             }
         }
         observer?.notifyActions(context.board.phase(), actions)
-        return pot
     }
 
     private fun createContext(player: InGamePlayer, actions: List<PlayerAction>, pot: Pot) =
         context.add(actions)
-            .toPlayerGameContext(player.asOwnPlayer(pot), pot.amount() + (prevPot()?.amount() ?: 0))
+            .toPlayerGameContext(player.asOwnPlayer(pot), context.getGlobalPot().amount())
     private fun someoneHaveToAct(pot: Pot): Boolean = hadToAct(pot).isNotEmpty()
     private fun hadToAct(pot: Pot): List<InGamePlayer> {
         return context.table.players.filter { context.hadToAct(it, pot) }
@@ -100,8 +99,8 @@ abstract class AbstractDealer(
     }
 }
 
-private fun GameContext<InGamePlayer, BoardInSequence>.toPlayerGameContext(me: OwnPlayer, potAmount: Int) = PlayerGameContext(
-        me, this.payments, this.board, potAmount, this.table.map { it.asOpponent() }, this.history)
+private fun GameContext<InGamePlayer, BoardInSequence>.toPlayerGameContext(me: OwnPlayer, potAmount: Int) =
+    PlayerGameContext(me, this.payments, this.board, potAmount, this.table.map { it.asOpponent() }, this.history)
 
 private fun GameContext<InGamePlayer, BoardInSequence>.hadToAct(player: InGamePlayer, pot: Pot): Boolean {
     val hadToPay = player.calculateAmountToCall(pot) > 0
@@ -115,12 +114,10 @@ private fun GameContext<InGamePlayer, BoardInSequence>.theOnlyActive(player: InG
         .none { it.isActive() }
 
 class PostFlopDealer(
-        private val prevPot: Pot,
         private val context: GameContext<InGamePlayer, BoardInSequence>,
         observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
-    override fun prevPot() = prevPot
-    override fun createPot() = buildPot()
+    override fun initPot(pot: Pot) {}
     override fun playersIterator(): TableIterator<InGamePlayer> = context.table.iterateFromSB()
 }
 
@@ -128,16 +125,11 @@ class PreFlopDealer(
         private val context: GameContext<InGamePlayer, BoardInSequence>,
         observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
-
-    override fun createPot(): Pot {
-        val pot = buildPot()
+    override fun initPot(pot: Pot) {
         pot.receiveFrom(context.table.getPlayerByPosition(Position.SMALL_BLIND), context.payments.sb())
         pot.receiveFrom(context.table.getPlayerByPosition(Position.BIG_BLIND), context.payments.bb())
         context.payments.ante()?.let { ante -> context.table.players.forEach { pot.receiveFrom(it, ante) } }
         amountRequired = context.payments.bb()
-        return pot
     }
-
-    override fun prevPot(): Pot? = null
     override fun playersIterator(): TableIterator<InGamePlayer> = context.table.iterateFromUTG()
 }

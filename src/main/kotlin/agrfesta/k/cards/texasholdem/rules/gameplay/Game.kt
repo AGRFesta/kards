@@ -18,8 +18,6 @@ class GameImpl(
         private val showdown: Showdown,
         private val observer: GameObserver?
 ) : Game, DealerObserver {
-    private var pot = buildPot()
-
     override fun getId() = context.uuid
 
     override fun play(): List<PlayerStack> {
@@ -36,7 +34,7 @@ class GameImpl(
         findWinner() ?:
 
         // Showdown
-        showdown.execute(pot, context.board)
+        showdown.execute(context.getGlobalPot(), context.board)
 
         return context.table.players.toPlayerStack()
     }
@@ -44,8 +42,8 @@ class GameImpl(
     private fun findWinner(players: List<InGamePlayer>): InGamePlayer? {
         val winner = players.findWinner()
         if (winner != null) {
-            observer?.notifyWinner( GameResult(winner.player, pot.amount(), players.toPlayerStack() ))
-            winner.receive(pot.amount())
+            observer?.notifyWinner( GameResult(winner.player, context.getGlobalPot().amount(), players.toPlayerStack() ))
+            winner.receive(context.getGlobalPot().amount())
         }
         return winner
     }
@@ -53,15 +51,15 @@ class GameImpl(
     private fun findPreFlopWinner(): InGamePlayer? {
         observer?.notifyStartingPhase(context)
         val dealer = dealerFactory.preFlopDealer(context, multipleDealerObserverOf(this, observer))
-        pot = dealer.collectPot()
+        dealer.collectPot()
         return findWinner(context.table.players)
     }
 
     private fun findWinner(): InGamePlayer? {
         context = context.nextPhase()
         observer?.notifyStartingPhase(context)
-        val dealer = dealerFactory.postFlopDealer(pot, context, multipleDealerObserverOf(this, observer))
-        pot = pot + dealer.collectPot()
+        val dealer = dealerFactory.postFlopDealer(context, multipleDealerObserverOf(this, observer))
+        dealer.collectPot()
         return findWinner(context.table.players)
     }
 
