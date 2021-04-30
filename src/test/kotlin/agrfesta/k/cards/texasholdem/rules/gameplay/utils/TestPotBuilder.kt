@@ -47,7 +47,7 @@ class TestPotBuilder(private val gameContext: GameContext<InGamePlayer, BoardInS
 }
 
 fun GameContext<InGamePlayer, BoardInSequence>.getPlayer(player: Player): InGamePlayer {
-    val inGamePlayer = this.table.findPlayerBySeatName(player.getSeatName())
+    val inGamePlayer = this.table.findPlayerBySeatName(player.name)
     requireNotNull(inGamePlayer)
     return inGamePlayer
 }

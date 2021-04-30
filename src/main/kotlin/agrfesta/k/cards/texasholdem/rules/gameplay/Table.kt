@@ -8,8 +8,8 @@ class Table<T: SeatName>(playersList: List<T>, val button: Int) {
     }
 
     fun getPlayerByPosition(position: Position): T = players[position.pos(this)]
-    fun position(player: SeatName): Int = players.indices.first { players[it].getSeatName() == player.getSeatName() }
-    fun findPlayerBySeatName(seatName: String): T? = players.firstOrNull { it.getSeatName() == seatName }
+    fun position(player: SeatName): Int = players.indices.first { players[it].name == player.name }
+    fun findPlayerBySeatName(seatName: String): T? = players.firstOrNull { it.name == seatName }
 
     fun iterateFromSB(): TableIterator<T> = TableIterator(players, Position.SMALL_BLIND.pos(this))
     fun iterateFromUTG(): TableIterator<T> = TableIterator(players, Position.UNDER_THE_GUN.pos(this))

@@ -6,8 +6,8 @@ class TableBuilder<T: SeatName> {
 
     fun withPlayers(vararg players: T): TableBuilder<T> {
         players.forEach {
-            require(this.players.firstOrNull { p -> p.getSeatName() == it.getSeatName() } == null)
-            { "Player '${it.getSeatName()}' is already sitting at the table!" }
+            require(this.players.firstOrNull { p -> p.name == it.name } == null)
+            { "Player '${it.name}' is already sitting at the table!" }
         }
         this.players.addAll(players)
         return this

@@ -40,8 +40,8 @@ class GameObserverTest {
         buildPot()
     }
     private val allChecksDealer: (Table<InGamePlayer>) -> Pot = {
-        it.findPlayerBySeatName(alex.getSeatName())?.status = PlayerStatus.CALL
-        it.findPlayerBySeatName(poly.getSeatName())?.status = PlayerStatus.CALL
+        it.findPlayerBySeatName(alex.name)?.status = PlayerStatus.CALL
+        it.findPlayerBySeatName(poly.name)?.status = PlayerStatus.CALL
         buildPot()
     }
 

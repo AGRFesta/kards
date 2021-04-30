@@ -7,7 +7,12 @@ class GameContext<T: SeatName, B: Board>(
     val table: Table<T>,
     val payments: GamePayments,
     val board: B,
-    val history: Map<GamePhase, List<PlayerAction>>,
+    val history: Map<GamePhase, List<PlayerAction>> = mapOf(
+        GamePhase.PRE_FLOP to emptyList(),
+        GamePhase.FLOP to emptyList(),
+        GamePhase.TURN to emptyList(),
+        GamePhase.RIVER to emptyList()
+    ),
     val phasePots: Map<GamePhase, Pot> = mapOf(
         GamePhase.PRE_FLOP to buildPot(),
         GamePhase.FLOP to buildPot(),
@@ -45,4 +50,4 @@ fun <T: SeatName> GameContext<T, BoardInSequence>.nextPhase(): GameContext<T, Bo
 data class PlayerAction(val playerName: String, val action: Action) {
     override fun toString() = "$playerName $action"
 }
-infix fun SeatName.does(action: Action) = PlayerAction(this.getSeatName(), action)
+infix fun SeatName.does(action: Action) = PlayerAction(this.name, action)
