@@ -23,9 +23,13 @@ data class PlayerStack(val player: Player, override val stack: Int): SeatNameSta
 infix fun Player.owns(stack: Int) = PlayerStack(this, stack)
 fun Collection<PlayerStack>.toRanking() = this.sortedByDescending { it.stack }
 
-class OwnPlayer(override val name: String, val cards: Set<Card>, val stack: Int, val amountToCall: Int): SeatName
+class OwnPlayer(override val name: String, val cards: Set<Card>, override val stack: Int, val amountToCall: Int)
+    : SeatNameStack
 
-class InGamePlayer(val player: Player, var stack: Int, val cards: Set<Card>): PlayerStrategyInterface, SeatName {
+class OpponentHero(override val name: String, override val stack: Int, val cards: Set<Card>? = null): SeatNameStack
+
+class InGamePlayer(val player: Player, override var stack: Int, val cards: Set<Card>)
+    : PlayerStrategyInterface, SeatNameStack {
     override val name = player.name
 
     var status: PlayerStatus = PlayerStatus.NONE
@@ -62,7 +66,7 @@ class InGamePlayer(val player: Player, var stack: Int, val cards: Set<Card>): Pl
 
     fun calculateAmountToCall(pot: Pot): Int = (pot.maxContribution()?.amount ?: 0) - pot.payedBy(this)
 
-    override fun act(context: GameContext<Opponent, Board>): Action = player.strategy.act(context)
+    override fun act(context: ActGameContext): Action = player.strategy.act(context)
 
     override fun toString(): String = "$player ($stack)"
 
@@ -73,7 +77,7 @@ enum class PlayerStatus {
 }
 
 interface PlayerStrategyInterface {
-    fun act(context: GameContext<Opponent, Board>): Action
+    fun act(context: ActGameContext): Action
 }
 
 /// List<Player> ///////////////////////////////////////////////////////////////////////////////////////////////////////

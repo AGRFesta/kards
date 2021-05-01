@@ -1,11 +1,10 @@
 package agrfesta.k.cards.texasholdem.observers
 
-import agrfesta.k.cards.texasholdem.rules.gameplay.BoardInSequence
-import agrfesta.k.cards.texasholdem.rules.gameplay.GameContext
 import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
 import agrfesta.k.cards.texasholdem.rules.gameplay.Pot
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
+import agrfesta.k.cards.texasholdem.rules.gameplay.ViewGameContext
 import agrfesta.k.cards.texasholdem.rules.gameplay.aGamePayments
 import agrfesta.k.cards.texasholdem.rules.gameplay.alex
 import agrfesta.k.cards.texasholdem.rules.gameplay.buildPot
@@ -23,7 +22,7 @@ class GameObserverTest {
     private val payments = aGamePayments()
     val table = Table(listOf(alex owns 1000, poly owns 1000), 0)
 
-    private fun observerMock(result: CapturingSlot<GameResult>, contexts: MutableList<GameContext<InGamePlayer, BoardInSequence>>)
+    private fun observerMock(result: CapturingSlot<GameResult>, contexts: MutableList<ViewGameContext>)
             : GameObserver {
         val observerMock = mockk<GameObserver>()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs

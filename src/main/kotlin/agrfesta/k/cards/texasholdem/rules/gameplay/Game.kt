@@ -12,7 +12,7 @@ interface Game {
 }
 
 class GameImpl(
-        private var context: GameContext<InGamePlayer, BoardInSequence>,
+        private var context: InGameContext,
         private val dealerFactory: DealerFactory,
         private val showdown: Showdown,
         private val observer: GameObserver?
@@ -41,14 +41,15 @@ class GameImpl(
     private fun findWinner(players: List<InGamePlayer>): InGamePlayer? {
         val winner = players.findWinner()
         if (winner != null) {
-            observer?.notifyWinner( GameResult(winner.player, context.getGlobalPot().amount(), players.toPlayerStack() ))
+            observer?.notifyWinner(
+                GameResult(winner.player, context.getGlobalPot().amount(), players.toPlayerStack() ))
             winner.receive(context.getGlobalPot().amount())
         }
         return winner
     }
 
     private fun findPreFlopWinner(): InGamePlayer? {
-        observer?.notifyStartingPhase(context)
+        observer?.notifyStartingPhase(context.toViewGameContext())
         val dealer = dealerFactory.preFlopDealer(context, multipleDealerObserverOf(this, observer))
         dealer.collectPot()
         return findWinner(context.table.players)
@@ -56,13 +57,16 @@ class GameImpl(
 
     private fun findWinner(): InGamePlayer? {
         context = context.nextPhase()
-        observer?.notifyStartingPhase(context)
+        observer?.notifyStartingPhase(context.toViewGameContext())
         val dealer = dealerFactory.postFlopDealer(context, multipleDealerObserverOf(this, observer))
         dealer.collectPot()
         return findWinner(context.table.players)
     }
 
     override fun notifyActions(phase: GamePhase, actions: List<PlayerAction>) {
-        context = context.add(actions)
+        val newHistory = context.history.toMutableMap()
+        newHistory[context.board.phase()] = actions.toList()
+        context = GameContextImpl(
+            context.uuid, context.table, context.payments, context.board, newHistory, context.phasePots)
     }
 }

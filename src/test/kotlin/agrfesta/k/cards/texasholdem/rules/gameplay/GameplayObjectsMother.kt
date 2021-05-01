@@ -9,11 +9,8 @@ import java.util.*
 fun aDeck(): Deck = DeckListImpl(listOf())
 fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer(),anInGamePlayer()), 0)
 
-fun aContext(table: Table<InGamePlayer>, payments: GamePayments): GameContext<InGamePlayer, BoardInSequence> =
-        GameContext(UUID.randomUUID(), table, payments, EmptyBoard(aDeck()), mapOf())
-fun aPlayerContext(): GameContext<Opponent, Board> = GameContext(
-    uuid = UUID.randomUUID(), table = aTable().map { it.asOpponent() }, payments = aGamePayments(),
-    board = EmptyBoard(aDeck()), history = mapOf())
+fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGamePayments()): InGameContext =
+        GameContextImpl(UUID.randomUUID(), table, payments, EmptyBoard(aDeck()))
 
 fun aGamePayments(): GamePayments = GamePaymentsFixedImpl(10, 20)
 fun blinds(sb: Int, bb: Int): GamePayments = GamePaymentsFixedImpl(sb, bb)

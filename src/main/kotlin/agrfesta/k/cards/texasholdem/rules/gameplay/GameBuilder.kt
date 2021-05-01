@@ -23,7 +23,7 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
     private var showdownProvider: (ShowdownObserver?) -> Showdown = { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }
 
     private var dealerFactory: DealerFactory = DealerFactoryImpl()
-    private var implementation: (GameContext<InGamePlayer, BoardInSequence>, DealerFactory, Showdown, GameObserver?) -> Game = ::GameImpl
+    private var implementation: (InGameContext, DealerFactory, Showdown, GameObserver?) -> Game = ::GameImpl
 
     private var uuidProvider: UuidProvider = { UUID.randomUUID() }
 
@@ -84,8 +84,8 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
 
     fun build(): Game {
         val inGameTable = table.map { InGamePlayer(it.player, it.stack, deck.draw(2).toSet()) }
-        val context = GameContext(uuidProvider.invoke(), inGameTable, payments, EmptyBoard(deck) as BoardInSequence, mapOf())
-        return implementation.invoke(context, dealerFactory, showdownProvider.invoke(observer), observer)
+        val context = GameContextImpl(uuidProvider.invoke(), inGameTable, payments, EmptyBoard(deck) as BoardInSequence)
+        return implementation(context, dealerFactory, showdownProvider(observer), observer)
     }
 
 }
