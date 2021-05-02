@@ -13,7 +13,7 @@ interface GameContext<T: SeatNameStack, B: Board> {
     val payments: GamePayments
     val board: B
     val history: Map<GamePhase, List<PlayerAction>>
-    val phasePots: Map<GamePhase, Pot>
+    val phasePots: Map<GamePhase, MutablePot>
 
     fun getActualPot() = phasePots[board.phase()]
         ?: throw IllegalStateException("Pot not initialized at ${board.phase()}")
@@ -36,11 +36,11 @@ class GameContextImpl<T: SeatNameStack, B: Board>(
         GamePhase.TURN to emptyList(),
         GamePhase.RIVER to emptyList()
     ),
-    override val phasePots: Map<GamePhase, Pot> = mapOf(
-        GamePhase.PRE_FLOP to buildPot(),
-        GamePhase.FLOP to buildPot(),
-        GamePhase.TURN to buildPot(),
-        GamePhase.RIVER to buildPot()
+    override val phasePots: Map<GamePhase, MutablePot> = mapOf(
+        GamePhase.PRE_FLOP to buildMutablePot(),
+        GamePhase.FLOP to buildMutablePot(),
+        GamePhase.TURN to buildMutablePot(),
+        GamePhase.RIVER to buildMutablePot()
     )): GameContext<T, B>
 
 class HeroGameContextImpl<H: SeatNameStack, T: SeatNameStack, B: Board>(
@@ -55,11 +55,11 @@ class HeroGameContextImpl<H: SeatNameStack, T: SeatNameStack, B: Board>(
         GamePhase.TURN to emptyList(),
         GamePhase.RIVER to emptyList()
     ),
-    override val phasePots: Map<GamePhase, Pot> = mapOf(
-        GamePhase.PRE_FLOP to buildPot(),
-        GamePhase.FLOP to buildPot(),
-        GamePhase.TURN to buildPot(),
-        GamePhase.RIVER to buildPot()
+    override val phasePots: Map<GamePhase, MutablePot> = mapOf(
+        GamePhase.PRE_FLOP to buildMutablePot(),
+        GamePhase.FLOP to buildMutablePot(),
+        GamePhase.TURN to buildMutablePot(),
+        GamePhase.RIVER to buildMutablePot()
     )): HeroGameContext<H, T, B> {
 
     fun <J: SeatNameStack, N: SeatNameStack, M: Board> map(

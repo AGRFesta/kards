@@ -28,7 +28,7 @@ class ShowdownObserverTest {
         val alex = anInGamePlayer("Alex", 1000, PlayerStatus.RAISE, frenchCardsSet("Ad","Ts"))
         val poly = anInGamePlayer("Poly", 1000, PlayerStatus.CALL,  frenchCardsSet("Jd","7c"))
         val jane = anInGamePlayer("Jane", 1000, PlayerStatus.CALL,  frenchCardsSet("9d","9c"))
-        val pot = buildPot()
+        val pot = buildMutablePot()
         pot[alex] = 300
         pot[poly] = 300
         pot[jane] = 100
@@ -52,7 +52,7 @@ class ShowdownObserverTest {
         val result = slot<Collection<ShowdownPlayerResult>>()
         val observerMock = mockk<ShowdownObserver>()
         every { observerMock.notifyResult(capture(result)) } just Runs
-        val pot = buildPot()
+        val pot = buildMutablePot()
         val board = board("Ac","Js","9s", "8c", "3d")
 
         ShowdownImpl(CardsEvaluatorBaseImpl(),observerMock).execute(pot,board)
@@ -72,7 +72,7 @@ class ShowdownObserverTest {
         val poly = anInGamePlayer("Poly", 2000, PlayerStatus.CALL, frenchCardsSet("As","9d"))
         val jane = anInGamePlayer("Jane", 2000, PlayerStatus.CALL, frenchCardsSet("Ah","Jc"))
         val dave = anInGamePlayer("Dave", 1000, PlayerStatus.FOLD, frenchCardsSet("Qh","Qc"))
-        val pot = buildPot()
+        val pot = buildMutablePot()
         pot[alex] = 225
         pot[poly] = 225
         pot[jane] = 225

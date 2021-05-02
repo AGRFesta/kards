@@ -62,9 +62,9 @@ class InGamePlayer(val player: Player, override var stack: Int, val cards: Set<C
         return effectiveAmount
     }
 
-    fun asOwnPlayer(actualPot: Pot) = OwnPlayer(name, cards, stack, calculateAmountToCall(actualPot))
+    fun asOwnPlayer(actualPot: MutablePot) = OwnPlayer(name, cards, stack, calculateAmountToCall(actualPot))
 
-    fun calculateAmountToCall(pot: Pot): Int = (pot.maxContribution()?.amount ?: 0) - pot.payedBy(this)
+    fun calculateAmountToCall(pot: MutablePot): Int = (pot.maxContribution()?.amount ?: 0) - pot.payedBy(this)
 
     override fun act(context: ActGameContext): Action = player.strategy.act(context)
 

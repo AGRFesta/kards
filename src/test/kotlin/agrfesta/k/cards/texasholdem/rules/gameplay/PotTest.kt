@@ -19,7 +19,7 @@ class PotTest {
     @Test
     @DisplayName("Pot [aPlayer=1,aPlayer=3,aPlayer=5] -> amount is 9")
     fun potAmountReturnsSumOfThreePlayersValues() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         pot[anInGamePlayer()] = 1
         pot[anInGamePlayer()] = 3
         pot[anInGamePlayer()] = 5
@@ -28,21 +28,21 @@ class PotTest {
     @Test
     @DisplayName("Pot [player=1] -> amount is 1")
     fun potAmountReturnsValueOfTheOnlyPlayers() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         pot[anInGamePlayer()] = 1
         assertThat(pot.amount()).isEqualTo(1)
     }
     @Test
     @DisplayName("Empty pot -> amount is 0")
     fun emptyPotAmountReturnsZero() {
-        assertThat(buildPot().amount()).isEqualTo(0)
+        assertThat(buildMutablePot().amount()).isEqualTo(0)
     }
 
     @Test
     @DisplayName("Pot [APlayer=1,FoldedPlayer=3,CallingPlayer=5,AllInPlayer=7,RaisingPlayer=13] -> " +
                             "[APlayer,FoldedPlayer,CallingPlayer,AllInPlayer,RaisingPlayer]")
     fun playersReturnsASetOfAllInvolvedPlayers() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         val player = anInGamePlayer()
         val foldedPlayer = foldedPlayer()
         val callingPlayer = callingPlayer()
@@ -60,7 +60,7 @@ class PotTest {
     @Test
     @DisplayName("Pot [APlayer=1] -> [APlayer]")
     fun playersReturnsWithASingleElementIfThereIsOnlyAPlayerInvolved() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         val player = anInGamePlayer()
         pot[player] = 1
         val result = pot.players()
@@ -70,7 +70,7 @@ class PotTest {
     @Test
     @DisplayName("Empty Pot -> empty Set")
     fun playersReturnsEmptySetIfThePotIsEmpty() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         val result = pot.players()
         assertThat(result !== pot.keys).isTrue()
         assertThat(result).isEmpty()
@@ -79,13 +79,13 @@ class PotTest {
     @Test
     @DisplayName("Missing Player -> 0")
     fun payedByReturns0IfThePlayerIsNotInThePot() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         assertThat(pot.payedBy(anInGamePlayer())).isEqualTo(0)
     }
     @Test
     @DisplayName("Pot [APlayer=5] -> 5")
     fun payedByReturnsThePayedAmountOfASpecificPlayer() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         val player = anInGamePlayer()
         pot[player] = 5
         assertThat(pot.payedBy(player)).isEqualTo(5)
@@ -94,15 +94,15 @@ class PotTest {
     @Test
     @DisplayName("[] + [] -> []")
     fun sumOfTwoEmptyPotReturnsAEmptyPot() {
-        assertThat(buildPot() + buildPot()).isEmpty()
+        assertThat(buildMutablePot() + buildMutablePot()).isEmpty()
     }
     @Test
     @DisplayName("[aPlayer=5] + [] -> [aPlayer=5]")
     fun sumOfAPotNotEmptyWithAnEmptyOneReturnsAPotWithSameContentOfTheFirstOne() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         val player = anInGamePlayer()
         pot[player] = 5
-        assertThat((pot + buildPot())).containsOnly(player to 5)
+        assertThat((pot + buildMutablePot())).containsOnly(player to 5)
     }
     @Test
     @DisplayName("[Jane=5,Giulia=2] + [Alex=3,Jane=1] -> [Jane=6,Alex=3,Giulia=2]")
@@ -110,10 +110,10 @@ class PotTest {
         val jane = anInGamePlayer("Jane")
         val alex = anInGamePlayer("Alex")
         val giulia = anInGamePlayer("Giulia")
-        val potA = buildPot()
+        val potA = buildMutablePot()
         potA[jane] = 5
         potA[giulia] = 2
-        val potB = buildPot()
+        val potB = buildMutablePot()
         potB[alex] = 3
         potB[jane] = 1
         assertThat(potA + potB).containsOnly(jane to 6, alex to 3, giulia to 2)
@@ -123,10 +123,10 @@ class PotTest {
     fun potSumStory000() {
         val jane = anInGamePlayer("Jane")
         val alex = anInGamePlayer("Alex")
-        val potA = buildPot()
+        val potA = buildMutablePot()
         potA[alex] = 200
         potA[jane] = 200
-        val potB = buildPot()
+        val potB = buildMutablePot()
         potB[alex] = 400
         potB[jane] = 200
         assertThat(potA + potB).containsOnly(jane to 400, alex to 600)
@@ -135,7 +135,7 @@ class PotTest {
     @Test
     @DisplayName("APlayer(1000) sends 200 to Pot[] -> APlayer(800), Pot[APlayer=200]")
     fun receiveFromAddEffectivePaymentsToAnEmptyPotAndRemovesItFromThePlayer() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         val player = anInGamePlayer(1000)
         assertThat(pot.receiveFrom(player, 200)).isEqualTo(200)
         assertThat(pot.payedBy(player)).isEqualTo(200)
@@ -144,7 +144,7 @@ class PotTest {
     @Test
     @DisplayName("APlayer(300) sends 800 to Pot[] -> APlayer(0), Pot[APlayer=300]")
     fun receiveFromAddOnlyTheEffectivePaymentsToAnEmptyPotAndRemovesItFromThePlayer() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         val player = anInGamePlayer(300)
         assertThat(pot.receiveFrom(player, 800)).isEqualTo(300)
         assertThat(pot.payedBy(player)).isEqualTo(300)
@@ -153,7 +153,7 @@ class PotTest {
     @Test
     @DisplayName("APlayer(300) sends 100 to Pot[APlayer=500] -> APlayer(200), Pot[APlayer=600]")
     fun receiveFromAddTheEffectivePaymentsToThePreviousPaymentMadeByThePlayer() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         val player = anInGamePlayer(300)
         pot[player] = 500
 
@@ -164,7 +164,7 @@ class PotTest {
     @Test
     @DisplayName("APlayer(300) sends -100 to Pot[] -> raises an Exception")
     fun receiveFromANegativeAmountRaisesAnException() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         val failure = assertThat {
             pot.receiveFrom(anInGamePlayer(300), -100)
         }.isFailure()
@@ -175,7 +175,7 @@ class PotTest {
     @Test
     @DisplayName("Extract balanced pot from Pot[] ->  bp=Pot[] origin=Pot[]")
     fun extractBalancedPotFromAnEmptyPotReturnsAnEmptyPot() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         assertThat(pot.extractBalancedPot()).isEmpty()
         assertThat(pot).isEmpty()
     }
@@ -183,7 +183,7 @@ class PotTest {
     @DisplayName("Extract balanced pot from Pot[hero=100] -> bp=Pot[hero=100] origin=Pot[]")
     fun extractBalancedPotFromAPotContainingASinglePlayerReturnsAPotWithSameDataAndOriginalOneEmpty() {
         val hero = anInGamePlayer("hero")
-        val pot = buildPot()
+        val pot = buildMutablePot()
         pot[hero] = 100
         assertThat(pot.extractBalancedPot()).containsOnly(hero to 100)
         assertThat(pot).isEmpty()
@@ -195,7 +195,7 @@ class PotTest {
         val alex = anInGamePlayer("Alex")
         val giulia = anInGamePlayer("Giulia")
         val jane = anInGamePlayer("Jane")
-        val pot = buildPot()
+        val pot = buildMutablePot()
         pot[alex] = 100
         pot[giulia] = 100
         pot[jane] = 100
@@ -208,7 +208,7 @@ class PotTest {
     fun extractBalancedPotFromAPotContainingTwoPlayersWithDifferentValuesReturnsBalancedPotAndRemoveFromOriginalPot() {
         val alex = anInGamePlayer("Alex")
         val giulia = anInGamePlayer("Giulia")
-        val pot = buildPot()
+        val pot = buildMutablePot()
         pot[alex] = 100
         pot[giulia] = 200
         assertThat(pot.extractBalancedPot()).containsOnly(alex to 100, giulia to 100)
@@ -218,7 +218,7 @@ class PotTest {
     @Test
     @DisplayName("Decompose Pot[] -> []")
     fun decomposeAnEmptyPotReturnsAnEmptyCollection() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         assertThat(pot.decompose()).isEmpty()
         assertThat(pot).isEmpty()
     }
@@ -271,7 +271,7 @@ class PotTest {
     @Test
     @DisplayName("Max Contribution from Pot[] -> null")
     fun maxContributionFromAnEmptyPotReturnsNull() {
-        assertThat(buildPot().maxContribution()).isNull()
+        assertThat(buildMutablePot().maxContribution()).isNull()
     }
     @Test
     @DisplayName("Max Contribution from Pot[Alex=100] -> {player=Alex,amount=100}")
@@ -303,7 +303,7 @@ class PotTest {
     @Test
     @DisplayName("An empty Pot receives an amount of 0 from a player -> the Pot is still empty")
     fun potIgnoresReceivedAmountIfZero() {
-        val pot = buildPot()
+        val pot = buildMutablePot()
         pot.receiveFrom(anInGamePlayer(), 0)
         assertThat(pot).isEmpty()
     }

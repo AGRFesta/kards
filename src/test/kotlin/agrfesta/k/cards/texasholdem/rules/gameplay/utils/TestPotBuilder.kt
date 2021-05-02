@@ -8,7 +8,7 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.FOLD
-import agrfesta.k.cards.texasholdem.rules.gameplay.Pot
+import agrfesta.k.cards.texasholdem.rules.gameplay.MutablePot
 import agrfesta.k.cards.texasholdem.rules.gameplay.receiveFrom
 import io.mockk.mockk
 
@@ -40,7 +40,7 @@ class TestPotBuilder(private val gameContext: GameContext<InGamePlayer, BoardInS
         return this
     }
 
-    fun build(): Pot = pot
+    fun build(): MutablePot = pot
 
     private fun getPlayer(player: Player): InGamePlayer = gameContext.getPlayer(player)
 
@@ -52,7 +52,7 @@ fun GameContext<InGamePlayer, BoardInSequence>.getPlayer(player: Player): InGame
     return inGamePlayer
 }
 
-fun Pot.getPlayer(player: Player): InGamePlayer {
+fun MutablePot.getPlayer(player: Player): InGamePlayer {
     val result = this.keys.firstOrNull { it.player == player }
     requireNotNull(result)
     return result

@@ -7,8 +7,8 @@ import io.mockk.mockk
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 
-class ShowdownMock(private val showdownBody: (Pot, Board) -> Unit) : Showdown {
-    override fun execute(pot: Pot, board: Board) = showdownBody.invoke(pot, board)
+class ShowdownMock(private val showdownBody: (MutablePot, Board) -> Unit) : Showdown {
+    override fun execute(pot: MutablePot, board: Board) = showdownBody.invoke(pot, board)
 }
 
 @DisplayName("Game tests")
@@ -20,9 +20,9 @@ class GameTest {
     private var dave = aPlayerWithName("Dave")
     private val dealerFactory = mockk<DealerFactory>()
 
-    private val defaultDealer: (Table<InGamePlayer>) -> Pot = {
+    private val defaultDealer: (Table<InGamePlayer>) -> MutablePot = {
         assert(false) { "The game is not following the correct phases sequence" }
-        buildPot()
+        buildMutablePot()
     }
 
     @AfterEach

@@ -109,7 +109,7 @@ class GameBuilderTest {
                 .build()
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
-            game.showdown.execute(buildPot(),EmptyBoard(aDeck()))
+            game.showdown.execute(buildMutablePot(),EmptyBoard(aDeck()))
             verify(exactly = 1) { observerMock.notifyResult(any()) }
         }
     }
@@ -132,7 +132,7 @@ class GameBuilderTest {
                 .build()
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
-            game.showdown.execute(buildPot(),EmptyBoard(aDeck()))
+            game.showdown.execute(buildMutablePot(),EmptyBoard(aDeck()))
             verify(exactly = 0) { observerMock.notifyResult(any()) }
             verify(exactly = 1) { showdownObserverMock.notifyResult(any()) }
         }
@@ -152,7 +152,7 @@ class GameBuilderTest {
                 .build()
         assertThat(game).isInstanceOf(GameMockImpl::class)
         if (game is GameMockImpl) {
-            game.showdown.execute(buildPot(),EmptyBoard(aDeck()))
+            game.showdown.execute(buildMutablePot(),EmptyBoard(aDeck()))
             verify(exactly = 1) { observerMock.notifyResult(any()) }
         }
     }

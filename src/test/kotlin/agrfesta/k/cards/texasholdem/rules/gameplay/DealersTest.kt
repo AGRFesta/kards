@@ -202,7 +202,7 @@ class DealersTest {
         val jane = anInGamePlayer("Jane", 2000, strategyMock(raise(100)))
         val table = Table(listOf(alex, jane), 0)
 
-        val prevPot = buildPot()
+        val prevPot = buildMutablePot()
         prevPot.receiveFrom(alex, 20)
         prevPot.receiveFrom(jane, 20)
 

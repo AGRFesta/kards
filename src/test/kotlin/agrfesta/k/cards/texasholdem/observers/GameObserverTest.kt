@@ -2,12 +2,12 @@ package agrfesta.k.cards.texasholdem.observers
 
 import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
-import agrfesta.k.cards.texasholdem.rules.gameplay.Pot
+import agrfesta.k.cards.texasholdem.rules.gameplay.MutablePot
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 import agrfesta.k.cards.texasholdem.rules.gameplay.ViewGameContext
 import agrfesta.k.cards.texasholdem.rules.gameplay.aGamePayments
 import agrfesta.k.cards.texasholdem.rules.gameplay.alex
-import agrfesta.k.cards.texasholdem.rules.gameplay.buildPot
+import agrfesta.k.cards.texasholdem.rules.gameplay.buildMutablePot
 import agrfesta.k.cards.texasholdem.rules.gameplay.owns
 import agrfesta.k.cards.texasholdem.rules.gameplay.poly
 import io.mockk.CapturingSlot
@@ -34,14 +34,14 @@ class GameObserverTest {
 //        every { dealer.collectPot() } returns collectPotBody.invoke(gameContext.table)
 //        return dealer
 //    }
-    private val defaultDealer: (Table<InGamePlayer>) -> Pot = {
+    private val defaultDealer: (Table<InGamePlayer>) -> MutablePot = {
         assert(false) { "The game is not following the correct phases sequence" }
-        buildPot()
+        buildMutablePot()
     }
-    private val allChecksDealer: (Table<InGamePlayer>) -> Pot = {
+    private val allChecksDealer: (Table<InGamePlayer>) -> MutablePot = {
         it.findPlayerBySeatName(alex.name)?.status = PlayerStatus.CALL
         it.findPlayerBySeatName(poly.name)?.status = PlayerStatus.CALL
-        buildPot()
+        buildMutablePot()
     }
 
 //    @Test
