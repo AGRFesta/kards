@@ -20,7 +20,7 @@ class ShowdownImpl(
     override fun execute(pot: MutablePot, board: Board) {
         val playersHands = pot.players()
                 .filter { !it.hasFolded() }
-                .map { it to evaluator.evaluate(it.cards + board.cards()) }
+                .map { it to evaluator.evaluate(it.cards + board.cards) }
                 .toMap()
 
         pot.decompose().forEach { process(it,playersHands) }

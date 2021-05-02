@@ -56,7 +56,7 @@ abstract class AbstractDealer(
                 observer?.notifyAction(player statsWith context, player does action)
             }
         }
-        observer?.notifyActions(context.board.phase(), actions)
+        observer?.notifyActions(context.board.phase, actions)
     }
 
     private fun someoneHaveToAct(pot: MutablePot): Boolean = hadToAct(pot).isNotEmpty()

@@ -4,7 +4,6 @@ import agrfesta.k.cards.texasholdem.DeckListImpl
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.isEmpty
-import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
 import org.junit.jupiter.api.DisplayName
@@ -17,7 +16,7 @@ class BoardTest {
     @DisplayName("EmptyBoard cards -> []")
     fun emptyBoardHasNoCards() {
         val deck = DeckListImpl(cardList("Ad","2s","Ts","2c","Jh","5h"))
-        assertThat(EmptyBoard(deck).cards()).isEmpty()
+        assertThat(EmptyBoard(deck).cards).isEmpty()
     }
     @Test
     @DisplayName("EmptyBoard next -> FlopBoard")
@@ -32,8 +31,7 @@ class BoardTest {
     fun flopBoardReturnsFirstThreeCardsDrawnFromDeck() {
         val deck = DeckListImpl(cardList("Ad","2s","Ts","2c","Jh","5h"))
         val board = FlopBoard(deck)
-        assertThat(board.flop).containsOnly(*cards("Ad","2s","Ts"))
-        assertThat(board.cards()).containsOnly(*cards("Ad","2s","Ts"))
+        assertThat(board.cards).containsOnly(*cards("Ad","2s","Ts"))
     }
     @Test
     @DisplayName("FlopBoard next -> TurnBoard")
@@ -49,11 +47,7 @@ class BoardTest {
         val deck = DeckListImpl(cardList("Ad","2s","Ts","2c","Jh","5h"))
         val turn = FlopBoard(deck).next()
         assertThat(turn).isInstanceOf(TurnBoard::class)
-        if (turn is TurnBoard) {
-            assertThat(turn.flop()).containsOnly(*cards("Ad","2s","Ts"))
-            assertThat(turn.turn).isEqualTo(card("2c"))
-        }
-        assertThat(turn.cards()).containsOnly(*cards("Ad","2s","Ts","2c"))
+        assertThat(turn.cards).containsOnly(*cards("Ad","2s","Ts","2c"))
     }
     @Test
     @DisplayName("TurnBoard next -> RiverBoard")
@@ -69,12 +63,7 @@ class BoardTest {
         val deck = DeckListImpl(cardList("Ad","2s","Ts","2c","Jh","5h"))
         val river = FlopBoard(deck).next().next()
         assertThat(river).isInstanceOf(RiverBoard::class)
-        if (river is RiverBoard) {
-            assertThat(river.flop()).containsOnly(*cards("Ad","2s","Ts"))
-            assertThat(river.turn()).isEqualTo(card("2c"))
-            assertThat(river.river).isEqualTo(card("Jh"))
-        }
-        assertThat(river.cards()).containsOnly(*cards("Ad","2s","Ts","2c","Jh"))
+        assertThat(river.cards).containsOnly(*cards("Ad","2s","Ts","2c","Jh"))
     }
     @Test
     @DisplayName("TurnBoard next -> RiverBoard")

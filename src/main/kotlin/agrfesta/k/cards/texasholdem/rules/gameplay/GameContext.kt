@@ -15,11 +15,11 @@ interface GameContext<T: SeatNameStack, B: Board> {
     val history: Map<GamePhase, List<PlayerAction>>
     val phasePots: Map<GamePhase, MutablePot>
 
-    fun getActualPot() = phasePots[board.phase()]
-        ?: throw IllegalStateException("Pot not initialized at ${board.phase()}")
+    fun getActualPot() = phasePots[board.phase]
+        ?: throw IllegalStateException("Pot not initialized at ${board.phase}")
     fun getGlobalPot() = phasePots.values.reduce { a, b -> a + b }
     fun getActions(phase: GamePhase) = history.getOrElse(phase){ emptyList() }
-    fun getActualActions() = history.getOrElse(board.phase()){ emptyList() }
+    fun getActualActions() = history.getOrElse(board.phase){ emptyList() }
 }
 interface HeroGameContext<H: SeatNameStack, T: SeatNameStack, B: Board>: GameContext<T, B> {
     val hero: H

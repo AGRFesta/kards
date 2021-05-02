@@ -16,8 +16,8 @@ fun aGamePayments(): GamePayments = GamePaymentsFixedImpl(10, 20)
 fun blinds(sb: Int, bb: Int): GamePayments = GamePaymentsFixedImpl(sb, bb)
 
 fun board(vararg strings: String): Board = object : Board {
-    override fun cards(): Set<Card> = frenchCardsSet(*strings)
-    override fun phase(): GamePhase  = when (cards().size) {
+    override val cards: Set<Card> = frenchCardsSet(*strings)
+    override val phase: GamePhase  = when (cards().size) {
         0 -> GamePhase.PRE_FLOP
         3 -> GamePhase.FLOP
         4 -> GamePhase.TURN
