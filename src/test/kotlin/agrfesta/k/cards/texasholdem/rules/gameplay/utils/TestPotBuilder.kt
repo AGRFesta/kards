@@ -1,14 +1,13 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay.utils
 
-import agrfesta.k.cards.texasholdem.rules.gameplay.BoardInSequence
 import agrfesta.k.cards.texasholdem.rules.gameplay.Dealer
-import agrfesta.k.cards.texasholdem.rules.gameplay.GameContext
+import agrfesta.k.cards.texasholdem.rules.gameplay.InGameContext
 import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePot
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.FOLD
-import agrfesta.k.cards.texasholdem.rules.gameplay.MutablePot
 import agrfesta.k.cards.texasholdem.rules.gameplay.receiveFrom
 import io.mockk.mockk
 
@@ -17,7 +16,7 @@ typealias BuilderEnrich = (TestPotBuilder) -> TestPotBuilder
 /**
  * Fluent Builder for test Pot created following a game logic
  */
-class TestPotBuilder(private val gameContext: GameContext<InGamePlayer, BoardInSequence>) {
+class TestPotBuilder(private val gameContext: InGameContext) {
     private val pot = mutableMapOf<InGamePlayer,Int>()
 
     fun receiveFoldFrom(player: Player): TestPotBuilder {
@@ -40,25 +39,25 @@ class TestPotBuilder(private val gameContext: GameContext<InGamePlayer, BoardInS
         return this
     }
 
-    fun build(): MutablePot = pot
+    fun build(): InGamePot = pot
 
     private fun getPlayer(player: Player): InGamePlayer = gameContext.getPlayer(player)
 
 }
 
-fun GameContext<InGamePlayer, BoardInSequence>.getPlayer(player: Player): InGamePlayer {
+fun InGameContext.getPlayer(player: Player): InGamePlayer {
     val inGamePlayer = this.table.findPlayerBySeatName(player.name)
     requireNotNull(inGamePlayer)
     return inGamePlayer
 }
 
-fun MutablePot.getPlayer(player: Player): InGamePlayer {
+fun InGamePot.getPlayer(player: Player): InGamePlayer {
     val result = this.keys.firstOrNull { it.player == player }
     requireNotNull(result)
     return result
 }
 
-fun dealerMockFromBuilder(context: GameContext<InGamePlayer, BoardInSequence>, enrich: BuilderEnrich): Dealer {
+fun dealerMockFromBuilder(context: InGameContext, enrich: BuilderEnrich): Dealer {
     val dealer = mockk<Dealer>()
     val pot =  enrich.invoke(TestPotBuilder(context)).build()
     //every { dealer.collectPot() } returns pot
