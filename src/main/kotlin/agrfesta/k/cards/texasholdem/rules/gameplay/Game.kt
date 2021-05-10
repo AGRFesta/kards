@@ -66,7 +66,7 @@ class GameImpl(
     override fun notifyActions(phase: GamePhase, actions: List<PlayerAction>) {
         val newHistory = context.history.toMutableMap()
         newHistory[context.board.phase] = actions.toList()
-        context = GameContextImpl(
+        context = GameContextImpl( //{ mutableMapOf() },
             context.uuid, context.table, context.payments, context.board, newHistory, context.phasePots)
     }
 }

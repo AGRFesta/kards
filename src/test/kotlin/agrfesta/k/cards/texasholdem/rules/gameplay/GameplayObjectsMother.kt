@@ -9,8 +9,11 @@ import java.util.*
 fun aDeck(): Deck = DeckListImpl(listOf())
 fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer(),anInGamePlayer()), 0)
 
-fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGamePayments()): InGameContext =
-        GameContextImpl(UUID.randomUUID(), table, payments, EmptyBoard(aDeck()))
+fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGamePayments()): InGameContext  {
+    val phasePots = emptyPhasePots<InGamePlayer, MutableMap<InGamePlayer, Int>> { mutableMapOf() }
+    return GameContextImpl(uuid = UUID.randomUUID(), table =  table, payments = payments,
+        board = EmptyBoard(aDeck()) as BoardInSequence, phasePots = phasePots)
+}
 
 fun aGamePayments(): GamePayments = GamePaymentsFixedImpl(10, 20)
 fun blinds(sb: Int, bb: Int): GamePayments = GamePaymentsFixedImpl(sb, bb)

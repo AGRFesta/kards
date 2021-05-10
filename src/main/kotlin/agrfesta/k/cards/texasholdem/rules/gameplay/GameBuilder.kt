@@ -62,8 +62,8 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
         return this
     }
 
-    fun implementedBy(implementation: (GameContext<InGamePlayer, BoardInSequence>, dealerFactory: DealerFactory,
-                                       Showdown, GameObserver?) -> Game): GameBuilder {
+    fun implementedBy(implementation: (InGameContext, dealerFactory: DealerFactory, Showdown, GameObserver?) -> Game)
+        : GameBuilder {
         this.implementation = implementation
         return this
     }
@@ -84,7 +84,9 @@ class GameBuilder private constructor(): PaymentsStep, TableStep {
 
     fun build(): Game {
         val inGameTable = table.map { InGamePlayer(it.player, it.stack, deck.draw(2).toSet()) }
-        val context = GameContextImpl(uuidProvider.invoke(), inGameTable, payments, EmptyBoard(deck) as BoardInSequence)
+        val phasePots = emptyPhasePots<InGamePlayer, MutableMap<InGamePlayer, Int>> { mutableMapOf() }
+        val context = GameContextImpl(uuid = uuidProvider.invoke(), table =  inGameTable, payments = payments,
+            board = EmptyBoard(deck) as BoardInSequence, phasePots = phasePots)
         return implementation(context, dealerFactory, showdownProvider(observer), observer)
     }
 

@@ -2,7 +2,7 @@ package agrfesta.k.cards.texasholdem.observers
 
 import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
-import agrfesta.k.cards.texasholdem.rules.gameplay.MutablePot
+import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePot
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
 import agrfesta.k.cards.texasholdem.rules.gameplay.ViewGameContext
 import agrfesta.k.cards.texasholdem.rules.gameplay.aGamePayments
@@ -34,11 +34,11 @@ class GameObserverTest {
 //        every { dealer.collectPot() } returns collectPotBody.invoke(gameContext.table)
 //        return dealer
 //    }
-    private val defaultDealer: (Table<InGamePlayer>) -> MutablePot = {
+    private val defaultDealer: (Table<InGamePlayer>) -> InGamePot = {
         assert(false) { "The game is not following the correct phases sequence" }
         buildMutablePot()
     }
-    private val allChecksDealer: (Table<InGamePlayer>) -> MutablePot = {
+    private val allChecksDealer: (Table<InGamePlayer>) -> InGamePot = {
         it.findPlayerBySeatName(alex.name)?.status = PlayerStatus.CALL
         it.findPlayerBySeatName(poly.name)?.status = PlayerStatus.CALL
         buildMutablePot()
