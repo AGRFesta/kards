@@ -1,4 +1,6 @@
-## K-PlayingCards [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+## Playing Kards 
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.3.61-orange.svg?style=flat&logo=kotlin&logoColor=orange)](http://kotlinlang.org)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 ### Build your deck
 The easiest way to create your deck is choosing the card suit.
