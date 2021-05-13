@@ -8,18 +8,18 @@ import agrfesta.k.cards.playingcards.utils.circularIndex
 
 fun getItalianRankFromSymbol(symbol: Char): Rank = ItalianRank.values()
         .map(ItalianRank::adapter)
-        .find { it.symbol() == symbol }
+        .find { it.symbol == symbol }
         ?: throw IllegalArgumentException("Symbol '$symbol' is not an Italian Rank")
 fun getItalianRankFromOrdinal(ordinal: Int): Rank = ItalianRank.values()
         .map(ItalianRank::adapter)
         .circularIndex(ordinal)
 
 fun getItalianSeedFromSymbol(symbol: Char): ItalianSeed = ItalianSeed.values()
-        .find { it.symbol() == symbol }
+        .find { it.symbol == symbol }
         ?: throw IllegalArgumentException("Symbol '$symbol' is not an Italian Seed")
 
 fun createItalianCard(str: String): Card {
-    require(!str.isBlank()) { "Unable to create Italian Card, received empty String" }
+    require(str.isNotBlank()) { "Unable to create Italian Card, received empty String" }
     require(str.length == 2) { "Unable to create Italian Card, expected two char String, received: $str" }
     return cardOf(
             getItalianRankFromSymbol(str[0]),
@@ -31,11 +31,11 @@ fun createItalianHand(vararg cards: String): List<Card> {
 }
 
 class ItalianRankAdapter(private val ir: ItalianRank): Rank {
-    override fun symbol(): Char = ir.symbol()
-    override fun ordinal(): Int = ir.ordinal
-    override fun plus(increment: Int): Rank = getItalianRankFromOrdinal(ordinal() +
+    override val symbol: Char = ir.symbol
+    override val ordinal: Int = ir.ordinal
+    override fun plus(increment: Int): Rank = getItalianRankFromOrdinal(ordinal +
             ItalianRank.values().size - (increment % ItalianRank.values().size))
-    override fun minus(decrement: Int): Rank = getItalianRankFromOrdinal(ordinal() +
+    override fun minus(decrement: Int): Rank = getItalianRankFromOrdinal(ordinal +
             ItalianRank.values().size + (decrement % ItalianRank.values().size))
 
     override fun compareTo(other: Rank): Int {
@@ -57,8 +57,7 @@ val QUATTRO = ItalianRank.QUATTRO.adapter
 val TRE = ItalianRank.TRE.adapter
 val DUE = ItalianRank.DUE.adapter
 
-enum class ItalianRank(private val symbol: Char) {
-
+enum class ItalianRank(val symbol: Char) {
     ASSO('A'),
     RE('K'),
     CAVALLO('H'),
@@ -71,18 +70,11 @@ enum class ItalianRank(private val symbol: Char) {
     DUE('2');
 
     val adapter = ItalianRankAdapter(this)
-
-    fun symbol() = symbol
-    fun ord() = ordinal
 }
 
-enum class ItalianSeed(private val symbol: Char) : Seed {
-
+enum class ItalianSeed(override val symbol: Char) : Seed {
     SPADE('s'),
     COPPE('c'),
     DENARI('d'),
     BASTONI('b');
-
-    override fun symbol() = symbol
-    override fun ord() = ordinal
 }

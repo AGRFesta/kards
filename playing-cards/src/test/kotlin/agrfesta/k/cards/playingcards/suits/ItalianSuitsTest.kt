@@ -130,8 +130,8 @@ class ItalianSuitsTest {
         val hand = createItalianHand("Ab")
         assertThat(hand).hasSize(1)
         val card = hand[0]
-        assertThat(card.rank()).isEqualTo(ASSO)
-        assertThat(card.seed()).isEqualTo(BASTONI)
+        assertThat(card.rank).isEqualTo(ASSO)
+        assertThat(card.seed).isEqualTo(BASTONI)
     }
     @Test
     @DisplayName("Build hand from two valid string -> a two card hand")
@@ -221,7 +221,7 @@ class ItalianSuitsTest {
     fun assertItalianSeedValues() {
         assertThat(listOf(
                 SPADE, COPPE, DENARI, BASTONI
-        )).extracting(ItalianSeed::ord,ItalianSeed::symbol)
+        )).extracting(ItalianSeed::ordinal,ItalianSeed::symbol)
                 .containsExactly(
                         0 to 's',
                         1 to 'c',
@@ -243,7 +243,7 @@ class ItalianSuitsTest {
                 ItalianRank.QUATTRO,
                 ItalianRank.TRE,
                 ItalianRank.DUE
-        )).extracting(ItalianRank::ord,ItalianRank::adapter,ItalianRank::symbol)
+        )).extracting(ItalianRank::ordinal,ItalianRank::adapter,ItalianRank::symbol)
                 .containsExactly(
                         Triple(0, ASSO, 'A'),
                         Triple(1, RE, 'K'),

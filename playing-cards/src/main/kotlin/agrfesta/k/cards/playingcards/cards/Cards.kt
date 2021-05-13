@@ -4,14 +4,12 @@ package agrfesta.k.cards.playingcards.cards
  * Represents a playing card, with rank and seed.
  */
 interface Card {
-    fun rank(): Rank
-    fun seed(): Seed
+    val rank: Rank
+    val seed: Seed
 }
 
-data class CardImpl(private val rank: Rank, private val seed: Seed): Card {
-    override fun rank() = rank
-    override fun seed() = seed
-    override fun toString(): String = "${rank().symbol()}${seed().symbol()}"
+data class CardImpl(override val rank: Rank, override val seed: Seed): Card {
+    override fun toString(): String = "${rank.symbol}${seed.symbol}"
 }
 
 /**
@@ -23,8 +21,8 @@ fun cardOf(rank: Rank, seed: Seed) = CardImpl(rank, seed)
  * Represents a playing card rank, usually is a number or a figure.
  */
 interface Rank: Comparable<Rank> {
-    fun symbol(): Char
-    fun ordinal(): Int
+    val symbol: Char
+    val ordinal: Int
 
     /**
      * Returns the [Rank] in actual ordinal position plus [increment].
@@ -41,8 +39,6 @@ interface Rank: Comparable<Rank> {
  * Represents a playing card seed, usually is a symbol.
  */
 interface Seed {
-    fun symbol(): Char
-    fun ord(): Int
+    val symbol: Char
+    val ordinal: Int
 }
-
-

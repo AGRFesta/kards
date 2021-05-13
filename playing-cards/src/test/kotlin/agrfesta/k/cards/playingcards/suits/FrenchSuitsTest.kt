@@ -136,8 +136,8 @@ class FrenchSuitsTest {
         val hand = createFrenchHand("Ah")
         assertThat(hand).hasSize(1)
         val card = hand[0]
-        assertThat(card.rank()).isEqualTo(ACE)
-        assertThat(card.seed()).isEqualTo(HEARTS)
+        assertThat(card.rank).isEqualTo(ACE)
+        assertThat(card.seed).isEqualTo(HEARTS)
     }
     @Test
     @DisplayName("Build hand from two valid string -> a two card hand")
@@ -240,7 +240,7 @@ class FrenchSuitsTest {
     fun assertFrenchSeedValues() {
         assertThat(listOf(
                 HEARTS, DIAMONDS, CLUBS, SPADES
-        )).extracting(FrenchSeed::ord,FrenchSeed::char,FrenchSeed::symbol)
+        )).extracting(FrenchSeed::ordinal,FrenchSeed::char,FrenchSeed::symbol)
                 .containsExactly(
                         Triple(0, 'h', '♡'),
                         Triple(1, 'd', '♢'),
