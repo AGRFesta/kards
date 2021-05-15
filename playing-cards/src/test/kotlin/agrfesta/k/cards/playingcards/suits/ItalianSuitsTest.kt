@@ -169,14 +169,14 @@ class ItalianSuitsTest {
     }
 
     @Test
-    @DisplayName("Compare ItalianRankAdapter with a different Rank implementation -> throws IllegalArgumentException")
+    @DisplayName("Compare ItalianRank with a different Rank implementation -> throws IllegalArgumentException")
     fun compareWithADifferentRankImplThrowsException() {
         val difImplRank = rankOf('x')
         val failure = assertThat {
             ASSO.compareTo(difImplRank)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Comparable only to an instance of ItalianRankAdapter")
+        failure.hasMessage("Comparable only to an instance of ItalianRank")
     }
 
     @TestFactory
@@ -232,50 +232,21 @@ class ItalianSuitsTest {
     @Test
     @DisplayName("Test italian rank values")
     fun assertItalianRankValues() {
-        assertThat(listOf(
-                ItalianRank.ASSO,
-                ItalianRank.RE,
-                ItalianRank.CAVALLO,
-                ItalianRank.FANTE,
-                ItalianRank.SETTE,
-                ItalianRank.SEI,
-                ItalianRank.CINQUE,
-                ItalianRank.QUATTRO,
-                ItalianRank.TRE,
-                ItalianRank.DUE
-        )).extracting(ItalianRank::ordinal,ItalianRank::adapter,ItalianRank::symbol)
+        assertThat(italianRankList).extracting(ItalianRank::ordinal,ItalianRank::symbol)
                 .containsExactly(
-                        Triple(0, ASSO, 'A'),
-                        Triple(1, RE, 'K'),
-                        Triple(2, CAVALLO, 'H'),
-                        Triple(3, FANTE, 'J'),
-                        Triple(4, SETTE, '7'),
-                        Triple(5, SEI, '6'),
-                        Triple(6, CINQUE, '5'),
-                        Triple(7, QUATTRO, '4'),
-                        Triple(8, TRE, '3'),
-                        Triple(9, DUE, '2')
+                    Pair(0, 'A'),
+                    Pair(1, 'K'),
+                    Pair(2, 'H'),
+                    Pair(3, 'J'),
+                    Pair(4, '7'),
+                    Pair(5, '6'),
+                    Pair(6, '5'),
+                    Pair(7, '4'),
+                    Pair(8, '3'),
+                    Pair(9, '2')
                 )
     }
-    @Test
-    @DisplayName("Test italian rank adapter values")
-    fun assertItalianRankAdapterValues() {
-        assertThat(listOf(
-                ASSO, RE, CAVALLO, FANTE, SETTE, SEI, CINQUE, QUATTRO, TRE, DUE
-        )).extracting(ItalianRankAdapter::ordinal, ItalianRankAdapter::symbol)
-                .containsExactly(
-                        0 to 'A',
-                        1 to 'K',
-                        2 to 'H',
-                        3 to 'J',
-                        4 to '7',
-                        5 to '6',
-                        6 to '5',
-                        7 to '4',
-                        8 to '3',
-                        9 to '2'
-                )
-    }
+
 }
 
 fun assertIsFullItalianCardList(cards: Collection<Card>) {

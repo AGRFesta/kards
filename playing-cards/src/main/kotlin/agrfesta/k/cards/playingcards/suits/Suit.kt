@@ -26,8 +26,8 @@ enum class Suit(val cards: Set<Card>) {
 private fun frenchCards(): Set<Card> {
     val allCards = HashSet<Card>()
     for (s in FrenchSeed.values()) {
-        for (v in FrenchRank.values()) {
-            allCards.add(cardOf(v.adapter, s))
+        for (v in frenchRanksSet) {
+            allCards.add(cardOf(v, s))
         }
     }
     return allCards
@@ -36,8 +36,8 @@ private fun frenchCards(): Set<Card> {
 private fun italianCards(): Set<Card> {
     val allCards = HashSet<Card>()
     for (s in ItalianSeed.values()) {
-        for (v in ItalianRank.values()) {
-            allCards.add(cardOf(v.adapter, s))
+        for (v in italianRanksSet) {
+            allCards.add(cardOf(v, s))
         }
     }
     return allCards

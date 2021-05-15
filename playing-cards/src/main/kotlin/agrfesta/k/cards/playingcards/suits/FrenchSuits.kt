@@ -5,14 +5,12 @@ import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.playingcards.cards.Seed
 import agrfesta.k.cards.playingcards.cards.cardOf
 import agrfesta.k.cards.playingcards.utils.circularIndex
+import agrfesta.k.cards.playingcards.utils.circularIndexMapping
 
-fun getFrenchRankFromSymbol(symbol: Char): Rank = FrenchRank.values()
-        .map(FrenchRank::adapter)
-        .find { it.symbol == symbol }
-        ?: throw IllegalArgumentException("Symbol '$symbol' is not a French Rank")
-fun getFrenchRankFromOrdinal(ordinal: Int): Rank = FrenchRank.values()
-        .map(FrenchRank::adapter)
-        .circularIndex(ordinal)
+fun getFrenchRankFromSymbol(symbol: Char): Rank = frenchRanksSet
+    .find { it.symbol == symbol }
+    ?: throw IllegalArgumentException("Symbol '$symbol' is not a French Rank")
+fun getFrenchRankFromOrdinal(ordinal: Int): Rank = frenchRankList.circularIndex(ordinal)
 
 fun getFrenchSeedFromSymbol(char: Char): FrenchSeed = FrenchSeed.values()
         .find { it.char == char }
@@ -29,53 +27,37 @@ fun createFrenchCard(str: String): Card {
 fun createFrenchHand(vararg cards: String): List<Card> = cards.map { createFrenchCard(it) }
 fun frenchCardsSet(vararg cards: String): Set<Card> = cards.map { createFrenchCard(it) }.toSet()
 
-class FrenchRankAdapter(private val fr: FrenchRank): Rank {
-    override val symbol: Char = fr.symbol
-    override val ordinal: Int = fr.ordinal
+val ACE = FrenchRank('A', 0)
+val KING = FrenchRank('K', 1)
+val QUEEN = FrenchRank('Q', 2)
+val JACK = FrenchRank('J', 3)
+val TEN = FrenchRank('T', 4)
+val NINE = FrenchRank('9', 5)
+val EIGHT = FrenchRank('8', 6)
+val SEVEN = FrenchRank('7', 7)
+val SIX = FrenchRank('6', 8)
+val FIVE = FrenchRank('5', 9)
+val FOUR = FrenchRank('4', 10)
+val THREE = FrenchRank('3', 11)
+val TWO = FrenchRank('2', 12)
+val frenchRanksSet = setOf(ACE, KING, QUEEN, JACK, TEN, NINE, EIGHT, SEVEN, SIX, FIVE, FOUR, THREE, TWO)
+val frenchRankList = frenchRanksSet.sortedBy { it.ordinal }
 
-    override fun plus(increment: Int): Rank = getFrenchRankFromOrdinal(ordinal +
-            FrenchRank.values().size - (increment % FrenchRank.values().size))
-    override fun minus(decrement: Int): Rank = getFrenchRankFromOrdinal(ordinal +
-            FrenchRank.values().size + (decrement % FrenchRank.values().size))
+class FrenchRank(
+    override val symbol: Char,
+    override val ordinal: Int): Rank {
+
+    override fun plus(increment: Int): Rank =
+        getFrenchRankFromOrdinal( frenchRankList.circularIndexMapping(ordinal - increment) )
+    override fun minus(decrement: Int): Rank =
+        getFrenchRankFromOrdinal( frenchRankList.circularIndexMapping(ordinal + decrement) )
 
     override fun compareTo(other: Rank): Int {
-        require(other is FrenchRankAdapter) { "Comparable only to an instance of FrenchRankAdapter" }
-        return other.fr.compareTo(fr)
+        require(other is FrenchRank) { "Comparable only to an instance of FrenchRank" }
+        return other.ordinal.compareTo(this.ordinal)
     }
 
-    override fun toString(): String = fr.toString()
-}
-
-val ACE = FrenchRank.ACE.adapter
-val KING = FrenchRank.KING.adapter
-val QUEEN = FrenchRank.QUEEN.adapter
-val JACK = FrenchRank.JACK.adapter
-val TEN = FrenchRank.TEN.adapter
-val NINE = FrenchRank.NINE.adapter
-val EIGHT = FrenchRank.EIGHT.adapter
-val SEVEN = FrenchRank.SEVEN.adapter
-val SIX = FrenchRank.SIX.adapter
-val FIVE = FrenchRank.FIVE.adapter
-val FOUR = FrenchRank.FOUR.adapter
-val THREE = FrenchRank.THREE.adapter
-val TWO = FrenchRank.TWO.adapter
-
-enum class FrenchRank(val symbol: Char) {
-    ACE('A'),
-    KING('K'),
-    QUEEN('Q'),
-    JACK('J'),
-    TEN('T'),
-    NINE('9'),
-    EIGHT('8'),
-    SEVEN('7'),
-    SIX('6'),
-    FIVE('5'),
-    FOUR('4'),
-    THREE('3'),
-    TWO('2');
-
-    val adapter = FrenchRankAdapter(this)
+    override fun toString(): String = symbol.toString()
 }
 
 enum class FrenchSeed(val char: Char, override val symbol: Char) : Seed {

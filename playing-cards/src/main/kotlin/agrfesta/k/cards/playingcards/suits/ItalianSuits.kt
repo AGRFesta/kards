@@ -5,13 +5,12 @@ import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.playingcards.cards.Seed
 import agrfesta.k.cards.playingcards.cards.cardOf
 import agrfesta.k.cards.playingcards.utils.circularIndex
+import agrfesta.k.cards.playingcards.utils.circularIndexMapping
 
-fun getItalianRankFromSymbol(symbol: Char): Rank = ItalianRank.values()
-        .map(ItalianRank::adapter)
+fun getItalianRankFromSymbol(symbol: Char): Rank = italianRanksSet
         .find { it.symbol == symbol }
         ?: throw IllegalArgumentException("Symbol '$symbol' is not an Italian Rank")
-fun getItalianRankFromOrdinal(ordinal: Int): Rank = ItalianRank.values()
-        .map(ItalianRank::adapter)
+fun getItalianRankFromOrdinal(ordinal: Int): Rank = italianRankList
         .circularIndex(ordinal)
 
 fun getItalianSeedFromSymbol(symbol: Char): ItalianSeed = ItalianSeed.values()
@@ -30,46 +29,34 @@ fun createItalianHand(vararg cards: String): List<Card> {
     return cards.map { createItalianCard(it) }
 }
 
-class ItalianRankAdapter(private val ir: ItalianRank): Rank {
-    override val symbol: Char = ir.symbol
-    override val ordinal: Int = ir.ordinal
-    override fun plus(increment: Int): Rank = getItalianRankFromOrdinal(ordinal +
-            ItalianRank.values().size - (increment % ItalianRank.values().size))
-    override fun minus(decrement: Int): Rank = getItalianRankFromOrdinal(ordinal +
-            ItalianRank.values().size + (decrement % ItalianRank.values().size))
+val ASSO = ItalianRank('A', 0)
+val RE = ItalianRank('K', 1)
+val CAVALLO = ItalianRank('H', 2)
+val FANTE = ItalianRank('J', 3)
+val SETTE = ItalianRank('7', 4)
+val SEI = ItalianRank('6', 5)
+val CINQUE = ItalianRank('5', 6)
+val QUATTRO = ItalianRank('4', 7)
+val TRE = ItalianRank('3', 8)
+val DUE = ItalianRank('2', 9)
+val italianRanksSet = setOf(ASSO, RE, CAVALLO, FANTE, SETTE, SEI, CINQUE, QUATTRO, TRE, DUE)
+val italianRankList = italianRanksSet.sortedBy { it.ordinal }
+
+class ItalianRank(
+    override val symbol: Char,
+    override val ordinal: Int): Rank {
+
+    override fun plus(increment: Int): Rank =
+        getItalianRankFromOrdinal( italianRankList.circularIndexMapping(ordinal - increment) )
+    override fun minus(decrement: Int): Rank =
+        getItalianRankFromOrdinal( italianRankList.circularIndexMapping(ordinal + decrement) )
 
     override fun compareTo(other: Rank): Int {
-        require(other is ItalianRankAdapter) { "Comparable only to an instance of ItalianRankAdapter" }
-        return other.ir.compareTo(ir)
+        require(other is ItalianRank) { "Comparable only to an instance of ItalianRank" }
+        return other.ordinal.compareTo(this.ordinal)
     }
 
-    override fun toString(): String = ir.toString()
-}
-
-val ASSO = ItalianRank.ASSO.adapter
-val RE = ItalianRank.RE.adapter
-val CAVALLO = ItalianRank.CAVALLO.adapter
-val FANTE = ItalianRank.FANTE.adapter
-val SETTE = ItalianRank.SETTE.adapter
-val SEI = ItalianRank.SEI.adapter
-val CINQUE = ItalianRank.CINQUE.adapter
-val QUATTRO = ItalianRank.QUATTRO.adapter
-val TRE = ItalianRank.TRE.adapter
-val DUE = ItalianRank.DUE.adapter
-
-enum class ItalianRank(val symbol: Char) {
-    ASSO('A'),
-    RE('K'),
-    CAVALLO('H'),
-    FANTE('J'),
-    SETTE('7'),
-    SEI('6'),
-    CINQUE('5'),
-    QUATTRO('4'),
-    TRE('3'),
-    DUE('2');
-
-    val adapter = ItalianRankAdapter(this)
+    override fun toString(): String = symbol.toString()
 }
 
 enum class ItalianSeed(override val symbol: Char) : Seed {

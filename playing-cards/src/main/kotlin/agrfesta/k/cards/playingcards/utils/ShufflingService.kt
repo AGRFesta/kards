@@ -16,7 +16,5 @@ interface ShufflingService {
  * Simple implementation of [ShufflingService] that wraps [MutableList.shuffle].
  */
 class SimpleShufflingService : ShufflingService {
-    override fun shuffle(cards: MutableList<Card>) {
-        cards.shuffle()
-    }
+    override fun shuffle(cards: MutableList<Card>) = cards.shuffle()
 }

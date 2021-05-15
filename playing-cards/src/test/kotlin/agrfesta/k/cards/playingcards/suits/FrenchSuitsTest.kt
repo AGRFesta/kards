@@ -68,34 +68,6 @@ class FrenchSuitsTest {
         { assertThat(getFrenchSeedFromSymbol(pair.first)).isEqualTo(pair.second) }
     }
 
-    @TestFactory
-    @DisplayName("Get french rank from ordinal tests")
-    fun getFrenchRankFromOrdinalTests() = listOf(
-            -15 to THREE,
-            -1 to TWO,
-
-            0 to ACE,
-            1 to KING,
-            2 to QUEEN,
-            3 to JACK,
-            4 to TEN,
-            5 to NINE,
-            6 to EIGHT,
-            7 to SEVEN,
-            8 to SIX,
-            9 to FIVE,
-            10 to FOUR,
-            11 to THREE,
-            12 to TWO,
-
-            13 to ACE,
-            27 to KING
-    ).map { pair ->
-        DynamicTest.dynamicTest(
-                "${pair.first} -> ${pair.second}")
-        { assertThat(getFrenchRankFromOrdinal(pair.first)).isEqualTo(pair.second) }
-    }
-
     @Test
     @DisplayName("Build hand from an empty string card -> throws IllegalArgumentException")
     fun buildHandFromEmptyStringCardThrowsException() {
@@ -188,14 +160,14 @@ class FrenchSuitsTest {
     }
 
     @Test
-    @DisplayName("Compare FrenchRankAdapter with a different Rank implementation -> throws IllegalArgumentException")
+    @DisplayName("Compare FrenchRank with a different Rank implementation -> throws IllegalArgumentException")
     fun compareWithADifferentRankImplThrowsException() {
         val difImplRank = rankOf('x')
         val failure = assertThat {
             ACE.compareTo(difImplRank)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Comparable only to an instance of FrenchRankAdapter")
+        failure.hasMessage("Comparable only to an instance of FrenchRank")
     }
 
     @TestFactory
@@ -251,35 +223,21 @@ class FrenchSuitsTest {
     @Test
     @DisplayName("Test french rank values")
     fun assertFrenchRankValues() {
-        assertThat(listOf(
-                FrenchRank.ACE,
-                FrenchRank.KING,
-                FrenchRank.QUEEN,
-                FrenchRank.JACK,
-                FrenchRank.TEN,
-                FrenchRank.NINE,
-                FrenchRank.EIGHT,
-                FrenchRank.SEVEN,
-                FrenchRank.SIX,
-                FrenchRank.FIVE,
-                FrenchRank.FOUR,
-                FrenchRank.THREE,
-                FrenchRank.TWO
-        )).extracting(FrenchRank::ordinal,FrenchRank::adapter,FrenchRank::symbol)
+        assertThat(frenchRankList).extracting(FrenchRank::ordinal, FrenchRank::symbol)
                 .containsExactly(
-                        Triple(0, ACE, 'A'),
-                        Triple(1, KING, 'K'),
-                        Triple(2, QUEEN, 'Q'),
-                        Triple(3, JACK, 'J'),
-                        Triple(4, TEN, 'T'),
-                        Triple(5, NINE, '9'),
-                        Triple(6, EIGHT, '8'),
-                        Triple(7, SEVEN, '7'),
-                        Triple(8, SIX, '6'),
-                        Triple(9, FIVE, '5'),
-                        Triple(10, FOUR, '4'),
-                        Triple(11, THREE, '3'),
-                        Triple(12, TWO, '2')
+                        Pair(0, 'A'),
+                    Pair(1, 'K'),
+                    Pair(2, 'Q'),
+                    Pair(3, 'J'),
+                    Pair(4, 'T'),
+                    Pair(5, '9'),
+                    Pair(6, '8'),
+                    Pair(7, '7'),
+                    Pair(8, '6'),
+                    Pair(9, '5'),
+                    Pair(10, '4'),
+                    Pair(11, '3'),
+                    Pair(12, '2')
                 )
     }
 }
