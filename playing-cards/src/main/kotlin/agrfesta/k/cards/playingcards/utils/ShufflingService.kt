@@ -3,18 +3,11 @@ package agrfesta.k.cards.playingcards.utils
 import agrfesta.k.cards.playingcards.cards.Card
 
 /**
- * Abstraction of service that shuffles a [MutableList] of [Card].
+ * Shuffles the cards modifying the [MutableList] of [Card].
  */
-interface ShufflingService {
-    /**
-     * Shuffles the [cards] modifying the [MutableList].
-     */
-    fun shuffle(cards: MutableList<Card>)
-}
+typealias Shuffler = (MutableList<Card>) -> Unit
 
 /**
- * Simple implementation of [ShufflingService] that wraps [MutableList.shuffle].
+ * Simple shuffler that wraps [MutableList.shuffle].
  */
-class SimpleShufflingService : ShufflingService {
-    override fun shuffle(cards: MutableList<Card>) = cards.shuffle()
-}
+val simpleShuffler: Shuffler = { it.shuffle() }

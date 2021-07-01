@@ -4,7 +4,7 @@ import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.cards.cardOf
 import agrfesta.k.cards.playingcards.suits.Suit.FRENCH
 import agrfesta.k.cards.playingcards.suits.assertIsFullFrenchDeck
-import agrfesta.k.cards.playingcards.utils.ShufflingService
+import agrfesta.k.cards.playingcards.utils.Shuffler
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.isTrue
@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test
 
 @DisplayName("Deck Fluent Builder Tests")
 class DeckBuilderTest {
-    private val defaultShuffler = mockk<ShufflingService>(relaxed = true)
-    private val providedShuffler = mockk<ShufflingService>(relaxed = true)
+    private val defaultShuffler = mockk<Shuffler>(relaxed = true)
+    private val providedShuffler = mockk<Shuffler>(relaxed = true)
 
     private val cardA = cardOf(rankOf('A'), aSeed())
     private val cardB = cardOf(rankOf('B'), aSeed())
@@ -29,8 +29,8 @@ class DeckBuilderTest {
         DeckBuilder(defaultShuffler)
                 .withCards(cards)
                 .build()
-        verify(exactly = 1) { defaultShuffler.shuffle(any()) }
-        verify(exactly = 0) { providedShuffler.shuffle(any()) }
+        verify(exactly = 1) { defaultShuffler(any()) }
+        verify(exactly = 0) { providedShuffler(any()) }
     }
     @Test
     @DisplayName("Building setting card vararg, no shuffler provided -> use the default")
@@ -38,8 +38,8 @@ class DeckBuilderTest {
         DeckBuilder(defaultShuffler)
                 .withCards(cardA,cardB,cardC)
                 .build()
-        verify(exactly = 1) { defaultShuffler.shuffle(any()) }
-        verify(exactly = 0) { providedShuffler.shuffle(any()) }
+        verify(exactly = 1) { defaultShuffler(any()) }
+        verify(exactly = 0) { providedShuffler(any()) }
     }
     @Test
     @DisplayName("Building setting card collection, the provided shuffling service is used building the deck")
@@ -48,8 +48,8 @@ class DeckBuilderTest {
                 .shuffleWith(providedShuffler)
                 .withCards(cards)
                 .build()
-        verify(exactly = 1) { providedShuffler.shuffle(any()) }
-        verify(exactly = 0) { defaultShuffler.shuffle(any()) }
+        verify(exactly = 1) { providedShuffler(any()) }
+        verify(exactly = 0) { defaultShuffler(any()) }
     }
     @Test
     @DisplayName("Building setting card vararg, the provided shuffling service is used building the deck")
@@ -58,8 +58,8 @@ class DeckBuilderTest {
                 .shuffleWith(providedShuffler)
                 .withCards(cardA,cardB,cardC)
                 .build()
-        verify(exactly = 1) { providedShuffler.shuffle(any()) }
-        verify(exactly = 0) { defaultShuffler.shuffle(any()) }
+        verify(exactly = 1) { providedShuffler(any()) }
+        verify(exactly = 0) { defaultShuffler(any()) }
     }
 
     @Test

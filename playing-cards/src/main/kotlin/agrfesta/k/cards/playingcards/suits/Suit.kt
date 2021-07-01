@@ -4,7 +4,7 @@ import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.cards.cardOf
 import agrfesta.k.cards.playingcards.deck.Deck
 import agrfesta.k.cards.playingcards.deck.DeckBuilder
-import agrfesta.k.cards.playingcards.utils.SimpleShufflingService
+import agrfesta.k.cards.playingcards.utils.simpleShuffler
 
 /**
  * Enum representing all playing card suits
@@ -17,7 +17,7 @@ enum class Suit(val cards: Set<Card>) {
      * Creates and returns a complete [Deck] of the specific [Suit].
      */
     fun createDeck(): Deck =
-            DeckBuilder(SimpleShufflingService())
+            DeckBuilder(simpleShuffler)
                     .withCards(cards)
                     .build()
 

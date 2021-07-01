@@ -2,8 +2,8 @@ package agrfesta.k.cards.playingcards.deck
 
 import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.suits.Suit
-import agrfesta.k.cards.playingcards.utils.ShufflingService
-import agrfesta.k.cards.playingcards.utils.SimpleShufflingService
+import agrfesta.k.cards.playingcards.utils.Shuffler
+import agrfesta.k.cards.playingcards.utils.simpleShuffler
 
 /**
  * Represents a deck of cards. Its internal state is mutable, cards can be drew but not added.
@@ -53,17 +53,17 @@ class DeckImpl(private val cards: MutableList<Card> = mutableListOf()) : Deck {
 /**
  * Fluent [Deck] builder.
  *
- * @param [defaultShuffler] default [ShufflingService] used building [Deck], can be replaced using [shuffleWith].
+ * @param [defaultShuffler] default [Shuffler] used building [Deck], can be replaced using [shuffleWith].
  */
-class DeckBuilder internal constructor(defaultShuffler: ShufflingService) {
-    private var shuffler: ShufflingService = defaultShuffler
+class DeckBuilder internal constructor(defaultShuffler: Shuffler) {
+    private var shuffler: Shuffler = defaultShuffler
     private var cards: MutableList<Card> = mutableListOf()
 
     /**
-     * Chained method, can be used to set a specific [ShufflingService].
-     * [shuffler] is the [ShufflingService] that builder will use creating the [Deck], it will override the default one.
+     * Chained method, can be used to set a specific [Shuffler].
+     * [shuffler] is the [Shuffler] that builder will use creating the [Deck], it will override the default one.
      */
-    fun shuffleWith(shuffler: ShufflingService): DeckBuilder {
+    fun shuffleWith(shuffler: Shuffler): DeckBuilder {
         this.shuffler = shuffler
         return this
     }
@@ -105,7 +105,7 @@ class DeckBuilder internal constructor(defaultShuffler: ShufflingService) {
      * if [cards] is empty will create an empty [Deck]
      */
     internal fun build(): Deck {
-        shuffler.shuffle(cards)
+        shuffler(cards)
         return DeckImpl(cards)
     }
 
@@ -117,7 +117,7 @@ class DeckBuilder internal constructor(defaultShuffler: ShufflingService) {
 fun buildDeck(
     setup: DeckBuilder.() -> Unit
 ): Deck {
-    val builder = DeckBuilder(SimpleShufflingService())
+    val builder = DeckBuilder(simpleShuffler)
     builder.setup()
     return builder.build()
 }
