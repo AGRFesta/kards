@@ -11,3 +11,9 @@ interface RandomGenerator {
     fun nextInt(bound: Int): Int
 
 }
+
+class SimpleRandomGenerator: RandomGenerator {
+
+    override fun nextInt(bound: Int) = (0 until bound).shuffled().first()
+
+}

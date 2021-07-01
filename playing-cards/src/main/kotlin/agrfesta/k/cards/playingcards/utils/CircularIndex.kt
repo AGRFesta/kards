@@ -12,8 +12,8 @@ package agrfesta.k.cards.playingcards.utils
  * Throws [IllegalStateException] if [List] is empty.
  */
 fun <T> List<T>.circularIndexMapping(value: Int): Int {
-    check(this.isNotEmpty()) { "Trying to map a circular index on an empty List" }
-    return  ((value % this.size) + this.size) % this.size
+    check(isNotEmpty()) { "Trying to map a circular index on an empty List" }
+    return  ((value % size) + size) % size
 }
 
 /**
@@ -25,7 +25,7 @@ fun <T> List<T>.circularIndexMapping(value: Int): Int {
  *
  * Throws [IllegalStateException] if [List] is empty.
  */
-fun <T> List<T>.circularIndex(value: Int): T = this[this.circularIndexMapping(value)]
+fun <T> List<T>.circularIndex(value: Int): T = this[circularIndexMapping(value)]
 
 /**
  * Any [value] is transformed in a [Int] included into the interval [0, [Array.size]-1], the transformation
@@ -39,8 +39,8 @@ fun <T> List<T>.circularIndex(value: Int): T = this[this.circularIndexMapping(va
  * Throws [IllegalStateException] if [Array] is empty.
  */
 fun <T> Array<T>.circularIndexMapping(value: Int): Int {
-    check(this.isNotEmpty()) { "Trying to map a circular index on an empty Array" }
-    return ((value % this.size) + this.size) % this.size
+    check(isNotEmpty()) { "Trying to map a circular index on an empty Array" }
+    return ((value % size) + size) % size
 }
 
 /**
@@ -52,7 +52,7 @@ fun <T> Array<T>.circularIndexMapping(value: Int): Int {
  *
  * Throws [IllegalStateException] if [Array] is empty.
  */
-fun <T> Array<T>.circularIndex(value: Int): T = this[this.circularIndexMapping(value)]
+fun <T> Array<T>.circularIndex(value: Int): T = this[circularIndexMapping(value)]
 
 /**
  * Will extract a sub-list from position [from] to [to] from the original [List] considering it circular.
@@ -62,18 +62,17 @@ fun <T> Array<T>.circularIndex(value: Int): T = this[this.circularIndexMapping(v
  * Throws [IllegalStateException] if [List] is empty.
  */
 fun <T> List<T>.circularSubList(from: Int, to: Int, includedTo: Boolean = true, includedFrom: Boolean = true): List<T> {
-    val start = this.circularIndexMapping(from)
-    val end = this.circularIndexMapping(to)
+    val start = circularIndexMapping(from)
+    val end = circularIndexMapping(to)
     val result = when {
         start == end -> listOf(start)
         start < end -> (start .. end)
-        else -> (start until this.size) + (0 .. end)
+        else -> (start until size) + (0 .. end)
     }
-            .map { this[it] }
-            .toMutableList()
+        .map { this[it] }
+        .toMutableList()
     if (result.size == 1) {
-        return if (includedFrom || includedTo) result
-        else emptyList()
+        return if (includedFrom || includedTo) result else emptyList()
     }
     if (!includedTo) result.removeAt(result.size-1)
     if (!includedFrom) result.removeAt(0)
