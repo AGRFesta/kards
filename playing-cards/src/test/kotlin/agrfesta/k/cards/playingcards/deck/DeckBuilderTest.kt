@@ -65,39 +65,31 @@ class DeckBuilderTest {
     @Test
     @DisplayName("Build without setting cards -> empty deck")
     fun test004() {
-        val deck = deckBuilder().build()
+        val deck = buildDeck {}
         assertThat(deck.isEmpty()).isTrue()
     }
     @Test
     @DisplayName("Build setting empty cards collection -> empty deck")
     fun test007() {
-        val deck = deckBuilder()
-                .withCards(listOf())
-                .build()
+        val deck = buildDeck { withCards(listOf()) }
         assertThat(deck.isEmpty()).isTrue()
     }
     @Test
     @DisplayName("Build setting empty cards array -> empty deck")
     fun test008() {
-        val deck = deckBuilder()
-                .withCards()
-                .build()
+        val deck = buildDeck { withCards() }
         assertThat(deck.isEmpty()).isTrue()
     }
     @Test
     @DisplayName("Build setting two card -> deck containing only those two cards")
     fun test005() {
-        val deck = deckBuilder()
-                .withCards(cardA,cardB)
-                .build()
+        val deck = buildDeck { withCards(cardA, cardB) }
         assertThat(deckContent(deck)).containsOnly(cardB,cardA)
     }
     @Test
     @DisplayName("Build setting collection of cards -> deck containing only the cards from the collection")
     fun test006() {
-        val deck = deckBuilder()
-                .withCards(cards)
-                .build()
+        val deck = buildDeck { withCards(cards) }
         assertThat(deckContent(deck)).containsOnly(cardB,cardA,cardC)
     }
 
@@ -105,29 +97,29 @@ class DeckBuilderTest {
     @DisplayName("Setting cards from Collection overrides previous cards setting")
     fun test009() {
         val collection = listOf(cardB,cardC)
-        val deck = deckBuilder()
-                .withCards(cardA)
-                .withCards(collection)
-                .build()
+        val deck = buildDeck {
+            withCards(cardA)
+            withCards(collection)
+        }
         assertThat(deckContent(deck)).containsOnly(cardB,cardC)
     }
     @Test
     @DisplayName("Setting cards from Array overrides previous cards setting")
     fun test010() {
-        val deck = deckBuilder()
-                .withCards(cardA)
-                .withCards(cardB,cardC)
-                .build()
+        val deck = buildDeck {
+            withCards(cardA)
+            withCards(cardB,cardC)
+        }
         assertThat(deckContent(deck)).containsOnly(cardB,cardC)
     }
     @Test
     @DisplayName("Setting cards from card suit overrides previous cards setting")
     fun test011() {
-        val deck = deckBuilder()
-                .withCards(cardA)
-                .withCards(cardB,cardC)
-                .withCardsFromSuit(FRENCH)
-                .build()
+        val deck = buildDeck {
+            withCards(cardA)
+            withCards(cardB,cardC)
+            withCardsFromSuit(FRENCH)
+        }
         assertIsFullFrenchDeck(deck)
     }
 }

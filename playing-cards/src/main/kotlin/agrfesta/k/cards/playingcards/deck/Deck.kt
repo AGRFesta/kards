@@ -55,7 +55,7 @@ class DeckImpl(private val cards: MutableList<Card> = mutableListOf()) : Deck {
  *
  * @param [defaultShuffler] default [ShufflingService] used building [Deck], can be replaced using [shuffleWith].
  */
-class DeckBuilder(defaultShuffler: ShufflingService) {
+class DeckBuilder internal constructor(defaultShuffler: ShufflingService) {
     private var shuffler: ShufflingService = defaultShuffler
     private var cards: MutableList<Card> = mutableListOf()
 
@@ -104,7 +104,7 @@ class DeckBuilder(defaultShuffler: ShufflingService) {
      *
      * if [cards] is empty will create an empty [Deck]
      */
-    fun build(): Deck {
+    internal fun build(): Deck {
         shuffler.shuffle(cards)
         return DeckImpl(cards)
     }
@@ -112,7 +112,13 @@ class DeckBuilder(defaultShuffler: ShufflingService) {
 }
 
 /**
- * Returns a builder with a default configuration ready to use.
+ * Build a Deck applying the provided [setup].
  */
-fun deckBuilder() = DeckBuilder(SimpleShufflingService())
+fun buildDeck(
+    setup: DeckBuilder.() -> Unit
+): Deck {
+    val builder = DeckBuilder(SimpleShufflingService())
+    builder.setup()
+    return builder.build()
+}
 
