@@ -48,7 +48,7 @@ abstract class AbstractDealer(
             if (context.hadToAct(player, pot)) {
                 val action = player.act( player heroIn context )
                 actions.add(player does action)
-                when (action.getType()) {
+                when (action.type) {
                     ActionType.Call -> callEffect(player, pot)
                     ActionType.Raise -> raiseEffect(player, action, pot)
                     else -> foldEffect(player)
@@ -82,7 +82,7 @@ abstract class AbstractDealer(
         } else {
             player.status = PlayerStatus.RAISE
             raisingPlayer = player
-            val raiseAmount: Int = action.getAmount()?.coerceAtLeast(minimumRaise) ?: minimumRaise
+            val raiseAmount: Int = action.amount?.coerceAtLeast(minimumRaise) ?: minimumRaise
             val amount: Int = pot.receiveFrom(player, raiseAmount)
             val effectiveRaiseAmount: Int = amount - (amountRequired - payed)
             amountRequired += if (effectiveRaiseAmount > 0) effectiveRaiseAmount else 0

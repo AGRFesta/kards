@@ -5,13 +5,13 @@ enum class ActionType {
 }
 
 interface Action {
-    fun getAmount(): Int?
-    fun getType(): ActionType
+    val amount: Int?
+    val type: ActionType
 }
 
-data class ActionImpl(private val type: ActionType, private val amount: Int? = null): Action {
-    override fun getAmount() = amount
-    override fun getType() = type
+data class ActionImpl(
+    override val type: ActionType,
+    override val amount: Int? = null): Action {
     override fun toString() = "$type${ if (amount!=null) " $amount" else "" }"
 }
 fun fold() = ActionImpl(ActionType.Fold)
