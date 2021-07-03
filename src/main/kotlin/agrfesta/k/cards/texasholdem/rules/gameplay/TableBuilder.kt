@@ -21,4 +21,13 @@ class TableBuilder<T: SeatName> {
 
 }
 
-fun <T: SeatName> buildingTable() = TableBuilder<T>()
+/**
+ * Build a [Table] applying the provided [setup].
+ */
+fun <T: SeatName> buildTable(
+    setup: TableBuilder<T>.() -> Unit
+): Table<T> {
+    val builder = TableBuilder<T>()
+    builder.setup()
+    return builder.build()
+}
