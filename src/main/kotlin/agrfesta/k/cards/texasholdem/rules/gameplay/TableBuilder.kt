@@ -12,6 +12,14 @@ class TableBuilder<T: SeatName> {
         this.players.addAll(players)
         return this
     }
+    fun withPlayers(players: List<T>): TableBuilder<T> {
+        players.forEach {
+            require(this.players.firstOrNull { p -> p.name == it.name } == null)
+            { "Player '${it.name}' is already sitting at the table!" }
+        }
+        this.players.addAll(players)
+        return this
+    }
     fun withButtonInPosition(position: Int): TableBuilder<T> {
         this.button = position
         return this

@@ -41,32 +41,32 @@ class GameImpl(
     private fun findWinner(players: List<InGamePlayer>): InGamePlayer? {
         val winner = players.findWinner()
         if (winner != null) {
+            winner.receive(context.getGlobalPot().amount())
             observer?.notifyWinner(
                 GameResult(winner.player, context.getGlobalPot().amount(), players.toPlayerStack() ))
-            winner.receive(context.getGlobalPot().amount())
         }
         return winner
     }
 
     private fun findPreFlopWinner(): InGamePlayer? {
         observer?.notifyStartingPhase(context.toViewGameContext())
-        val dealer = dealerFactory.preFlopDealer(context, multipleDealerObserverOf(this, observer))
-        dealer.collectPot()
+        dealerFactory.preFlopDealer(context, multipleDealerObserverOf(this, observer))
+            .collectPot()
         return findWinner(context.table.players)
     }
 
     private fun findWinner(): InGamePlayer? {
         context = context.nextPhase()
         observer?.notifyStartingPhase(context.toViewGameContext())
-        val dealer = dealerFactory.postFlopDealer(context, multipleDealerObserverOf(this, observer))
-        dealer.collectPot()
+        dealerFactory.postFlopDealer(context, multipleDealerObserverOf(this, observer))
+            .collectPot()
         return findWinner(context.table.players)
     }
 
     override fun notifyActions(phase: GamePhase, actions: List<PlayerAction>) {
         val newHistory = context.history.toMutableMap()
         newHistory[context.board.phase] = actions.toList()
-        context = GameContextImpl( //{ mutableMapOf() },
+        context = GameContextImpl(
             context.uuid, context.table, context.payments, context.board, newHistory, context.phasePots)
     }
 }

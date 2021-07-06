@@ -86,19 +86,19 @@ infix fun InGamePlayer.heroIn(context: InGameContext)
             { it.asOwnPlayer(context.getActualPot()) },
             { it.asOpponent() },
             { it as Board },
-            { it.mapKeys { entry -> entry.key as SeatName } })
+            { it.mapKeys { (key, _) -> key as SeatName } })
 
 infix fun InGamePlayer.statsWith(context: InGameContext)
         : ViewHeroGameContext = this.with(context,
             { OpponentHero(it.name, it.stack) },
             { it.asOpponent() as SeatNameStack },
             { it as Board },
-            { it.mapKeys { entry -> entry as SeatName } })
+            { it.mapKeys { (key, _) -> key as SeatName } })
 
 fun InGameContext.toViewGameContext(): ViewGameContext = this.map(
         { it as SeatNameStack },
         { it as Board },
-        { it.mapKeys { entry -> entry as SeatName } })
+        { it.mapKeys { (key, _) -> key as SeatName } })
 
 fun emptyHistory(): ActionsHistory = mapOf(
     GamePhase.PRE_FLOP to emptyList(),
