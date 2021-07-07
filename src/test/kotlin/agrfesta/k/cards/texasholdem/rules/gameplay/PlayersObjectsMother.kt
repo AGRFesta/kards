@@ -21,14 +21,9 @@ fun strategyMock(vararg actions: Action): PlayerStrategyInterface {
     every { strategy.act(any()) } returnsMany actions.toList()
     return strategy
 }
-fun strategyMock(contexts: MutableList<ActGameContext>,vararg actions: Action):
-        PlayerStrategyInterface {
-    val strategy = mockk<PlayerStrategyInterface>()
-    every { strategy.act(capture(contexts)) } returnsMany actions.toList()
-    return strategy
-}
-fun folder() =  strategyMock(fold())
-fun limper() =  strategyMock(call())
+
+fun folder() = strategyMock(fold())
+fun limper() = strategyMock(call())
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///// Actions //////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -5,6 +5,11 @@ import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.FOLD
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.NONE
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.RAISE
+import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.bigBlind
+import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.buildTestTable
+import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.button
+import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.smallBlind
+import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.underTheGun
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
@@ -391,26 +396,27 @@ class DealersTest {
     }
 
     @Test
-    @DisplayName("Pre flop (60/120) story: Dave calls, Alex folds, Jane folds")
+    @DisplayName("Pre flop (60/120) story: Button calls, Small Blind folds, Big Blind folds")
     fun preFlopStory007() {
-        val alex = anInGamePlayer("Alex", 50, strategyMock(fold()))
-        val jane = anInGamePlayer("Jane", 140, strategyMock(fold()))
-        val dave = anInGamePlayer("Dave", 9000, strategyMock(call()))
-        val table = Table(listOf(alex, jane, dave), 2)
+        val table: Table<InGamePlayer> = buildTestTable {
+            button(stack = 9000, strategy = limper() )
+            smallBlind(stack = 140, strategy = folder() )
+            bigBlind(stack = 50, strategy = folder() )
+        }
         val context = aContext(table, blinds(60, 120))
         val dealer = PreFlopDealer(context)
 
         dealer.collectPot()
 
-        assertThat(context.getGlobalPot().payedBy(alex)).isEqualTo(50)
-        assertThat(context.getGlobalPot().payedBy(jane)).isEqualTo(120)
-        assertThat(context.getGlobalPot().payedBy(dave)).isEqualTo(120)
-        assertThat(alex.status).isEqualTo(ALL_IN)
-        assertThat(jane.status).isEqualTo(FOLD)
-        assertThat(dave.status).isEqualTo(CALL)
-        assertThat(alex.stack).isEqualTo(0)
-        assertThat(jane.stack).isEqualTo(20)
-        assertThat(dave.stack).isEqualTo(8880)
+        assertThat(context.getGlobalPot().payedBy(table.button())).isEqualTo(120)
+        assertThat(context.getGlobalPot().payedBy(table.smallBlind())).isEqualTo(60)
+        assertThat(context.getGlobalPot().payedBy(table.bigBlind())).isEqualTo(50)
+        assertThat(table.button().status).isEqualTo(CALL)
+        assertThat(table.smallBlind().status).isEqualTo(FOLD)
+        assertThat(table.bigBlind().status).isEqualTo(ALL_IN)
+        assertThat(table.button().stack).isEqualTo(8880)
+        assertThat(table.smallBlind().stack).isEqualTo(80)
+        assertThat(table.bigBlind().stack).isEqualTo(0)
     }
 
     @Test
@@ -512,6 +518,26 @@ class DealersTest {
         assertThat(alex.stack).isEqualTo(1930)
         assertThat(jane.stack).isEqualTo(1990)
         assertThat(dave.stack).isEqualTo(1930)
+    }
+
+    @Test
+    @DisplayName("Pre flop (5/10) story: UTG raises, Button re-raise, Blinds folds, UTG calls")
+    fun preFlopStory009() {
+        val table: Table<InGamePlayer> = buildTestTable {
+            underTheGun(stack = 1000, strategy = strategyMock(raise(30), call()) )
+            button(stack = 1000, strategy = strategyMock(raise(90)) )
+            smallBlind(stack = 1000, strategy = folder() )
+            bigBlind(stack = 1000, strategy = folder() )
+        }
+        val context = aContext(table, blinds(5, 10))
+        val dealer = PreFlopDealer(context)
+
+        dealer.collectPot()
+
+        assertThat(context.getGlobalPot().payedBy(table.underTheGun())).isEqualTo(90)
+        assertThat(context.getGlobalPot().payedBy(table.button())).isEqualTo(90)
+        assertThat(table.underTheGun().status).isEqualTo(CALL)
+        assertThat(table.button().status).isEqualTo(RAISE)
     }
 
 }

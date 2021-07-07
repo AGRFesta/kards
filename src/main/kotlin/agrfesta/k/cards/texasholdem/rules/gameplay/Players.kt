@@ -51,6 +51,7 @@ class InGamePlayer(val player: Player, override var stack: Int, val cards: Set<C
     }
 
     fun asOpponent(): Opponent = Opponent(name, stack, status)
+    fun asPlayerStack(): PlayerStack = PlayerStack(player, stack)
 
     fun pay(amount: Int): Int {
         require(amount >= 0) { "Can't pay a negative amount" }

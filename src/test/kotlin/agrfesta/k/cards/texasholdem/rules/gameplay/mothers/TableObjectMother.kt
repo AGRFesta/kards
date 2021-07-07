@@ -1,18 +1,14 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay.mothers
 
+import agrfesta.k.cards.playingcards.cards.Card
+import agrfesta.k.cards.texasholdem.rules.gameplay.InGamePlayer
 import agrfesta.k.cards.texasholdem.rules.gameplay.Player
-import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStack
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStrategyInterface
 import agrfesta.k.cards.texasholdem.rules.gameplay.Table
+import agrfesta.k.cards.texasholdem.rules.gameplay.aPlayerCardsSet
+import agrfesta.k.cards.texasholdem.rules.gameplay.aStrategy
 import agrfesta.k.cards.texasholdem.rules.gameplay.buildTable
 
-//val utg = OpponentTestBuilder().withName("UTG").build()
-//val utg1 = OpponentTestBuilder().withName("UTG +1").build()
-//val utg2 = OpponentTestBuilder().withName("UTG +2").build()
-//val middle = OpponentTestBuilder().withName("Middle").build()
-//val middle1 = OpponentTestBuilder().withName("Middle +1").build()
-//val middle2 = OpponentTestBuilder().withName("Middle +2").build()
-//val late = OpponentTestBuilder().withName("Late").build()
 private const val BUTTON_POS = 0
 private const val SMALL_BLIND_POS = 1
 private const val BIG_BLIND_POS = 2
@@ -24,26 +20,30 @@ const val BIG_BLIND = "Big Blind"
 const val UNDER_THE_GUN = "UTG"
 
 class TestTableBuilder {
-    val players: MutableMap<Int,PlayerStack> = mutableMapOf()
+    val players: MutableMap<Int, InGamePlayer> = mutableMapOf()
 
-    fun button(stack: Int, strategy: PlayerStrategyInterface): TestTableBuilder {
-        players[BUTTON_POS] = PlayerStack(Player(BUTTON, strategy), stack)
+    fun button(stack: Int = 100, strategy: PlayerStrategyInterface = aStrategy(),
+               cards: Set<Card> = aPlayerCardsSet()): TestTableBuilder {
+        players[BUTTON_POS] = InGamePlayer(Player(BUTTON, strategy), stack, cards)
         return this
     }
-    fun smallBlind(stack: Int, strategy: PlayerStrategyInterface): TestTableBuilder {
-        players[SMALL_BLIND_POS] = PlayerStack(Player(SMALL_BLIND, strategy), stack)
+    fun smallBlind(stack: Int = 100, strategy: PlayerStrategyInterface = aStrategy(),
+                   cards: Set<Card> = aPlayerCardsSet()): TestTableBuilder {
+        players[SMALL_BLIND_POS] = InGamePlayer(Player(SMALL_BLIND, strategy), stack, cards)
         return this
     }
-    fun bigBlind(stack: Int, strategy: PlayerStrategyInterface): TestTableBuilder {
-        players[BIG_BLIND_POS] = PlayerStack(Player(BIG_BLIND, strategy), stack)
+    fun bigBlind(stack: Int = 100, strategy: PlayerStrategyInterface = aStrategy(),
+                 cards: Set<Card> = aPlayerCardsSet()): TestTableBuilder {
+        players[BIG_BLIND_POS] = InGamePlayer(Player(BIG_BLIND, strategy), stack, cards)
         return this
     }
-    fun underTheGun(stack: Int, strategy: PlayerStrategyInterface): TestTableBuilder {
-        players[UNDER_THE_GUN_POS] = PlayerStack(Player(UNDER_THE_GUN, strategy), stack)
+    fun underTheGun(stack: Int = 100, cards: Set<Card> = aPlayerCardsSet(),
+                    strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
+        players[UNDER_THE_GUN_POS] = InGamePlayer(Player(UNDER_THE_GUN, strategy), stack, cards)
         return this
     }
 
-    fun build(): Table<PlayerStack> = buildTable {
+    fun build(): Table<InGamePlayer> = buildTable {
             withPlayers(
                 players.entries
                     .sortedBy { it.key }
@@ -56,10 +56,29 @@ class TestTableBuilder {
 
 fun buildTestTable(
     setup: TestTableBuilder.() -> Unit
-): Table<PlayerStack> {
+): Table<InGamePlayer> {
     val builder = TestTableBuilder()
     builder.setup()
     return builder.build()
 }
 
+fun Table<InGamePlayer>.underTheGun(): InGamePlayer {
+    return findPlayerBySeatName(UNDER_THE_GUN) ?: throw MissingPlayerException(UNDER_THE_GUN)
+}
 
+fun Table<InGamePlayer>.button(): InGamePlayer {
+    return findPlayerBySeatName(BUTTON) ?: throw MissingPlayerException(BUTTON)
+}
+
+fun Table<InGamePlayer>.smallBlind(): InGamePlayer {
+    return findPlayerBySeatName(SMALL_BLIND) ?: throw MissingPlayerException(SMALL_BLIND)
+}
+
+fun Table<InGamePlayer>.bigBlind(): InGamePlayer {
+    return findPlayerBySeatName(BIG_BLIND) ?: throw MissingPlayerException(BIG_BLIND)
+}
+
+class MissingPlayerException(val player: String): Exception() {
+    override val message: String
+        get() = "$player is missing"
+}

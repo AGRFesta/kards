@@ -36,7 +36,7 @@ class GameTest {
             button(stack = 100, strategy = folder() )
             smallBlind(stack = 100, strategy = folder() )
             bigBlind(stack = 100, strategy = folder() )
-        }
+        }.map { it.asPlayerStack() }
         val game: Game = buildingAGame()
             .withPayments(5, 10)
             .withTable(table)
@@ -68,7 +68,7 @@ class GameTest {
             button(stack = 100, strategy = folder() )
             smallBlind(stack = 100, strategy = folder() )
             bigBlind(stack = 100, strategy = folder() )
-        }
+        }.map { it.asPlayerStack() }
         val game: Game = buildingAGame()
             .withPayments(5, 10)
             .withTable(table)
@@ -89,7 +89,7 @@ class GameTest {
             button(stack = 100, strategy = strategyMock(call(), fold()) )
             smallBlind(stack = 100, strategy = strategyMock(call(), fold()) )
             bigBlind(stack = 100, strategy = strategyMock(call(), fold()) )
-        }
+        }.map { it.asPlayerStack() }
         val game: Game = buildingAGame()
             .withPayments(5, 10)
             .withTable(table)
@@ -121,7 +121,7 @@ class GameTest {
             button(stack = 100, strategy = strategyMock(call(), fold()) )
             smallBlind(stack = 100, strategy = strategyMock(call(), fold()) )
             bigBlind(stack = 100, strategy = strategyMock(call(), fold()) )
-        }
+        }.map { it.asPlayerStack() }
         val game: Game = buildingAGame()
             .withPayments(5, 10)
             .withTable(table)
@@ -142,7 +142,7 @@ class GameTest {
             button(stack = 100, strategy = strategyMock(call(), call(), fold()) )
             smallBlind(stack = 100, strategy = strategyMock(call(), call(), fold()) )
             bigBlind(stack = 100, strategy = strategyMock(call(), call(), fold()) )
-        }
+        }.map { it.asPlayerStack() }
         val game: Game = buildingAGame()
             .withPayments(5, 10)
             .withTable(table)
@@ -175,7 +175,7 @@ class GameTest {
             button(stack = 100, strategy = strategyMock(call(), call(), call(), fold()) )
             smallBlind(stack = 100, strategy = strategyMock(call(), call(), call(), fold()) )
             bigBlind(stack = 100, strategy = strategyMock(call(), call(), call(), fold()) )
-        }
+        }.map { it.asPlayerStack() }
         val game: Game = buildingAGame()
             .withPayments(5, 10)
             .withTable(table)
@@ -207,7 +207,7 @@ class GameTest {
             button(stack = 100, strategy = limper())
             smallBlind(stack = 100, strategy = limper())
             bigBlind(stack = 100, strategy = limper())
-        }
+        }.map { it.asPlayerStack() }
         val showdownMock: Showdown = mockk()
         val game: Game = buildingAGame()
             .withPayments(5, 10)
