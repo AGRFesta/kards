@@ -526,8 +526,8 @@ class DealersTest {
         val table: Table<InGamePlayer> = buildTestTable {
             underTheGun(stack = 1000, strategy = strategyMock(raise(30), call()) )
             button(stack = 1000, strategy = strategyMock(raise(90)) )
-            smallBlind(stack = 1000, strategy = folder() )
-            bigBlind(stack = 1000, strategy = folder() )
+            smallBlind(stack = 1000) { fold() }
+            bigBlind(stack = 1000) { fold() }
         }
         val context = aContext(table, blinds(5, 10))
         val dealer = PreFlopDealer(context)

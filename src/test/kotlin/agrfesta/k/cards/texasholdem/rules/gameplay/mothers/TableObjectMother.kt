@@ -27,13 +27,13 @@ class TestTableBuilder {
         players[BUTTON_POS] = InGamePlayer(Player(BUTTON, strategy), stack, cards)
         return this
     }
-    fun smallBlind(stack: Int = 100, strategy: PlayerStrategyInterface = aStrategy(),
-                   cards: Set<Card> = aPlayerCardsSet()): TestTableBuilder {
+    fun smallBlind(stack: Int = 100, cards: Set<Card> = aPlayerCardsSet(),
+                   strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
         players[SMALL_BLIND_POS] = InGamePlayer(Player(SMALL_BLIND, strategy), stack, cards)
         return this
     }
-    fun bigBlind(stack: Int = 100, strategy: PlayerStrategyInterface = aStrategy(),
-                 cards: Set<Card> = aPlayerCardsSet()): TestTableBuilder {
+    fun bigBlind(stack: Int = 100, cards: Set<Card> = aPlayerCardsSet(),
+                 strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
         players[BIG_BLIND_POS] = InGamePlayer(Player(BIG_BLIND, strategy), stack, cards)
         return this
     }

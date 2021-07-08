@@ -162,7 +162,7 @@ class PlayersTest {
     fun actReturnsActionFromStrategy() {
         val strategy = strategyMock( call() )
         val player = InGamePlayer(Player("Alex",strategy), 1000, aPlayerCardsSet())
-        assertThat(player.act(player heroIn aContext())).isEqualTo( call() )
+        assertThat(player(player heroIn aContext())).isEqualTo( call() )
     }
 
     @Test

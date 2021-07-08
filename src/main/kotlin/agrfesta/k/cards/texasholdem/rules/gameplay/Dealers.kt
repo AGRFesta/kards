@@ -46,7 +46,7 @@ abstract class AbstractDealer(
         while (someoneHaveToAct(pot)) {
             val player = iterator.next()
             if (context.hadToAct(player, pot)) {
-                val action = player.act( player heroIn context )
+                val action = player( player heroIn context )
                 actions.add(player does action)
                 when (action.type) {
                     ActionType.Call -> callEffect(player, pot)

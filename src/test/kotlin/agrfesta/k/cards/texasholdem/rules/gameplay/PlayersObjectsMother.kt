@@ -11,14 +11,11 @@ import io.mockk.every
 import io.mockk.mockk
 
 ///// Strategies ///////////////////////////////////////////////////////////////////////////////////////////////////////
-fun aStrategy(): PlayerStrategyInterface = object : PlayerStrategyInterface {
-    override fun act(context: ActGameContext): Action = anAction()
-    override fun toString(): String = "aStrategy"
-}
+fun aStrategy(): PlayerStrategyInterface = { anAction() }
 
 fun strategyMock(vararg actions: Action): PlayerStrategyInterface {
     val strategy = mockk<PlayerStrategyInterface>()
-    every { strategy.act(any()) } returnsMany actions.toList()
+    every { strategy(any()) } returnsMany actions.toList()
     return strategy
 }
 
