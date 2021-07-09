@@ -30,8 +30,8 @@ class InGamePlayerTestBuilder private constructor() {
     }
 
     fun build(): InGamePlayer {
-        val player = InGamePlayer(player, stack, this.cards)
-        player.status = this.status
+        val player = InGamePlayer(player, stack, cards)
+        player.status = status
         return player
     }
 

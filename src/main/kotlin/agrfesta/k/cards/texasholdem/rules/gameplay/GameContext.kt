@@ -69,7 +69,7 @@ fun InGameContext.nextPhase(): InGameContext =
 data class PlayerAction(val playerName: String, val action: Action) {
     override fun toString() = "$playerName $action"
 }
-infix fun SeatName.does(action: Action) = PlayerAction(this.name, action)
+infix fun SeatName.does(action: Action) = PlayerAction(name, action)
 
 internal fun <H: SeatNameStack, T: SeatNameStack, B: Board, N: SeatName, P: Pot<N>,
         H1: SeatNameStack, T1: SeatNameStack, B1: Board, N1: SeatName, P1: Pot<N1>> H.with(
@@ -82,20 +82,20 @@ internal fun <H: SeatNameStack, T: SeatNameStack, B: Board, N: SeatName, P: Pot<
                 context.map(playerMapper, boardMapper, potMapper))
 
 infix fun InGamePlayer.heroIn(context: InGameContext)
-        : ActGameContext = this.with(context,
+        : ActGameContext = with(context,
             { it.asOwnPlayer(context.getActualPot()) },
             { it.asOpponent() },
             { it as Board },
             { it.mapKeys { (key, _) -> key as SeatName } })
 
 infix fun InGamePlayer.statsWith(context: InGameContext)
-        : ViewHeroGameContext = this.with(context,
+        : ViewHeroGameContext = with(context,
             { OpponentHero(it.name, it.stack) },
             { it.asOpponent() as SeatNameStack },
             { it as Board },
             { it.mapKeys { (key, _) -> key as SeatName } })
 
-fun InGameContext.toViewGameContext(): ViewGameContext = this.map(
+fun InGameContext.toViewGameContext(): ViewGameContext = map(
         { it as SeatNameStack },
         { it as Board },
         { it.mapKeys { (key, _) -> key as SeatName } })

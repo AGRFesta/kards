@@ -97,7 +97,7 @@ private fun InGameContext.hadToAct(player: InGamePlayer, pot: InGamePot): Boolea
             && (player.status == PlayerStatus.NONE || hadToPay)
 }
 
-private fun InGameContext.theOnlyActive(player: InGamePlayer): Boolean = this.table.players
+private fun InGameContext.theOnlyActive(player: InGamePlayer): Boolean = table.players
         .filter { player !== it }
         .none { it.isActive() }
 

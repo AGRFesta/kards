@@ -46,20 +46,19 @@ class TestPotBuilder(private val gameContext: InGameContext) {
 }
 
 fun InGameContext.getPlayer(player: Player): InGamePlayer {
-    val inGamePlayer = this.table.findPlayerBySeatName(player.name)
+    val inGamePlayer = table.findPlayerBySeatName(player.name)
     requireNotNull(inGamePlayer)
     return inGamePlayer
 }
 
 fun InGamePot.getPlayer(player: Player): InGamePlayer {
-    val result = this.keys.firstOrNull { it.player == player }
+    val result = keys.firstOrNull { it.player == player }
     requireNotNull(result)
     return result
 }
 
 fun dealerMockFromBuilder(context: InGameContext, enrich: BuilderEnrich): Dealer {
     val dealer = mockk<Dealer>()
-    val pot =  enrich.invoke(TestPotBuilder(context)).build()
-    //every { dealer.collectPot() } returns pot
+    enrich.invoke(TestPotBuilder(context)).build()
     return dealer
 }

@@ -23,7 +23,7 @@ data class PlayerStack(val player: Player, override val stack: Int): SeatNameSta
     override fun toString() = "${player.name}[$stack]"
 }
 infix fun Player.owns(stack: Int) = PlayerStack(this, stack)
-fun Collection<PlayerStack>.toRanking() = this.sortedByDescending { it.stack }
+fun Collection<PlayerStack>.toRanking() = sortedByDescending { it.stack }
 
 class OwnPlayer(override val name: String, val cards: Set<Card>, override val stack: Int, val amountToCall: Int)
     : SeatNameStack
@@ -81,16 +81,16 @@ enum class PlayerStatus {
 
 /// List<Player> ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-fun List<InGamePlayer>.resetActivePlayersStatus() = this.getActive()
+fun List<InGamePlayer>.resetActivePlayersStatus() = getActive()
         .forEach { it.status = PlayerStatus.NONE }
-fun List<InGamePlayer>.getActive(): List<InGamePlayer> = this.filter { it.isActive() }
+fun List<InGamePlayer>.getActive(): List<InGamePlayer> = filter { it.isActive() }
 
 fun List<InGamePlayer>.findWinner(): InGamePlayer? {
-    val notFoldedPlayers = this.filter { !it.hasFolded() }
+    val notFoldedPlayers = filter { !it.hasFolded() }
     return if (notFoldedPlayers.size == 1) notFoldedPlayers[0]
     else null
 }
 
-fun List<InGamePlayer>.toPlayerStack(): List<PlayerStack> = this.map { it.player owns it.stack }
+fun List<InGamePlayer>.toPlayerStack(): List<PlayerStack> = map { it.player owns it.stack }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
