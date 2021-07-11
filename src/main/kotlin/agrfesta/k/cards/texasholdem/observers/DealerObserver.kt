@@ -9,19 +9,16 @@ interface DealerObserver {
     fun notifyAction(context: ViewHeroGameContext, playerAction: PlayerAction) {}
 }
 
-class MultipleDealerObserver(private val observers: Set<DealerObserver>): DealerObserver {
+fun multipleDealerObserverOf(vararg observers: DealerObserver?) =
+    multipleDealerObserverOf(observers
+        .filterNotNull()
+        .toSet())
 
+fun multipleDealerObserverOf(observers: Set<DealerObserver>) = object: DealerObserver {
     override fun notifyActions(phase: GamePhase, actions: List<PlayerAction>) {
         observers.forEach { it.notifyActions(phase, actions) }
     }
-
     override fun notifyAction(context: ViewHeroGameContext, playerAction: PlayerAction) {
         observers.forEach { it.notifyAction(context, playerAction) }
     }
-
 }
-
-fun multipleDealerObserverOf(vararg observers: DealerObserver?) =
-    MultipleDealerObserver(observers
-        .filterNotNull()
-        .toSet())

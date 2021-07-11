@@ -1,8 +1,17 @@
 package agrfesta.k.cards.texasholdem.observers
 
-import agrfesta.k.cards.playingcards.suits.*
+import agrfesta.k.cards.playingcards.suits.ACE
+import agrfesta.k.cards.playingcards.suits.EIGHT
+import agrfesta.k.cards.playingcards.suits.JACK
+import agrfesta.k.cards.playingcards.suits.NINE
+import agrfesta.k.cards.playingcards.suits.TEN
+import agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import agrfesta.k.cards.texasholdem.rules.CardsEvaluatorBaseImpl
-import agrfesta.k.cards.texasholdem.rules.gameplay.*
+import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus
+import agrfesta.k.cards.texasholdem.rules.gameplay.ShowdownImpl
+import agrfesta.k.cards.texasholdem.rules.gameplay.anInGamePlayer
+import agrfesta.k.cards.texasholdem.rules.gameplay.board
+import agrfesta.k.cards.texasholdem.rules.gameplay.buildMutablePot
 import agrfesta.k.cards.texasholdem.rules.hands.PairHand
 import agrfesta.k.cards.texasholdem.rules.hands.ThreeOfAKindHand
 import agrfesta.k.cards.texasholdem.rules.hands.TwoPairHand
@@ -11,7 +20,12 @@ import assertk.assertions.containsOnly
 import assertk.assertions.extracting
 import assertk.assertions.isEmpty
 import assertk.assertions.isTrue
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import kotlin.collections.set
@@ -90,6 +104,42 @@ class ShowdownObserverTest {
                 Triple(jane.player, TwoPairHand(ACE,JACK, NINE), 700)
             )
 
+    }
+
+    @Test
+    @DisplayName("""multipleShowdownObserverOf(): multi observer composed by null and non-null observer -> 
+        only one observer will be notified""")
+    fun multipleShowdownObserverOfTest000() {
+        val observer: ShowdownObserver = mockk(relaxed = true)
+        val multipleShowdownObserver = multipleShowdownObserverOf(null, observer)
+
+        multipleShowdownObserver.notifyResult(showdownPlayerResultCollection)
+
+        assertNotifiedShowdownObserver(observer)
+    }
+    @Test
+    @DisplayName("""multipleShowdownObserverOf(): multi observer composed by two observer -> 
+        both observer will be notified""")
+    fun multipleShowdownObserverOfTest001() {
+        val observerA: ShowdownObserver = mockk(relaxed = true)
+        val observerB: ShowdownObserver = mockk(relaxed = true)
+        val observerC: ShowdownObserver = mockk(relaxed = true)
+        val multipleShowdownObserver = multipleShowdownObserverOf(observerA, observerB)
+
+        multipleShowdownObserver.notifyResult(showdownPlayerResultCollection)
+
+        assertNotifiedShowdownObserver(observerA)
+        assertNotifiedShowdownObserver(observerB)
+        assertNotNotifiedShowdownObserver(observerC)
+    }
+
+    @Test
+    @DisplayName("""implemented observer without method override -> 
+        can be notified but will use default implementation (do nothing)""")
+    fun implementationTest000() {
+        val observer = object: ShowdownObserver {}
+
+        observer.notifyResult(showdownPlayerResultCollection)
     }
 
 }
