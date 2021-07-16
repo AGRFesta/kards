@@ -22,10 +22,13 @@ import assertk.assertions.containsExactly
 import assertk.assertions.extracting
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotNull
+import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.slot
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -664,6 +667,31 @@ class DealersTest {
                 SMALL_BLIND to fold(),
                 BIG_BLIND to call()
             )
+    }
+
+    @Test
+    @DisplayName("collectPot(): tree players act before BigBlind -> BigBlind received the list of actions")
+    fun collectPotTest016() {
+        val strategyMock: PlayerStrategyInterface = mockk()
+        val table: Table<InGamePlayer> = buildTestTable {
+            underTheGun(stack = 2000)  { raise(175) }
+            button(stack = 2000) { call() }
+            smallBlind(stack = 2000) { fold() }
+            bigBlind(stack = 2000, strategy = strategyMock)
+        }
+        val context = aContext(table, blinds(25, 50))
+        val bigBlindContext: CapturingSlot<HeroGameContextImpl<OwnPlayer>> = slot()
+        every { strategyMock.invoke(capture(bigBlindContext)) } answers { call() }
+        val dealer = PreFlopDealer(context)
+
+        dealer.collectPot()
+
+        val captured = bigBlindContext.captured
+        assertThat(captured.hero.name).isEqualTo(BIG_BLIND)
+        val preFlopHistory = captured.history[GamePhase.PRE_FLOP]
+        assertThat(preFlopHistory).isNotNull()
+        assertThat(preFlopHistory!!).extracting { it.action }
+            .containsExactly(raise(175), call(), fold())
     }
 
 }

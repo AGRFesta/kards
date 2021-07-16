@@ -41,7 +41,6 @@ abstract class AbstractDealer(
         val pot = context.getPhasePot()
         initPot(pot)
         val iterator = playersIterator()
-        val actions: MutableList<PlayerAction> = mutableListOf()
         while (someoneHaveToAct(pot)) {
             val player = iterator.next()
             if (context.hadToAct(player, pot)) {
@@ -51,11 +50,11 @@ abstract class AbstractDealer(
                     ActionType.Raise -> raiseEffect(player, action, pot)
                     else -> foldEffect(player)
                 }
-                actions.add(player does effectiveAction)
+                context.addPlayerActionToPhaseHistory(player does effectiveAction)
                 observer?.notifyAction(player statsWith context, player does effectiveAction)
             }
         }
-        observer?.notifyActions(context.board.phase, actions)
+        observer?.notifyActions(context.board.phase, context.getPhaseHistory())
     }
 
     private fun someoneHaveToAct(pot: InGamePot): Boolean = hadToAct(pot).isNotEmpty()
