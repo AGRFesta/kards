@@ -1,18 +1,31 @@
 package agrfesta.k.cards.texasholdem.rules.gameplay
 
+import agrfesta.k.cards.texasholdem.observers.DealerObserver
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.ALL_IN
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.FOLD
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.NONE
 import agrfesta.k.cards.texasholdem.rules.gameplay.PlayerStatus.RAISE
+import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.BIG_BLIND
+import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.BUTTON
+import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.LATE
+import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.MIDDLE
+import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.SMALL_BLIND
+import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.UNDER_THE_GUN
 import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.bigBlind
 import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.buildTestTable
 import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.button
 import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.smallBlind
 import agrfesta.k.cards.texasholdem.rules.gameplay.mothers.underTheGun
 import assertk.assertThat
+import assertk.assertions.containsExactly
+import assertk.assertions.extracting
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -60,25 +73,6 @@ class DealersTest {
     }
 
     @Test
-    @DisplayName("Post flop (10/20) story: Alex calls, Jane raises 1, Alex calls")
-    fun postFlopStory002() {
-        val alex = anInGamePlayer("Alex", 2000, strategyMock(call(), call()))
-        val jane = anInGamePlayer("Jane", 2000, strategyMock(raise(1)))
-        val table = Table(listOf(alex, jane), 0)
-        val context = aContext(table, blinds(10, 20))
-        val dealer = PostFlopDealer(context)
-
-        dealer.collectPot()
-
-        assertThat(context.getGlobalPot().payedBy(alex)).isEqualTo(20)
-        assertThat(context.getGlobalPot().payedBy(jane)).isEqualTo(20)
-        assertThat(alex.status).isEqualTo(CALL)
-        assertThat(jane.status).isEqualTo(RAISE)
-        assertThat(alex.stack).isEqualTo(1980)
-        assertThat(jane.stack).isEqualTo(1980)
-    }
-
-    @Test
     @DisplayName("Post flop (10/20) story: Alex calls, Jane raises Int.MAX_VALUE, Alex calls")
     fun postFlopStory003() {
         val alex = anInGamePlayer("Alex", 2000, strategyMock(call(), call()))
@@ -105,29 +99,6 @@ class DealersTest {
         val dave = anInGamePlayer("Dave", 200, strategyMock(raise(200)))
         val table = Table(listOf(alex, jane, dave), 2)
         val context = aContext(table, blinds(10, 20))
-        val dealer = PostFlopDealer(context)
-
-        dealer.collectPot()
-
-        assertThat(context.getGlobalPot().payedBy(alex)).isEqualTo(200)
-        assertThat(context.getGlobalPot().payedBy(jane)).isEqualTo(200)
-        assertThat(context.getGlobalPot().payedBy(dave)).isEqualTo(200)
-        assertThat(alex.status).isEqualTo(CALL)
-        assertThat(jane.status).isEqualTo(CALL)
-        assertThat(dave.status).isEqualTo(ALL_IN)
-        assertThat(alex.stack).isEqualTo(1800)
-        assertThat(jane.stack).isEqualTo(1800)
-        assertThat(dave.stack).isEqualTo(0)
-    }
-
-    @Test
-    @DisplayName("Post flop (25/50) story: Alex raises 175, Jane calls, Dave all-in, Alex raises 1000, Jane all-in")
-    fun postFlopStory005() {
-        val alex = anInGamePlayer("Alex", 2000, strategyMock(raise(175), raise(1000)))
-        val jane = anInGamePlayer("Jane", 2000, strategyMock(call(), raise(2000)))
-        val dave = anInGamePlayer("Dave", 200, strategyMock(raise(200)))
-        val table = Table(listOf(alex, jane, dave), 2)
-        val context = aContext(table, blinds(25, 50))
         val dealer = PostFlopDealer(context)
 
         dealer.collectPot()
@@ -521,8 +492,8 @@ class DealersTest {
     }
 
     @Test
-    @DisplayName("Pre flop (5/10) story: UTG raises, Button re-raise, Blinds folds, UTG calls")
-    fun preFlopStory009() {
+    @DisplayName("collectPot(): button re-raise utg -> utg had to act again")
+    fun collectPotTest009() {
         val table: Table<InGamePlayer> = buildTestTable {
             underTheGun(stack = 1000, strategy = strategyMock(raise(30), call()) )
             button(stack = 1000, strategy = strategyMock(raise(90)) )
@@ -530,14 +501,169 @@ class DealersTest {
             bigBlind(stack = 1000) { fold() }
         }
         val context = aContext(table, blinds(5, 10))
-        val dealer = PreFlopDealer(context)
+        val observer: DealerObserver = mockk(relaxed = true)
+        val actions: MutableList<PlayerAction> = mutableListOf()
+        every { observer.notifyAction(any(), capture(actions)) } just Runs
+        val dealer = PreFlopDealer(context, observer)
 
         dealer.collectPot()
 
+        assertThat(actions).extracting({ it.playerName }, { it.action })
+            .containsExactly(
+                UNDER_THE_GUN to raise(30),
+                BUTTON to raise(90),
+                SMALL_BLIND to fold(),
+                BIG_BLIND to fold(),
+                UNDER_THE_GUN to call()
+            )
         assertThat(context.getGlobalPot().payedBy(table.underTheGun())).isEqualTo(90)
         assertThat(context.getGlobalPot().payedBy(table.button())).isEqualTo(90)
         assertThat(table.underTheGun().status).isEqualTo(CALL)
         assertThat(table.button().status).isEqualTo(RAISE)
+    }
+
+    @Test
+    @DisplayName("collectPot(): raising less tha requested previous bet -> raise will be treated as call")
+    fun collectPotTest011() {
+        val table: Table<InGamePlayer> = buildTestTable {
+            underTheGun(stack = 2000)  { fold() }
+            middle(stack = 2000) { raise(175) }
+            late(stack = 2000) { raise(150) }
+            button(stack = 2000) { fold() }
+            smallBlind(stack = 2000) { call() }
+            bigBlind(stack = 2000) { call() }
+        }
+        val context = aContext(table, blinds(25, 50))
+        val observer: DealerObserver = mockk(relaxed = true)
+        val actions: MutableList<PlayerAction> = mutableListOf()
+        every { observer.notifyAction(any(), capture(actions)) } just Runs
+        val dealer = PreFlopDealer(context, observer)
+
+        dealer.collectPot()
+
+        assertThat(actions).extracting({ it.playerName }, { it.action })
+            .containsExactly(
+                UNDER_THE_GUN to fold(),
+                MIDDLE to raise(175),
+                LATE to call(),
+                BUTTON to fold(),
+                SMALL_BLIND to call(),
+                BIG_BLIND to call()
+            )
+    }
+
+    @Test
+    @DisplayName("collectPot(): raising more than the stack -> raise will be treated as all-in")
+    fun collectPotTest012() {
+        val table: Table<InGamePlayer> = buildTestTable {
+            smallBlind(stack = 2000, strategy = strategyMock(raise(175), raise(1000), raise(3000)))
+            bigBlind(stack = 2000, strategy = strategyMock(call(), raise(2000)))
+            button(stack = 200, strategy = strategyMock(raise(200)) )
+        }
+        val context = aContext(table, blinds(25, 50))
+        val observer: DealerObserver = mockk(relaxed = true)
+        val actions: MutableList<PlayerAction> = mutableListOf()
+        every { observer.notifyAction(any(), capture(actions)) } just Runs
+        val dealer = PostFlopDealer(context, observer)
+
+        dealer.collectPot()
+
+        assertThat(actions).extracting({ it.playerName }, { it.action })
+            .containsExactly(
+                SMALL_BLIND to raise(175),
+                BIG_BLIND to call(),
+                BUTTON to raise(200),
+                SMALL_BLIND to raise(1000),
+                BIG_BLIND to raise(1825),
+                SMALL_BLIND to call()
+            )
+        assertThat(context.getGlobalPot().payedBy(table.button())).isEqualTo(200)
+        assertThat(context.getGlobalPot().payedBy(table.smallBlind())).isEqualTo(2000)
+        assertThat(context.getGlobalPot().payedBy(table.bigBlind())).isEqualTo(2000)
+        assertThat(table.button().status).isEqualTo(ALL_IN)
+        assertThat(table.smallBlind().status).isEqualTo(ALL_IN)
+        assertThat(table.bigBlind().status).isEqualTo(ALL_IN)
+        assertThat(table.button().stack).isEqualTo(0)
+        assertThat(table.smallBlind().stack).isEqualTo(0)
+        assertThat(table.bigBlind().stack).isEqualTo(0)
+    }
+
+    @Test
+    @DisplayName("collectPot(): raising less than requested to play -> raise will be treated as call")
+    fun collectPotTest013() {
+        val table: Table<InGamePlayer> = buildTestTable {
+            underTheGun(stack = 2000)  { raise(1) }
+            button(stack = 2000) { fold() }
+            smallBlind(stack = 2000) { call() }
+            bigBlind(stack = 2000) { call() }
+        }
+        val context = aContext(table, blinds(25, 50))
+        val observer: DealerObserver = mockk(relaxed = true)
+        val actions: MutableList<PlayerAction> = mutableListOf()
+        every { observer.notifyAction(any(), capture(actions)) } just Runs
+        val dealer = PreFlopDealer(context, observer)
+
+        dealer.collectPot()
+
+        assertThat(actions).extracting({ it.playerName }, { it.action })
+            .containsExactly(
+                UNDER_THE_GUN to call(),
+                BUTTON to fold(),
+                SMALL_BLIND to call(),
+                BIG_BLIND to call()
+            )
+    }
+
+    @Test
+    @DisplayName("collectPot(): raising as last raise -> raise will be treated as call")
+    fun collectPotTest014() {
+        val table: Table<InGamePlayer> = buildTestTable {
+            underTheGun(stack = 2000)  { raise(150) }
+            button(stack = 2000) { raise(150) }
+            smallBlind(stack = 2000) { fold() }
+            bigBlind(stack = 2000) { fold() }
+        }
+        val context = aContext(table, blinds(25, 50))
+        val observer: DealerObserver = mockk(relaxed = true)
+        val actions: MutableList<PlayerAction> = mutableListOf()
+        every { observer.notifyAction(any(), capture(actions)) } just Runs
+        val dealer = PreFlopDealer(context, observer)
+
+        dealer.collectPot()
+
+        assertThat(actions).extracting({ it.playerName }, { it.action })
+            .containsExactly(
+                UNDER_THE_GUN to raise(150),
+                BUTTON to call(),
+                SMALL_BLIND to fold(),
+                BIG_BLIND to fold()
+            )
+    }
+
+    @Test
+    @DisplayName("collectPot(): raising as last raise -> raise will be treated as call")
+    fun collectPotTest015() {
+        val table: Table<InGamePlayer> = buildTestTable {
+            underTheGun(stack = 2000)  { raise(175) }
+            button(stack = 2000) { call() }
+            smallBlind(stack = 2000) { fold() }
+            bigBlind(stack = 2000) { raise(150) }
+        }
+        val context = aContext(table, blinds(25, 50))
+        val observer: DealerObserver = mockk(relaxed = true)
+        val actions: MutableList<PlayerAction> = mutableListOf()
+        every { observer.notifyAction(any(), capture(actions)) } just Runs
+        val dealer = PreFlopDealer(context, observer)
+
+        dealer.collectPot()
+
+        assertThat(actions).extracting({ it.playerName }, { it.action })
+            .containsExactly(
+                UNDER_THE_GUN to raise(175),
+                BUTTON to call(),
+                SMALL_BLIND to fold(),
+                BIG_BLIND to call()
+            )
     }
 
 }

@@ -42,18 +42,17 @@ abstract class AbstractDealer(
         initPot(pot)
         val iterator = playersIterator()
         val actions: MutableList<PlayerAction> = mutableListOf()
-
         while (someoneHaveToAct(pot)) {
             val player = iterator.next()
             if (context.hadToAct(player, pot)) {
                 val action = player( player heroIn context )
-                actions.add(player does action)
-                when (action.type) {
+                val effectiveAction: Action = when (action.type) {
                     ActionType.Call -> callEffect(player, pot)
                     ActionType.Raise -> raiseEffect(player, action, pot)
                     else -> foldEffect(player)
                 }
-                observer?.notifyAction(player statsWith context, player does action)
+                actions.add(player does effectiveAction)
+                observer?.notifyAction(player statsWith context, player does effectiveAction)
             }
         }
         observer?.notifyActions(context.board.phase, actions)
@@ -64,20 +63,28 @@ abstract class AbstractDealer(
         return context.table.players.filter { context.hadToAct(it, pot) }
     }
 
-    private fun callEffect(player: InGamePlayer, pot: InGamePot) {
+    private fun callEffect(player: InGamePlayer, pot: InGamePot): Action {
         val payed: Int = pot.payedBy(player)
         player.status = PlayerStatus.CALL
         pot.receiveFrom(player, amountRequired - payed)
+        return call()
     }
 
-    private fun foldEffect(player: InGamePlayer) {
+    private fun foldEffect(player: InGamePlayer): Action {
         player.status = PlayerStatus.FOLD
+        return fold()
     }
 
-    private fun raiseEffect(player: InGamePlayer, action: Action, pot: InGamePot) {
+    private fun isRaiseAmountLessThanRequired(amount: Int): Boolean {
+        return (raisingPlayer != null && (amount <= amountRequired))
+                || amount <= context.payments.bb()
+    }
+
+    private fun raiseEffect(player: InGamePlayer, action: Action, pot: InGamePot): Action {
         val payed: Int = pot.payedBy(player)
         val minimumRaise = context.payments.bb()
-        if (raisingPlayer != null && (amountRequired - payed < minimumRaise)) {
+        val limitedAmount = action.amount?.coerceAtMost(player.stack) ?: 0
+        return if (isRaiseAmountLessThanRequired(limitedAmount)) {
             callEffect(player, pot)
         } else {
             player.status = PlayerStatus.RAISE
@@ -86,6 +93,7 @@ abstract class AbstractDealer(
             val amount: Int = pot.receiveFrom(player, raiseAmount)
             val effectiveRaiseAmount: Int = amount - (amountRequired - payed)
             amountRequired += if (effectiveRaiseAmount > 0) effectiveRaiseAmount else 0
+            raise(amount)
         }
     }
 }
