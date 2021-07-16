@@ -20,10 +20,10 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 class GameMockImpl(
-        val context: InGameContext,
-        val dealerFactory: DealerFactory,
-        val showdown: Showdown,
-        val observer: GameObserver?
+    val context: MutableGameContextImpl,
+    val dealerFactory: DealerFactory,
+    val showdown: Showdown,
+    val observer: GameObserver?
 ): Game {
     override fun getId() = context.uuid
     override fun play(): List<PlayerStack> = listOf()

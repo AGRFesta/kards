@@ -2,7 +2,7 @@ package agrfesta.k.cards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.playingcards.cards.Card
 
-typealias PlayerStrategyInterface = (ActGameContext) -> Action
+typealias PlayerStrategyInterface = (HeroGameContextImpl<OwnPlayer>) -> Action
 
 interface SeatName {
     val name: String
@@ -25,13 +25,17 @@ data class PlayerStack(val player: Player, override val stack: Int): SeatNameSta
 infix fun Player.owns(stack: Int) = PlayerStack(this, stack)
 fun Collection<PlayerStack>.toRanking() = sortedByDescending { it.stack }
 
-class OwnPlayer(override val name: String, val cards: Set<Card>, override val stack: Int, val amountToCall: Int)
+class OwnPlayer(
+    override val name: String,
+    val cards: Set<Card>,
+    override val stack: Int,
+    val amountToCall: Int)
     : SeatNameStack
 
 class OpponentHero(override val name: String, override val stack: Int, val cards: Set<Card>? = null): SeatNameStack
 
 class InGamePlayer(val player: Player, override var stack: Int, val cards: Set<Card>)
-    : PlayerStrategyInterface, SeatNameStack {
+    : PlayerStrategyInterface by player.strategy, SeatNameStack {
     override val name = player.name
 
     var status: PlayerStatus = PlayerStatus.NONE
@@ -68,8 +72,6 @@ class InGamePlayer(val player: Player, override var stack: Int, val cards: Set<C
     fun asOwnPlayer(actualPot: InGamePot) = OwnPlayer(name, cards, stack, calculateAmountToCall(actualPot))
 
     fun calculateAmountToCall(pot: InGamePot): Int = (pot.maxContribution()?.amount ?: 0) - pot.payedBy(this)
-
-    override fun invoke(context: ActGameContext): Action = player.strategy(context)
 
     override fun toString(): String = "$player ($stack)"
 

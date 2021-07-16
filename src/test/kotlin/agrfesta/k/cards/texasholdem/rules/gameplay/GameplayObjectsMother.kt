@@ -9,9 +9,10 @@ import java.util.*
 fun aDeck(): Deck = DeckListImpl(listOf())
 fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer(),anInGamePlayer()), 0)
 
-fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGamePayments()): InGameContext  {
+fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGamePayments())
+    : MutableGameContextImpl  {
     val phasePots = emptyPhasePots<InGamePlayer, MutableMap<InGamePlayer, Int>> { mutableMapOf() }
-    return GameContextImpl(uuid = UUID.randomUUID(), table =  table, payments = payments,
+    return MutableGameContextImpl(uuid = UUID.randomUUID(), table =  table, payments = payments,
         board = EmptyBoard(aDeck()) as BoardInSequence, phasePots = phasePots)
 }
 

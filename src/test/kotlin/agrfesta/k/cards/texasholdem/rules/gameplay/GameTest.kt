@@ -42,7 +42,7 @@ class GameTest {
             .withTable(table)
             .observedBy(observerMock)
             .build()
-        val contexts: MutableList<ViewGameContext> = mutableListOf()
+        val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val result: CapturingSlot<GameResult> = slot()
         every { observerMock.notifyWinner(capture(result)) } just Runs
@@ -95,7 +95,7 @@ class GameTest {
             .withTable(table)
             .observedBy(observerMock)
             .build()
-        val contexts: MutableList<ViewGameContext> = mutableListOf()
+        val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val result: CapturingSlot<GameResult> = slot()
         every { observerMock.notifyWinner(capture(result)) } just Runs
@@ -148,7 +148,7 @@ class GameTest {
             .withTable(table)
             .observedBy(observerMock)
             .build()
-        val contexts: MutableList<ViewGameContext> = mutableListOf()
+        val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val result: CapturingSlot<GameResult> = slot()
         every { observerMock.notifyWinner(capture(result)) } just Runs
@@ -181,7 +181,7 @@ class GameTest {
             .withTable(table)
             .observedBy(observerMock)
             .build()
-        val contexts: MutableList<ViewGameContext> = mutableListOf()
+        val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val result: CapturingSlot<GameResult> = slot()
         every { observerMock.notifyWinner(capture(result)) } just Runs
@@ -215,7 +215,7 @@ class GameTest {
             .observedBy(observerMock)
             .showdown(showdownMock)
             .build()
-        val contexts: MutableList<ViewGameContext> = mutableListOf()
+        val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val showdownInitialPot: CapturingSlot<InGamePot> = slot()
         val showdownBoard: CapturingSlot<Board> = slot()

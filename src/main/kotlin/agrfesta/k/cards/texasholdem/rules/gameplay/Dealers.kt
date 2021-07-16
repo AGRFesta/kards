@@ -7,24 +7,24 @@ interface Dealer {
 }
 
 interface DealerFactory {
-    fun preFlopDealer(context: InGameContext, observer: DealerObserver?): Dealer
-    fun postFlopDealer(context: InGameContext, observer: DealerObserver?): Dealer
+    fun preFlopDealer(context: MutableGameContextImpl, observer: DealerObserver?): Dealer
+    fun postFlopDealer(context: MutableGameContextImpl, observer: DealerObserver?): Dealer
 }
 class DealerFactoryImpl: DealerFactory {
 
-    override fun preFlopDealer(context: InGameContext, observer: DealerObserver?): Dealer {
+    override fun preFlopDealer(context: MutableGameContextImpl, observer: DealerObserver?): Dealer {
         return PreFlopDealer(context, observer)
     }
 
-    override fun postFlopDealer(context: InGameContext, observer: DealerObserver?): Dealer {
+    override fun postFlopDealer(context: MutableGameContextImpl, observer: DealerObserver?): Dealer {
         return PostFlopDealer(context, observer)
     }
 
 }
 
 abstract class AbstractDealer(
-        private val context: InGameContext,
-        private val observer: DealerObserver?) : Dealer {
+    private val context: MutableGameContextImpl,
+    private val observer: DealerObserver?) : Dealer {
     init {
         context.table.players
                 .filter { it.isActive() }
@@ -38,7 +38,7 @@ abstract class AbstractDealer(
     protected abstract fun playersIterator(): TableIterator<InGamePlayer>
 
     override fun collectPot() {
-        val pot = context.getActualPot()
+        val pot = context.getPhasePot()
         initPot(pot)
         val iterator = playersIterator()
         val actions: MutableList<PlayerAction> = mutableListOf()
@@ -98,28 +98,28 @@ abstract class AbstractDealer(
     }
 }
 
-private fun InGameContext.hadToAct(player: InGamePlayer, pot: InGamePot): Boolean {
+private fun MutableGameContextImpl.hadToAct(player: InGamePlayer, pot: InGamePot): Boolean {
     val hadToPay = player.calculateAmountToCall(pot) > 0
     return player.isActive()
             && (!theOnlyActive(player) || hadToPay)
             && (player.status == PlayerStatus.NONE || hadToPay)
 }
 
-private fun InGameContext.theOnlyActive(player: InGamePlayer): Boolean = table.players
+private fun MutableGameContextImpl.theOnlyActive(player: InGamePlayer): Boolean = table.players
         .filter { player !== it }
         .none { it.isActive() }
 
 class PostFlopDealer(
-        private val context: InGameContext,
-        observer: DealerObserver? = null )
+    private val context: MutableGameContextImpl,
+    observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
-    override fun initPot(pot: InGamePot) {}
+    override fun initPot(pot: InGamePot) {/**/}
     override fun playersIterator(): TableIterator<InGamePlayer> = context.table.iterateFromSB()
 }
 
 class PreFlopDealer(
-        private val context: InGameContext,
-        observer: DealerObserver? = null )
+    private val context: MutableGameContextImpl,
+    observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
     override fun initPot(pot: InGamePot) {
         pot.receiveFrom(context.table.getPlayerByPosition(Position.SMALL_BLIND), context.payments.sb())

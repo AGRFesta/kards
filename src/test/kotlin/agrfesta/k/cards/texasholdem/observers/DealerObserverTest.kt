@@ -13,7 +13,7 @@ class DealerObserverTest {
         val observer: DealerObserver = mockk(relaxed = true)
         val multipleDealerObserver = multipleDealerObserverOf(null, observer)
 
-        multipleDealerObserver.notifyAction(viewHeroGameContext, playerAction)
+        multipleDealerObserver.notifyAction(GAME_CONTEXT, playerAction)
         multipleDealerObserver.notifyActions(gamePhase, playerActionList)
 
         assertNotifiedDealerObserver(observer)
@@ -27,7 +27,7 @@ class DealerObserverTest {
         val observerC: DealerObserver = mockk(relaxed = true)
         val multipleDealerObserver = multipleDealerObserverOf(observerA, observerB)
 
-        multipleDealerObserver.notifyAction(viewHeroGameContext, playerAction)
+        multipleDealerObserver.notifyAction(GAME_CONTEXT, playerAction)
         multipleDealerObserver.notifyActions(gamePhase, playerActionList)
 
         assertNotifiedDealerObserver(observerA)
@@ -41,7 +41,7 @@ class DealerObserverTest {
     fun implementationTest000() {
         val observer = object: DealerObserver {}
 
-        observer.notifyAction(viewHeroGameContext, playerAction)
+        observer.notifyAction(GAME_CONTEXT, playerAction)
         observer.notifyActions(gamePhase, playerActionList)
     }
 

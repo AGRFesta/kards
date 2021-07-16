@@ -15,7 +15,7 @@ class GameObserverTest {
         val multipleGameObserver = multipleGameObserverOf(null, observer)
 
         multipleGameObserver.notifyWinner(gameResult)
-        multipleGameObserver.notifyStartingPhase(viewGameContext)
+        multipleGameObserver.notifyStartingPhase(readOnlyGameContextImpl)
 
         assertNotifiedGameObserver(observer)
     }
@@ -29,7 +29,7 @@ class GameObserverTest {
         val multipleGameObserver = multipleGameObserverOf(observerA, observerB)
 
         multipleGameObserver.notifyWinner(gameResult)
-        multipleGameObserver.notifyStartingPhase(viewGameContext)
+        multipleGameObserver.notifyStartingPhase(readOnlyGameContextImpl)
 
         assertNotifiedGameObserver(observerA)
         assertNotifiedGameObserver(observerB)
@@ -59,7 +59,7 @@ class GameObserverTest {
         val observerC: GameObserver = mockk(relaxed = true)
         val multipleGameObserver = multipleGameObserverOf(observerA, observerB)
 
-        multipleGameObserver.notifyAction(viewHeroGameContext, playerAction)
+        multipleGameObserver.notifyAction(GAME_CONTEXT, playerAction)
         multipleGameObserver.notifyActions(gamePhase, playerActionList)
 
         assertNotifiedDealerObserver(observerA)
@@ -73,10 +73,10 @@ class GameObserverTest {
     fun implementationTest000() {
         val observer = object: GameObserver {}
 
-        observer.notifyAction(viewHeroGameContext, playerAction)
+        observer.notifyAction(GAME_CONTEXT, playerAction)
         observer.notifyActions(gamePhase, playerActionList)
         observer.notifyWinner(gameResult)
-        observer.notifyStartingPhase(viewGameContext)
+        observer.notifyStartingPhase(readOnlyGameContextImpl)
         observer.notifyResult(showdownPlayerResultCollection)
     }
 

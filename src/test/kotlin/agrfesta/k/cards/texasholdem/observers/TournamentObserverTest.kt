@@ -54,7 +54,7 @@ class TournamentObserverTest {
         val multipleTournamentObserver = multipleTournamentObserverOf(observerA, observerB)
 
         multipleTournamentObserver.notifyWinner(gameResult)
-        multipleTournamentObserver.notifyStartingPhase(viewGameContext)
+        multipleTournamentObserver.notifyStartingPhase(readOnlyGameContextImpl)
 
         assertNotifiedGameObserver(observerA)
         assertNotifiedGameObserver(observerB)
@@ -84,7 +84,7 @@ class TournamentObserverTest {
         val observerC: TournamentObserver = mockk(relaxed = true)
         val multipleTournamentObserver = multipleTournamentObserverOf(observerA, observerB)
 
-        multipleTournamentObserver.notifyAction(viewHeroGameContext, playerAction)
+        multipleTournamentObserver.notifyAction(GAME_CONTEXT, playerAction)
         multipleTournamentObserver.notifyActions(gamePhase, playerActionList)
 
         assertNotifiedDealerObserver(observerA)
@@ -98,10 +98,10 @@ class TournamentObserverTest {
     fun implementationTest000() {
         val observer = object: TournamentObserver {}
 
-        observer.notifyAction(viewHeroGameContext, playerAction)
+        observer.notifyAction(GAME_CONTEXT, playerAction)
         observer.notifyActions(gamePhase, playerActionList)
         observer.notifyWinner(gameResult)
-        observer.notifyStartingPhase(viewGameContext)
+        observer.notifyStartingPhase(readOnlyGameContextImpl)
         observer.notifyResult(showdownPlayerResultCollection)
         observer.notifyTournamentRanking(ranking, losers)
     }

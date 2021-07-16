@@ -12,10 +12,10 @@ interface Game {
 }
 
 class GameImpl(
-        private var context: InGameContext,
-        private val dealerFactory: DealerFactory,
-        private val showdown: Showdown,
-        private val observer: GameObserver?
+    private var context: MutableGameContextImpl,
+    private val dealerFactory: DealerFactory,
+    private val showdown: Showdown,
+    private val observer: GameObserver?
 ) : Game, DealerObserver {
     override fun getId() = context.uuid
 
@@ -49,15 +49,15 @@ class GameImpl(
     }
 
     private fun findPreFlopWinner(): InGamePlayer? {
-        observer?.notifyStartingPhase(context.toViewGameContext())
+        observer?.notifyStartingPhase(context.toGameContext())
         dealerFactory.preFlopDealer(context, multipleDealerObserverOf(this, observer))
             .collectPot()
         return findWinner(context.table.players)
     }
 
     private fun findWinner(): InGamePlayer? {
-        context = context.nextPhase()
-        observer?.notifyStartingPhase(context.toViewGameContext())
+        context.board = context.board.next()
+        observer?.notifyStartingPhase(context.toGameContext())
         dealerFactory.postFlopDealer(context, multipleDealerObserverOf(this, observer))
             .collectPot()
         return findWinner(context.table.players)
@@ -65,8 +65,8 @@ class GameImpl(
 
     override fun notifyActions(phase: GamePhase, actions: List<PlayerAction>) {
         val newHistory = context.history.toMutableMap()
-        newHistory[context.board.phase] = actions.toList()
-        context = GameContextImpl(
+        newHistory[context.board.phase] = actions.toMutableList()
+        context = MutableGameContextImpl(
             context.uuid, context.table, context.payments, context.board, newHistory, context.phasePots)
     }
 }
