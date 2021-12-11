@@ -1,10 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.jvm.tasks.Jar
+import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.61"
+    id("org.jetbrains.kotlin.jvm") version "1.5.31"
 	id("org.jetbrains.dokka") version "0.10.0"
-	id("io.gitlab.arturbosch.detekt").version("1.12.0")
+	id("io.gitlab.arturbosch.detekt").version("1.19.0")
 	jacoco
     `java-library`
 	`maven-publish`
@@ -58,12 +59,10 @@ val sourcesJar by tasks.creating(Jar::class) {
 	from(sourceSets.getByName("main").allSource)
 }
 
-detekt {
+tasks.withType<Detekt>().configureEach {
 	reports {
-		html {
-			enabled = true
-			destination = file("$buildDir/reports/detekt/deteckt.html")
-		}
+		html.required.set(true)
+		html.outputLocation.set(file("$buildDir/reports/detekt/deteckt.html"))
 	}
 }
 
