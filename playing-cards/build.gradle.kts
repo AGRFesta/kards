@@ -29,7 +29,7 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 	testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
-	testImplementation("io.mockk:mockk:1.10.0")
+	testImplementation("io.mockk:mockk:1.12.1")
 }
 
 tasks.dokkaHtml {
