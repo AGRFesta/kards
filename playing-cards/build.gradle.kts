@@ -4,7 +4,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.5.31"
-	id("org.jetbrains.dokka") version "0.10.0"
+	id("org.jetbrains.dokka") version "1.5.31"
 	id("io.gitlab.arturbosch.detekt").version("1.19.0")
 	jacoco
     `java-library`
@@ -18,7 +18,7 @@ version = "1.0.0-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
-	jcenter()
+	gradlePluginPortal()
 }
 
 dependencies {
@@ -31,9 +31,8 @@ dependencies {
 	testImplementation("io.mockk:mockk:1.10.0")
 }
 
-tasks.dokka {    
-    outputFormat = "html"
-    outputDirectory = "$buildDir/javadoc"
+tasks.dokkaHtml {
+	outputDirectory.set(buildDir.resolve("javadoc"))
 }
 
 tasks.withType<Test> {
@@ -50,8 +49,8 @@ tasks.withType<KotlinCompile> {
 val dokkaJar by tasks.creating(Jar::class) {
 	group = JavaBasePlugin.DOCUMENTATION_GROUP
 	description = "Assembles Kotlin docs with Dokka"
-	classifier = "javadoc"
-	from(tasks.dokka)
+	archiveClassifier.set("javadoc")
+	from(tasks.dokkaJavadoc)
 }
 
 val sourcesJar by tasks.creating(Jar::class) {
