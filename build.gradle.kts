@@ -14,7 +14,7 @@ val myMavenRepoReadUrl: String by project
 val myMavenRepoWriteUrl: String by project
 
 group = "agrfesta.kcards"
-version = "0.1.0"
+version = "0.2.0-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
