@@ -19,14 +19,15 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
 	gradlePluginPortal()
+	mavenCentral()
 }
 
 dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-	testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.1")
-	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.1")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 	testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.20")
 	testImplementation("io.mockk:mockk:1.10.0")
 }
