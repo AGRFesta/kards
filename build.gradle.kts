@@ -23,6 +23,7 @@ repositories {
     maven {
         url = uri(myMavenRepoReadUrl)
     }
+    mavenCentral()
 }
 
 configurations.all {
@@ -36,8 +37,8 @@ dependencies {
 
     api("agrfesta.kcards:k-playing-cards:0.1.0")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.20")
     testImplementation("io.mockk:mockk:1.10.0")
 }
