@@ -30,7 +30,7 @@ fun findFourOfAKindEvaluation(rankRepList: List<RankCount>): org.agrfesta.k.kard
         val kicker = rankRepList
                 .map { it.rank }
                 .filter { it != rank }
-                .max()!!
+                .maxOrNull()!!
         return FourOfAKindHand(rank, kicker)
     }
     return null

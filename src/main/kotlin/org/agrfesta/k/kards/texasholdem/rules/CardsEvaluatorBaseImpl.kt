@@ -5,7 +5,6 @@ import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.playingcards.cards.Seed
 import agrfesta.k.cards.playingcards.suits.FrenchRank
 import agrfesta.k.cards.playingcards.suits.getFrenchRankFromSymbol
-import org.agrfesta.k.kards.texasholdem.rules.hands.FlushHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.PairHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.StraightFlushHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.StraightHand
@@ -14,9 +13,6 @@ import org.agrfesta.k.kards.texasholdem.rules.hands.findFourOfAKindEvaluation
 import org.agrfesta.k.kards.texasholdem.rules.hands.findFullHouseEvaluation
 import org.agrfesta.k.kards.texasholdem.rules.hands.findThreeOfAKindEvaluation
 import org.agrfesta.k.kards.texasholdem.rules.hands.getHighCardEvaluation
-import org.agrfesta.k.kards.texasholdem.rules.hands.findFourOfAKindEvaluation
-import org.agrfesta.k.kards.texasholdem.rules.hands.findFullHouseEvaluation
-import org.agrfesta.k.kards.texasholdem.rules.hands.findThreeOfAKindEvaluation
 import org.agrfesta.k.kards.texasholdem.utils.COUNT_FOUR
 import org.agrfesta.k.kards.texasholdem.utils.FIFTH_POS
 import org.agrfesta.k.kards.texasholdem.utils.FIRST_POS
@@ -119,7 +115,7 @@ class CardsEvaluatorBaseImpl : org.agrfesta.k.kards.texasholdem.rules.CardsEvalu
           val kicker = cards
               .filter { it.rank() != pairs[0] && it.rank() != pairs[1] }
               .map { it.rank() }
-              .max()
+              .maxOrNull()
           TwoPairHand(pairs[0], pairs[1], kicker!!)
         }
         rankRepList[0].count == 2 -> {

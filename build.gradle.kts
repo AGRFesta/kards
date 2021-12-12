@@ -2,9 +2,9 @@ import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.61"
+    id("org.jetbrains.kotlin.jvm") version "1.5.31"
     id("org.jetbrains.dokka") version "0.10.0"
-    id("io.gitlab.arturbosch.detekt").version("1.12.0")
+    id("io.gitlab.arturbosch.detekt").version("1.19.0")
     jacoco
     `java-library`
     `maven-publish`
@@ -19,7 +19,7 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
-    jcenter()
+    gradlePluginPortal()
     maven {
         url = uri(myMavenRepoReadUrl)
     }
@@ -70,12 +70,10 @@ tasks.dokka {
     outputDirectory = "$buildDir/javadoc"
 }
 
-detekt {
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     reports {
-        html {
-            enabled = true
-            destination = file("$buildDir/reports/detekt/deteckt.html")
-        }
+        html.required.set(true)
+        html.outputLocation.set(file("$buildDir/reports/detekt/deteckt.html"))
     }
 }
 

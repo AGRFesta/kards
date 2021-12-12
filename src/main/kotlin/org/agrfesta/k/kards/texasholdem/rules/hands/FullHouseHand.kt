@@ -29,9 +29,8 @@ fun findFullHouseEvaluation(rankRepList: List<RankCount>): org.agrfesta.k.kards.
     rankRepList[0].count == COUNT_THREE && rankRepList[1].count == COUNT_TWO -> {
         val threeRank = rankRepList[0].rank
         val twoRank = rankRepList
-                .filter { it.count == 2 }
-                .map { it.rank }
-                .max()!!
+            .filter { it.count == 2 }
+            .maxOf { it.rank }
         FullHouseHand(threeRank, twoRank)
     }
     rankRepList[0].count == COUNT_THREE && rankRepList[1].count == COUNT_THREE -> {

@@ -33,7 +33,7 @@ private fun InGamePot.removeFrom(player: InGamePlayer, amount: Int) {
 }
 
 fun InGamePot.extractBalancedPot(): InGamePot {
-    val min: Int? = values.min()
+    val min: Int? = values.minOrNull()
     val pot = buildMutablePot()
     min?.let { m -> players().forEach {
         pot[it] = m
@@ -52,4 +52,4 @@ class Contribution(val player: SeatName, val amount: Int)
 
 fun <T: SeatName> Pot<T>.maxContribution(): Contribution? = entries
         .map { Contribution(it.key,it.value) }
-        .maxBy { it.amount }
+        .maxByOrNull { it.amount }

@@ -2,8 +2,6 @@ package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
 import org.agrfesta.k.kards.texasholdem.observers.ShowdownObserver
 import org.agrfesta.k.kards.texasholdem.observers.ShowdownPlayerResult
-import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
-import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluator
 
 interface Showdown {
     fun execute(pot: InGamePot, board: Board)
@@ -34,7 +32,7 @@ class ShowdownImpl(
         playersHands.entries
                 .filter { pot.containsKey(it.key) }
                 .groupBy( { it.value }, { it.key } )
-                .entries.maxBy { it.key }
+                .entries.maxByOrNull { it.key }
                 ?.value?.let { winners ->
                     val prize = pot.amount() / winners.size
                     winners.forEach {

@@ -1,9 +1,20 @@
 package org.agrfesta.k.kards.texasholdem.draws
 
-import agrfesta.k.cards.texasholdem.*
-import agrfesta.k.cards.playingcards.suits.*
+import agrfesta.k.cards.playingcards.suits.FIVE
+import agrfesta.k.cards.playingcards.suits.FOUR
+import agrfesta.k.cards.playingcards.suits.JACK
+import agrfesta.k.cards.playingcards.suits.KING
+import agrfesta.k.cards.playingcards.suits.NINE
+import agrfesta.k.cards.playingcards.suits.QUEEN
+import agrfesta.k.cards.playingcards.suits.SEVEN
+import agrfesta.k.cards.playingcards.suits.SIX
+import agrfesta.k.cards.playingcards.suits.TEN
+import agrfesta.k.cards.playingcards.suits.THREE
+import agrfesta.k.cards.playingcards.suits.TWO
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.hasClass
+import assertk.assertions.hasMessage
+import assertk.assertions.isFailure
 import org.agrfesta.k.kards.texasholdem.createDynamicTest
 import org.agrfesta.k.kards.texasholdem.isEqualTo
 import org.agrfesta.k.kards.texasholdem.isNotEqualTo
