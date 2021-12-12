@@ -33,7 +33,7 @@ configurations.all {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.4")
 
     api("agrfesta.kcards:k-playing-cards:0.1.0")
 
