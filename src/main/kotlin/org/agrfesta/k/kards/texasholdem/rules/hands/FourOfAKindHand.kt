@@ -1,19 +1,20 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
 import agrfesta.k.cards.playingcards.cards.Rank
+import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
 import org.agrfesta.k.kards.texasholdem.rules.RankCount
 import org.agrfesta.k.kards.texasholdem.utils.COUNT_FOUR
 
 class FourOfAKindHand (
         val fokRank: Rank,
         val kicker: Rank)
-    : org.agrfesta.k.kards.texasholdem.rules.hands.AbstractTHHand(THPokerHand.FOUR_OF_A_KIND) {
+    : AbstractTHHand(THPokerHand.FOUR_OF_A_KIND) {
 
     init {
         require(fokRank != kicker) { "Kicker's rank can't be equal to fokRank: $fokRank" }
     }
 
-    override fun innerCompareTo(ce: org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation): Int {
+    override fun innerCompareTo(ce: CardsEvaluation): Int {
         require(ce is FourOfAKindHand) { "Comparable only to an instance of FourOfAKindHand" }
         return compareBy(FourOfAKindHand::fokRank)
                 .thenBy(FourOfAKindHand::kicker)
@@ -24,7 +25,7 @@ class FourOfAKindHand (
 
 }
 
-fun findFourOfAKindEvaluation(rankRepList: List<RankCount>): org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation? {
+fun findFourOfAKindEvaluation(rankRepList: List<RankCount>): CardsEvaluation? {
     if (rankRepList[0].count == COUNT_FOUR) {
         val rank = rankRepList[0].rank
         val kicker = rankRepList

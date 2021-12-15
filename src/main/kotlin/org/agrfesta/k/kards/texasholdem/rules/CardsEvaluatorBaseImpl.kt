@@ -5,6 +5,7 @@ import agrfesta.k.cards.playingcards.cards.Rank
 import agrfesta.k.cards.playingcards.cards.Seed
 import agrfesta.k.cards.playingcards.suits.FrenchRank
 import agrfesta.k.cards.playingcards.suits.getFrenchRankFromSymbol
+import org.agrfesta.k.kards.texasholdem.rules.hands.FlushHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.PairHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.StraightFlushHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.StraightHand
@@ -32,7 +33,7 @@ private const val M_00111110000000 = 3968
 private const val M_01111100000000 = 7936
 private const val M_11111000000000 = 15872
 
-class CardsEvaluatorBaseImpl : org.agrfesta.k.kards.texasholdem.rules.CardsEvaluator {
+class CardsEvaluatorBaseImpl : CardsEvaluator {
 
   private val straightMask = intArrayOf(
       M_00000000011111,
@@ -47,14 +48,14 @@ class CardsEvaluatorBaseImpl : org.agrfesta.k.kards.texasholdem.rules.CardsEvalu
       M_11111000000000)
 
 
-  override fun evaluate(set: Set<Card>): org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation {
+  override fun evaluate(set: Set<Card>): CardsEvaluation {
     checkSize(set)
 
     val rankRepList = getRankRepetitionsList(set)
     val histogram: List<Set<Seed>> = buildHistogram(set.sortedWith(cardComparator))
 
     val flush = getFlushEvaluation(groupBySeed(set))
-    if (flush is org.agrfesta.k.kards.texasholdem.rules.hands.FlushHand) {
+    if (flush is FlushHand) {
       return getStraightFlushEvaluation(histogram, flush.seed) ?: flush
     }
 
@@ -75,19 +76,19 @@ class CardsEvaluatorBaseImpl : org.agrfesta.k.kards.texasholdem.rules.CardsEvalu
     return null
   }
 
-  private fun getFlushEvaluation(groupBySeed: Map<Seed, List<Card>>): org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation? {
+  private fun getFlushEvaluation(groupBySeed: Map<Seed, List<Card>>): CardsEvaluation? {
     return groupBySeed.entries
         .filter { it.value.size > COUNT_FOUR }
         .map { createFlushEvaluation(it.key, it.value) }
         .firstOrNull()
   }
 
-  private fun createFlushEvaluation(seed: Seed, cards: Collection<Card>): org.agrfesta.k.kards.texasholdem.rules.hands.FlushHand {
+  private fun createFlushEvaluation(seed: Seed, cards: Collection<Card>): FlushHand {
     val ranks = cards
             .map { it.rank() }
             .sortedDescending()
             .take(POKER_HAND_SIZE)
-    return org.agrfesta.k.kards.texasholdem.rules.hands.FlushHand(
+    return FlushHand(
         ranks[FIRST_POS],
         ranks[SECOND_POS],
         ranks[THIRD_POS],
@@ -97,7 +98,7 @@ class CardsEvaluatorBaseImpl : org.agrfesta.k.kards.texasholdem.rules.CardsEvalu
     )
   }
 
-  private fun getStraightEvaluation(histogram: List<Set<Seed>>): org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation? {
+  private fun getStraightEvaluation(histogram: List<Set<Seed>>): CardsEvaluation? {
     val bitSeq = getBitSequence(histogram) { it.isNotEmpty() }
     val rank = getStraightRankFromSequence(bitSeq)
     return if (rank != null) {
@@ -105,7 +106,7 @@ class CardsEvaluatorBaseImpl : org.agrfesta.k.kards.texasholdem.rules.CardsEvalu
     } else null
   }
 
-  private fun getPairsEvaluation(cards: Collection<Card>, rankRepList: List<RankCount>): org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation? =
+  private fun getPairsEvaluation(cards: Collection<Card>, rankRepList: List<RankCount>): CardsEvaluation? =
       when {
         rankRepList[0].count == 2 && rankRepList[1].count == 2 -> {
           val pairs = rankRepList
@@ -129,7 +130,7 @@ class CardsEvaluatorBaseImpl : org.agrfesta.k.kards.texasholdem.rules.CardsEvalu
         else -> null
       }
 
-  private fun getStraightFlushEvaluation(histogram: List<Set<Seed>>, seed: Seed): org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation? {
+  private fun getStraightFlushEvaluation(histogram: List<Set<Seed>>, seed: Seed): CardsEvaluation? {
     val seedsSeq = getSeedsBitSequences(histogram)
     val rank = getStraightRankFromSequence(seedsSeq[seed.ord()])
     return if (rank != null) {

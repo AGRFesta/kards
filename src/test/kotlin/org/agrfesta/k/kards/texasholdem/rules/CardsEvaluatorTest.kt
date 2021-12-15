@@ -16,14 +16,14 @@ import agrfesta.k.cards.playingcards.suits.TEN
 import agrfesta.k.cards.playingcards.suits.THREE
 import agrfesta.k.cards.playingcards.suits.TWO
 import agrfesta.k.cards.playingcards.suits.frenchCardsSet
-import org.agrfesta.k.kards.texasholdem.LazyFunctionAssertion
-import org.agrfesta.k.kards.texasholdem.createDynamicTest
-import org.agrfesta.k.kards.texasholdem.result
-import org.agrfesta.k.kards.texasholdem.willAssertThatCards
 import assertk.assertThat
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
 import assertk.assertions.isFailure
+import org.agrfesta.k.kards.texasholdem.LazyFunctionAssertion
+import org.agrfesta.k.kards.texasholdem.createDynamicTest
+import org.agrfesta.k.kards.texasholdem.result
+import org.agrfesta.k.kards.texasholdem.rules.hands.FlushHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.FourOfAKindHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.FullHouseHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.HighCardHand
@@ -32,12 +32,13 @@ import org.agrfesta.k.kards.texasholdem.rules.hands.StraightFlushHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.StraightHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.ThreeOfAKindHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.TwoPairHand
+import org.agrfesta.k.kards.texasholdem.willAssertThatCards
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
 interface CardsEvaluatorTest {
-    fun getCardsEvaluator(): org.agrfesta.k.kards.texasholdem.rules.CardsEvaluator
+    fun getCardsEvaluator(): CardsEvaluator
 
     @TestFactory
     @DisplayName("Seven cards evaluations")
@@ -73,7 +74,7 @@ interface CardsEvaluatorTest {
                     ),
             willAssertThatCards("Ah","7h","Kh","3d","5c","3h","5h")
                     .result(
-                        org.agrfesta.k.kards.texasholdem.rules.hands.FlushHand(
+                        FlushHand(
                             ACE,
                             KING,
                             SEVEN,
@@ -83,7 +84,7 @@ interface CardsEvaluatorTest {
                         )
                     ),
             willAssertThatCards("6c","Ac","Kc","Qc","7c","5c","Tc")
-                    .result(org.agrfesta.k.kards.texasholdem.rules.hands.FlushHand(ACE, KING, QUEEN, TEN, SEVEN, CLUBS)),
+                    .result(FlushHand(ACE, KING, QUEEN, TEN, SEVEN, CLUBS)),
 
             willAssertThatCards("7s","7h","7d","6d","4c","3h","5h")
                     .result(StraightHand(SEVEN)),

@@ -6,7 +6,6 @@ import agrfesta.k.cards.playingcards.cards.Seed
 import agrfesta.k.cards.playingcards.suits.FrenchRank
 import org.agrfesta.k.kards.texasholdem.utils.POKER_HAND_SIZE
 import org.agrfesta.k.kards.texasholdem.utils.TH_MAX_CARDS
-import java.util.*
 
 val cardComparator: Comparator<Card> = compareBy(Card::rank)
         .thenBy(compareBy(Seed::ord), Card::seed)
@@ -30,7 +29,7 @@ fun buildHistogram(hand: Collection<Card>): List<Set<Seed>> {
 
 fun groupBySeed(set: Set<Card>): Map<Seed, List<Card>> = set
         .groupingBy { it.seed() }
-        .fold({ _: Seed, _: Card -> listOf<Card>() },
+        .fold({ _: Seed, _: Card -> listOf() },
                 { _, accumulator, element ->
                     accumulator.plus(element)
                 })

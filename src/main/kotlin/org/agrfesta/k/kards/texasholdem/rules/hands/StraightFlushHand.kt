@@ -8,13 +8,13 @@ import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
 class StraightFlushHand(
         val straightTop: Rank,
         val seed: Seed)
-    : org.agrfesta.k.kards.texasholdem.rules.hands.AbstractTHHand(THPokerHand.STRAIGHT_FLUSH) {
+    : AbstractTHHand(THPokerHand.STRAIGHT_FLUSH) {
 
     init {
         require(straightTop >= FIVE) { "The minimum Straight top is FIVE, straightTop: $straightTop" }
     }
 
-    override fun innerCompareTo(ce: org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation): Int {
+    override fun innerCompareTo(ce: CardsEvaluation): Int {
         require(ce is StraightFlushHand) { "Comparable only to an instance of StraightFlushHand" }
         return compareBy(StraightFlushHand::straightTop)
                 .compare(this, ce)

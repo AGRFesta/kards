@@ -7,7 +7,7 @@ class TwoPairHand(
         val majorPairRank: Rank,
         val minorPairRank: Rank,
         val kicker: Rank)
-    : org.agrfesta.k.kards.texasholdem.rules.hands.AbstractTHHand(THPokerHand.TWO_PAIR) {
+    : AbstractTHHand(THPokerHand.TWO_PAIR) {
 
     init {
         require(majorPairRank != minorPairRank) { "Pairs rank can't be equal: $majorPairRank" }
@@ -17,7 +17,7 @@ class TwoPairHand(
         { "Pairs rank can't be equal to kicker rank: $kicker" }
     }
 
-    override fun innerCompareTo(ce: org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation): Int {
+    override fun innerCompareTo(ce: CardsEvaluation): Int {
         require(ce is TwoPairHand) { "Comparable only to an instance of TwoPairHand" }
         return compareBy(TwoPairHand::majorPairRank)
                 .thenBy(TwoPairHand::minorPairRank)

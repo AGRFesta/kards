@@ -1,6 +1,7 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
 import agrfesta.k.cards.playingcards.cards.Rank
+import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
 import org.agrfesta.k.kards.texasholdem.rules.RankCount
 import org.agrfesta.k.kards.texasholdem.utils.COUNT_THREE
 import org.agrfesta.k.kards.texasholdem.utils.COUNT_TWO
@@ -8,13 +9,13 @@ import org.agrfesta.k.kards.texasholdem.utils.COUNT_TWO
 class FullHouseHand (
         val threeRank: Rank,
         val twoRank: Rank)
-    : org.agrfesta.k.kards.texasholdem.rules.hands.AbstractTHHand(THPokerHand.FULL_HOUSE) {
+    : AbstractTHHand(THPokerHand.FULL_HOUSE) {
 
     init {
         require(threeRank != twoRank) { "Ranks can't be equal: $threeRank" }
     }
 
-    override fun innerCompareTo(ce: org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation): Int {
+    override fun innerCompareTo(ce: CardsEvaluation): Int {
         require(ce is FullHouseHand) { "Comparable only to an instance of FullHouseHand" }
         return compareBy(FullHouseHand::threeRank)
                 .thenBy(FullHouseHand::twoRank)
@@ -25,7 +26,7 @@ class FullHouseHand (
 
 }
 
-fun findFullHouseEvaluation(rankRepList: List<RankCount>): org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation? = when {
+fun findFullHouseEvaluation(rankRepList: List<RankCount>): CardsEvaluation? = when {
     rankRepList[0].count == COUNT_THREE && rankRepList[1].count == COUNT_TWO -> {
         val threeRank = rankRepList[0].rank
         val twoRank = rankRepList

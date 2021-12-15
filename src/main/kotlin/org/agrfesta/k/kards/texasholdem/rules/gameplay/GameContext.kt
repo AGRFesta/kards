@@ -63,7 +63,7 @@ class MutableGameContextImpl(
         board = board as Board,
         history = history.mapValues { (_, history) -> history.toList() },
         phasePots = phasePots.mapValues { (_, pot) -> pot.mapKeys {
-                (player, _) -> player as SeatName }
+                (player, _) -> player }
         }
     )
 }

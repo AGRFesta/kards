@@ -8,16 +8,16 @@ import agrfesta.k.cards.playingcards.suits.QUEEN
 import agrfesta.k.cards.playingcards.suits.SEVEN
 import agrfesta.k.cards.playingcards.suits.THREE
 import agrfesta.k.cards.playingcards.suits.TWO
+import assertk.assertThat
+import assertk.assertions.hasClass
+import assertk.assertions.hasMessage
+import assertk.assertions.isFailure
 import org.agrfesta.k.kards.texasholdem.createDynamicTest
 import org.agrfesta.k.kards.texasholdem.isEqualTo
 import org.agrfesta.k.kards.texasholdem.isGreaterThan
 import org.agrfesta.k.kards.texasholdem.isLessThan
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
 import org.agrfesta.k.kards.texasholdem.willAssertThat
-import assertk.assertThat
-import assertk.assertions.hasClass
-import assertk.assertions.hasMessage
-import assertk.assertions.isFailure
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -37,9 +37,9 @@ class StraightHandTest {
     @DisplayName("comparing to a different evaluation -> raises an Exception")
     fun compareToADifferentHandEvaluationImplementationRaiseAnException() {
         val sh = StraightHand(ACE)
-        val ce: org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation = object :
-            org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation {
-            override fun compareTo(other: org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation): Int = 0
+        val ce: CardsEvaluation = object :
+            CardsEvaluation {
+            override fun compareTo(other: CardsEvaluation): Int = 0
             override fun getHandValue(): THPokerHand = THPokerHand.STRAIGHT
         }
 

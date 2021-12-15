@@ -3,6 +3,7 @@ package org.agrfesta.k.kards.texasholdem.rules.hands
 import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.cards.Rank
 import kotlinx.collections.immutable.toImmutableList
+import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
 import org.agrfesta.k.kards.texasholdem.rules.OrderedRankListComparator
 import org.agrfesta.k.kards.texasholdem.rules.RankCount
 import org.agrfesta.k.kards.texasholdem.utils.COUNT_THREE
@@ -12,7 +13,7 @@ import org.agrfesta.k.kards.texasholdem.utils.SECOND_POS
 class ThreeOfAKindHand(
         val tokRank: Rank,
         firstKicker: Rank, secondKicker: Rank)
-    : org.agrfesta.k.kards.texasholdem.rules.hands.AbstractTHHand(THPokerHand.THREE_OF_A_KIND) {
+    : AbstractTHHand(THPokerHand.THREE_OF_A_KIND) {
 
     init {
         require(firstKicker != secondKicker) { "Kickers have same Rank: $firstKicker,$secondKicker" }
@@ -24,7 +25,7 @@ class ThreeOfAKindHand(
             .sorted().reversed()
             .toImmutableList()
 
-    override fun innerCompareTo(ce: org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation): Int {
+    override fun innerCompareTo(ce: CardsEvaluation): Int {
         require(ce is ThreeOfAKindHand) { "Comparable only to an instance of ThreeOfAKindHand" }
         return compareBy(ThreeOfAKindHand::tokRank)
                 .thenBy(OrderedRankListComparator(), ThreeOfAKindHand::kickers)
@@ -36,7 +37,7 @@ class ThreeOfAKindHand(
 
 fun findThreeOfAKindEvaluation(
         cards: Collection<Card>,
-        rankRepList: List<RankCount>): org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation? {
+        rankRepList: List<RankCount>): CardsEvaluation? {
     if (rankRepList[0].count == COUNT_THREE) {
         val rank = rankRepList[0].rank
         val kickers = cards
