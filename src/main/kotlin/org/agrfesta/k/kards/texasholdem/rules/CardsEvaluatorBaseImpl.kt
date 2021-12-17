@@ -22,31 +22,20 @@ import org.agrfesta.k.kards.texasholdem.utils.POKER_HAND_SIZE
 import org.agrfesta.k.kards.texasholdem.utils.SECOND_POS
 import org.agrfesta.k.kards.texasholdem.utils.THIRD_POS
 
-private const val M_00000000011111 = 31
-private const val M_00000000111110 = 62
-private const val M_00000001111100 = 124
-private const val M_00000011111000 = 248
-private const val M_00000111110000 = 496
-private const val M_00001111100000 = 992
-private const val M_00011111000000 = 1984
-private const val M_00111110000000 = 3968
-private const val M_01111100000000 = 7936
-private const val M_11111000000000 = 15872
+@Suppress("MagicNumber")
+private val straightMask = intArrayOf(
+    0b00000000011111,
+    0b00000000111110,
+    0b00000001111100,
+    0b00000011111000,
+    0b00000111110000,
+    0b00001111100000,
+    0b00011111000000,
+    0b00111110000000,
+    0b01111100000000,
+    0b11111000000000)
 
 class CardsEvaluatorBaseImpl : CardsEvaluator {
-
-  private val straightMask = intArrayOf(
-      M_00000000011111,
-      M_00000000111110,
-      M_00000001111100,
-      M_00000011111000,
-      M_00000111110000,
-      M_00001111100000,
-      M_00011111000000,
-      M_00111110000000,
-      M_01111100000000,
-      M_11111000000000)
-
 
   override fun evaluate(set: Set<Card>): CardsEvaluation {
     checkSize(set)
