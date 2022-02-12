@@ -1,9 +1,14 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
+import agrfesta.k.cards.playingcards.deck.Deck
+import agrfesta.k.cards.playingcards.suits.Suit.FRENCH
 import org.agrfesta.k.kards.texasholdem.observers.DealerObserver
 import org.agrfesta.k.kards.texasholdem.observers.GameObserver
 import org.agrfesta.k.kards.texasholdem.observers.GameResult
+import org.agrfesta.k.kards.texasholdem.observers.ShowdownObserver
 import org.agrfesta.k.kards.texasholdem.observers.multipleDealerObserverOf
+import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluatorBaseImpl
+import org.agrfesta.k.kards.texasholdem.utils.UuidProvider
 import java.util.*
 
 interface Game {
@@ -12,11 +17,28 @@ interface Game {
 }
 
 class GameImpl(
-    private var context: MutableGameContextImpl,
-    private val dealerFactory: DealerFactory,
-    private val showdown: Showdown,
-    private val observer: GameObserver?
+    payments: GamePayments,
+    table: Table<PlayerStack>,
+    private val dealerFactory: DealerFactory = DealerFactoryImpl(),
+    private val observer: GameObserver? = null,
+    deck: Deck = FRENCH.createDeck(),
+    uuidProvider: UuidProvider = { UUID.randomUUID() },
+    showdownProvider: (ShowdownObserver?) -> Showdown = { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }
 ) : Game, DealerObserver {
+    private val showdown: Showdown = showdownProvider(observer)
+    private var context: MutableGameContextImpl
+
+    init {
+        val inGameTable = table.map { InGamePlayer(it.player, it.stack, deck.draw(2).toSet()) }
+        val phasePots = emptyPhasePots<InGamePlayer, MutableMap<InGamePlayer, Int>> { mutableMapOf() }
+        context = MutableGameContextImpl(
+            uuid = uuidProvider.invoke(),
+            table = inGameTable,
+            payments = payments,
+            board = EmptyBoard(deck) as BoardInSequence,
+            phasePots = phasePots)
+    }
+
     override fun getId() = context.uuid
 
     override fun play(): List<PlayerStack> {

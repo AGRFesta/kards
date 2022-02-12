@@ -13,7 +13,6 @@ import io.mockk.slot
 import io.mockk.verify
 import org.agrfesta.k.kards.texasholdem.observers.GameObserver
 import org.agrfesta.k.kards.texasholdem.observers.GameResult
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.GamePhase.FLOP
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.GamePhase.PRE_FLOP
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.GamePhase.RIVER
@@ -37,11 +36,7 @@ class GameTest {
             smallBlind(stack = 100, strategy = folder() )
             bigBlind(stack = 100, strategy = folder() )
         }.map { it.asPlayerStack() }
-        val game: Game = buildingAGame()
-            .withPayments(5, 10)
-            .withTable(table)
-            .observedBy(observerMock)
-            .build()
+        val game = GameImpl( payments = blinds(5, 10), table = table, observer = observerMock )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val result: CapturingSlot<GameResult> = slot()
@@ -69,10 +64,7 @@ class GameTest {
             smallBlind(stack = 100, strategy = folder() )
             bigBlind(stack = 100, strategy = folder() )
         }.map { it.asPlayerStack() }
-        val game: Game = buildingAGame()
-            .withPayments(5, 10)
-            .withTable(table)
-            .build()
+        val game = GameImpl( payments = blinds(5, 10), table = table )
 
         val players = game.play()
 
@@ -90,11 +82,7 @@ class GameTest {
             smallBlind(stack = 100, strategy = strategyMock(call(), fold()) )
             bigBlind(stack = 100, strategy = strategyMock(call(), fold()) )
         }.map { it.asPlayerStack() }
-        val game: Game = buildingAGame()
-            .withPayments(5, 10)
-            .withTable(table)
-            .observedBy(observerMock)
-            .build()
+        val game = GameImpl( payments = blinds(5, 10), table = table, observer = observerMock )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val result: CapturingSlot<GameResult> = slot()
@@ -122,10 +110,7 @@ class GameTest {
             smallBlind(stack = 100, strategy = strategyMock(call(), fold()) )
             bigBlind(stack = 100, strategy = strategyMock(call(), fold()) )
         }.map { it.asPlayerStack() }
-        val game: Game = buildingAGame()
-            .withPayments(5, 10)
-            .withTable(table)
-            .build()
+        val game = GameImpl( payments = blinds(5, 10), table = table )
 
         val players = game.play()
 
@@ -143,11 +128,7 @@ class GameTest {
             smallBlind(stack = 100, strategy = strategyMock(call(), call(), fold()) )
             bigBlind(stack = 100, strategy = strategyMock(call(), call(), fold()) )
         }.map { it.asPlayerStack() }
-        val game: Game = buildingAGame()
-            .withPayments(5, 10)
-            .withTable(table)
-            .observedBy(observerMock)
-            .build()
+        val game = GameImpl( payments = blinds(5, 10), table = table, observer = observerMock )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val result: CapturingSlot<GameResult> = slot()
@@ -176,11 +157,7 @@ class GameTest {
             smallBlind(stack = 100, strategy = strategyMock(call(), call(), call(), fold()) )
             bigBlind(stack = 100, strategy = strategyMock(call(), call(), call(), fold()) )
         }.map { it.asPlayerStack() }
-        val game: Game = buildingAGame()
-            .withPayments(5, 10)
-            .withTable(table)
-            .observedBy(observerMock)
-            .build()
+        val game = GameImpl( payments = blinds(5, 10), table = table, observer = observerMock )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val result: CapturingSlot<GameResult> = slot()
@@ -209,12 +186,8 @@ class GameTest {
             bigBlind(stack = 100, strategy = limper())
         }.map { it.asPlayerStack() }
         val showdownMock: Showdown = mockk()
-        val game: Game = buildingAGame()
-            .withPayments(5, 10)
-            .withTable(table)
-            .observedBy(observerMock)
-            .showdown(showdownMock)
-            .build()
+        val game = GameImpl( payments = blinds(5, 10), table = table, observer = observerMock,
+            showdownProvider = {showdownMock} )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val showdownInitialPot: CapturingSlot<InGamePot> = slot()

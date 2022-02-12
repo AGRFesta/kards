@@ -19,11 +19,10 @@ val table = buildTable {
 ```
 
 ### How to create a Game
-You can create a Game using the fluent-step builder.
+The only implementation of Game interface is GameImpl.
 
 ```kotlin
-val game = buildingAGame()
-        .withPayments(100, 200)
-        .withTable(aTable)
-        .build()
+val game = GameImpl( 
+    payments = blinds(100, 200), 
+    table = aTable)
 ```

@@ -5,7 +5,7 @@ import agrfesta.k.cards.playingcards.utils.SimpleRandomGenerator
 import org.agrfesta.k.kards.texasholdem.observers.GameObserver
 import org.agrfesta.k.kards.texasholdem.observers.TournamentObserver
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Game
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.GameBuilder.Companion.buildingAGame
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.GameImpl
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Player
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStack
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Table
@@ -16,11 +16,7 @@ typealias TournamentImplementer =
         (Set<Player>, Int, IncreasingGamePayments, (Int) -> Int, GameProvider, TournamentObserver?) -> Tournament
 
 val defaultGameProvider: GameProvider = { payments, table, observer ->
-    buildingAGame()
-            .withPayments(payments)
-            .withTable(table)
-            .observedBy(observer)
-            .build()
+    GameImpl(payments = payments, table = table, observer = observer)
 }
 
 interface InitialStackStep {
