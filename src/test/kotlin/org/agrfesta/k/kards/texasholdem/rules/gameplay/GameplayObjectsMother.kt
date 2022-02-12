@@ -8,6 +8,7 @@ import java.util.*
 
 fun aDeck(): Deck = DeckListImpl(listOf())
 fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer(),anInGamePlayer()), 0)
+fun aPlayerStackTable(): Table<PlayerStack> = Table(listOf(aPlayerStack(),aPlayerStack()), 0)
 
 fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGamePayments())
     : MutableGameContextImpl  {

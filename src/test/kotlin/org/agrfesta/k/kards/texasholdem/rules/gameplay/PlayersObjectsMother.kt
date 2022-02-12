@@ -40,6 +40,8 @@ fun aPlayerWithName(name: String) = Player(name, aStrategy())
 
 fun aPlayerCardsSet() = frenchCardsSet("7s","2c")
 
+fun aPlayerStack() = PlayerStack(aPlayer(), 1000)
+
 fun anInGamePlayer() = InGamePlayer(aPlayer(), 1000, aPlayerCardsSet())
 fun anInGamePlayer(name: String) = InGamePlayer(aPlayerWithName(name), 1000, aPlayerCardsSet())
 fun anInGamePlayer(stack: Int) = InGamePlayer(aPlayer(), stack, aPlayerCardsSet())

@@ -12,7 +12,7 @@ import org.agrfesta.k.kards.texasholdem.utils.UuidProvider
 import java.util.*
 
 interface Game {
-    fun getId(): UUID
+    val uuid: UUID
     fun play(): List<PlayerStack>
 }
 
@@ -36,12 +36,14 @@ class GameConfig(
 )
 
 class GameImpl(
+    uuid: UUID? = null,
     payments: GamePayments,
     table: Table<PlayerStack>,
     deck: Deck = FRENCH.createDeck(),
     private val observer: GameObserver? = null,
     private val config: GameConfig = GameConfig()
 ) : Game, DealerObserver {
+    override val uuid: UUID = uuid ?: config.uuidProvider()
     private val showdown: Showdown = config.createShowdown(observer)
     private var context: MutableGameContextImpl
 
@@ -49,14 +51,12 @@ class GameImpl(
         val inGameTable = table.map { InGamePlayer(it.player, it.stack, deck.draw(2).toSet()) }
         val phasePots = emptyPhasePots<InGamePlayer, MutableMap<InGamePlayer, Int>> { mutableMapOf() }
         context = MutableGameContextImpl(
-            uuid = config.uuidProvider(),
+            uuid = this.uuid,
             table = inGameTable,
             payments = payments,
             board = EmptyBoard(deck) as BoardInSequence,
             phasePots = phasePots)
     }
-
-    override fun getId() = context.uuid
 
     override fun play(): List<PlayerStack> {
         // Pre-Flop

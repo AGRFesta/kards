@@ -23,6 +23,7 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.mothers.SMALL_BLIND
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.mothers.buildTestTable
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import java.util.*
 
 @DisplayName("Game tests")
 class GameTest {
@@ -206,6 +207,41 @@ class GameTest {
         assertThat(showdownBoard.captured.phase).isEqualTo(RIVER)
         assertThat(players).extracting({it.name}, {it.stack})
             .containsOnly(BUTTON to 90, SMALL_BLIND to 90, BIG_BLIND to 90)
+    }
+
+    @Test
+    @DisplayName("""constructor(): creating a Game with a specific UUID -> instantiated Game has that UUID""")
+    fun constructor_creatingAGameWithASpecificUUID_instantiatedGameHasThatUUID() {
+        val uuid = UUID.randomUUID()
+
+        val game = GameImpl( uuid = uuid, payments = aGamePayments(), table = aPlayerStackTable() )
+
+        assertThat(game.uuid).isEqualTo(uuid)
+    }
+
+    @Test
+    @DisplayName("""constructor(): creating a Game without an UUID, providing a specific generator -> 
+        |instantiated Game has the UUID from the provider""")
+    fun constructor_creatingAGameWithoutAnUUID_instantiatedGameHasTheUUIDFromTheProvider() {
+        val uuid = UUID.randomUUID()
+
+        val game = GameImpl( payments = aGamePayments(), table = aPlayerStackTable(),
+            config = GameConfig(uuidProvider = { uuid }))
+
+        assertThat(game.uuid).isEqualTo(uuid)
+    }
+
+    @Test
+    @DisplayName("""constructor(): creating a Game with a specific UUID and providing a specific generator -> 
+        |instantiated Game has that UUID ignoring the one from the provider""")
+    fun constructor_creatingAGameWithASpecificUUIDAndProvidingASpecificGenerator_instantiatedGameHasThatUUID() {
+        val uuidA = UUID.randomUUID()
+        val uuidB = UUID.randomUUID()
+
+        val game = GameImpl( uuid = uuidA, payments = aGamePayments(), table = aPlayerStackTable(),
+            config = GameConfig(uuidProvider = { uuidB }))
+
+        assertThat(game.uuid).isEqualTo(uuidA)
     }
 
 }
