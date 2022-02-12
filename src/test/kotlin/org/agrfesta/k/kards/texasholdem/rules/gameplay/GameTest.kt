@@ -187,7 +187,7 @@ class GameTest {
         }.map { it.asPlayerStack() }
         val showdownMock: Showdown = mockk()
         val game = GameImpl( payments = blinds(5, 10), table = table, observer = observerMock,
-            showdownProvider = {showdownMock} )
+            config = GameConfig(createShowdown = {showdownMock}) )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val showdownInitialPot: CapturingSlot<InGamePot> = slot()

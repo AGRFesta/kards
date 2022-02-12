@@ -16,23 +16,40 @@ interface Game {
     fun play(): List<PlayerStack>
 }
 
+/**
+ * Game Configuration
+ *
+ * Groups all possible customizable aspect of the [Game].
+ *
+ * @property uuidProvider defines the UUID provider for the [Game]. When we create a [Game] if the UUID is not assigned
+ * the constructor will generate one using this provider.
+ *
+ * @property dealerFactory chosen implementation for the [DealerFactory].
+ *
+ * @property createShowdown defines the [Showdown] provider for the [Game]. It will instantiate a [Showdown]
+ * implementation injecting all [Game] observers.
+ */
+class GameConfig(
+    val uuidProvider: UuidProvider = { UUID.randomUUID() },
+    val dealerFactory: DealerFactory = DealerFactoryImpl(),
+    val createShowdown: (ShowdownObserver?) -> Showdown = { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }
+)
+
 class GameImpl(
     payments: GamePayments,
     table: Table<PlayerStack>,
-    private val dealerFactory: DealerFactory = DealerFactoryImpl(),
-    private val observer: GameObserver? = null,
     deck: Deck = FRENCH.createDeck(),
-    uuidProvider: UuidProvider = { UUID.randomUUID() },
-    showdownProvider: (ShowdownObserver?) -> Showdown = { ShowdownImpl(CardsEvaluatorBaseImpl(),it) }
+    private val observer: GameObserver? = null,
+    private val config: GameConfig = GameConfig()
 ) : Game, DealerObserver {
-    private val showdown: Showdown = showdownProvider(observer)
+    private val showdown: Showdown = config.createShowdown(observer)
     private var context: MutableGameContextImpl
 
     init {
         val inGameTable = table.map { InGamePlayer(it.player, it.stack, deck.draw(2).toSet()) }
         val phasePots = emptyPhasePots<InGamePlayer, MutableMap<InGamePlayer, Int>> { mutableMapOf() }
         context = MutableGameContextImpl(
-            uuid = uuidProvider.invoke(),
+            uuid = config.uuidProvider(),
             table = inGameTable,
             payments = payments,
             board = EmptyBoard(deck) as BoardInSequence,
@@ -73,7 +90,7 @@ class GameImpl(
 
     private fun findPreFlopWinner(): InGamePlayer? {
         observer?.notifyStartingPhase(context.toGameContext())
-        dealerFactory.preFlopDealer(context, multipleDealerObserverOf(this, observer))
+        config.dealerFactory.preFlopDealer(context, multipleDealerObserverOf(this, observer))
             .collectPot()
         return findWinner(context.table.players)
     }
@@ -81,7 +98,7 @@ class GameImpl(
     private fun findWinner(): InGamePlayer? {
         context.board = context.board.next()
         observer?.notifyStartingPhase(context.toGameContext())
-        dealerFactory.postFlopDealer(context, multipleDealerObserverOf(this, observer))
+        config.dealerFactory.postFlopDealer(context, multipleDealerObserverOf(this, observer))
             .collectPot()
         return findWinner(context.table.players)
     }
