@@ -49,6 +49,13 @@ class DealerBroadcaster: DealerObserver, Broadcaster<DealerObserver> by Broadcas
         notify { it.notifyAction(context, playerAction) }
     }
 }
+fun dealerBroadcasterFor(vararg observers: DealerObserver?): DealerBroadcaster {
+    val broadcaster = DealerBroadcaster()
+    observers
+        .filterNotNull()
+        .forEach { broadcaster.subscribe(it) }
+    return broadcaster
+}
 
 class GameBroadcaster(
     private val gameBroadcaster: BroadcasterImpl<GameObserver> = BroadcasterImpl(),

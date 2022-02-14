@@ -6,7 +6,7 @@ import org.agrfesta.k.kards.texasholdem.observers.DealerObserver
 import org.agrfesta.k.kards.texasholdem.observers.GameObserver
 import org.agrfesta.k.kards.texasholdem.observers.GameResult
 import org.agrfesta.k.kards.texasholdem.observers.ShowdownObserver
-import org.agrfesta.k.kards.texasholdem.observers.multipleDealerObserverOf
+import org.agrfesta.k.kards.texasholdem.observers.dealerBroadcasterFor
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluatorBaseImpl
 import org.agrfesta.k.kards.texasholdem.utils.UuidProvider
 import java.util.*
@@ -90,7 +90,7 @@ class GameImpl(
 
     private fun findPreFlopWinner(): InGamePlayer? {
         observer?.notifyStartingPhase(context.toGameContext())
-        config.dealerFactory.preFlopDealer(context, multipleDealerObserverOf(this, observer))
+        config.dealerFactory.preFlopDealer(context, dealerBroadcasterFor(this, observer))
             .collectPot()
         return findWinner(context.table.players)
     }
@@ -98,7 +98,7 @@ class GameImpl(
     private fun findWinner(): InGamePlayer? {
         context.board = context.board.next()
         observer?.notifyStartingPhase(context.toGameContext())
-        config.dealerFactory.postFlopDealer(context, multipleDealerObserverOf(this, observer))
+        config.dealerFactory.postFlopDealer(context, dealerBroadcasterFor(this, observer))
             .collectPot()
         return findWinner(context.table.players)
     }

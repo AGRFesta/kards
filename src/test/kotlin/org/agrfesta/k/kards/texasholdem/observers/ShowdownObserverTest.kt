@@ -107,33 +107,6 @@ class ShowdownObserverTest {
     }
 
     @Test
-    @DisplayName("""multipleShowdownObserverOf(): multi observer composed by null and non-null observer -> 
-        only one observer will be notified""")
-    fun multipleShowdownObserverOfTest000() {
-        val observer: ShowdownObserver = mockk(relaxed = true)
-        val multipleShowdownObserver = multipleShowdownObserverOf(null, observer)
-
-        multipleShowdownObserver.notifyResult(showdownPlayerResultCollection)
-
-        assertNotifiedShowdownObserver(observer)
-    }
-    @Test
-    @DisplayName("""multipleShowdownObserverOf(): multi observer composed by two observer -> 
-        both observer will be notified""")
-    fun multipleShowdownObserverOfTest001() {
-        val observerA: ShowdownObserver = mockk(relaxed = true)
-        val observerB: ShowdownObserver = mockk(relaxed = true)
-        val observerC: ShowdownObserver = mockk(relaxed = true)
-        val multipleShowdownObserver = multipleShowdownObserverOf(observerA, observerB)
-
-        multipleShowdownObserver.notifyResult(showdownPlayerResultCollection)
-
-        assertNotifiedShowdownObserver(observerA)
-        assertNotifiedShowdownObserver(observerB)
-        assertNotNotifiedShowdownObserver(observerC)
-    }
-
-    @Test
     @DisplayName("""implemented observer without method override -> 
         can be notified but will use default implementation (do nothing)""")
     fun implementationTest000() {
