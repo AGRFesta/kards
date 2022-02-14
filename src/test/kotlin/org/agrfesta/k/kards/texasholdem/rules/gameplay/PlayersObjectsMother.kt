@@ -37,6 +37,7 @@ val juno = aPlayerWithName("Juno")
 
 fun aPlayer() = Player("APlayer", aStrategy())
 fun aPlayerWithName(name: String) = Player(name, aStrategy())
+fun anOpponent() = Opponent("APlayer", 1000, PlayerStatus.NONE)
 
 fun aPlayerCardsSet() = frenchCardsSet("7s","2c")
 

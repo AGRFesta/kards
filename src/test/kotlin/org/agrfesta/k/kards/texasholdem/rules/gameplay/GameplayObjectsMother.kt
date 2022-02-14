@@ -2,13 +2,18 @@ package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
 import agrfesta.k.cards.playingcards.cards.Card
 import agrfesta.k.cards.playingcards.deck.Deck
+import agrfesta.k.cards.playingcards.suits.TEN
 import agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import org.agrfesta.k.kards.texasholdem.DeckListImpl
+import org.agrfesta.k.kards.texasholdem.observers.GameResult
+import org.agrfesta.k.kards.texasholdem.observers.ShowdownPlayerResult
+import org.agrfesta.k.kards.texasholdem.rules.hands.StraightHand
 import java.util.*
 
 fun aDeck(): Deck = DeckListImpl(listOf())
 fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer(),anInGamePlayer()), 0)
 fun aPlayerStackTable(): Table<PlayerStack> = Table(listOf(aPlayerStack(),aPlayerStack()), 0)
+fun anOpponentsTable(): Table<Opponent> = Table(listOf(anOpponent(),anOpponent()), 0)
 
 fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGamePayments())
     : MutableGameContextImpl  {
@@ -16,6 +21,14 @@ fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGa
     return MutableGameContextImpl(uuid = UUID.randomUUID(), table =  table, payments = payments,
         board = EmptyBoard(aDeck()) as BoardInSequence, phasePots = phasePots)
 }
+
+fun aGameContext(): GameContext = GameContextImpl(
+    uuid = UUID.randomUUID(), table = anOpponentsTable(), payments = aGamePayments(), board = board(),
+    history = emptyMap(), phasePots = emptyMap()
+)
+fun aGameResult() = GameResult(aPlayer(), 2000, emptyList())
+fun aShowdownPlayerResult() = ShowdownPlayerResult(anInGamePlayer(), null, aCardsEvaluation())
+fun aCardsEvaluation() = StraightHand(TEN)
 
 fun aGamePayments(): GamePayments = GamePaymentsFixedImpl(10, 20)
 fun blinds(sb: Int, bb: Int): GamePayments = GamePaymentsFixedImpl(sb, bb)
