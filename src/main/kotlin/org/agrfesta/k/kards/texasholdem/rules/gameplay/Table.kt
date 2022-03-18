@@ -1,10 +1,12 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
-class Table<T: SeatName>(playersList: List<T>, val button: Int) {
-    val players: List<T> = playersList.toList()
+class Table<T: SeatName>(val players: List<T>, val button: Int = 0) {
 
     init {
-        require(players.size >= 2) { "The minimum number of players for a Table is 2, actual number: ${players.size}" }
+        require(players.size >= 2)
+            { "The minimum number of players for a Table is 2, actual number: ${players.size}" }
+        require(players.size == players.distinctBy { it.name }.size)
+            { "Tables contains duplicate players!" }
     }
 
     fun getPlayerByPosition(position: Position): T = players[position.pos(this)]

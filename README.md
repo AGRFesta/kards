@@ -9,13 +9,11 @@ val player = Player("name", strategy)
 ```
 
 ### How to create a Table
-You can create a Table just providing the players, in this case the button will be in a random position.
+You can create a Table just providing the players, in this case the button will be in the first position.
 Each Player's name must be unique.
 
 ```kotlin
-val table = buildTable {
-    withPlayers(poly, alex, jane)
-}
+val table = Table(players = listOf(poly, alex, jane))
 ```
 
 ### How to create a Game

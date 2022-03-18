@@ -6,6 +6,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.InGamePlayerTestBuilder.Companion.buildingAnInGamePlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.CALL
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.NONE
 
 ///// Strategies ///////////////////////////////////////////////////////////////////////////////////////////////////////
 fun aStrategy(): PlayerStrategyInterface = { anAction() }
@@ -37,11 +38,14 @@ val juno = aPlayerWithName("Juno")
 
 fun aPlayer() = Player("APlayer", aStrategy())
 fun aPlayerWithName(name: String) = Player(name, aStrategy())
-fun anOpponent() = Opponent("APlayer", 1000, PlayerStatus.NONE)
+fun anOpponent(
+    name: String = "APlayer",
+    stack: Int = 1000,
+    status: PlayerStatus = NONE) = Opponent(name, stack, status)
 
 fun aPlayerCardsSet() = frenchCardsSet("7s","2c")
 
-fun aPlayerStack() = PlayerStack(aPlayer(), 1000)
+fun aPlayerStack(player: Player = aPlayer(), stack: Int = 1000) = PlayerStack(player, stack)
 
 fun anInGamePlayer() = InGamePlayer(aPlayer(), 1000, aPlayerCardsSet())
 fun anInGamePlayer(name: String) = InGamePlayer(aPlayerWithName(name), 1000, aPlayerCardsSet())

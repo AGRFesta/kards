@@ -7,7 +7,6 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStrategyInterface
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Table
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aPlayerCardsSet
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aStrategy
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.buildTable
 
 private const val BUTTON_POS = 0
 private const val SMALL_BLIND_POS = 1
@@ -57,14 +56,11 @@ class TestTableBuilder {
         return this
     }
 
-    fun build(): Table<InGamePlayer> = buildTable {
-            withPlayers(
-                players.entries
-                    .sortedBy { it.key }
-                    .map { it.value }
-            )
-            withButtonInPosition(0)
-        }
+    fun build(): Table<InGamePlayer> = Table(
+        players = players.entries
+            .sortedBy { it.key }
+            .map { it.value },
+        button = 0)
 
 }
 

@@ -1,7 +1,11 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.hasClass
+import assertk.assertions.hasMessage
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFailure
+import assertk.assertions.isNull
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -12,10 +16,7 @@ class TableTest {
     @DisplayName("creating a Table with one player -> raises an Exception")
     fun creatingATableWithOnePlayerRaisesAnException() {
         val failure = assertThat {
-            buildTable<Player> {
-                withButtonInPosition(0)
-                withPlayers(alex)
-            }
+            Table( players = listOf(alex) )
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("The minimum number of players for a Table is 2, actual number: 1")
@@ -24,21 +25,26 @@ class TableTest {
     @DisplayName("creating a Table with no players -> raises an Exception")
     fun creatingATableWithNoPlayerRaisesAnException() {
         val failure = assertThat {
-            buildTable<Player> {
-                withButtonInPosition(0)
-            }
+            Table( players = emptyList() )
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("The minimum number of players for a Table is 2, actual number: 0")
     }
 
     @Test
+    @DisplayName("creating a Table with duplicate player -> raises an Exception")
+    fun creatingATableWithDuplicatePlayerRaisesAnException() {
+        val failure = assertThat {
+            Table( players = listOf(alex, alex, poly) )
+        }.isFailure()
+        failure.hasClass(IllegalArgumentException::class)
+        failure.hasMessage("Tables contains duplicate players!")
+    }
+
+    @Test
     @DisplayName("2 players table, button=0 -> SB=0, BB=1, UTG=0")
     fun twoPlayersTableWithButton0HasSBIn0AndBBIn1AndUTGIn0() {
-        val table = buildTable<Player> {
-            withButtonInPosition(0)
-            withPlayers(alex,juno)
-        }
+        val table = Table(players = listOf(alex, juno), button = 0)
         assertThat(alex).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(juno).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(alex)
@@ -47,10 +53,7 @@ class TableTest {
     @Test
     @DisplayName("2 players table, button=1 -> SB=1, BB=0, UTG=1")
     fun twoPlayersTableWithButton1HasSBIn1AndBBIn0AndUTGIn1() {
-        val table = buildTable<Player> {
-            withButtonInPosition(1)
-            withPlayers(alex,juno)
-        }
+        val table = Table(players = listOf(alex, juno), button = 1)
         assertThat(juno).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(alex).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(juno)
@@ -59,10 +62,7 @@ class TableTest {
     @Test
     @DisplayName("2 players table, button=5 -> SB=1, BB=0, UTG=1")
     fun twoPlayersTableWithButton5HasSBIn1AndBBIn0AndUTGIn1() {
-        val table = buildTable<Player> {
-            withButtonInPosition(5)
-            withPlayers(alex,juno)
-        }
+        val table = Table(players = listOf(alex, juno), button = 5)
         assertThat(juno).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(alex).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(juno)
@@ -71,10 +71,7 @@ class TableTest {
     @Test
     @DisplayName("2 players table, button=-6 -> SB=0, BB=1, UTG=0")
     fun twoPlayersTableWithButtonMinus6HasSBIn0AndBBIn1AndUTGIn0() {
-        val table = buildTable<Player> {
-            withButtonInPosition(-6)
-            withPlayers(alex,juno)
-        }
+        val table = Table(players = listOf(alex, juno), button = -6)
         assertThat(alex).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(juno).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(alex)
@@ -84,10 +81,7 @@ class TableTest {
     @Test
     @DisplayName("3 players table, button=0 -> SB=1, BB=2, UTG=0")
     fun threePlayersTableWithButton0HasSBIn1AndBBIn2AndUTGIn0() {
-        val table = buildTable<Player> {
-            withButtonInPosition(0)
-            withPlayers(alex, juno, maya)
-        }
+        val table = Table(players = listOf(alex, juno, maya), button = 0)
         assertThat(juno).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(maya).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(juno)
@@ -96,10 +90,7 @@ class TableTest {
     @Test
     @DisplayName("3 players table, button=1 -> SB=2, BB=0, UTG=1")
     fun threePlayersTableWithButton1HasSBIn2AndBBIn0AndUTGIn1() {
-        val table = buildTable<Player> {
-            withButtonInPosition(1)
-            withPlayers(alex, juno, maya)
-        }
+        val table = Table(players = listOf(alex, juno, maya), button = 1)
         assertThat(maya).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(alex).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(maya)
@@ -108,10 +99,7 @@ class TableTest {
     @Test
     @DisplayName("3 players table, button=2 -> SB=0, BB=1, UTG=2")
     fun threePlayersTableWithButton2HasSBIn0AndBBIn1AndUTGIn2() {
-        val table = buildTable<Player> {
-            withButtonInPosition(2)
-            withPlayers(alex, juno, maya)
-        }
+        val table = Table(players = listOf(alex, juno, maya), button = 2)
         assertThat(alex).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(juno).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(alex)
@@ -120,10 +108,7 @@ class TableTest {
     @Test
     @DisplayName("3 players table, button=3 -> SB=1, BB=2, UTG=0")
     fun threePlayersTableWithButton3HasSBIn1AndBBIn2AndUTGIn0() {
-        val table = buildTable<Player> {
-            withButtonInPosition(3)
-            withPlayers(alex, juno, maya)
-        }
+        val table = Table(players = listOf(alex, juno, maya), button = 3)
         assertThat(juno).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(maya).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(juno)
@@ -132,10 +117,7 @@ class TableTest {
     @Test
     @DisplayName("3 players table, button=7 -> SB=2, BB=0, UTG=1")
     fun threePlayersTableWithButton7HasSBIn2AndBBIn0AndUTGIn1() {
-        val table = buildTable<Player> {
-            withButtonInPosition(7)
-            withPlayers(alex, juno, maya)
-        }
+        val table = Table(players = listOf(alex, juno, maya), button = 7)
         assertThat(maya).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(alex).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(maya)
@@ -144,10 +126,7 @@ class TableTest {
     @Test
     @DisplayName("3 players table, button=-1 -> SB=0, BB=1, UTG=2")
     fun threePlayersTableWithButtonMinus1HasSBIn0AndBBIn1AndUTGIn2() {
-        val table = buildTable<Player> {
-            withButtonInPosition(-1)
-            withPlayers(alex, juno, maya)
-        }
+        val table = Table(players = listOf(alex, juno, maya), button = -1)
         assertThat(alex).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(juno).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(alex)
@@ -156,10 +135,7 @@ class TableTest {
     @Test
     @DisplayName("3 players table, button=-5 -> SB=2, BB=0, UTG=1")
     fun threePlayersTableWithButtonMinus5HasSBIn2AndBBIn0AndUTGIn1() {
-        val table = buildTable<Player> {
-            withButtonInPosition(-5)
-            withPlayers(alex, juno, maya)
-        }
+        val table = Table(players = listOf(alex, juno, maya), button = -5)
         assertThat(maya).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(alex).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(maya)
@@ -169,10 +145,7 @@ class TableTest {
     @Test
     @DisplayName("TableIterator allow to iterate in a cyclic way trough next()")
     fun tableIteratorAllowToIterateInACyclicWayTroughNextMethod() {
-        val table = buildTable<Player> {
-            withButtonInPosition(0)
-            withPlayers(alex, juno, maya)
-        }
+        val table = Table(players = listOf(alex, juno, maya), button = 0)
         val iterator = table.iterateFromSB()
         assertThat(iterator.next()).isEqualTo(juno)
         assertThat(iterator.next()).isEqualTo(maya)
@@ -185,34 +158,26 @@ class TableTest {
     @Test
     @DisplayName("findPlayerBySeatName: looking for a player not at table -> returns null")
     fun lookingForAPlayerNotAtTableReturnsNull() {
-        val table = buildTable<Player> {
-            withPlayers(juno, maya)
-        }
+        val table = Table( players = listOf(juno, maya) )
         assertThat(table.findPlayerBySeatName("Alex")).isNull()
     }
     @Test
     @DisplayName("findPlayerBySeatName: looking for a player at table -> returns the player")
     fun lookingForAPlayerAtTableReturnsThePlayer() {
-        val table = buildTable<Player> {
-            withPlayers(juno, maya)
-        }
+        val table = Table( players = listOf(juno, maya) )
         assertThat(table.findPlayerBySeatName("Maya")).isEqualTo(maya)
     }
 
     @Test
     @DisplayName("position(): table with [alex, poly], alex position -> returns 0")
     fun position_twoPlayersTableFirstPosition_returns0() {
-        val table = buildTable<Player> {
-            withPlayers(alex, poly)
-        }
+        val table = Table( players = listOf(alex, poly) )
         assertThat(table.position(alex)).isEqualTo(0)
     }
     @Test
     @DisplayName("position(): table with [alex, poly], juno position -> throws an exception")
     fun position_missingPlayer_throwsAnException() {
-        val table = buildTable<Player> {
-            withPlayers(alex, poly)
-        }
+        val table = Table( players = listOf(alex, poly) )
 
         assertThat { assertThat(table.position(juno)) }
                 .isFailure()
