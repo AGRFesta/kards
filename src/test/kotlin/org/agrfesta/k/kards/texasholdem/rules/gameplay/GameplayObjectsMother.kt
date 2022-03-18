@@ -22,10 +22,15 @@ fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGa
         board = EmptyBoard(aDeck()) as BoardInSequence, phasePots = phasePots)
 }
 
-fun aGameContext(): GameContext = GameContextImpl(
-    uuid = UUID.randomUUID(), table = anOpponentsTable(), payments = aGamePayments(), board = board(),
-    history = emptyMap(), phasePots = emptyMap()
-)
+fun aGameContext(): GameContext = aGameContextImplWith()
+fun aGameContextImplWith(
+    uuid: UUID = UUID.randomUUID(),
+    table: Table<Opponent> = anOpponentsTable(),
+    payments: GamePayments = aGamePayments(),
+    board: Board = board(),
+    history: Map<GamePhase, List<PlayerAction>> = emptyMap(),
+    phasePots: Map<GamePhase, Pot<SeatName>> = emptyMap()
+) = GameContextImpl(uuid, table, payments, board, history, phasePots)
 fun aGameResult() = GameResult(aPlayer(), 2000, emptyList())
 fun aShowdownPlayerResult() = ShowdownPlayerResult(anInGamePlayer(), null, aCardsEvaluation())
 fun aCardsEvaluation() = StraightHand(TEN)
@@ -42,4 +47,8 @@ fun board(vararg strings: String): Board = object : Board {
         5 -> GamePhase.RIVER
         else -> throw IllegalArgumentException("Unable to get phase from invalid board, cards:${cards()}")
     }
+}
+fun aBoardAt(phase: GamePhase): Board =  object : Board {
+    override val cards: Set<Card> = emptySet() // we don't care about cards here
+    override val phase: GamePhase = phase
 }

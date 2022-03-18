@@ -18,18 +18,13 @@ class GameContextImpl(
     override val table: Table<Opponent>,
     override val payments: GamePayments,
     override val board: Board,
-    override val history: Map<GamePhase, List<PlayerAction>> = mapOf(
-        GamePhase.PRE_FLOP to emptyList(),
-        GamePhase.FLOP to emptyList(),
-        GamePhase.TURN to emptyList(),
-        GamePhase.RIVER to emptyList()
-    ),
+    override val history: Map<GamePhase, List<PlayerAction>>,
     override val phasePots: Map<GamePhase, Pot<SeatName>>
 ): GameContext {
 
-    override fun getPhaseHistory(): List<PlayerAction> = history[board.phase]
-        ?: throw IllegalStateException("History not initialized at ${board.phase}")
-    override fun getGlobalPot(): Pot<SeatName> = phasePots.values.reduce { a, b -> a + b }
+    override fun getPhaseHistory(): List<PlayerAction> = history[board.phase] ?: emptyList()
+    override fun getGlobalPot(): Pot<SeatName> = phasePots.values
+        .reduceOrNull { a, b -> a + b } ?: emptyMap()
 
 }
 
