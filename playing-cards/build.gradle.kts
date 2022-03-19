@@ -3,8 +3,8 @@ import org.gradle.jvm.tasks.Jar
 import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.5.31"
-	id("org.jetbrains.dokka") version "1.5.31"
+    id("org.jetbrains.kotlin.jvm") version "1.6.10"
+	id("org.jetbrains.dokka") version "1.6.10"
 	id("io.gitlab.arturbosch.detekt").version("1.19.0")
 	jacoco
     `java-library`
