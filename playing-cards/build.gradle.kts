@@ -1,10 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.jvm.tasks.Jar
+import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.61"
-	id("org.jetbrains.dokka") version "0.10.0"
-	id("io.gitlab.arturbosch.detekt").version("1.12.0")
+    id("org.jetbrains.kotlin.jvm") version "1.6.10"
+	id("org.jetbrains.dokka") version "1.6.10"
+	id("io.gitlab.arturbosch.detekt") version "1.19.0"
 	jacoco
     `java-library`
 	`maven-publish`
@@ -12,27 +13,27 @@ plugins {
 
 val myMavenRepoWriteUrl: String by project
 
-group = "agrfesta.kcards"
-version = "0.1.0"
+group = "org.agrfesta.k.kards"
+version = "1.0.0"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
-	jcenter()
+	gradlePluginPortal()
+	mavenCentral()
 }
 
 dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-	testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.1")
-	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.1")
-	testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.20")
-	testImplementation("io.mockk:mockk:1.10.0")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+	testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
+	testImplementation("io.mockk:mockk:1.12.3")
 }
 
-tasks.dokka {    
-    outputFormat = "html"
-    outputDirectory = "$buildDir/javadoc"
+tasks.dokkaHtml {
+	outputDirectory.set(buildDir.resolve("javadoc"))
 }
 
 tasks.withType<Test> {
@@ -49,8 +50,8 @@ tasks.withType<KotlinCompile> {
 val dokkaJar by tasks.creating(Jar::class) {
 	group = JavaBasePlugin.DOCUMENTATION_GROUP
 	description = "Assembles Kotlin docs with Dokka"
-	classifier = "javadoc"
-	from(tasks.dokka)
+	archiveClassifier.set("javadoc")
+	from(tasks.dokkaJavadoc)
 }
 
 val sourcesJar by tasks.creating(Jar::class) {
@@ -58,12 +59,10 @@ val sourcesJar by tasks.creating(Jar::class) {
 	from(sourceSets.getByName("main").allSource)
 }
 
-detekt {
+tasks.withType<Detekt>().configureEach {
 	reports {
-		html {
-			enabled = true
-			destination = file("$buildDir/reports/detekt/deteckt.html")
-		}
+		html.required.set(true)
+		html.outputLocation.set(file("$buildDir/reports/detekt/deteckt.html"))
 	}
 }
 
