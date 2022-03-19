@@ -5,7 +5,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.6.10"
 	id("org.jetbrains.dokka") version "1.6.10"
-	id("io.gitlab.arturbosch.detekt").version("1.19.0")
+	id("io.gitlab.arturbosch.detekt") version "1.19.0"
 	jacoco
     `java-library`
 	`maven-publish`
@@ -29,7 +29,7 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 	testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
-	testImplementation("io.mockk:mockk:1.12.1")
+	testImplementation("io.mockk:mockk:1.12.3")
 }
 
 tasks.dokkaHtml {
