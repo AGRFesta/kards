@@ -1,5 +1,5 @@
 ## K-TexasHoldem [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.5.31-violet.svg?style=flat&logo=kotlin&logoColor=violet)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.6.10-violet.svg?style=flat&logo=kotlin&logoColor=violet)](http://kotlinlang.org)
 
 ### How to create a Player
 A Player is defined by its name and strategy.
