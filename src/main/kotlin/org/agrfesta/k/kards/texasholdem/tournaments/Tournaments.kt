@@ -1,6 +1,5 @@
 package org.agrfesta.k.kards.texasholdem.tournaments
 
-import org.agrfesta.k.cards.playingcards.utils.RandomGenerator
 import org.agrfesta.k.cards.playingcards.utils.SimpleRandomGenerator
 import org.agrfesta.k.cards.playingcards.utils.circularIndexMapping
 import org.agrfesta.k.kards.texasholdem.observers.GameObserver
@@ -12,10 +11,22 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStack
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Table
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.owns
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.toRanking
+import java.util.*
 
 typealias GameProvider = (IncreasingGamePayments, Table<PlayerStack>, GameObserver?) -> Game
 
-interface Tournament {
+interface TournamentDescriptor {
+    val initialStack: Int
+    val payments: IncreasingGamePayments
+}
+
+data class TournamentDescriptorImpl(
+    override val initialStack: Int,
+    override val payments: IncreasingGamePayments
+): TournamentDescriptor
+
+interface Tournament: TournamentDescriptor {
+    val uuid: UUID
     fun play(): List<Set<Player>>
 }
 
@@ -24,14 +35,13 @@ private val defaultGameProvider: GameProvider = { payments, table, observer ->
 }
 
 class TournamentImpl(
-    private val initialStack: Int,
-    private val payments: IncreasingGamePayments,
+    override val uuid: UUID = UUID.randomUUID(),
+    descriptor: TournamentDescriptor,
     subscriptions: Set<Player>,
-    rndGenerator: RandomGenerator = SimpleRandomGenerator(),
     private val observer: TournamentObserver? = null,
     private val gameProvider: GameProvider = defaultGameProvider,
-    private val buttonProvider: (Int) -> Int = { rndGenerator.nextInt(it) }
-): Tournament {
+    private val buttonProvider: (Int) -> Int = { SimpleRandomGenerator().nextInt(it) }
+): Tournament, TournamentDescriptor by descriptor {
     private val losers: MutableList<Set<Player>> = mutableListOf()
     private var players: List<PlayerStack>
 

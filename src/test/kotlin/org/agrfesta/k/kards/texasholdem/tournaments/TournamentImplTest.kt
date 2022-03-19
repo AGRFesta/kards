@@ -45,7 +45,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = TournamentImpl(
-            initialStack = 2000, payments = payments,
+            descriptor = TournamentDescriptorImpl(2000, payments),
             subscriptions = setOf(poly, jane, alex, dave),
             buttonProvider = { 2 }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
@@ -79,7 +79,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = TournamentImpl(
-            initialStack = 2000, payments = payments,
+            descriptor = TournamentDescriptorImpl(2000, payments),
             subscriptions = setOf(poly, jane, alex),
             buttonProvider = { 2 }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
@@ -111,7 +111,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = TournamentImpl(
-            initialStack = 2000, payments = payments,
+            descriptor = TournamentDescriptorImpl(2000, payments),
             subscriptions = setOf(poly, jane, alex),
             buttonProvider = { 2 }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
@@ -141,7 +141,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = TournamentImpl(
-            initialStack = 2000, payments = payments,
+            descriptor = TournamentDescriptorImpl(2000, payments),
             subscriptions = setOf(poly, jane, alex),
             buttonProvider = { 2 }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
@@ -162,7 +162,7 @@ class TournamentImplTest {
     fun constructor_aTournamentWithNoSubscribers_raisesAnException() {
         val failure = assertThat {
             TournamentImpl(
-                initialStack = 2000, payments = anIncreasingGamePayments(),
+                descriptor = TournamentDescriptorImpl(2000, anIncreasingGamePayments()),
                 subscriptions = emptySet() )
         }.isFailure()
         failure.hasClass(IllegalStateException::class)
@@ -174,7 +174,7 @@ class TournamentImplTest {
     fun constructor_aTournamentWithASingleSubscriber_raisesAnException() {
         val failure = assertThat {
             TournamentImpl(
-                initialStack = 2000, payments = anIncreasingGamePayments(),
+                descriptor = TournamentDescriptorImpl(2000, anIncreasingGamePayments()),
                 subscriptions = setOf(alex) )
         }.isFailure()
         failure.hasClass(IllegalStateException::class)
