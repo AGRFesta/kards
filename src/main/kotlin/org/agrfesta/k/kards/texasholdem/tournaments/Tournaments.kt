@@ -1,30 +1,50 @@
 package org.agrfesta.k.kards.texasholdem.tournaments
 
+import org.agrfesta.k.cards.playingcards.utils.RandomGenerator
+import org.agrfesta.k.cards.playingcards.utils.SimpleRandomGenerator
 import org.agrfesta.k.cards.playingcards.utils.circularIndexMapping
+import org.agrfesta.k.kards.texasholdem.observers.GameObserver
 import org.agrfesta.k.kards.texasholdem.observers.TournamentObserver
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.Game
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.GameImpl
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Player
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStack
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Table
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.owns
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.toRanking
 
+typealias GameProvider = (IncreasingGamePayments, Table<PlayerStack>, GameObserver?) -> Game
+
 interface Tournament {
     fun play(): List<Set<Player>>
 }
 
-class TournamentImpl(subscriptions: Set<Player>,
-                     private val initialStack: Int,
-                     private val payments: IncreasingGamePayments,
-                     private val buttonProvider: (Int) -> Int,
-                     private val gameProvider: GameProvider,
-                     private val observer: TournamentObserver? ): Tournament {
+private val defaultGameProvider: GameProvider = { payments, table, observer ->
+    GameImpl(payments = payments, table = table, observer = observer)
+}
+
+class TournamentImpl(
+    private val initialStack: Int,
+    private val payments: IncreasingGamePayments,
+    subscriptions: Set<Player>,
+    rndGenerator: RandomGenerator = SimpleRandomGenerator(),
+    private val observer: TournamentObserver? = null,
+    private val gameProvider: GameProvider = defaultGameProvider,
+    private val buttonProvider: (Int) -> Int = { rndGenerator.nextInt(it) }
+): Tournament {
     private val losers: MutableList<Set<Player>> = mutableListOf()
-    private var players: List<PlayerStack> = subscriptions
+    private var players: List<PlayerStack>
+
+    init {
+        check(subscriptions.isNotEmpty()) { "Unable to create a tournament with zero players!" }
+        check(subscriptions.size != 1) { "Unable to create a tournament with only one player!" }
+        players = subscriptions
             .map { player -> player owns initialStack }
             .toMutableList()
+    }
 
     override fun play(): List<Set<Player>> {
-        var button = buttonProvider.invoke(players.size)
+        var button = buttonProvider(players.size)
         while (players.size > 1) {
             playGame(button)
             payments.nextGame()
@@ -36,7 +56,7 @@ class TournamentImpl(subscriptions: Set<Player>,
 
     private fun playGame(button: Int) {
         val table = Table(players,button)
-        val game = gameProvider.invoke(payments, table, observer)
+        val game = gameProvider(payments, table, observer)
         val postGamePlayers = game.play()
         removeLosers(postGamePlayers)
         observer?.notifyTournamentRanking(players.toRanking(), losers.reversed())

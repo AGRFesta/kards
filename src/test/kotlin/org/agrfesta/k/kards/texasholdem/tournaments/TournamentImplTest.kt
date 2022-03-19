@@ -3,7 +3,10 @@ package org.agrfesta.k.kards.texasholdem.tournaments
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.extracting
+import assertk.assertions.hasClass
+import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFailure
 import assertk.assertions.isTrue
 import io.mockk.every
 import io.mockk.mockk
@@ -14,12 +17,12 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.Position
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Table
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aPlayerCardsSet
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.alex
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.anIncreasingGamePayments
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.dave
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.isSittingOn
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.jane
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.owns
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.poly
-import org.agrfesta.k.kards.texasholdem.tournaments.TournamentBuilder.Companion.buildingTournament
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -41,19 +44,17 @@ class TournamentImplTest {
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
-        val result = buildingTournament()
-                .withAnInitialStackOf(2000)
-                .withPayments(payments)
-                .withSubscribers(poly, jane, alex, dave)
-                .withButtonProvider { 2 } // button of first game in position 2
-                .withGameProvider { igp, table, _ ->
-                    val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
-                    assertThat(igp === payments).isTrue()
-                    tables.add(inGameTable)
-                    mockedGames[counter++]
-                }
-                .build()
-                .play()
+        val result = TournamentImpl(
+            initialStack = 2000, payments = payments,
+            subscriptions = setOf(poly, jane, alex, dave),
+            buttonProvider = { 2 }, // button of first game in position 2
+            gameProvider = { igp, table, _ ->
+                val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
+                assertThat(igp === payments).isTrue()
+                tables.add(inGameTable)
+                mockedGames[counter++]
+            }
+        ).play()
 
         assertThat(alex).isSittingOn(tables[0], Position.BUTTON)
         assertThat(alex).isSittingOn(tables[1], Position.SMALL_BLIND)
@@ -77,19 +78,17 @@ class TournamentImplTest {
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
-        val result = buildingTournament()
-                .withAnInitialStackOf(2000)
-                .withPayments(payments)
-                .withSubscribers(poly, jane, alex)
-                .withButtonProvider { 2 } // button of first game in position 2
-                .withGameProvider { igp, table, _ ->
-                    val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
-                    assertThat(igp === payments).isTrue()
-                    tables.add(inGameTable)
-                    mockedGames[counter++]
-                }
-                .build()
-                .play()
+        val result = TournamentImpl(
+            initialStack = 2000, payments = payments,
+            subscriptions = setOf(poly, jane, alex),
+            buttonProvider = { 2 }, // button of first game in position 2
+            gameProvider = { igp, table, _ ->
+                val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
+                assertThat(igp === payments).isTrue()
+                tables.add(inGameTable)
+                mockedGames[counter++]
+            }
+        ).play()
 
         assertThat(tables[0].players).extracting { it.player }.containsOnly(alex,jane,poly)
         assertThat(tables[1].players).extracting { it.player }.containsOnly(jane,poly)
@@ -111,19 +110,17 @@ class TournamentImplTest {
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
-        val result = buildingTournament()
-                .withAnInitialStackOf(2000)
-                .withPayments(payments)
-                .withSubscribers(poly, jane, alex)
-                .withButtonProvider { 2 } // button of first game in position 2
-                .withGameProvider { igp, table, _ ->
-                    val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
-                    assertThat(igp === payments).isTrue()
-                    tables.add(inGameTable)
-                    mockedGames[counter++]
-                }
-                .build()
-                .play()
+        val result = TournamentImpl(
+            initialStack = 2000, payments = payments,
+            subscriptions = setOf(poly, jane, alex),
+            buttonProvider = { 2 }, // button of first game in position 2
+            gameProvider = { igp, table, _ ->
+                val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
+                assertThat(igp === payments).isTrue()
+                tables.add(inGameTable)
+                mockedGames[counter++]
+            }
+        ).play()
 
         assertThat(result.size).isEqualTo(3)
         assertThat(result).theWinnerIs(poly)
@@ -143,29 +140,51 @@ class TournamentImplTest {
         )
         val tables = mutableListOf<Table<InGamePlayer>>()
 
-        val result = buildingTournament()
-                .withAnInitialStackOf(2000)
-                .withPayments(payments)
-                .withSubscribers(poly, jane, alex)
-                .withButtonProvider { 2 } // button of first game in position 2
-                .withGameProvider { igp, table, _ ->
-                    val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
-                    assertThat(igp === payments).isTrue()
-                    tables.add(inGameTable)
-                    mockedGames[counter++]
-                }
-                .build()
-                .play()
+        val result = TournamentImpl(
+            initialStack = 2000, payments = payments,
+            subscriptions = setOf(poly, jane, alex),
+            buttonProvider = { 2 }, // button of first game in position 2
+            gameProvider = { igp, table, _ ->
+                val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
+                assertThat(igp === payments).isTrue()
+                tables.add(inGameTable)
+                mockedGames[counter++]
+            }
+        ).play()
 
         assertThat(result.size).isEqualTo(2)
         assertThat(result).theWinnerIs(poly)
         assertThat(result[1]).containsOnly(alex,jane) // seconds
     }
 
+    @Test
+    @DisplayName("constructor(): a Tournament with no subscribers -> raises an Exception")
+    fun constructor_aTournamentWithNoSubscribers_raisesAnException() {
+        val failure = assertThat {
+            TournamentImpl(
+                initialStack = 2000, payments = anIncreasingGamePayments(),
+                subscriptions = emptySet() )
+        }.isFailure()
+        failure.hasClass(IllegalStateException::class)
+        failure.hasMessage("Unable to create a tournament with zero players!")
+    }
+
+    @Test
+    @DisplayName("constructor(): a Tournament with a single subscriber -> raises an Exception")
+    fun constructor_aTournamentWithASingleSubscriber_raisesAnException() {
+        val failure = assertThat {
+            TournamentImpl(
+                initialStack = 2000, payments = anIncreasingGamePayments(),
+                subscriptions = setOf(alex) )
+        }.isFailure()
+        failure.hasClass(IllegalStateException::class)
+        failure.hasMessage("Unable to create a tournament with only one player!")
+    }
+
 }
 
-private fun aMockGameWithResult(vararg elemnts: PlayerStack): Game {
+private fun aMockGameWithResult(vararg elements: PlayerStack): Game {
     val game = mockk<Game>()
-    every { game.play() } answers { elemnts.toList() }
+    every { game.play() } answers { elements.toList() }
     return game
 }

@@ -24,4 +24,4 @@ class IncreasingGamePayments(private val structure: List<LevelPayments>, private
     }
 }
 
-data class LevelPayments(val sb: Int, val bb: Int, val ante: Int?)
+data class LevelPayments(val sb: Int, val bb: Int, val ante: Int? = null)

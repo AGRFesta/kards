@@ -8,6 +8,8 @@ import org.agrfesta.k.kards.texasholdem.DeckListImpl
 import org.agrfesta.k.kards.texasholdem.observers.GameResult
 import org.agrfesta.k.kards.texasholdem.observers.ShowdownPlayerResult
 import org.agrfesta.k.kards.texasholdem.rules.hands.StraightHand
+import org.agrfesta.k.kards.texasholdem.tournaments.IncreasingGamePayments
+import org.agrfesta.k.kards.texasholdem.tournaments.LevelPayments
 import java.util.*
 
 fun aDeck(): Deck = DeckListImpl(listOf())
@@ -36,6 +38,7 @@ fun aShowdownPlayerResult() = ShowdownPlayerResult(anInGamePlayer(), null, aCard
 fun aCardsEvaluation() = StraightHand(TEN)
 
 fun aGamePayments(): GamePayments = GamePaymentsFixedImpl(10, 20)
+fun anIncreasingGamePayments() = IncreasingGamePayments(listOf(LevelPayments(1, 2)), 1)
 fun blinds(sb: Int, bb: Int): GamePayments = GamePaymentsFixedImpl(sb, bb)
 
 fun board(vararg strings: String): Board = object : Board {
