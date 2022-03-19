@@ -1,7 +1,7 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
-import agrfesta.k.cards.playingcards.cards.Card
-import agrfesta.k.cards.playingcards.deck.Deck
+import org.agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.deck.Deck
 
 private const val FLOP_SIZE = 3
 

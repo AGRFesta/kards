@@ -1,6 +1,6 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
-import agrfesta.k.cards.playingcards.suits.frenchCardsSet
+import org.agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluatorBaseImpl

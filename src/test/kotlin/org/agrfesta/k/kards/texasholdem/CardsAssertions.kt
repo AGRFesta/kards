@@ -1,6 +1,6 @@
 package org.agrfesta.k.kards.texasholdem
 
-import agrfesta.k.cards.playingcards.suits.frenchCardsSet
+import org.agrfesta.k.cards.playingcards.suits.frenchCardsSet
 
 fun willAssertThatCards(vararg cards: String) =
         LazyAssertionBuilder(frenchCardsSet(*cards))

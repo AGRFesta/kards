@@ -1,6 +1,6 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
-import agrfesta.k.cards.playingcards.cards.Rank
+import org.agrfesta.k.cards.playingcards.cards.Rank
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
 import org.agrfesta.k.kards.texasholdem.rules.RankCount
 import org.agrfesta.k.kards.texasholdem.utils.COUNT_THREE

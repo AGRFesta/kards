@@ -1,7 +1,7 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
-import agrfesta.k.cards.playingcards.deck.Deck
-import agrfesta.k.cards.playingcards.suits.Suit.FRENCH
+import org.agrfesta.k.cards.playingcards.deck.Deck
+import org.agrfesta.k.cards.playingcards.suits.Suit.FRENCH
 import org.agrfesta.k.kards.texasholdem.observers.DealerObserver
 import org.agrfesta.k.kards.texasholdem.observers.GameObserver
 import org.agrfesta.k.kards.texasholdem.observers.GameResult

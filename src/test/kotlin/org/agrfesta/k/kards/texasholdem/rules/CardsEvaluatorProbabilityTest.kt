@@ -1,6 +1,6 @@
 package org.agrfesta.k.kards.texasholdem.rules
 
-import agrfesta.k.cards.playingcards.suits.Suit.FRENCH
+import org.agrfesta.k.cards.playingcards.suits.Suit.FRENCH
 import org.agrfesta.k.kards.texasholdem.rules.hands.THPokerHand
 
 /*  Hand	        Frequency	Probability	Cumulative	Odds (odds against)

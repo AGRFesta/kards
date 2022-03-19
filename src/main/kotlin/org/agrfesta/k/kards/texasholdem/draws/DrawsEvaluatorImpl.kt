@@ -1,20 +1,20 @@
 package org.agrfesta.k.kards.texasholdem.draws
 
-import agrfesta.k.cards.playingcards.cards.Card
-import agrfesta.k.cards.playingcards.cards.Seed
-import agrfesta.k.cards.playingcards.suits.ACE
-import agrfesta.k.cards.playingcards.suits.EIGHT
-import agrfesta.k.cards.playingcards.suits.FIVE
-import agrfesta.k.cards.playingcards.suits.FOUR
-import agrfesta.k.cards.playingcards.suits.JACK
-import agrfesta.k.cards.playingcards.suits.KING
-import agrfesta.k.cards.playingcards.suits.NINE
-import agrfesta.k.cards.playingcards.suits.QUEEN
-import agrfesta.k.cards.playingcards.suits.SEVEN
-import agrfesta.k.cards.playingcards.suits.SIX
-import agrfesta.k.cards.playingcards.suits.TEN
-import agrfesta.k.cards.playingcards.suits.THREE
-import agrfesta.k.cards.playingcards.suits.TWO
+import org.agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.cards.Seed
+import org.agrfesta.k.cards.playingcards.suits.ACE
+import org.agrfesta.k.cards.playingcards.suits.EIGHT
+import org.agrfesta.k.cards.playingcards.suits.FIVE
+import org.agrfesta.k.cards.playingcards.suits.FOUR
+import org.agrfesta.k.cards.playingcards.suits.JACK
+import org.agrfesta.k.cards.playingcards.suits.KING
+import org.agrfesta.k.cards.playingcards.suits.NINE
+import org.agrfesta.k.cards.playingcards.suits.QUEEN
+import org.agrfesta.k.cards.playingcards.suits.SEVEN
+import org.agrfesta.k.cards.playingcards.suits.SIX
+import org.agrfesta.k.cards.playingcards.suits.TEN
+import org.agrfesta.k.cards.playingcards.suits.THREE
+import org.agrfesta.k.cards.playingcards.suits.TWO
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluatorBaseImpl
 import org.agrfesta.k.kards.texasholdem.rules.buildHistogram
 import org.agrfesta.k.kards.texasholdem.rules.cardComparator
@@ -134,7 +134,7 @@ class DrawsEvaluatorImpl : DrawsEvaluator {
   }
 
   private fun createFlushDraw(seed: Seed, cards: Collection<Card>): FlushDraw {
-    val ranks = cards.take(FLUSH_DRAW_SIZE).map { it.rank() }
+    val ranks = cards.take(FLUSH_DRAW_SIZE).map { it.rank }
     return FlushDraw(ranks[FIRST_POS], ranks[SECOND_POS], ranks[THIRD_POS], ranks[FOURTH_POS], seed)
   }
 }

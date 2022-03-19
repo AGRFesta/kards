@@ -4,7 +4,7 @@ import org.agrfesta.k.kards.texasholdem.createDynamicTest
 import org.agrfesta.k.kards.texasholdem.isEqualTo
 import org.agrfesta.k.kards.texasholdem.isNotEqualTo
 import org.agrfesta.k.kards.texasholdem.willAssertThat
-import agrfesta.k.cards.playingcards.suits.*
+import org.agrfesta.k.cards.playingcards.suits.*
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
@@ -15,40 +15,40 @@ import org.junit.jupiter.api.TestFactory
 class OutsideStraightDrawTest {
 
     @Test
-    @DisplayName("Outside Straight Draw top is FOUR -> raises an Exception")
+    @DisplayName("Outside Straight Draw top is 4 -> raises an Exception")
     fun outsideStraightDrawTopIsFourRaisesAnException() {
         val failure = assertThat {
             OutsideStraightDraw(FOUR)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The minimum Outside Straight Draw top is FIVE, top: FOUR")
+        failure.hasMessage("The minimum Outside Straight Draw top is 5, top: 4")
     }
     @Test
-    @DisplayName("Outside Straight Draw top is THREE -> raises an Exception")
+    @DisplayName("Outside Straight Draw top is 3-> raises an Exception")
     fun outsideStraightDrawTopIsThreeRaisesAnException() {
         val failure = assertThat {
             OutsideStraightDraw(THREE)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The minimum Outside Straight Draw top is FIVE, top: THREE")
+        failure.hasMessage("The minimum Outside Straight Draw top is 5, top: 3")
     }
     @Test
-    @DisplayName("Outside Straight Draw top is TWO -> raises an Exception")
+    @DisplayName("Outside Straight Draw top is 2-> raises an Exception")
     fun outsideStraightDrawTopIsTwoRaisesAnException() {
         val failure = assertThat {
             OutsideStraightDraw(TWO)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The minimum Outside Straight Draw top is FIVE, top: TWO")
+        failure.hasMessage("The minimum Outside Straight Draw top is 5, top: 2")
     }
     @Test
-    @DisplayName("Outside Straight Draw top is ACE -> raises an Exception")
+    @DisplayName("Outside Straight Draw top is A-> raises an Exception")
     fun outsideStraightDrawTopIsAceRaisesAnException() {
         val failure = assertThat {
             OutsideStraightDraw(ACE)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The maximum Outside Straight Draw top is KING, top: ACE")
+        failure.hasMessage("The maximum Outside Straight Draw top is K, top: A")
     }
 
     @TestFactory

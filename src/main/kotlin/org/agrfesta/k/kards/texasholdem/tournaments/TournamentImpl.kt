@@ -1,6 +1,6 @@
 package org.agrfesta.k.kards.texasholdem.tournaments
 
-import agrfesta.k.cards.playingcards.utils.circularIndexMapping
+import org.agrfesta.k.cards.playingcards.utils.circularIndexMapping
 import org.agrfesta.k.kards.texasholdem.observers.TournamentObserver
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Player
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStack

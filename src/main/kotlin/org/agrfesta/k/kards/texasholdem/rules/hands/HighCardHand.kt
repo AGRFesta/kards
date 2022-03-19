@@ -1,7 +1,7 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
-import agrfesta.k.cards.playingcards.cards.Card
-import agrfesta.k.cards.playingcards.cards.Rank
+import org.agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.cards.Rank
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
 import org.agrfesta.k.kards.texasholdem.rules.OrderedRankListComparator
 import org.agrfesta.k.kards.texasholdem.utils.FIFTH_POS
@@ -41,7 +41,7 @@ class HighCardHand(
 
 fun getHighCardEvaluation(cards: Collection<Card>): CardsEvaluation {
     val kickers = cards
-            .map { it.rank() }
+            .map { it.rank }
             .sortedDescending()
     return HighCardHand(
             kickers[FIRST_POS],

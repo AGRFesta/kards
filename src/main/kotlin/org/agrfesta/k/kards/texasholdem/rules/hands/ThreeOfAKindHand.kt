@@ -1,8 +1,8 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
-import agrfesta.k.cards.playingcards.cards.Card
-import agrfesta.k.cards.playingcards.cards.Rank
 import kotlinx.collections.immutable.toImmutableList
+import org.agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.cards.Rank
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
 import org.agrfesta.k.kards.texasholdem.rules.OrderedRankListComparator
 import org.agrfesta.k.kards.texasholdem.rules.RankCount
@@ -41,8 +41,8 @@ fun findThreeOfAKindEvaluation(
     if (rankRepList[0].count == COUNT_THREE) {
         val rank = rankRepList[0].rank
         val kickers = cards
-                .filter { it.rank() != rank }
-                .map { it.rank() }
+                .filter { it.rank != rank }
+                .map { it.rank }
                 .sortedDescending()
         return ThreeOfAKindHand(rank, kickers[FIRST_POS], kickers[SECOND_POS])
     }

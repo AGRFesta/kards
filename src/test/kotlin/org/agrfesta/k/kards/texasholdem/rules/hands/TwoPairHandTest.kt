@@ -1,21 +1,21 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
-import agrfesta.k.cards.playingcards.suits.ACE
-import agrfesta.k.cards.playingcards.suits.FIVE
-import agrfesta.k.cards.playingcards.suits.FOUR
-import agrfesta.k.cards.playingcards.suits.JACK
-import agrfesta.k.cards.playingcards.suits.KING
-import agrfesta.k.cards.playingcards.suits.NINE
-import agrfesta.k.cards.playingcards.suits.QUEEN
-import agrfesta.k.cards.playingcards.suits.SEVEN
-import agrfesta.k.cards.playingcards.suits.SIX
-import agrfesta.k.cards.playingcards.suits.TEN
-import agrfesta.k.cards.playingcards.suits.THREE
-import agrfesta.k.cards.playingcards.suits.TWO
 import assertk.assertThat
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
 import assertk.assertions.isFailure
+import org.agrfesta.k.cards.playingcards.suits.ACE
+import org.agrfesta.k.cards.playingcards.suits.FIVE
+import org.agrfesta.k.cards.playingcards.suits.FOUR
+import org.agrfesta.k.cards.playingcards.suits.JACK
+import org.agrfesta.k.cards.playingcards.suits.KING
+import org.agrfesta.k.cards.playingcards.suits.NINE
+import org.agrfesta.k.cards.playingcards.suits.QUEEN
+import org.agrfesta.k.cards.playingcards.suits.SEVEN
+import org.agrfesta.k.cards.playingcards.suits.SIX
+import org.agrfesta.k.cards.playingcards.suits.TEN
+import org.agrfesta.k.cards.playingcards.suits.THREE
+import org.agrfesta.k.cards.playingcards.suits.TWO
 import org.agrfesta.k.kards.texasholdem.createDynamicTest
 import org.agrfesta.k.kards.texasholdem.isEqualTo
 import org.agrfesta.k.kards.texasholdem.isGreaterThan
@@ -63,7 +63,7 @@ class TwoPairHandTest {
             TwoPairHand(NINE,NINE,   KING)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Pairs rank can't be equal: NINE")
+        failure.hasMessage("Pairs rank can't be equal: 9")
     }
     @Test
     @DisplayName("Major pair rank is equal to kicker rank -> raises an Exception")
@@ -72,7 +72,7 @@ class TwoPairHandTest {
             TwoPairHand(NINE,SIX,   NINE)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Pairs rank can't be equal to kicker rank: NINE")
+        failure.hasMessage("Pairs rank can't be equal to kicker rank: 9")
     }
     @Test
     @DisplayName("Minor pair rank is equal to kicker rank -> raises an Exception")
@@ -81,7 +81,7 @@ class TwoPairHandTest {
             TwoPairHand(NINE,SIX,   SIX)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Pairs rank can't be equal to kicker rank: SIX")
+        failure.hasMessage("Pairs rank can't be equal to kicker rank: 6")
     }
     @Test
     @DisplayName("Minor pair rank is greater than major pair rank -> raises an Exception")
@@ -90,6 +90,6 @@ class TwoPairHandTest {
             TwoPairHand(NINE,ACE,   SIX)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Minor pair rank can't be greater than major pair: NINE,ACE")
+        failure.hasMessage("Minor pair rank can't be greater than major pair: 9,A")
     }
 }

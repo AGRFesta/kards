@@ -1,6 +1,6 @@
 package org.agrfesta.k.kards.texasholdem.draws
 
-import agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.cards.Card
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
 
 interface DrawsEvaluator {

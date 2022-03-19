@@ -1,27 +1,27 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
-import agrfesta.k.cards.playingcards.suits.ACE
-import agrfesta.k.cards.playingcards.suits.EIGHT
-import agrfesta.k.cards.playingcards.suits.FIVE
-import agrfesta.k.cards.playingcards.suits.FOUR
-import agrfesta.k.cards.playingcards.suits.FrenchSeed.CLUBS
-import agrfesta.k.cards.playingcards.suits.FrenchSeed.DIAMONDS
-import agrfesta.k.cards.playingcards.suits.FrenchSeed.HEARTS
-import agrfesta.k.cards.playingcards.suits.FrenchSeed.SPADES
-import agrfesta.k.cards.playingcards.suits.JACK
-import agrfesta.k.cards.playingcards.suits.KING
-import agrfesta.k.cards.playingcards.suits.NINE
-import agrfesta.k.cards.playingcards.suits.QUEEN
-import agrfesta.k.cards.playingcards.suits.SEVEN
-import agrfesta.k.cards.playingcards.suits.SIX
-import agrfesta.k.cards.playingcards.suits.TEN
-import agrfesta.k.cards.playingcards.suits.THREE
-import agrfesta.k.cards.playingcards.suits.TWO
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
 import assertk.assertions.isFailure
+import org.agrfesta.k.cards.playingcards.suits.ACE
+import org.agrfesta.k.cards.playingcards.suits.EIGHT
+import org.agrfesta.k.cards.playingcards.suits.FIVE
+import org.agrfesta.k.cards.playingcards.suits.FOUR
+import org.agrfesta.k.cards.playingcards.suits.FrenchSeed.CLUBS
+import org.agrfesta.k.cards.playingcards.suits.FrenchSeed.DIAMONDS
+import org.agrfesta.k.cards.playingcards.suits.FrenchSeed.HEARTS
+import org.agrfesta.k.cards.playingcards.suits.FrenchSeed.SPADES
+import org.agrfesta.k.cards.playingcards.suits.JACK
+import org.agrfesta.k.cards.playingcards.suits.KING
+import org.agrfesta.k.cards.playingcards.suits.NINE
+import org.agrfesta.k.cards.playingcards.suits.QUEEN
+import org.agrfesta.k.cards.playingcards.suits.SEVEN
+import org.agrfesta.k.cards.playingcards.suits.SIX
+import org.agrfesta.k.cards.playingcards.suits.TEN
+import org.agrfesta.k.cards.playingcards.suits.THREE
+import org.agrfesta.k.cards.playingcards.suits.TWO
 import org.agrfesta.k.kards.texasholdem.createDynamicTest
 import org.agrfesta.k.kards.texasholdem.isEqualTo
 import org.agrfesta.k.kards.texasholdem.isGreaterThan
@@ -136,7 +136,7 @@ class FlushHandTest {
             FlushHand(JACK, ACE, KING, ACE, TWO, CLUBS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Multiple with same Rank: JACK,ACE,KING,ACE,TWO")
+        failure.hasMessage("Multiple with same Rank: J,A,K,A,2")
     }
     @Test
     @DisplayName("Three have the same Rank -> raises an Exception")
@@ -145,7 +145,7 @@ class FlushHandTest {
             FlushHand(JACK, ACE, ACE, ACE, TWO, CLUBS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Multiple with same Rank: JACK,ACE,ACE,ACE,TWO")
+        failure.hasMessage("Multiple with same Rank: J,A,A,A,2")
     }
     @Test
     @DisplayName("Four have the same Rank -> raises an Exception")
@@ -154,7 +154,7 @@ class FlushHandTest {
             FlushHand(ACE, ACE, ACE, ACE, TWO, CLUBS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Multiple with same Rank: ACE,ACE,ACE,ACE,TWO")
+        failure.hasMessage("Multiple with same Rank: A,A,A,A,2")
     }
     @Test
     @DisplayName("All have the same Rank -> raises an Exception")
@@ -163,6 +163,6 @@ class FlushHandTest {
             FlushHand(ACE, ACE, ACE, ACE, ACE, CLUBS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Multiple with same Rank: ACE,ACE,ACE,ACE,ACE")
+        failure.hasMessage("Multiple with same Rank: A,A,A,A,A")
     }
 }

@@ -1,8 +1,8 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
-import agrfesta.k.cards.playingcards.cards.Rank
-import agrfesta.k.cards.playingcards.cards.Seed
-import agrfesta.k.cards.playingcards.suits.FIVE
+import org.agrfesta.k.cards.playingcards.cards.Rank
+import org.agrfesta.k.cards.playingcards.cards.Seed
+import org.agrfesta.k.cards.playingcards.suits.FIVE
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
 
 class StraightFlushHand(
@@ -11,7 +11,7 @@ class StraightFlushHand(
     : AbstractTHHand(THPokerHand.STRAIGHT_FLUSH) {
 
     init {
-        require(straightTop >= FIVE) { "The minimum Straight top is FIVE, straightTop: $straightTop" }
+        require(straightTop >= FIVE) { "The minimum Straight top is 5, straightTop: $straightTop" }
     }
 
     override fun innerCompareTo(ce: CardsEvaluation): Int {

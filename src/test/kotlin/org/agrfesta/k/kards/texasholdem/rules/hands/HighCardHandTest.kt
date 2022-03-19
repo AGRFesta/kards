@@ -1,23 +1,23 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
-import agrfesta.k.cards.playingcards.suits.ACE
-import agrfesta.k.cards.playingcards.suits.EIGHT
-import agrfesta.k.cards.playingcards.suits.FIVE
-import agrfesta.k.cards.playingcards.suits.FOUR
-import agrfesta.k.cards.playingcards.suits.JACK
-import agrfesta.k.cards.playingcards.suits.KING
-import agrfesta.k.cards.playingcards.suits.NINE
-import agrfesta.k.cards.playingcards.suits.QUEEN
-import agrfesta.k.cards.playingcards.suits.SEVEN
-import agrfesta.k.cards.playingcards.suits.SIX
-import agrfesta.k.cards.playingcards.suits.TEN
-import agrfesta.k.cards.playingcards.suits.THREE
-import agrfesta.k.cards.playingcards.suits.TWO
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
 import assertk.assertions.isFailure
+import org.agrfesta.k.cards.playingcards.suits.ACE
+import org.agrfesta.k.cards.playingcards.suits.EIGHT
+import org.agrfesta.k.cards.playingcards.suits.FIVE
+import org.agrfesta.k.cards.playingcards.suits.FOUR
+import org.agrfesta.k.cards.playingcards.suits.JACK
+import org.agrfesta.k.cards.playingcards.suits.KING
+import org.agrfesta.k.cards.playingcards.suits.NINE
+import org.agrfesta.k.cards.playingcards.suits.QUEEN
+import org.agrfesta.k.cards.playingcards.suits.SEVEN
+import org.agrfesta.k.cards.playingcards.suits.SIX
+import org.agrfesta.k.cards.playingcards.suits.TEN
+import org.agrfesta.k.cards.playingcards.suits.THREE
+import org.agrfesta.k.cards.playingcards.suits.TWO
 import org.agrfesta.k.kards.texasholdem.createDynamicTest
 import org.agrfesta.k.kards.texasholdem.isEqualTo
 import org.agrfesta.k.kards.texasholdem.isGreaterThan
@@ -74,7 +74,7 @@ class HighCardHandTest {
             HighCardHand(JACK, ACE, KING, ACE, TWO)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Multiple kickers with same Rank: JACK,ACE,KING,ACE,TWO")
+        failure.hasMessage("Multiple kickers with same Rank: J,A,K,A,2")
     }
     @Test
     @DisplayName("Three kickers have the same Rank -> raises an Exception")
@@ -83,7 +83,7 @@ class HighCardHandTest {
             HighCardHand(JACK, ACE, ACE, ACE, TWO)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Multiple kickers with same Rank: JACK,ACE,ACE,ACE,TWO")
+        failure.hasMessage("Multiple kickers with same Rank: J,A,A,A,2")
     }
     @Test
     @DisplayName("Four kickers have the same Rank -> raises an Exception")
@@ -92,7 +92,7 @@ class HighCardHandTest {
             HighCardHand(ACE, ACE, ACE, ACE, TWO)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Multiple kickers with same Rank: ACE,ACE,ACE,ACE,TWO")
+        failure.hasMessage("Multiple kickers with same Rank: A,A,A,A,2")
     }
     @Test
     @DisplayName("All kickers have the same Rank -> raises an Exception")
@@ -101,6 +101,6 @@ class HighCardHandTest {
             HighCardHand(ACE, ACE, ACE, ACE, ACE)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Multiple kickers with same Rank: ACE,ACE,ACE,ACE,ACE")
+        failure.hasMessage("Multiple kickers with same Rank: A,A,A,A,A")
     }
 }

@@ -1,13 +1,25 @@
 package org.agrfesta.k.kards.texasholdem.draws
 
+import assertk.assertThat
+import assertk.assertions.containsExactly
+import assertk.assertions.hasClass
+import assertk.assertions.hasMessage
+import assertk.assertions.isFailure
+import org.agrfesta.k.cards.playingcards.suits.ACE
+import org.agrfesta.k.cards.playingcards.suits.FIVE
+import org.agrfesta.k.cards.playingcards.suits.FrenchSeed.CLUBS
+import org.agrfesta.k.cards.playingcards.suits.FrenchSeed.DIAMONDS
+import org.agrfesta.k.cards.playingcards.suits.FrenchSeed.HEARTS
+import org.agrfesta.k.cards.playingcards.suits.JACK
+import org.agrfesta.k.cards.playingcards.suits.KING
+import org.agrfesta.k.cards.playingcards.suits.QUEEN
+import org.agrfesta.k.cards.playingcards.suits.SIX
+import org.agrfesta.k.cards.playingcards.suits.TEN
+import org.agrfesta.k.cards.playingcards.suits.TWO
 import org.agrfesta.k.kards.texasholdem.createDynamicTest
 import org.agrfesta.k.kards.texasholdem.isEqualTo
 import org.agrfesta.k.kards.texasholdem.isNotEqualTo
 import org.agrfesta.k.kards.texasholdem.willAssertThat
-import agrfesta.k.cards.playingcards.suits.*
-import agrfesta.k.cards.playingcards.suits.FrenchSeed.*
-import assertk.assertThat
-import assertk.assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -29,7 +41,7 @@ class FlushDrawTest {
             FlushDraw(JACK,ACE,KING,ACE, CLUBS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Multiple with same Rank: JACK,ACE,KING,ACE")
+        failure.hasMessage("Multiple with same Rank: J,A,K,A")
     }
     @Test
     @DisplayName("Three have the same Rank -> raises an Exception")
@@ -38,7 +50,7 @@ class FlushDrawTest {
             FlushDraw(JACK,ACE,ACE,ACE, CLUBS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Multiple with same Rank: JACK,ACE,ACE,ACE")
+        failure.hasMessage("Multiple with same Rank: J,A,A,A")
     }
     @Test
     @DisplayName("All have the same Rank -> raises an Exception")
@@ -47,7 +59,7 @@ class FlushDrawTest {
             FlushDraw(ACE,ACE,ACE,ACE, CLUBS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Multiple with same Rank: ACE,ACE,ACE,ACE")
+        failure.hasMessage("Multiple with same Rank: A,A,A,A")
     }
 
     @TestFactory

@@ -1,25 +1,25 @@
 package org.agrfesta.k.kards.texasholdem.rules
 
-import agrfesta.k.cards.playingcards.cards.Card
-import agrfesta.k.cards.playingcards.suits.ACE
-import agrfesta.k.cards.playingcards.suits.EIGHT
-import agrfesta.k.cards.playingcards.suits.FIVE
-import agrfesta.k.cards.playingcards.suits.FOUR
-import agrfesta.k.cards.playingcards.suits.FrenchSeed.CLUBS
-import agrfesta.k.cards.playingcards.suits.FrenchSeed.HEARTS
-import agrfesta.k.cards.playingcards.suits.JACK
-import agrfesta.k.cards.playingcards.suits.KING
-import agrfesta.k.cards.playingcards.suits.QUEEN
-import agrfesta.k.cards.playingcards.suits.SEVEN
-import agrfesta.k.cards.playingcards.suits.SIX
-import agrfesta.k.cards.playingcards.suits.TEN
-import agrfesta.k.cards.playingcards.suits.THREE
-import agrfesta.k.cards.playingcards.suits.TWO
-import agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import assertk.assertThat
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
 import assertk.assertions.isFailure
+import org.agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.suits.ACE
+import org.agrfesta.k.cards.playingcards.suits.EIGHT
+import org.agrfesta.k.cards.playingcards.suits.FIVE
+import org.agrfesta.k.cards.playingcards.suits.FOUR
+import org.agrfesta.k.cards.playingcards.suits.FrenchSeed.CLUBS
+import org.agrfesta.k.cards.playingcards.suits.FrenchSeed.HEARTS
+import org.agrfesta.k.cards.playingcards.suits.JACK
+import org.agrfesta.k.cards.playingcards.suits.KING
+import org.agrfesta.k.cards.playingcards.suits.QUEEN
+import org.agrfesta.k.cards.playingcards.suits.SEVEN
+import org.agrfesta.k.cards.playingcards.suits.SIX
+import org.agrfesta.k.cards.playingcards.suits.TEN
+import org.agrfesta.k.cards.playingcards.suits.THREE
+import org.agrfesta.k.cards.playingcards.suits.TWO
+import org.agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import org.agrfesta.k.kards.texasholdem.LazyFunctionAssertion
 import org.agrfesta.k.kards.texasholdem.createDynamicTest
 import org.agrfesta.k.kards.texasholdem.result
@@ -135,7 +135,7 @@ interface CardsEvaluatorTest {
                     .result(FullHouseHand(JACK, ACE)),
 
             willAssertThatCards("Ah","3h","Kh","2h","4h")
-                    .result(org.agrfesta.k.kards.texasholdem.rules.hands.FlushHand(ACE, KING, FOUR, THREE, TWO, HEARTS)),
+                    .result(FlushHand(ACE, KING, FOUR, THREE, TWO, HEARTS)),
 
             willAssertThatCards("7h","6d","4c","3h","5h")
                     .result(StraightHand(SEVEN)),

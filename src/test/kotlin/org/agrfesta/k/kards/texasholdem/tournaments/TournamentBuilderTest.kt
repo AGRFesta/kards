@@ -1,6 +1,6 @@
 package org.agrfesta.k.kards.texasholdem.tournaments
 
-import agrfesta.k.cards.playingcards.utils.RandomGenerator
+import org.agrfesta.k.cards.playingcards.utils.RandomGenerator
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.hasClass

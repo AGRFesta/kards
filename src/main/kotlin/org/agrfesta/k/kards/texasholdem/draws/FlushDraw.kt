@@ -1,7 +1,7 @@
 package org.agrfesta.k.kards.texasholdem.draws
 
-import agrfesta.k.cards.playingcards.cards.Rank
-import agrfesta.k.cards.playingcards.cards.Seed
+import org.agrfesta.k.cards.playingcards.cards.Rank
+import org.agrfesta.k.cards.playingcards.cards.Seed
 
 /*
     A flush draw, or four flush, is a hand with four cards of the same suit that may improve to a flush.
@@ -39,7 +39,7 @@ class FlushDraw(
     }
 
     override fun toString(): String {
-        val rankSymbols = ranks.map { it.symbol() }
-        return "$rankSymbols${seed.symbol()}"
+        val rankSymbols = ranks.map { it.symbol }
+        return "$rankSymbols${seed.symbol}"
     }
 }

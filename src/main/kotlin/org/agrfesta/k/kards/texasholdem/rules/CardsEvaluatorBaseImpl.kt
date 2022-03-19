@@ -1,10 +1,10 @@
 package org.agrfesta.k.kards.texasholdem.rules
 
-import agrfesta.k.cards.playingcards.cards.Card
-import agrfesta.k.cards.playingcards.cards.Rank
-import agrfesta.k.cards.playingcards.cards.Seed
-import agrfesta.k.cards.playingcards.suits.FrenchRank
-import agrfesta.k.cards.playingcards.suits.getFrenchRankFromSymbol
+import org.agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.cards.Rank
+import org.agrfesta.k.cards.playingcards.cards.Seed
+import org.agrfesta.k.cards.playingcards.suits.frenchRankList
+import org.agrfesta.k.cards.playingcards.suits.getFrenchRankFromSymbol
 import org.agrfesta.k.kards.texasholdem.rules.hands.FlushHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.PairHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.StraightFlushHand
@@ -59,7 +59,7 @@ class CardsEvaluatorBaseImpl : CardsEvaluator {
   private fun getStraightRankFromSequence(bitSeq: Int): Rank? {
     for (i in straightMask.indices) {
       if (bitSeq and straightMask[i] == straightMask[i]) {
-        return getFrenchRankFromSymbol(FrenchRank.values()[i].symbol())
+        return getFrenchRankFromSymbol(frenchRankList[i].symbol)
       }
     }
     return null
@@ -74,7 +74,7 @@ class CardsEvaluatorBaseImpl : CardsEvaluator {
 
   private fun createFlushEvaluation(seed: Seed, cards: Collection<Card>): FlushHand {
     val ranks = cards
-            .map { it.rank() }
+            .map { it.rank }
             .sortedDescending()
             .take(POKER_HAND_SIZE)
     return FlushHand(
@@ -103,16 +103,16 @@ class CardsEvaluatorBaseImpl : CardsEvaluator {
               .map { it.rank }
               .sortedDescending()
           val kicker = cards
-              .filter { it.rank() != pairs[0] && it.rank() != pairs[1] }
-              .map { it.rank() }
+              .filter { it.rank != pairs[0] && it.rank != pairs[1] }
+              .map { it.rank }
               .maxOrNull()
           TwoPairHand(pairs[0], pairs[1], kicker!!)
         }
         rankRepList[0].count == 2 -> {
           val rank = rankRepList[0].rank
           val kickers = cards
-              .filter { it.rank() != rank }
-              .map { it.rank() }
+              .filter { it.rank != rank }
+              .map { it.rank }
               .sortedDescending()
           PairHand(rank, kickers[0], kickers[1], kickers[2])
         }
@@ -121,7 +121,7 @@ class CardsEvaluatorBaseImpl : CardsEvaluator {
 
   private fun getStraightFlushEvaluation(histogram: List<Set<Seed>>, seed: Seed): CardsEvaluation? {
     val seedsSeq = getSeedsBitSequences(histogram)
-    val rank = getStraightRankFromSequence(seedsSeq[seed.ord()])
+    val rank = getStraightRankFromSequence(seedsSeq[seed.ordinal])
     return if (rank != null) {
       StraightFlushHand(rank, seed)
     } else null

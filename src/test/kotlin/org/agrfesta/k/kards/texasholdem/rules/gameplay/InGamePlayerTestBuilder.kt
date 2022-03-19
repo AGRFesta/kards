@@ -1,6 +1,6 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
-import agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.cards.Card
 
 class InGamePlayerTestBuilder private constructor() {
     private var player = aPlayer()

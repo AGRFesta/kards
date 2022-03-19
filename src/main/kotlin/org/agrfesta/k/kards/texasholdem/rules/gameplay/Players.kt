@@ -1,6 +1,6 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
-import agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.cards.Card
 
 typealias PlayerStrategyInterface = (HeroGameContextImpl<OwnPlayer>) -> Action
 

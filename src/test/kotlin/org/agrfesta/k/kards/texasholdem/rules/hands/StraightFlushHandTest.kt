@@ -1,15 +1,15 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
-import agrfesta.k.cards.playingcards.suits.ACE
-import agrfesta.k.cards.playingcards.suits.FIVE
-import agrfesta.k.cards.playingcards.suits.FOUR
-import agrfesta.k.cards.playingcards.suits.FrenchSeed.DIAMONDS
-import agrfesta.k.cards.playingcards.suits.FrenchSeed.HEARTS
-import agrfesta.k.cards.playingcards.suits.NINE
-import agrfesta.k.cards.playingcards.suits.QUEEN
-import agrfesta.k.cards.playingcards.suits.SEVEN
-import agrfesta.k.cards.playingcards.suits.THREE
-import agrfesta.k.cards.playingcards.suits.TWO
+import org.agrfesta.k.cards.playingcards.suits.ACE
+import org.agrfesta.k.cards.playingcards.suits.FIVE
+import org.agrfesta.k.cards.playingcards.suits.FOUR
+import org.agrfesta.k.cards.playingcards.suits.FrenchSeed.DIAMONDS
+import org.agrfesta.k.cards.playingcards.suits.FrenchSeed.HEARTS
+import org.agrfesta.k.cards.playingcards.suits.NINE
+import org.agrfesta.k.cards.playingcards.suits.QUEEN
+import org.agrfesta.k.cards.playingcards.suits.SEVEN
+import org.agrfesta.k.cards.playingcards.suits.THREE
+import org.agrfesta.k.cards.playingcards.suits.TWO
 import assertk.assertThat
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
@@ -53,30 +53,30 @@ class StraightFlushHandTest {
     }
 
     @Test
-    @DisplayName("Straight top is FOUR -> raises an Exception")
+    @DisplayName("Straight top is 4 -> raises an Exception")
     fun straightTopIsFourRaisesAnException() {
         val failure = assertThat {
             StraightFlushHand(FOUR, HEARTS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The minimum Straight top is FIVE, straightTop: FOUR")
+        failure.hasMessage("The minimum Straight top is 5, straightTop: 4")
     }
     @Test
-    @DisplayName("Straight top is THREE -> raises an Exception")
+    @DisplayName("Straight top is 3-> raises an Exception")
     fun straightTopIsThreeRaisesAnException() {
         val failure = assertThat {
             StraightFlushHand(THREE, HEARTS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The minimum Straight top is FIVE, straightTop: THREE")
+        failure.hasMessage("The minimum Straight top is 5, straightTop: 3")
     }
     @Test
-    @DisplayName("Straight top is TWO -> raises an Exception")
+    @DisplayName("Straight top is 2-> raises an Exception")
     fun straightTopIsTwoRaisesAnException() {
         val failure = assertThat {
             StraightFlushHand(TWO, HEARTS)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("The minimum Straight top is FIVE, straightTop: TWO")
+        failure.hasMessage("The minimum Straight top is 5, straightTop: 2")
     }
 }

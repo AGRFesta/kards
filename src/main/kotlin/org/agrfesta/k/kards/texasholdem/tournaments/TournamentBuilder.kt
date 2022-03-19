@@ -1,7 +1,7 @@
 package org.agrfesta.k.kards.texasholdem.tournaments
 
-import agrfesta.k.cards.playingcards.utils.RandomGenerator
-import agrfesta.k.cards.playingcards.utils.SimpleRandomGenerator
+import org.agrfesta.k.cards.playingcards.utils.RandomGenerator
+import org.agrfesta.k.cards.playingcards.utils.SimpleRandomGenerator
 import org.agrfesta.k.kards.texasholdem.observers.GameObserver
 import org.agrfesta.k.kards.texasholdem.observers.TournamentObserver
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Game

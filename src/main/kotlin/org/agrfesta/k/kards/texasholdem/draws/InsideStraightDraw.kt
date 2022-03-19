@@ -1,9 +1,9 @@
 package org.agrfesta.k.kards.texasholdem.draws
 
-import agrfesta.k.cards.playingcards.cards.Rank
-import agrfesta.k.cards.playingcards.suits.ACE
-import agrfesta.k.cards.playingcards.suits.FIVE
-import agrfesta.k.cards.playingcards.suits.TEN
+import org.agrfesta.k.cards.playingcards.cards.Rank
+import org.agrfesta.k.cards.playingcards.suits.ACE
+import org.agrfesta.k.cards.playingcards.suits.FIVE
+import org.agrfesta.k.cards.playingcards.suits.TEN
 import org.agrfesta.k.kards.texasholdem.utils.FOUR_OFF
 import org.agrfesta.k.kards.texasholdem.utils.ONE_OFF
 import org.agrfesta.k.kards.texasholdem.utils.THREE_OFF
@@ -20,7 +20,7 @@ import org.agrfesta.k.kards.texasholdem.utils.TWO_OFF
 data class InsideStraightDraw(val top: Rank, val missing: Rank) : Draw {
 
     init {
-        require(top >= FIVE) { "The minimum Inside Straight Draw top is FIVE, top: $top" }
+        require(top >= FIVE) { "The minimum Inside Straight Draw top is 5, top: $top" }
         if (top == FIVE) {
             require(missing <= top) { "The missing Rank can't be greater than top: missing=$missing, top=$top" }
         } else if (missing >= top) {
@@ -37,8 +37,8 @@ data class InsideStraightDraw(val top: Rank, val missing: Rank) : Draw {
         }
     }
 
-    private fun stringIfMissing(rank: Rank) = if (rank == missing) "*" else rank.symbol().toString()
-    override fun toString(): String = StringBuilder("[${top.symbol()}")
+    private fun stringIfMissing(rank: Rank) = if (rank == missing) "*" else rank.symbol.toString()
+    override fun toString(): String = StringBuilder("[${top.symbol}")
             .append(" ${stringIfMissing(top - ONE_OFF)}")
             .append(" ${stringIfMissing(top - TWO_OFF)}")
             .append(" ${stringIfMissing(top - THREE_OFF)}")

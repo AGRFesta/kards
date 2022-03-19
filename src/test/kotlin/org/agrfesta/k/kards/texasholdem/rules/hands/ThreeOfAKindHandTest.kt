@@ -1,19 +1,19 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
-import agrfesta.k.cards.playingcards.suits.ACE
-import agrfesta.k.cards.playingcards.suits.FIVE
-import agrfesta.k.cards.playingcards.suits.JACK
-import agrfesta.k.cards.playingcards.suits.KING
-import agrfesta.k.cards.playingcards.suits.NINE
-import agrfesta.k.cards.playingcards.suits.QUEEN
-import agrfesta.k.cards.playingcards.suits.SEVEN
-import agrfesta.k.cards.playingcards.suits.THREE
-import agrfesta.k.cards.playingcards.suits.TWO
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.hasClass
 import assertk.assertions.hasMessage
 import assertk.assertions.isFailure
+import org.agrfesta.k.cards.playingcards.suits.ACE
+import org.agrfesta.k.cards.playingcards.suits.FIVE
+import org.agrfesta.k.cards.playingcards.suits.JACK
+import org.agrfesta.k.cards.playingcards.suits.KING
+import org.agrfesta.k.cards.playingcards.suits.NINE
+import org.agrfesta.k.cards.playingcards.suits.QUEEN
+import org.agrfesta.k.cards.playingcards.suits.SEVEN
+import org.agrfesta.k.cards.playingcards.suits.THREE
+import org.agrfesta.k.cards.playingcards.suits.TWO
 import org.agrfesta.k.kards.texasholdem.createDynamicTest
 import org.agrfesta.k.kards.texasholdem.isEqualTo
 import org.agrfesta.k.kards.texasholdem.isGreaterThan
@@ -60,7 +60,7 @@ class ThreeOfAKindHandTest {
             ThreeOfAKindHand(ACE,   ACE, KING)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Rank of kickers can't be equal to tokRank: ACE")
+        failure.hasMessage("Rank of kickers can't be equal to tokRank: A")
     }
     @Test
     @DisplayName("Second kicker is equals to tokRank -> raises an Exception")
@@ -69,7 +69,7 @@ class ThreeOfAKindHandTest {
             ThreeOfAKindHand(KING,   ACE, KING)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Rank of kickers can't be equal to tokRank: KING")
+        failure.hasMessage("Rank of kickers can't be equal to tokRank: K")
     }
 
     @Test
@@ -86,7 +86,7 @@ class ThreeOfAKindHandTest {
             ThreeOfAKindHand(JACK,   ACE, ACE)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Kickers have same Rank: ACE,ACE")
+        failure.hasMessage("Kickers have same Rank: A,A")
     }
 
 }

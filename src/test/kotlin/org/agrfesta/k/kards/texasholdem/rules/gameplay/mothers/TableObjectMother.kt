@@ -1,6 +1,6 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay.mothers
 
-import agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.cards.Card
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.InGamePlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Player
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStrategyInterface

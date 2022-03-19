@@ -1,7 +1,7 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
-import agrfesta.k.cards.playingcards.cards.Card
-import agrfesta.k.cards.playingcards.suits.frenchCardsSet
+import org.agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import io.mockk.every
 import io.mockk.mockk
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.InGamePlayerTestBuilder.Companion.buildingAnInGamePlayer

@@ -1,9 +1,9 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
-import agrfesta.k.cards.playingcards.cards.Card
-import agrfesta.k.cards.playingcards.deck.Deck
-import agrfesta.k.cards.playingcards.suits.TEN
-import agrfesta.k.cards.playingcards.suits.frenchCardsSet
+import org.agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.deck.Deck
+import org.agrfesta.k.cards.playingcards.suits.TEN
+import org.agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import org.agrfesta.k.kards.texasholdem.DeckListImpl
 import org.agrfesta.k.kards.texasholdem.observers.GameResult
 import org.agrfesta.k.kards.texasholdem.observers.ShowdownPlayerResult
