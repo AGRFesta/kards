@@ -22,9 +22,8 @@ class CircularIndexTest {
     @Test
     @DisplayName("Get circular index mapping of an empty List -> throws IllegalStateException")
     fun gettingCircularIndexMappingOfAnEmptyList() {
-        val emptyList = listOf<String>()
         val failure = assertThat {
-            emptyList.circularIndexMapping(0)
+            emptyList<String>().circularIndexMapping(0)
         }.isFailure()
         failure.hasClass(IllegalStateException::class)
         failure.hasMessage("Trying to map a circular index on an empty List")
@@ -44,18 +43,16 @@ class CircularIndexTest {
             3 to 0,
             4 to 1,
             7 to 1
-    ).map { pair ->
-        dynamicTest(
-                "List size ${list.size}: ${pair.first} -> ${pair.second}")
-        { assertThat(list.circularIndexMapping(pair.first)).isEqualTo(pair.second) }
+    ).map {
+        dynamicTest("List size ${list.size}: ${it.first} -> ${it.second}")
+            { assertThat(list.circularIndexMapping(it.first)).isEqualTo(it.second) }
     }
 
     @Test
     @DisplayName("Get circular index from an empty List -> throws IllegalStateException")
     fun getCircularIndexFromAnEmptyList() {
-        val emptyList = listOf<String>()
         val failure = assertThat {
-            emptyList.circularIndex(0)
+            emptyList<String>().circularIndex(0)
         }.isFailure()
         failure.hasClass(IllegalStateException::class)
         failure.hasMessage("Trying to map a circular index on an empty List")
@@ -75,18 +72,16 @@ class CircularIndexTest {
             3 to 'A',
             4 to 'B',
             7 to 'B'
-    ).map { pair ->
-        dynamicTest(
-                "List $list: ${pair.first} -> ${pair.second}")
-        { assertThat(list.circularIndex(pair.first)).isEqualTo(pair.second) }
+    ).map {
+        dynamicTest("List $list: ${it.first} -> ${it.second}")
+            { assertThat(list.circularIndex(it.first)).isEqualTo(it.second) }
     }
 
     @Test
     @DisplayName("Get circular index mapping of an empty Array -> throws IllegalStateException")
     fun gettingCircularIndexMappingOfAnEmptyArray() {
-        val emptyArray = arrayOf<String>()
         val failure = assertThat {
-            emptyArray.circularIndexMapping(0)
+            emptyArray<String>().circularIndexMapping(0)
         }.isFailure()
         failure.hasClass(IllegalStateException::class)
         failure.hasMessage("Trying to map a circular index on an empty Array")
@@ -104,18 +99,16 @@ class CircularIndexTest {
             2 to 0,
             3 to 1,
             7 to 1
-    ).map { pair ->
-        dynamicTest(
-                "Array size ${array.size}: ${pair.first} -> ${pair.second}")
-        { assertThat(array.circularIndexMapping(pair.first)).isEqualTo(pair.second) }
+    ).map {
+        dynamicTest("Array size ${array.size}: ${it.first} -> ${it.second}")
+        { assertThat(array.circularIndexMapping(it.first)).isEqualTo(it.second) }
     }
 
     @Test
     @DisplayName("Get circular index from an empty Array -> throws IllegalStateException")
     fun gettingCircularIndexFromAnEmptyArray() {
-        val emptyArray = arrayOf<String>()
         val failure = assertThat {
-            emptyArray.circularIndex(0)
+            emptyArray<String>().circularIndex(0)
         }.isFailure()
         failure.hasClass(IllegalStateException::class)
         failure.hasMessage("Trying to map a circular index on an empty Array")
@@ -133,17 +126,16 @@ class CircularIndexTest {
             2 to rankX,
             3 to rankY,
             7 to rankY
-    ).map { pair ->
-        dynamicTest(
-                "Array ${array.toList()}: ${pair.first} -> ${pair.second}")
-        { assertThat(array.circularIndex(pair.first)).isEqualTo(pair.second) }
+    ).map {
+        dynamicTest("Array ${array.toList()}: ${it.first} -> ${it.second}")
+        { assertThat(array.circularIndex(it.first)).isEqualTo(it.second) }
     }
 
     private infix fun List<String>.subListingFrom(pair: Pair<Int,Int>) = Pair(this, pair)
     private infix fun Pair<List<String>, Pair<Int,Int>>.includedIsExactly(expected: List<String>) =
-            dynamicTest("${this.first} extracting circular sub-list from ${this.second.first} to" +
-                    " ${this.second.second} included -> $expected") {
-                val result = this.first.circularSubList(this.second.first, this.second.second)
+            dynamicTest("$first extracting circular sub-list from ${second.first} to" +
+                    " ${second.second} included -> $expected") {
+                val result = first.circularSubList(second.first, second.second)
                 assertThat(result).containsExactly(*expected.toTypedArray())
             }
     @TestFactory
@@ -156,9 +148,9 @@ class CircularIndexTest {
     )
 
     private infix fun Pair<List<String>, Pair<Int,Int>>.excludedToIsExactly(expected: List<String>) =
-            dynamicTest("${this.first} extracting circular sub-list from ${this.second.first} to" +
-                    " ${this.second.second} [a, b) -> $expected") {
-                val result = this.first.circularSubList(this.second.first, this.second.second, includedTo = false)
+            dynamicTest("$first extracting circular sub-list from ${second.first} to" +
+                    " ${second.second} [a, b) -> $expected") {
+                val result = first.circularSubList(second.first, second.second, includedTo = false)
                 assertThat(result).containsExactly(*expected.toTypedArray())
             }
     @TestFactory
@@ -171,9 +163,9 @@ class CircularIndexTest {
     )
 
     private infix fun Pair<List<String>, Pair<Int,Int>>.excludedFromIsExactly(expected: List<String>) =
-            dynamicTest("${this.first} extracting circular sub-list from ${this.second.first} to" +
-                    " ${this.second.second} (a, b] -> $expected") {
-                val result = this.first.circularSubList(this.second.first, this.second.second, includedFrom = false)
+            dynamicTest("$first extracting circular sub-list from ${second.first} to" +
+                    " ${second.second} (a, b] -> $expected") {
+                val result = first.circularSubList(second.first, second.second, includedFrom = false)
                 assertThat(result).containsExactly(*expected.toTypedArray())
             }
     @TestFactory
@@ -186,9 +178,9 @@ class CircularIndexTest {
     )
 
     private infix fun Pair<List<String>, Pair<Int,Int>>.excludedFromToIsExactly(expected: List<String>) =
-            dynamicTest("${this.first} extracting circular sub-list from ${this.second.first} to" +
-                    " ${this.second.second} (a, b) -> $expected") {
-                val result = this.first.circularSubList(this.second.first, this.second.second,
+            dynamicTest("$first extracting circular sub-list from ${second.first} to" +
+                    " ${second.second} (a, b) -> $expected") {
+                val result = first.circularSubList(second.first, second.second,
                         includedFrom = false, includedTo = false)
                 assertThat(result).containsExactly(*expected.toTypedArray())
             }

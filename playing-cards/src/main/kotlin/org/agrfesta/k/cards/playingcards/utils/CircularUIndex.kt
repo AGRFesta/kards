@@ -1,31 +1,31 @@
 package org.agrfesta.k.cards.playingcards.utils
 
 /**
- * Any [value] is transformed in a [Int] included into the interval [0, [List.size]-1], the transformation
+ * Any [value] is transformed in a [UInt] included into the interval [0, [List.size]-1], the transformation
  * considers the interval circular (after the last is again the first).
  * For example, if [List] has a size of 3:
  *  - a [value] of 3 -> 0
  *  - a [value] of 2 -> 2
  *  - a [value] of 0 -> 0
- *  - a [value] of -1 -> 2
+ *  - a [value] of 4 -> 1
  *
  * Throws [IllegalStateException] if [List] is empty.
  */
-fun <T> List<T>.circularIndexMapping(value: Int): Int {
+fun <T> List<T>.circularIndexMapping(value: UInt): UInt {
     check(isNotEmpty()) { "Trying to map a circular index on an empty List" }
-    return  ((value % size) + size) % size
+    return value % size.toUInt()
 }
 
 /**
  * The [List] is considered circular, will always return an element included into the interval [0, [List.size]-1] and
  * never throw a [IndexOutOfBoundsException].
  * Case of a [List] of size 3:
- * [value] -> ... -6 -5 -4  -3 -2 -1  0 1 2  3 4 5  6 7 8 ...
- *           ... [0  1  2 ][0  1  2 ][0 1 2][0 1 2][0 1 2] ...
+ * [value] -> ... 0 1 2  3 4 5  6 7 8 ...
+ *           ... [0 1 2][0 1 2][0 1 2] ...
  *
  * Throws [IllegalStateException] if [List] is empty.
  */
-fun <T> List<T>.circularIndex(value: Int): T = this[circularIndexMapping(value)]
+fun <T> List<T>.circularIndex(value: UInt): T = this[circularIndexMapping(value).toInt()]
 
 /**
  * Any [value] is transformed in a [Int] included into the interval [0, [Array.size]-1], the transformation
@@ -34,25 +34,25 @@ fun <T> List<T>.circularIndex(value: Int): T = this[circularIndexMapping(value)]
  *  - a [value] of 3 -> 0
  *  - a [value] of 2 -> 2
  *  - a [value] of 0 -> 0
- *  - a [value] of -1 -> 2
+ *  - a [value] of 4 -> 1
  *
  * Throws [IllegalStateException] if [Array] is empty.
  */
-fun <T> Array<T>.circularIndexMapping(value: Int): Int {
+fun <T> Array<T>.circularIndexMapping(value: UInt): UInt {
     check(isNotEmpty()) { "Trying to map a circular index on an empty Array" }
-    return ((value % size) + size) % size
+    return value % size.toUInt()
 }
 
 /**
  * The [Array] is considered circular, will always return an element included into the interval [0, [Array.size]-1] and
  * never throw a [IndexOutOfBoundsException].
  * Case of a [Array] of size 3:
- * [value] -> ... -6 -5 -4  -3 -2 -1  0 1 2  3 4 5  6 7 8 ...
- *           ... [0  1  2 ][0  1  2 ][0 1 2][0 1 2][0 1 2] ...
+ * [value] -> ... 0 1 2  3 4 5  6 7 8 ...
+ *           ... [0 1 2][0 1 2][0 1 2] ...
  *
  * Throws [IllegalStateException] if [Array] is empty.
  */
-fun <T> Array<T>.circularIndex(value: Int): T = this[circularIndexMapping(value)]
+fun <T> Array<T>.circularIndex(value: UInt): T = this[circularIndexMapping(value).toInt()]
 
 /**
  * Will extract a sub-list from position [from] to [to] from the original [List] considering it circular.
@@ -61,15 +61,16 @@ fun <T> Array<T>.circularIndex(value: Int): T = this[circularIndexMapping(value)
  *
  * Throws [IllegalStateException] if [List] is empty.
  */
-fun <T> List<T>.circularSubList(from: Int, to: Int, includedTo: Boolean = true, includedFrom: Boolean = true): List<T> {
+fun <T> List<T>.circularSubList(from: UInt, to: UInt, includedTo: Boolean = true, includedFrom: Boolean = true):
+        List<T> {
     val start = circularIndexMapping(from)
     val end = circularIndexMapping(to)
     val result = when {
         start == end -> listOf(start)
         start < end -> (start .. end)
-        else -> (start until size) + (0 .. end)
+        else -> (start until size.toUInt()) + (0u .. end)
     }
-        .map { this[it] }
+        .map { this[it.toInt()] }
         .toMutableList()
     if (result.size == 1) {
         return if (includedFrom || includedTo) result else emptyList()
@@ -78,3 +79,4 @@ fun <T> List<T>.circularSubList(from: Int, to: Int, includedTo: Boolean = true, 
     if (!includedFrom) result.removeAt(0)
     return result.toList()
 }
+
