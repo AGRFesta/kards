@@ -9,4 +9,4 @@ interface GameObserver: ShowdownObserver, DealerObserver {
     fun notifyStartingPhase(context: GameContext) {}
 }
 
-class GameResult(val winner: Player, val prize: Int, val players: List<PlayerStack>)
+class GameResult(val winner: Player, val prize: UInt, val players: List<PlayerStack>)

@@ -12,14 +12,14 @@ import org.junit.jupiter.api.Test
 
 @DisplayName("Increasing Game Payments tests")
 class IncreasingGamePaymentsTest {
-    private val level0 = LevelPayments(10,20,null)
-    private val level1 = LevelPayments(50,100,10)
+    private val level0 = LevelPayments(10u,20u,null)
+    private val level1 = LevelPayments(50u,100u,10u)
 
     @Test
     @DisplayName("Create it with an empty structure -> raises an exception")
     fun emptyStructureRaisesException() {
         val failure = assertThat {
-            IncreasingGamePayments(listOf(), 10)
+            IncreasingGamePayments(listOf(), 10u)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Unable to create an IncreasingGamePayments from an empty structure")
@@ -29,25 +29,16 @@ class IncreasingGamePaymentsTest {
     @DisplayName("Create it with gamesPerLevel equals to 0 -> raises an exception")
     fun gamesPerLevelEqualsToZeroRaisesException() {
         val failure = assertThat {
-            IncreasingGamePayments(listOf(level0), 0)
+            IncreasingGamePayments(listOf(level0), 0u)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Unable to create an IncreasingGamePayments, gamesPerLevel=0")
-    }
-    @Test
-    @DisplayName("Create it with gamesPerLevel equals to -3 -> raises an exception")
-    fun gamesPerLevelEqualsToMinusThreeRaisesException() {
-        val failure = assertThat {
-            IncreasingGamePayments(listOf(level0), -3)
-        }.isFailure()
-        failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Unable to create an IncreasingGamePayments, gamesPerLevel=-3")
     }
 
     @Test
     @DisplayName("Payments with two level and 3 games per each: After 3 games -> Returns payments for the second level")
     fun afterThreeGamesReturnsSecondLevelPayments() {
-        val payments = IncreasingGamePayments(listOf(level0,level1), 3)
+        val payments = IncreasingGamePayments(listOf(level0,level1), 3u)
         assertThat(payments).hasLevel(level0)
         payments.nextGame()
         assertThat(payments).hasLevel(level0)

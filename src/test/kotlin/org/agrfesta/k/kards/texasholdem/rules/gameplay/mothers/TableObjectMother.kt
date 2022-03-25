@@ -25,32 +25,32 @@ const val LATE = "Late"
 class TestTableBuilder {
     val players: MutableMap<Int, InGamePlayer> = mutableMapOf()
 
-    fun button(stack: Int = 100, cards: Set<Card> = aPlayerCardsSet(),
+    fun button(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
         players[BUTTON_POS] = InGamePlayer(Player(BUTTON, strategy), stack, cards)
         return this
     }
-    fun smallBlind(stack: Int = 100, cards: Set<Card> = aPlayerCardsSet(),
+    fun smallBlind(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                    strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
         players[SMALL_BLIND_POS] = InGamePlayer(Player(SMALL_BLIND, strategy), stack, cards)
         return this
     }
-    fun bigBlind(stack: Int = 100, cards: Set<Card> = aPlayerCardsSet(),
+    fun bigBlind(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                  strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
         players[BIG_BLIND_POS] = InGamePlayer(Player(BIG_BLIND, strategy), stack, cards)
         return this
     }
-    fun underTheGun(stack: Int = 100, cards: Set<Card> = aPlayerCardsSet(),
+    fun underTheGun(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                     strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
         players[UNDER_THE_GUN_POS] = InGamePlayer(Player(UNDER_THE_GUN, strategy), stack, cards)
         return this
     }
-    fun middle(stack: Int = 100, cards: Set<Card> = aPlayerCardsSet(),
+    fun middle(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                     strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
         players[MIDDLE_POS] = InGamePlayer(Player(MIDDLE, strategy), stack, cards)
         return this
     }
-    fun late(stack: Int = 100, cards: Set<Card> = aPlayerCardsSet(),
+    fun late(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                     strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
         players[LATE_POS] = InGamePlayer(Player(LATE, strategy), stack, cards)
         return this

@@ -33,11 +33,11 @@ class GameTest {
     fun playTest000() {
         val observerMock: GameObserver = mockk(relaxed = true)
         val table: Table<PlayerStack> = buildTestTable {
-            button(stack = 100, strategy = folder() )
-            smallBlind(stack = 100, strategy = folder() )
-            bigBlind(stack = 100, strategy = folder() )
+            button(stack = 100u, strategy = folder() )
+            smallBlind(stack = 100u, strategy = folder() )
+            bigBlind(stack = 100u, strategy = folder() )
         }.map { it.asPlayerStack() }
-        val game = GameImpl( payments = blinds(5, 10), table = table, observer = observerMock )
+        val game = GameImpl( payments = blinds(5u, 10u), table = table, observer = observerMock )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val result: CapturingSlot<GameResult> = slot()
@@ -48,12 +48,12 @@ class GameTest {
         assertThat(contexts).extracting { it.board.phase }
             .containsOnly(PRE_FLOP)
         val capturedObservedResult = result.captured
-        assertThat(capturedObservedResult.prize).isEqualTo(15)
+        assertThat(capturedObservedResult.prize).isEqualTo(15u)
         assertThat(capturedObservedResult.winner.name).isEqualTo(BIG_BLIND)
         assertThat(capturedObservedResult.players).extracting({it.name}, {it.stack})
-            .containsOnly(BUTTON to 100, SMALL_BLIND to 95, BIG_BLIND to 105)
+            .containsOnly(BUTTON to 100u, SMALL_BLIND to 95u, BIG_BLIND to 105u)
         assertThat(players).extracting({it.name}, {it.stack})
-            .containsOnly(BUTTON to 100, SMALL_BLIND to 95, BIG_BLIND to 105)
+            .containsOnly(BUTTON to 100u, SMALL_BLIND to 95u, BIG_BLIND to 105u)
     }
 
     @Test
@@ -61,16 +61,16 @@ class GameTest {
             "game ends at Pre-Flop, Big Blind wins the pot, no observer notification")
     fun playTest005() {
         val table: Table<PlayerStack> = buildTestTable {
-            button(stack = 100, strategy = folder() )
-            smallBlind(stack = 100, strategy = folder() )
-            bigBlind(stack = 100, strategy = folder() )
+            button(stack = 100u, strategy = folder() )
+            smallBlind(stack = 100u, strategy = folder() )
+            bigBlind(stack = 100u, strategy = folder() )
         }.map { it.asPlayerStack() }
-        val game = GameImpl( payments = blinds(5, 10), table = table )
+        val game = GameImpl( payments = blinds(5u, 10u), table = table )
 
         val players = game.play()
 
         assertThat(players).extracting({it.name}, {it.stack})
-            .containsOnly(BUTTON to 100, SMALL_BLIND to 95, BIG_BLIND to 105)
+            .containsOnly(BUTTON to 100u, SMALL_BLIND to 95u, BIG_BLIND to 105u)
     }
 
     @Test
@@ -79,11 +79,11 @@ class GameTest {
     fun playTest001() {
         val observerMock: GameObserver = mockk(relaxed = true)
         val table: Table<PlayerStack> = buildTestTable {
-            button(stack = 100, strategy = strategyMock(call(), fold()) )
-            smallBlind(stack = 100, strategy = strategyMock(call(), fold()) )
-            bigBlind(stack = 100, strategy = strategyMock(call(), fold()) )
+            button(stack = 100u, strategy = strategyMock(call(), fold()) )
+            smallBlind(stack = 100u, strategy = strategyMock(call(), fold()) )
+            bigBlind(stack = 100u, strategy = strategyMock(call(), fold()) )
         }.map { it.asPlayerStack() }
-        val game = GameImpl( payments = blinds(5, 10), table = table, observer = observerMock )
+        val game = GameImpl( payments = blinds(5u, 10u), table = table, observer = observerMock )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val result: CapturingSlot<GameResult> = slot()
@@ -94,12 +94,12 @@ class GameTest {
         assertThat(contexts).extracting { it.board.phase }
             .containsOnly(PRE_FLOP, FLOP)
         val capturedObservedResult = result.captured
-        assertThat(capturedObservedResult.prize).isEqualTo(30)
+        assertThat(capturedObservedResult.prize).isEqualTo(30u)
         assertThat(capturedObservedResult.winner.name).isEqualTo(BUTTON)
         assertThat(capturedObservedResult.players).extracting({it.name}, {it.stack})
-            .containsOnly(BUTTON to 120, SMALL_BLIND to 90, BIG_BLIND to 90)
+            .containsOnly(BUTTON to 120u, SMALL_BLIND to 90u, BIG_BLIND to 90u)
         assertThat(players).extracting({it.name}, {it.stack})
-            .containsOnly(BUTTON to 120, SMALL_BLIND to 90, BIG_BLIND to 90)
+            .containsOnly(BUTTON to 120u, SMALL_BLIND to 90u, BIG_BLIND to 90u)
     }
 
     @Test
@@ -107,16 +107,16 @@ class GameTest {
             game ends at Flop, Button wins the pot, no observer notified""")
     fun playTest006() {
         val table: Table<PlayerStack> = buildTestTable {
-            button(stack = 100, strategy = strategyMock(call(), fold()) )
-            smallBlind(stack = 100, strategy = strategyMock(call(), fold()) )
-            bigBlind(stack = 100, strategy = strategyMock(call(), fold()) )
+            button(stack = 100u, strategy = strategyMock(call(), fold()) )
+            smallBlind(stack = 100u, strategy = strategyMock(call(), fold()) )
+            bigBlind(stack = 100u, strategy = strategyMock(call(), fold()) )
         }.map { it.asPlayerStack() }
-        val game = GameImpl( payments = blinds(5, 10), table = table )
+        val game = GameImpl( payments = blinds(5u, 10u), table = table )
 
         val players = game.play()
 
         assertThat(players).extracting({it.name}, {it.stack})
-            .containsOnly(BUTTON to 120, SMALL_BLIND to 90, BIG_BLIND to 90)
+            .containsOnly(BUTTON to 120u, SMALL_BLIND to 90u, BIG_BLIND to 90u)
     }
 
     @Test
@@ -125,11 +125,11 @@ class GameTest {
     fun playTest002() {
         val observerMock: GameObserver = mockk(relaxed = true)
         val table: Table<PlayerStack> = buildTestTable {
-            button(stack = 100, strategy = strategyMock(call(), call(), fold()) )
-            smallBlind(stack = 100, strategy = strategyMock(call(), call(), fold()) )
-            bigBlind(stack = 100, strategy = strategyMock(call(), call(), fold()) )
+            button(stack = 100u, strategy = strategyMock(call(), call(), fold()) )
+            smallBlind(stack = 100u, strategy = strategyMock(call(), call(), fold()) )
+            bigBlind(stack = 100u, strategy = strategyMock(call(), call(), fold()) )
         }.map { it.asPlayerStack() }
-        val game = GameImpl( payments = blinds(5, 10), table = table, observer = observerMock )
+        val game = GameImpl( payments = blinds(5u, 10u), table = table, observer = observerMock )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val result: CapturingSlot<GameResult> = slot()
@@ -140,12 +140,12 @@ class GameTest {
         assertThat(contexts).extracting { it.board.phase }
             .containsOnly(PRE_FLOP, FLOP, TURN)
         val capturedObservedResult = result.captured
-        assertThat(capturedObservedResult.prize).isEqualTo(30)
+        assertThat(capturedObservedResult.prize).isEqualTo(30u)
         assertThat(capturedObservedResult.winner.name).isEqualTo(BUTTON)
         assertThat(capturedObservedResult.players).extracting({it.name}, {it.stack})
-            .containsOnly(BUTTON to 120, SMALL_BLIND to 90, BIG_BLIND to 90)
+            .containsOnly(BUTTON to 120u, SMALL_BLIND to 90u, BIG_BLIND to 90u)
         assertThat(players).extracting({it.name}, {it.stack})
-            .containsOnly(BUTTON to 120, SMALL_BLIND to 90, BIG_BLIND to 90)
+            .containsOnly(BUTTON to 120u, SMALL_BLIND to 90u, BIG_BLIND to 90u)
     }
 
     @Test
@@ -154,11 +154,11 @@ class GameTest {
     fun playTest003() {
         val observerMock: GameObserver = mockk(relaxed = true)
         val table: Table<PlayerStack> = buildTestTable {
-            button(stack = 100, strategy = strategyMock(call(), call(), call(), fold()) )
-            smallBlind(stack = 100, strategy = strategyMock(call(), call(), call(), fold()) )
-            bigBlind(stack = 100, strategy = strategyMock(call(), call(), call(), fold()) )
+            button(stack = 100u, strategy = strategyMock(call(), call(), call(), fold()) )
+            smallBlind(stack = 100u, strategy = strategyMock(call(), call(), call(), fold()) )
+            bigBlind(stack = 100u, strategy = strategyMock(call(), call(), call(), fold()) )
         }.map { it.asPlayerStack() }
-        val game = GameImpl( payments = blinds(5, 10), table = table, observer = observerMock )
+        val game = GameImpl( payments = blinds(5u, 10u), table = table, observer = observerMock )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val result: CapturingSlot<GameResult> = slot()
@@ -169,12 +169,12 @@ class GameTest {
         assertThat(contexts).extracting { it.board.phase }
             .containsOnly(PRE_FLOP, FLOP, TURN, RIVER)
         val capturedObservedResult = result.captured
-        assertThat(capturedObservedResult.prize).isEqualTo(30)
+        assertThat(capturedObservedResult.prize).isEqualTo(30u)
         assertThat(capturedObservedResult.winner.name).isEqualTo(BUTTON)
         assertThat(capturedObservedResult.players).extracting({it.name}, {it.stack})
-            .containsOnly(BUTTON to 120, SMALL_BLIND to 90, BIG_BLIND to 90)
+            .containsOnly(BUTTON to 120u, SMALL_BLIND to 90u, BIG_BLIND to 90u)
         assertThat(players).extracting({it.name}, {it.stack})
-            .containsOnly(BUTTON to 120, SMALL_BLIND to 90, BIG_BLIND to 90)
+            .containsOnly(BUTTON to 120u, SMALL_BLIND to 90u, BIG_BLIND to 90u)
     }
 
     @Test
@@ -182,12 +182,12 @@ class GameTest {
     fun playTest004() {
         val observerMock: GameObserver = mockk(relaxed = true)
         val table: Table<PlayerStack> = buildTestTable {
-            button(stack = 100, strategy = limper())
-            smallBlind(stack = 100, strategy = limper())
-            bigBlind(stack = 100, strategy = limper())
+            button(stack = 100u, strategy = limper())
+            smallBlind(stack = 100u, strategy = limper())
+            bigBlind(stack = 100u, strategy = limper())
         }.map { it.asPlayerStack() }
         val showdownMock: Showdown = mockk()
-        val game = GameImpl( payments = blinds(5, 10), table = table, observer = observerMock,
+        val game = GameImpl( payments = blinds(5u, 10u), table = table, observer = observerMock,
             config = GameConfig(createShowdown = {showdownMock}) )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
@@ -201,12 +201,12 @@ class GameTest {
         assertThat(contexts).extracting { it.board.phase }
             .containsOnly(PRE_FLOP, FLOP, TURN, RIVER)
         val capturedPot = showdownInitialPot.captured
-        assertThat(capturedPot.amount()).isEqualTo(30)
+        assertThat(capturedPot.amount()).isEqualTo(30u)
         assertThat(capturedPot.keys).extracting { it.name }
             .containsOnly(BUTTON, SMALL_BLIND, BIG_BLIND)
         assertThat(showdownBoard.captured.phase).isEqualTo(RIVER)
         assertThat(players).extracting({it.name}, {it.stack})
-            .containsOnly(BUTTON to 90, SMALL_BLIND to 90, BIG_BLIND to 90)
+            .containsOnly(BUTTON to 90u, SMALL_BLIND to 90u, BIG_BLIND to 90u)
     }
 
     @Test

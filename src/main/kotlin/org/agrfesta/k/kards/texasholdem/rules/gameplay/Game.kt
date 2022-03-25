@@ -49,7 +49,7 @@ class GameImpl(
 
     init {
         val inGameTable = table.map { InGamePlayer(it.player, it.stack, deck.draw(2).toSet()) }
-        val phasePots = emptyPhasePots<InGamePlayer, MutableMap<InGamePlayer, Int>> { mutableMapOf() }
+        val phasePots = emptyPhasePots<InGamePlayer, MutableMap<InGamePlayer, UInt>> { mutableMapOf() }
         context = MutableGameContextImpl(
             uuid = this.uuid,
             table = inGameTable,

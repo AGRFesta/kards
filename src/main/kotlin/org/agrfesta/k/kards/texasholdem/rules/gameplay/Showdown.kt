@@ -14,7 +14,7 @@ class ShowdownImpl(
 ): Showdown {
     constructor(evaluator: org.agrfesta.k.kards.texasholdem.rules.CardsEvaluator): this(evaluator,null)
 
-    private val playersPrizes: MutableMap<Player,Int?> = mutableMapOf()
+    private val playersPrizes: MutableMap<Player,UInt?> = mutableMapOf()
 
     override fun execute(pot: InGamePot, board: Board) {
         val playersHands = pot.players()
@@ -35,10 +35,10 @@ class ShowdownImpl(
                 .groupBy( { it.value }, { it.key } )
                 .entries.maxByOrNull { it.key }
                 ?.value?.let { winners ->
-                    val prize = pot.amount() / winners.size
+                    val prize = pot.amount() / winners.size.toUInt()
                     winners.forEach {
                         it.receive(prize)
-                        playersPrizes[it.player] = (playersPrizes[it.player]?:0) + prize
+                        playersPrizes[it.player] = (playersPrizes[it.player]?:0u) + prize
                     }
                 }
     }

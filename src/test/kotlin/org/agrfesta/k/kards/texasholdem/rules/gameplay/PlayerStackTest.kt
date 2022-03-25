@@ -19,15 +19,15 @@ class PlayerStackTest {
     @Test
     @DisplayName("Collection<PlayerStack>.toRanking(): single element list -> returns a single element list")
     fun singleElementListReturnsASingleElementList() {
-        val list = listOf( alex owns 2000)
-        assertThat(list.toRanking()).containsExactly( alex owns 2000 )
+        val list = listOf( alex owns 2000u)
+        assertThat(list.toRanking()).containsExactly( alex owns 2000u )
     }
 
     @Test
     @DisplayName("Collection<PlayerStack>.toRanking(): a list not sorted by stack -> returns a list sorted by stack")
     fun aListNotSortedByStackReturnsAListSortedByStack() {
-        val list = listOf( alex owns 100, poly owns 500, jane owns 200)
-        assertThat(list.toRanking()).containsExactly( poly owns 500, jane owns 200, alex owns 100 )
+        val list = listOf( alex owns 100u, poly owns 500u, jane owns 200u)
+        assertThat(list.toRanking()).containsExactly( poly owns 500u, jane owns 200u, alex owns 100u )
     }
 
 }

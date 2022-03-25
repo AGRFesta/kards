@@ -19,7 +19,7 @@ fun anOpponentsTable(): Table<Opponent> = Table(listOf(anOpponent("A"), anOppone
 
 fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGamePayments())
     : MutableGameContextImpl  {
-    val phasePots = emptyPhasePots<InGamePlayer, MutableMap<InGamePlayer, Int>> { mutableMapOf() }
+    val phasePots = emptyPhasePots<InGamePlayer, MutableMap<InGamePlayer, UInt>> { mutableMapOf() }
     return MutableGameContextImpl(uuid = UUID.randomUUID(), table =  table, payments = payments,
         board = EmptyBoard(aDeck()) as BoardInSequence, phasePots = phasePots)
 }
@@ -33,13 +33,13 @@ fun aGameContextImplWith(
     history: Map<GamePhase, List<PlayerAction>> = emptyMap(),
     phasePots: Map<GamePhase, Pot<SeatName>> = emptyMap()
 ) = GameContextImpl(uuid, table, payments, board, history, phasePots)
-fun aGameResult() = GameResult(aPlayer(), 2000, emptyList())
+fun aGameResult() = GameResult(aPlayer(), 2000u, emptyList())
 fun aShowdownPlayerResult() = ShowdownPlayerResult(anInGamePlayer(), null, aCardsEvaluation())
 fun aCardsEvaluation() = StraightHand(TEN)
 
-fun aGamePayments(): GamePayments = GamePaymentsFixedImpl(10, 20)
-fun anIncreasingGamePayments() = IncreasingGamePayments(listOf(LevelPayments(1, 2)), 1)
-fun blinds(sb: Int, bb: Int): GamePayments = GamePaymentsFixedImpl(sb, bb)
+fun aGamePayments(): GamePayments = GamePaymentsFixedImpl(10u, 20u)
+fun anIncreasingGamePayments() = IncreasingGamePayments(listOf(LevelPayments(1u, 2u)), 1u)
+fun blinds(sb: UInt, bb: UInt): GamePayments = GamePaymentsFixedImpl(sb, bb)
 
 fun board(vararg strings: String): Board = object : Board {
     override val cards: Set<Card> = frenchCardsSet(*strings)

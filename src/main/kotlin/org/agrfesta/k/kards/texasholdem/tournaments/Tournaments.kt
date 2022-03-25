@@ -16,12 +16,12 @@ import java.util.*
 typealias GameProvider = (IncreasingGamePayments, Table<PlayerStack>, GameObserver?) -> Game
 
 interface TournamentDescriptor {
-    val initialStack: Int
+    val initialStack: UInt
     val payments: IncreasingGamePayments
 }
 
 data class TournamentDescriptorImpl(
-    override val initialStack: Int,
+    override val initialStack: UInt,
     override val payments: IncreasingGamePayments
 ): TournamentDescriptor
 
@@ -74,7 +74,7 @@ class TournamentImpl(
 
     private fun removeLosers(postGamePlayers: List<PlayerStack>) {
         val playersOutOfChips = postGamePlayers
-                .filter { it.stack == 0 }
+                .filter { it.stack == 0u }
                 .map { it.player }
 
         losers.addAll( playersOutOfChips
@@ -86,9 +86,9 @@ class TournamentImpl(
         )
 
         // Remove losers
-        players = postGamePlayers.filter { it.stack > 0 }
+        players = postGamePlayers.filter { it.stack > 0u }
     }
-    private fun initialStack(player: Player): Int {
+    private fun initialStack(player: Player): UInt {
         val playerStack: PlayerStack? = players.firstOrNull { it.player == player }
         requireNotNull(playerStack) { "Trying to remove a player without a starting stack" }
         return playerStack.stack

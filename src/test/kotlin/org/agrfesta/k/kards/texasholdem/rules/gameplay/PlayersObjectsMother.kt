@@ -1,9 +1,9 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
-import org.agrfesta.k.cards.playingcards.cards.Card
-import org.agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import io.mockk.every
 import io.mockk.mockk
+import org.agrfesta.k.cards.playingcards.cards.Card
+import org.agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.InGamePlayerTestBuilder.Companion.buildingAnInGamePlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.NONE
@@ -23,7 +23,7 @@ fun limper() = strategyMock(call())
 
 ///// Actions //////////////////////////////////////////////////////////////////////////////////////////////////////////
 fun anAction(): Action = object : Action {
-    override val amount: Int? = null
+    override val amount: UInt? = null
     override val type: ActionType = ActionType.Call
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,25 +40,25 @@ fun aPlayer() = Player("APlayer", aStrategy())
 fun aPlayerWithName(name: String) = Player(name, aStrategy())
 fun anOpponent(
     name: String = "APlayer",
-    stack: Int = 1000,
+    stack: UInt = 1000u,
     status: PlayerStatus = NONE) = Opponent(name, stack, status)
 
 fun aPlayerCardsSet() = frenchCardsSet("7s","2c")
 
-fun aPlayerStack(player: Player = aPlayer(), stack: Int = 1000) = PlayerStack(player, stack)
+fun aPlayerStack(player: Player = aPlayer(), stack: UInt = 1000u) = PlayerStack(player, stack)
 
-fun anInGamePlayer() = InGamePlayer(aPlayer(), 1000, aPlayerCardsSet())
-fun anInGamePlayer(name: String) = InGamePlayer(aPlayerWithName(name), 1000, aPlayerCardsSet())
-fun anInGamePlayer(stack: Int) = InGamePlayer(aPlayer(), stack, aPlayerCardsSet())
-fun anInGamePlayer(name: String, stack: Int, status: PlayerStatus, cards: Set<Card>) = buildingAnInGamePlayer()
+fun anInGamePlayer() = InGamePlayer(aPlayer(), 1000u, aPlayerCardsSet())
+fun anInGamePlayer(name: String) = InGamePlayer(aPlayerWithName(name), 1000u, aPlayerCardsSet())
+fun anInGamePlayer(stack: UInt) = InGamePlayer(aPlayer(), stack, aPlayerCardsSet())
+fun anInGamePlayer(name: String, stack: UInt, status: PlayerStatus, cards: Set<Card>) = buildingAnInGamePlayer()
         .forPlayer(Player(name, aStrategy()))
         .withAStackOf(stack)
         .inStatus(status)
         .withCards(cards)
         .build()
-fun anInGamePlayer(name: String, stack: Int, strategy: PlayerStrategyInterface) =
+fun anInGamePlayer(name: String, stack: UInt, strategy: PlayerStrategyInterface) =
         InGamePlayer(Player(name,strategy), stack, aPlayerCardsSet())
-fun anInGamePlayer(name: String, stack: Int, status: PlayerStatus, strategy: PlayerStrategyInterface) =
+fun anInGamePlayer(name: String, stack: UInt, status: PlayerStatus, strategy: PlayerStrategyInterface) =
         buildingAnInGamePlayer()
                 .forPlayer(Player(name,strategy))
                 .withAStackOf(stack)

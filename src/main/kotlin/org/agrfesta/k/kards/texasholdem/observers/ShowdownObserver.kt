@@ -7,4 +7,4 @@ interface ShowdownObserver {
     fun notifyResult(result: Collection<ShowdownPlayerResult>) {}
 }
 
-class ShowdownPlayerResult(val player: InGamePlayer, val prize: Int?, val evaluation: CardsEvaluation)
+class ShowdownPlayerResult(val player: InGamePlayer, val prize: UInt?, val evaluation: CardsEvaluation)

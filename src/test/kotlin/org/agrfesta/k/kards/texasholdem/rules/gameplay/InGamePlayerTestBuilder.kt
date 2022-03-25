@@ -4,7 +4,7 @@ import org.agrfesta.k.cards.playingcards.cards.Card
 
 class InGamePlayerTestBuilder private constructor() {
     private var player = aPlayer()
-    private var stack: Int = 1000
+    private var stack: UInt = 1000u
     private var status: PlayerStatus = PlayerStatus.NONE
     private var cards: Set<Card> = aPlayerCardsSet()
 
@@ -16,7 +16,7 @@ class InGamePlayerTestBuilder private constructor() {
         this.player = player
         return this
     }
-    fun withAStackOf(stack: Int): InGamePlayerTestBuilder {
+    fun withAStackOf(stack: UInt): InGamePlayerTestBuilder {
         this.stack = stack
         return this
     }

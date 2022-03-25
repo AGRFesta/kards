@@ -29,7 +29,7 @@ class PlayersTest {
     @Test
     @DisplayName("Player's status is CALL -> player has not fold")
     fun ifPlayerStatusIsCallHasFoldedIsFalse() {
-        val player = InGamePlayer(alex, 1000, aPlayerCardsSet())
+        val player = InGamePlayer(alex, 1000u, aPlayerCardsSet())
         player.status = CALL
         assertThat(player.hasFolded()).isFalse()
     }
@@ -47,7 +47,7 @@ class PlayersTest {
     @Test
     @DisplayName("Player's status is RAISE -> player can take part to the game")
     fun ifPlayerStatusIsRaiseIsActive() {
-        val player = InGamePlayer(alex, 1000, aPlayerCardsSet())
+        val player = InGamePlayer(alex, 1000u, aPlayerCardsSet())
         player.status = RAISE
         assertThat(player.isActive()).isTrue()
     }
@@ -55,33 +55,22 @@ class PlayersTest {
     @Test
     @DisplayName("Player with a stack of 1000 receive 200 -> player have a stack of 1200")
     fun playerReceiveAPositiveAmount() {
-        val player = InGamePlayer(alex, 1000, aPlayerCardsSet())
-        player.receive(200)
-        assertThat(player.stack).isEqualTo(1200)
+        val player = InGamePlayer(alex, 1000u, aPlayerCardsSet())
+        player.receive(200u)
+        assertThat(player.stack).isEqualTo(1200u)
     }
     @Test
     @DisplayName("Player with a stack of 1000 receive 0 -> player have a stack of 1000")
     fun playerReceiveAZeroAmount() {
-        val player = InGamePlayer(alex, 1000, aPlayerCardsSet())
-        player.receive(0)
-        assertThat(player.stack).isEqualTo(1000)
-    }
-    @Test
-    @DisplayName("Player receives -200 -> raise and Exception")
-    fun playerReceiveANegativeAmountRaisesAnException() {
-        val player = InGamePlayer(alex, 1000, aPlayerCardsSet())
-
-        val failure = assertThat {
-            player.receive(-200)
-        }.isFailure()
-        failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Can't have a negative stack, received -200")
+        val player = InGamePlayer(alex, 1000u, aPlayerCardsSet())
+        player.receive(0u)
+        assertThat(player.stack).isEqualTo(1000u)
     }
     @Test
     @DisplayName("Player created with no cards -> raise and Exception")
     fun playerCreatedWithNoCardsRaisesAnException() {
         val failure = assertThat {
-            InGamePlayer(alex, 1000, emptySet())
+            InGamePlayer(alex, 1000u, emptySet())
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Must hold two cards, received 0")
@@ -90,7 +79,7 @@ class PlayersTest {
     @DisplayName("Player created with one card -> raise and Exception")
     fun playerCreatedWithOneCardRaisesAnException() {
         val failure = assertThat {
-            InGamePlayer(alex, 1000, setOf( card("7h") ))
+            InGamePlayer(alex, 1000u, setOf( card("7h") ))
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Must hold two cards, received 1")
@@ -99,69 +88,49 @@ class PlayersTest {
     @DisplayName("Player created with three cards -> raise and Exception")
     fun playerCreatedWithThreeCardsRaisesAnException() {
         val failure = assertThat {
-            InGamePlayer(alex, 1000, setOf( card("7h"), card("Ah"), card("7s") ))
+            InGamePlayer(alex, 1000u, setOf( card("7h"), card("Ah"), card("7s") ))
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Must hold two cards, received 3")
-    }
-    @Test
-    @DisplayName("Player created with a negative stack -> raise and Exception")
-    fun playerCreatedWithANegativeStackRaisesAnException() {
-        val failure = assertThat {
-            InGamePlayer(alex, -1, aPlayerCardsSet())
-        }.isFailure()
-        failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Can't have a negative stack, received -1")
     }
 
     @Test
     @DisplayName("Player with a stack of 200 pays 500 -> effective payment is 200 player have a stack of 0 and is " +
             "ALL-IN")
     fun playerPayAPositiveAmountGreaterThanStack() {
-        val player = InGamePlayer(alex, 200, aPlayerCardsSet())
-        val payed = player.pay(500)
-        assertThat(player.stack).isEqualTo(0)
+        val player = InGamePlayer(alex, 200u, aPlayerCardsSet())
+        val payed = player.pay(500u)
+        assertThat(player.stack).isEqualTo(0u)
         assertThat(player.status).isEqualTo(ALL_IN)
-        assertThat(payed).isEqualTo(200)
+        assertThat(payed).isEqualTo(200u)
     }
     @Test
     @DisplayName("Player with a stack of 500 pays 500 -> effective payment is 500 player have a stack of 0 and is " +
             "ALL-IN")
     fun playerPayAPositiveAmountEqualToStack() {
-        val player = InGamePlayer(alex, 500, aPlayerCardsSet())
-        val payed = player.pay(500)
-        assertThat(player.stack).isEqualTo(0)
+        val player = InGamePlayer(alex, 500u, aPlayerCardsSet())
+        val payed = player.pay(500u)
+        assertThat(player.stack).isEqualTo(0u)
         assertThat(player.status).isEqualTo(ALL_IN)
-        assertThat(payed).isEqualTo(500)
+        assertThat(payed).isEqualTo(500u)
     }
     @Test
     @DisplayName("Player with a stack of 1000 pays 500 -> effective payment is 500 player have a stack of 500, the " +
             "status doesn't change")
     fun playerPayAPositiveAmountLessThanStack() {
-        val player = InGamePlayer(alex, 1000, aPlayerCardsSet())
+        val player = InGamePlayer(alex, 1000u, aPlayerCardsSet())
         assertThat(player.status).isEqualTo(NONE)
-        val payed = player.pay(500)
-        assertThat(player.stack).isEqualTo(500)
+        val payed = player.pay(500u)
+        assertThat(player.stack).isEqualTo(500u)
         assertThat(player.status).isEqualTo(NONE)
-        assertThat(payed).isEqualTo(500)
-    }
-    @Test
-    @DisplayName("Player pays -200 -> raise and Exception")
-    fun playerPaysANegativeAmountRaisesAnException() {
-        val player = InGamePlayer(alex, 1000, aPlayerCardsSet())
-
-        val failure = assertThat {
-            player.pay(-200)
-        }.isFailure()
-        failure.hasClass(IllegalArgumentException::class)
-        failure.hasMessage("Can't pay a negative amount")
+        assertThat(payed).isEqualTo(500u)
     }
 
     @Test
     @DisplayName("call to Player's act -> the Action from strategy")
     fun actReturnsActionFromStrategy() {
         val strategy = strategyMock( call() )
-        val player = InGamePlayer(Player("Alex",strategy), 1000, aPlayerCardsSet())
+        val player = InGamePlayer(Player("Alex",strategy), 1000u, aPlayerCardsSet())
         assertThat(player(player heroIn aContext())).isEqualTo( call() )
     }
 

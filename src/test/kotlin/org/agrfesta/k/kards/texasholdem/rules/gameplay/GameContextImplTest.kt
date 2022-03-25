@@ -37,12 +37,12 @@ class GameContextImplTest {
     @DisplayName("getGlobalPot(): getting global pot when there is one -> returns that pot")
     fun getGlobalPot_gettingGlobalPotWhenThereIsOne_returnsThatPot() {
         val gameContext = aGameContextImplWith(phasePots = mapOf(
-            PRE_FLOP to mapOf(alex to 50, poly to 77)
+            PRE_FLOP to mapOf(alex to 50u, poly to 77u)
         ))
 
         val result = gameContext.getGlobalPot()
 
-        assertThat(result).containsOnly(alex to 50, poly to 77)
+        assertThat(result).containsOnly(alex to 50u, poly to 77u)
     }
 
     @Test
@@ -50,13 +50,13 @@ class GameContextImplTest {
         |entries""")
     fun getGlobalPot_gettingGlobalPotWhenThereAreMoreThanOne_returnsPotAccumulatingAllEntries() {
         val gameContext = aGameContextImplWith(phasePots = mapOf(
-            PRE_FLOP to mapOf(alex to 50, poly to 77),
-            FLOP to mapOf(alex to 50, jane to 1)
+            PRE_FLOP to mapOf(alex to 50u, poly to 77u),
+            FLOP to mapOf(alex to 50u, jane to 1u)
         ))
 
         val result = gameContext.getGlobalPot()
 
-        assertThat(result).containsOnly(alex to 100, poly to 77, jane to 1)
+        assertThat(result).containsOnly(alex to 100u, poly to 77u, jane to 1u)
     }
 
     @Test
