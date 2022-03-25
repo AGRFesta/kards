@@ -13,8 +13,8 @@ import org.agrfesta.k.kards.texasholdem.tournaments.LevelPayments
 import java.util.*
 
 fun aDeck(): Deck = DeckListImpl(listOf())
-fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer("A"),anInGamePlayer("B")), 0)
-fun aPlayerStackTable(): Table<PlayerStack> = Table(listOf(aPlayerStack(alex),aPlayerStack(poly)), 0)
+fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer("A"),anInGamePlayer("B")), 0u)
+fun aPlayerStackTable(): Table<PlayerStack> = Table(listOf(aPlayerStack(alex),aPlayerStack(poly)), 0u)
 fun anOpponentsTable(): Table<Opponent> = Table(listOf(anOpponent("A"), anOpponent("B")))
 
 fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGamePayments())

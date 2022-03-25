@@ -44,7 +44,7 @@ class TableTest {
     @Test
     @DisplayName("2 players table, button=0 -> SB=0, BB=1, UTG=0")
     fun twoPlayersTableWithButton0HasSBIn0AndBBIn1AndUTGIn0() {
-        val table = Table(players = listOf(alex, juno), button = 0)
+        val table = Table(players = listOf(alex, juno), button = 0u)
         assertThat(alex).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(juno).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(alex)
@@ -53,7 +53,7 @@ class TableTest {
     @Test
     @DisplayName("2 players table, button=1 -> SB=1, BB=0, UTG=1")
     fun twoPlayersTableWithButton1HasSBIn1AndBBIn0AndUTGIn1() {
-        val table = Table(players = listOf(alex, juno), button = 1)
+        val table = Table(players = listOf(alex, juno), button = 1u)
         assertThat(juno).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(alex).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(juno)
@@ -62,26 +62,17 @@ class TableTest {
     @Test
     @DisplayName("2 players table, button=5 -> SB=1, BB=0, UTG=1")
     fun twoPlayersTableWithButton5HasSBIn1AndBBIn0AndUTGIn1() {
-        val table = Table(players = listOf(alex, juno), button = 5)
+        val table = Table(players = listOf(alex, juno), button = 5u)
         assertThat(juno).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(alex).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(juno)
         assertThat(table.iterateFromUTG().next()).isEqualTo(juno)
     }
-    @Test
-    @DisplayName("2 players table, button=-6 -> SB=0, BB=1, UTG=0")
-    fun twoPlayersTableWithButtonMinus6HasSBIn0AndBBIn1AndUTGIn0() {
-        val table = Table(players = listOf(alex, juno), button = -6)
-        assertThat(alex).isSittingOn(table, Position.SMALL_BLIND)
-        assertThat(juno).isSittingOn(table, Position.BIG_BLIND)
-        assertThat(table.iterateFromSB().next()).isEqualTo(alex)
-        assertThat(table.iterateFromUTG().next()).isEqualTo(alex)
-    }
 
     @Test
     @DisplayName("3 players table, button=0 -> SB=1, BB=2, UTG=0")
     fun threePlayersTableWithButton0HasSBIn1AndBBIn2AndUTGIn0() {
-        val table = Table(players = listOf(alex, juno, maya), button = 0)
+        val table = Table(players = listOf(alex, juno, maya), button = 0u)
         assertThat(juno).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(maya).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(juno)
@@ -90,7 +81,7 @@ class TableTest {
     @Test
     @DisplayName("3 players table, button=1 -> SB=2, BB=0, UTG=1")
     fun threePlayersTableWithButton1HasSBIn2AndBBIn0AndUTGIn1() {
-        val table = Table(players = listOf(alex, juno, maya), button = 1)
+        val table = Table(players = listOf(alex, juno, maya), button = 1u)
         assertThat(maya).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(alex).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(maya)
@@ -99,7 +90,7 @@ class TableTest {
     @Test
     @DisplayName("3 players table, button=2 -> SB=0, BB=1, UTG=2")
     fun threePlayersTableWithButton2HasSBIn0AndBBIn1AndUTGIn2() {
-        val table = Table(players = listOf(alex, juno, maya), button = 2)
+        val table = Table(players = listOf(alex, juno, maya), button = 2u)
         assertThat(alex).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(juno).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(alex)
@@ -108,7 +99,7 @@ class TableTest {
     @Test
     @DisplayName("3 players table, button=3 -> SB=1, BB=2, UTG=0")
     fun threePlayersTableWithButton3HasSBIn1AndBBIn2AndUTGIn0() {
-        val table = Table(players = listOf(alex, juno, maya), button = 3)
+        val table = Table(players = listOf(alex, juno, maya), button = 3u)
         assertThat(juno).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(maya).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(juno)
@@ -117,25 +108,7 @@ class TableTest {
     @Test
     @DisplayName("3 players table, button=7 -> SB=2, BB=0, UTG=1")
     fun threePlayersTableWithButton7HasSBIn2AndBBIn0AndUTGIn1() {
-        val table = Table(players = listOf(alex, juno, maya), button = 7)
-        assertThat(maya).isSittingOn(table, Position.SMALL_BLIND)
-        assertThat(alex).isSittingOn(table, Position.BIG_BLIND)
-        assertThat(table.iterateFromSB().next()).isEqualTo(maya)
-        assertThat(table.iterateFromUTG().next()).isEqualTo(juno)
-    }
-    @Test
-    @DisplayName("3 players table, button=-1 -> SB=0, BB=1, UTG=2")
-    fun threePlayersTableWithButtonMinus1HasSBIn0AndBBIn1AndUTGIn2() {
-        val table = Table(players = listOf(alex, juno, maya), button = -1)
-        assertThat(alex).isSittingOn(table, Position.SMALL_BLIND)
-        assertThat(juno).isSittingOn(table, Position.BIG_BLIND)
-        assertThat(table.iterateFromSB().next()).isEqualTo(alex)
-        assertThat(table.iterateFromUTG().next()).isEqualTo(maya)
-    }
-    @Test
-    @DisplayName("3 players table, button=-5 -> SB=2, BB=0, UTG=1")
-    fun threePlayersTableWithButtonMinus5HasSBIn2AndBBIn0AndUTGIn1() {
-        val table = Table(players = listOf(alex, juno, maya), button = -5)
+        val table = Table(players = listOf(alex, juno, maya), button = 7u)
         assertThat(maya).isSittingOn(table, Position.SMALL_BLIND)
         assertThat(alex).isSittingOn(table, Position.BIG_BLIND)
         assertThat(table.iterateFromSB().next()).isEqualTo(maya)
@@ -145,7 +118,7 @@ class TableTest {
     @Test
     @DisplayName("TableIterator allow to iterate in a cyclic way trough next()")
     fun tableIteratorAllowToIterateInACyclicWayTroughNextMethod() {
-        val table = Table(players = listOf(alex, juno, maya), button = 0)
+        val table = Table(players = listOf(alex, juno, maya), button = 0u)
         val iterator = table.iterateFromSB()
         assertThat(iterator.next()).isEqualTo(juno)
         assertThat(iterator.next()).isEqualTo(maya)

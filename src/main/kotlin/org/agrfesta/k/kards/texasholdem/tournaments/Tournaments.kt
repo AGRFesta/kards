@@ -40,7 +40,7 @@ class TournamentImpl(
     subscriptions: Set<Player>,
     private val observer: TournamentObserver? = null,
     private val gameProvider: GameProvider = defaultGameProvider,
-    private val buttonProvider: (Int) -> Int = { SimpleRandomGenerator().nextInt(it) }
+    private val buttonProvider: (Int) -> UInt = { SimpleRandomGenerator().nextInt(it).toUInt() } //TODO improve it
 ): Tournament, TournamentDescriptor by descriptor {
     private val losers: MutableList<Set<Player>> = mutableListOf()
     private var players: List<PlayerStack>
@@ -58,13 +58,13 @@ class TournamentImpl(
         while (players.size > 1) {
             playGame(button)
             payments.nextGame()
-            button = players.circularIndexMapping(button-1)
+            button = players.circularIndexMapping(button-1u)
         }
         val winner = listOf(setOf(players[0].player))
         return winner + losers.reversed()
     }
 
-    private fun playGame(button: Int) {
+    private fun playGame(button: UInt) {
         val table = Table(players,button)
         val game = gameProvider(payments, table, observer)
         val postGamePlayers = game.play()

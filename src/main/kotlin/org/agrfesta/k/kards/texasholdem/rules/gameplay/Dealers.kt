@@ -1,5 +1,6 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
+import org.agrfesta.k.cards.playingcards.utils.CircularIterator
 import org.agrfesta.k.kards.texasholdem.observers.DealerObserver
 
 interface Dealer {
@@ -35,7 +36,7 @@ abstract class AbstractDealer(
     private var raisingPlayer: InGamePlayer? = null
 
     protected abstract fun initPot(pot: InGamePot)
-    protected abstract fun playersIterator(): TableIterator<InGamePlayer>
+    protected abstract fun playersIterator(): CircularIterator<InGamePlayer>
 
     override fun collectPot() {
         val pot = context.getPhasePot()
@@ -113,7 +114,7 @@ class PostFlopDealer(
     observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
     override fun initPot(pot: InGamePot) {/**/}
-    override fun playersIterator(): TableIterator<InGamePlayer> = context.table.iterateFromSB()
+    override fun playersIterator(): CircularIterator<InGamePlayer> = context.table.iterateFromSB()
 }
 
 class PreFlopDealer(
@@ -126,5 +127,5 @@ class PreFlopDealer(
         context.payments.ante()?.let { ante -> context.table.players.forEach { pot.receiveFrom(it, ante) } }
         amountRequired = context.payments.bb()
     }
-    override fun playersIterator(): TableIterator<InGamePlayer> = context.table.iterateFromUTG()
+    override fun playersIterator(): CircularIterator<InGamePlayer> = context.table.iterateFromUTG()
 }

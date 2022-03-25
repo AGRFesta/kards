@@ -60,7 +60,7 @@ class TestTableBuilder {
         players = players.entries
             .sortedBy { it.key }
             .map { it.value },
-        button = 0)
+        button = 0u)
 
 }
 

@@ -47,7 +47,7 @@ class TournamentImplTest {
         val result = TournamentImpl(
             descriptor = TournamentDescriptorImpl(2000u, payments),
             subscriptions = setOf(poly, jane, alex, dave),
-            buttonProvider = { 2 }, // button of first game in position 2
+            buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
                 val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
                 assertThat(igp === payments).isTrue()
@@ -81,7 +81,7 @@ class TournamentImplTest {
         val result = TournamentImpl(
             descriptor = TournamentDescriptorImpl(2000u, payments),
             subscriptions = setOf(poly, jane, alex),
-            buttonProvider = { 2 }, // button of first game in position 2
+            buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
                 val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
                 assertThat(igp === payments).isTrue()
@@ -113,7 +113,7 @@ class TournamentImplTest {
         val result = TournamentImpl(
             descriptor = TournamentDescriptorImpl(2000u, payments),
             subscriptions = setOf(poly, jane, alex),
-            buttonProvider = { 2 }, // button of first game in position 2
+            buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
                 val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
                 assertThat(igp === payments).isTrue()
@@ -143,7 +143,7 @@ class TournamentImplTest {
         val result = TournamentImpl(
             descriptor = TournamentDescriptorImpl(2000u, payments),
             subscriptions = setOf(poly, jane, alex),
-            buttonProvider = { 2 }, // button of first game in position 2
+            buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
                 val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
                 assertThat(igp === payments).isTrue()
