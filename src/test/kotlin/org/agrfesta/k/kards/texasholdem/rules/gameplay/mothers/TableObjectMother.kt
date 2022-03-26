@@ -5,8 +5,10 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.InGamePlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Player
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStrategyInterface
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Table
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.TableImpl
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aPlayerCardsSet
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aStrategy
+import org.agrfesta.k.kards.texasholdem.utils.DistinctList.Companion.distinctListOf
 
 private const val BUTTON_POS = 0
 private const val SMALL_BLIND_POS = 1
@@ -56,10 +58,10 @@ class TestTableBuilder {
         return this
     }
 
-    fun build(): Table<InGamePlayer> = Table(
-        players = players.entries
+    fun build(): Table<InGamePlayer> = TableImpl(
+        players = distinctListOf(players.entries
             .sortedBy { it.key }
-            .map { it.value },
+            .map { it.value }),
         button = 0u)
 
 }
@@ -73,7 +75,7 @@ fun buildTestTable(
 }
 
 private fun Table<InGamePlayer>.getPlayerBySeatName(player: String) =
-    findPlayerBySeatName(player) ?: throw MissingPlayerException(player)
+    findPlayerByName(player) ?: throw MissingPlayerException(player)
 
 fun Table<InGamePlayer>.middle() = getPlayerBySeatName(MIDDLE)
 fun Table<InGamePlayer>.late() = getPlayerBySeatName(LATE)

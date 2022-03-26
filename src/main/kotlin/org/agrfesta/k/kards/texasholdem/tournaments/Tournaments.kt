@@ -9,8 +9,10 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.GameImpl
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Player
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStack
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Table
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.TableImpl
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.owns
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.toRanking
+import org.agrfesta.k.kards.texasholdem.utils.DistinctList.Companion.distinctListOf
 import java.util.*
 
 typealias GameProvider = (IncreasingGamePayments, Table<PlayerStack>, GameObserver?) -> Game
@@ -65,7 +67,7 @@ class TournamentImpl(
     }
 
     private fun playGame(button: UInt) {
-        val table = Table(players,button)
+        val table = TableImpl(distinctListOf(players),button)
         val game = gameProvider(payments, table, observer)
         val postGamePlayers = game.play()
         removeLosers(postGamePlayers)

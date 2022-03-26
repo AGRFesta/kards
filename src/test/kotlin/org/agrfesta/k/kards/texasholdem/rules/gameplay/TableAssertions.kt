@@ -6,7 +6,7 @@ import assertk.assertions.support.expected
 
 fun <T: SeatName> Assert<SeatName>.isSittingOn(table: Table<T>, position: Position) = given {
     assertThat(it).isSittingAt(table)
-    if ( it.name == table.getPlayerByPosition(position).name ) return
+    if ( it.name == table.getPlayerFrom(position).name ) return
     expected("$it is not sitting on $position")
 }
 

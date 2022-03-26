@@ -2,6 +2,9 @@ package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
 import org.agrfesta.k.cards.playingcards.utils.CircularIterator
 import org.agrfesta.k.kards.texasholdem.observers.DealerObserver
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.Position.BIG_BLIND
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.Position.SMALL_BLIND
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.Position.UNDER_THE_GUN
 
 interface Dealer {
     fun collectPot()
@@ -114,7 +117,7 @@ class PostFlopDealer(
     observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
     override fun initPot(pot: InGamePot) {/**/}
-    override fun playersIterator(): CircularIterator<InGamePlayer> = context.table.iterateFromSB()
+    override fun playersIterator(): CircularIterator<InGamePlayer> = context.table.iterateFrom(SMALL_BLIND)
 }
 
 class PreFlopDealer(
@@ -122,10 +125,10 @@ class PreFlopDealer(
     observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
     override fun initPot(pot: InGamePot) {
-        pot.receiveFrom(context.table.getPlayerByPosition(Position.SMALL_BLIND), context.payments.sb())
-        pot.receiveFrom(context.table.getPlayerByPosition(Position.BIG_BLIND), context.payments.bb())
+        pot.receiveFrom(context.table.getPlayerFrom(SMALL_BLIND), context.payments.sb())
+        pot.receiveFrom(context.table.getPlayerFrom(BIG_BLIND), context.payments.bb())
         context.payments.ante()?.let { ante -> context.table.players.forEach { pot.receiveFrom(it, ante) } }
         amountRequired = context.payments.bb()
     }
-    override fun playersIterator(): CircularIterator<InGamePlayer> = context.table.iterateFromUTG()
+    override fun playersIterator(): CircularIterator<InGamePlayer> = context.table.iterateFrom(UNDER_THE_GUN)
 }

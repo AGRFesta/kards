@@ -10,12 +10,17 @@ import org.agrfesta.k.kards.texasholdem.observers.ShowdownPlayerResult
 import org.agrfesta.k.kards.texasholdem.rules.hands.StraightHand
 import org.agrfesta.k.kards.texasholdem.tournaments.IncreasingGamePayments
 import org.agrfesta.k.kards.texasholdem.tournaments.LevelPayments
+import org.agrfesta.k.kards.texasholdem.utils.DistinctList
 import java.util.*
 
 fun aDeck(): Deck = DeckListImpl(listOf())
-fun aTable(): Table<InGamePlayer> = Table(listOf(anInGamePlayer("A"),anInGamePlayer("B")), 0u)
-fun aPlayerStackTable(): Table<PlayerStack> = Table(listOf(aPlayerStack(alex),aPlayerStack(poly)), 0u)
-fun anOpponentsTable(): Table<Opponent> = Table(listOf(anOpponent("A"), anOpponent("B")))
+fun aTable(): Table<InGamePlayer> = TableImpl(DistinctList.distinctListOf(anInGamePlayer("A"), anInGamePlayer("B")), 0u)
+fun aPlayerStackTable(): Table<PlayerStack> = TableImpl(
+    DistinctList.distinctListOf(
+        aPlayerStack(alex),
+        aPlayerStack(poly)
+    ), 0u)
+fun anOpponentsTable(): Table<Opponent> = TableImpl(DistinctList.distinctListOf(anOpponent("A"), anOpponent("B")))
 
 fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGamePayments())
     : MutableGameContextImpl  {
