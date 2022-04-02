@@ -5,7 +5,7 @@ import io.mockk.verify
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.GamePhase
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Player
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerAction
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStack
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.PublicSittingPlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aGameContext
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aGameResult
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aPlayer
@@ -105,7 +105,7 @@ class TournamentBroadcasterTest {
     @Test
     @DisplayName("""notifyTournamentRanking(): executing broadcast notifyAction -> all subscribers are notified""")
     fun notifyTournamentRanking_allSubscribersAreNotified() {
-        val ranking = listOf<PlayerStack>()
+        val ranking = listOf<PublicSittingPlayer>()
         val losers = listOf<Set<Player>>()
         val broadcaster = TournamentBroadcaster()
         broadcaster.subscribe(subscriberA)

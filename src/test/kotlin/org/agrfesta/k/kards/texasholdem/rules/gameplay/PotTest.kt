@@ -104,9 +104,9 @@ class PotTest {
     @Test
     @DisplayName("[Jane=5,Giulia=2] + [Alex=3,Jane=1] -> [Jane=6,Alex=3,Giulia=2]")
     fun sumOfPotsWithPlayersInCommonReturnsPotWithThosePlayerWithSummedValues() {
-        val jane = anInGamePlayer("Jane")
-        val alex = anInGamePlayer("Alex")
-        val giulia = anInGamePlayer("Giulia")
+        val jane = anInGamePlayer(name = "Jane")
+        val alex = anInGamePlayer(name = "Alex")
+        val giulia = anInGamePlayer(name = "Giulia")
         val potA = buildMutablePot()
         potA[jane] = 5u
         potA[giulia] = 2u
@@ -118,8 +118,8 @@ class PotTest {
     @Test
     @DisplayName("[Jane=200,Alex=200] + [Alex=400,Jane=200] -> [Jane=400,Alex=600]")
     fun potSumStory000() {
-        val jane = anInGamePlayer("Jane")
-        val alex = anInGamePlayer("Alex")
+        val jane = anInGamePlayer(name = "Jane")
+        val alex = anInGamePlayer(name = "Alex")
         val potA = buildMutablePot()
         potA[alex] = 200u
         potA[jane] = 200u
@@ -133,7 +133,7 @@ class PotTest {
     @DisplayName("APlayer(1000) sends 200 to Pot[] -> APlayer(800), Pot[APlayer=200]")
     fun receiveFromAddEffectivePaymentsToAnEmptyPotAndRemovesItFromThePlayer() {
         val pot = buildMutablePot()
-        val player = anInGamePlayer(1000u)
+        val player = anInGamePlayer(stack = 1000u)
         assertThat(pot.receiveFrom(player, 200u)).isEqualTo(200u)
         assertThat(pot.payedBy(player)).isEqualTo(200u)
         assertThat(player.stack).isEqualTo(800u)
@@ -142,7 +142,7 @@ class PotTest {
     @DisplayName("APlayer(300) sends 800 to Pot[] -> APlayer(0), Pot[APlayer=300]")
     fun receiveFromAddOnlyTheEffectivePaymentsToAnEmptyPotAndRemovesItFromThePlayer() {
         val pot = buildMutablePot()
-        val player = anInGamePlayer(300u)
+        val player = anInGamePlayer(stack = 300u)
         assertThat(pot.receiveFrom(player, 800u)).isEqualTo(300u)
         assertThat(pot.payedBy(player)).isEqualTo(300u)
         assertThat(player.stack).isEqualTo(0u)
@@ -151,7 +151,7 @@ class PotTest {
     @DisplayName("APlayer(300) sends 100 to Pot[APlayer=500] -> APlayer(200), Pot[APlayer=600]")
     fun receiveFromAddTheEffectivePaymentsToThePreviousPaymentMadeByThePlayer() {
         val pot = buildMutablePot()
-        val player = anInGamePlayer(300u)
+        val player = anInGamePlayer(stack = 300u)
         pot[player] = 500u
 
         assertThat(pot.receiveFrom(player, 100u)).isEqualTo(100u)
@@ -169,7 +169,7 @@ class PotTest {
     @Test
     @DisplayName("Extract balanced pot from Pot[hero=100] -> bp=Pot[hero=100] origin=Pot[]")
     fun extractBalancedPotFromAPotContainingASinglePlayerReturnsAPotWithSameDataAndOriginalOneEmpty() {
-        val hero = anInGamePlayer("hero")
+        val hero = anInGamePlayer(name = "hero")
         val pot = buildMutablePot()
         pot[hero] = 100u
         assertThat(pot.extractBalancedPot()).containsOnly(hero to 100u)
@@ -179,9 +179,9 @@ class PotTest {
     @DisplayName("Extract balanced pot from Pot[Alex=100,Giulia=100,Jane=100] -> " +
             "bp=Pot[Alex=100,Giulia=100,Jane=100] origin=Pot[]")
     fun extractBalancedPotFromABalancedPotReturnsAPotWithSameDataAndOriginalOneEmpty() {
-        val alex = anInGamePlayer("Alex")
-        val giulia = anInGamePlayer("Giulia")
-        val jane = anInGamePlayer("Jane")
+        val alex = anInGamePlayer(name = "Alex")
+        val giulia = anInGamePlayer(name = "Giulia")
+        val jane = anInGamePlayer(name = "Jane")
         val pot = buildMutablePot()
         pot[alex] = 100u
         pot[giulia] = 100u
@@ -193,8 +193,8 @@ class PotTest {
     @DisplayName("Extract balanced pot from Pot[Alex=100,Giulia=200] -> " +
             "               bp=Pot[Alex=100,Giulia=100] origin=Pot[Giulia=100]")
     fun extractBalancedPotFromAPotContainingTwoPlayersWithDifferentValuesReturnsBalancedPotAndRemoveFromOriginalPot() {
-        val alex = anInGamePlayer("Alex")
-        val giulia = anInGamePlayer("Giulia")
+        val alex = anInGamePlayer(name = "Alex")
+        val giulia = anInGamePlayer(name = "Giulia")
         val pot = buildMutablePot()
         pot[alex] = 100u
         pot[giulia] = 200u
@@ -212,7 +212,7 @@ class PotTest {
     @Test
     @DisplayName("Decompose Pot[Alex=100] -> [Pot[Alex=100]]")
     fun decomposeAPotWithOnlyAPlayerReturnsACollectionWithOnePot() {
-        val alex = anInGamePlayer("Alex")
+        val alex = anInGamePlayer(name = "Alex")
         val pot = PotBuilder().contribution(alex,100u).build()
         assertThat(pot.decompose()).containsOnly(
                 PotBuilder().contribution(alex,100u).build()
@@ -225,10 +225,10 @@ class PotTest {
             " Pot[Jane=50,Giulia=50,Sasha=50]," +
             " Pot[Giulia=60,Sasha=60]]")
     fun decomposeAPotReturnsACollectionOfAllBalancedPotLeavingThePotEmpty() {
-        val alex = anInGamePlayer("Alex")
-        val jane = anInGamePlayer("Jane")
-        val giulia = anInGamePlayer("Giulia")
-        val sasha = anInGamePlayer("Sasha")
+        val alex = anInGamePlayer(name = "Alex")
+        val jane = anInGamePlayer(name = "Jane")
+        val giulia = anInGamePlayer(name = "Giulia")
+        val sasha = anInGamePlayer(name = "Sasha")
         val pot = PotBuilder()
                 .contribution(alex,100u)
                 .contribution(jane,150u)
@@ -263,7 +263,7 @@ class PotTest {
     @Test
     @DisplayName("Max Contribution from Pot[Alex=100] -> {player=Alex,amount=100}")
     fun maxContributionFromASinglePlayerPotReturnsPlayerContribution() {
-        val alex = anInGamePlayer("Alex")
+        val alex = anInGamePlayer(name = "Alex")
         val pot = PotBuilder().contribution(alex,100u).build()
         val max = pot.maxContribution()
         assertThat(max).isNotNull()
@@ -273,9 +273,9 @@ class PotTest {
     @Test
     @DisplayName("Max Contribution from Pot[Alex=100,Giulia=150,Jane=90] -> {player=Giulia,amount=150}")
     fun maxContributionReturnsMaxContributionByAmountFromAllPlayerInPot() {
-        val alex = anInGamePlayer("Alex")
-        val giulia = anInGamePlayer("Giulia")
-        val jane = anInGamePlayer("Jane")
+        val alex = anInGamePlayer(name = "Alex")
+        val giulia = anInGamePlayer(name = "Giulia")
+        val jane = anInGamePlayer(name = "Jane")
         val pot = PotBuilder()
                 .contribution(alex,100u)
                 .contribution(giulia,150u)

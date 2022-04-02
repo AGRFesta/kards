@@ -7,7 +7,7 @@ import org.agrfesta.k.kards.texasholdem.observers.TournamentObserver
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Game
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.GameImpl
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Player
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStack
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.SittingPlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Table
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.TableImpl
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.owns
@@ -15,7 +15,7 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.toRanking
 import org.agrfesta.k.kards.texasholdem.utils.DistinctList.Companion.distinctListOf
 import java.util.*
 
-typealias GameProvider = (IncreasingGamePayments, Table<PlayerStack>, GameObserver?) -> Game
+typealias GameProvider = (IncreasingGamePayments, Table<SittingPlayer>, GameObserver?) -> Game
 
 interface TournamentDescriptor {
     val initialStack: UInt
@@ -45,7 +45,7 @@ class TournamentImpl(
     private val buttonProvider: (Int) -> UInt = { SimpleRandomGenerator().nextInt(it).toUInt() } //TODO improve it
 ): Tournament, TournamentDescriptor by descriptor {
     private val losers: MutableList<Set<Player>> = mutableListOf()
-    private var players: List<PlayerStack>
+    private var players: List<SittingPlayer>
 
     init {
         check(subscriptions.isNotEmpty()) { "Unable to create a tournament with zero players!" }
@@ -62,7 +62,7 @@ class TournamentImpl(
             payments.nextGame()
             button = players.circularIndexMapping(button-1u)
         }
-        val winner = listOf(setOf(players[0].player))
+        val winner = listOf(setOf(players[0]))
         return winner + losers.reversed()
     }
 
@@ -74,10 +74,10 @@ class TournamentImpl(
         observer?.notifyTournamentRanking(players.toRanking(), losers.reversed())
     }
 
-    private fun removeLosers(postGamePlayers: List<PlayerStack>) {
+    private fun removeLosers(postGamePlayers: List<SittingPlayer>) {
         val playersOutOfChips = postGamePlayers
                 .filter { it.stack == 0u }
-                .map { it.player }
+                .map { it }
 
         losers.addAll( playersOutOfChips
                 .map { initialStack(it) to it }
@@ -91,9 +91,9 @@ class TournamentImpl(
         players = postGamePlayers.filter { it.stack > 0u }
     }
     private fun initialStack(player: Player): UInt {
-        val playerStack: PlayerStack? = players.firstOrNull { it.player == player }
-        requireNotNull(playerStack) { "Trying to remove a player without a starting stack" }
-        return playerStack.stack
+        val sittingPlayer: SittingPlayer? = players.firstOrNull { it == player }
+        requireNotNull(sittingPlayer) { "Trying to remove a player without a starting stack" }
+        return sittingPlayer.stack
     }
 
 }

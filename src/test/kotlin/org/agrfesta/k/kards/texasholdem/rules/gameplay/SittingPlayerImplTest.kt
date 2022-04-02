@@ -7,12 +7,12 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 @DisplayName("PlayerStack tests")
-class PlayerStackTest {
+class SittingPlayerImplTest {
 
     @Test
     @DisplayName("Collection<PlayerStack>.toRanking(): empty collection -> returns an empty list")
     fun emptyCollectionReturnsEmptyList() {
-        val list = emptyList<PlayerStack>()
+        val list = emptyList<SittingPlayerImpl>()
         assertThat(list.toRanking()).isEmpty()
     }
 

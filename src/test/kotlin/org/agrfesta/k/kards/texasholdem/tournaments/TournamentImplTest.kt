@@ -12,8 +12,9 @@ import io.mockk.every
 import io.mockk.mockk
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Game
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.InGamePlayer
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStack
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.InGamePlayerImpl
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Position
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.SittingPlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Table
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aPlayerCardsSet
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.alex
@@ -23,6 +24,7 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.isSittingOn
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.jane
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.owns
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.poly
+import org.agrfesta.k.kards.texasholdem.utils.DistinctList.Companion.distinctListOf
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -49,7 +51,7 @@ class TournamentImplTest {
             subscriptions = setOf(poly, jane, alex, dave),
             buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
-                val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
+                val inGameTable: Table<InGamePlayer> = table.map { InGamePlayerImpl(it, cards = aPlayerCardsSet()) }
                 assertThat(igp === payments).isTrue()
                 tables.add(inGameTable)
                 mockedGames[counter++]
@@ -83,15 +85,15 @@ class TournamentImplTest {
             subscriptions = setOf(poly, jane, alex),
             buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
-                val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
+                val inGameTable: Table<InGamePlayer> = table.map { InGamePlayerImpl(it, cards = aPlayerCardsSet()) }
                 assertThat(igp === payments).isTrue()
                 tables.add(inGameTable)
                 mockedGames[counter++]
             }
         ).play()
 
-        assertThat(tables[0].players).extracting { it.player }.containsOnly(alex,jane,poly)
-        assertThat(tables[1].players).extracting { it.player }.containsOnly(jane,poly)
+        assertThat(tables[0].players).extracting { it.asPlayer() }.containsOnly(alex,jane,poly)
+        assertThat(tables[1].players).extracting { it.asPlayer() }.containsOnly(jane,poly)
         assertThat(result.size).isEqualTo(3)
         assertThat(result).theWinnerIs(jane)
         assertThat(result[1]).containsOnly(poly) // second
@@ -115,7 +117,7 @@ class TournamentImplTest {
             subscriptions = setOf(poly, jane, alex),
             buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
-                val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
+                val inGameTable: Table<InGamePlayer> = table.map { InGamePlayerImpl(it, cards = aPlayerCardsSet()) }
                 assertThat(igp === payments).isTrue()
                 tables.add(inGameTable)
                 mockedGames[counter++]
@@ -145,7 +147,7 @@ class TournamentImplTest {
             subscriptions = setOf(poly, jane, alex),
             buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
-                val inGameTable = table.map { InGamePlayer(it.player, it.stack, aPlayerCardsSet()) }
+                val inGameTable: Table<InGamePlayer> = table.map { InGamePlayerImpl(it, cards = aPlayerCardsSet()) }
                 assertThat(igp === payments).isTrue()
                 tables.add(inGameTable)
                 mockedGames[counter++]
@@ -183,8 +185,8 @@ class TournamentImplTest {
 
 }
 
-private fun aMockGameWithResult(vararg elements: PlayerStack): Game {
+private fun aMockGameWithResult(vararg elements: SittingPlayer): Game {
     val game = mockk<Game>()
-    every { game.play() } answers { elements.toList() }
+    every { game.play() } answers { distinctListOf(*elements) }
     return game
 }

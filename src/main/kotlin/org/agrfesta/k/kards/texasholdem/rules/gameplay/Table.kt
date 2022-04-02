@@ -5,17 +5,17 @@ import org.agrfesta.k.cards.playingcards.utils.circularIndexMapping
 import org.agrfesta.k.cards.playingcards.utils.circularIteratorFrom
 import org.agrfesta.k.kards.texasholdem.utils.DistinctList
 
-interface Table<T: SeatName> {
+interface Table<T: PlayerIdentity> {
     val players: DistinctList<T>
     val button: UInt
-    
-    fun <M: SeatName> map(function: (T) -> M): Table<M>
+
+    fun <M: PlayerIdentity> map(function: (T) -> M): Table<M>
     fun getPlayerFrom(position: Position): T
     fun iterateFrom(position: Position): CircularIterator<T>
     fun findPlayerByName(name: String): T?
 }
 
-class TableImpl<T: SeatName>(
+class TableImpl<T: PlayerIdentity>(
     override val players: DistinctList<T>,
     override val button: UInt = 1u): Table<T> {
 
@@ -25,7 +25,7 @@ class TableImpl<T: SeatName>(
     }
 
     override fun getPlayerFrom(position: Position): T = players[getIndexFromPosition(position).toInt()]
-    fun position(player: SeatName): UInt = players.indexOf(player)
+    fun position(player: PlayerIdentity): UInt = players.indexOf(player)
         .let {
             if (it == -1) throw IllegalArgumentException("Player ${player.name} is not sitting at the table")
             else it.toUInt()
@@ -35,7 +35,7 @@ class TableImpl<T: SeatName>(
     override fun iterateFrom(position: Position): CircularIterator<T> =
         players.circularIteratorFrom(getIndexFromPosition(position))
 
-    override fun <M: SeatName> map(function: (T) -> M): Table<M> =
+    override fun <M: PlayerIdentity> map(function: (T) -> M): Table<M> =
         TableImpl(players.map(function), button)
 
     private fun getIndexFromPosition(position: Position): UInt = when (position) {

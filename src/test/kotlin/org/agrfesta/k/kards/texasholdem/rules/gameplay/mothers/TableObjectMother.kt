@@ -2,12 +2,12 @@ package org.agrfesta.k.kards.texasholdem.rules.gameplay.mothers
 
 import org.agrfesta.k.cards.playingcards.cards.Card
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.InGamePlayer
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.Player
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStrategyInterface
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Table
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.TableImpl
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aPlayerCardsSet
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aStrategy
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.anInGamePlayer
 import org.agrfesta.k.kards.texasholdem.utils.DistinctList.Companion.distinctListOf
 
 private const val BUTTON_POS = 0
@@ -29,32 +29,33 @@ class TestTableBuilder {
 
     fun button(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
-        players[BUTTON_POS] = InGamePlayer(Player(BUTTON, strategy), stack, cards)
+        players[BUTTON_POS] = anInGamePlayer(name = BUTTON, strategy = strategy, stack = stack, cards = cards)
         return this
     }
     fun smallBlind(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                    strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
-        players[SMALL_BLIND_POS] = InGamePlayer(Player(SMALL_BLIND, strategy), stack, cards)
+        players[SMALL_BLIND_POS] = anInGamePlayer(name = SMALL_BLIND, strategy = strategy, stack = stack, cards = cards)
         return this
     }
     fun bigBlind(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                  strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
-        players[BIG_BLIND_POS] = InGamePlayer(Player(BIG_BLIND, strategy), stack, cards)
+        players[BIG_BLIND_POS] = anInGamePlayer(name = BIG_BLIND, strategy = strategy, stack = stack, cards = cards)
         return this
     }
     fun underTheGun(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                     strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
-        players[UNDER_THE_GUN_POS] = InGamePlayer(Player(UNDER_THE_GUN, strategy), stack, cards)
+        players[UNDER_THE_GUN_POS] =
+            anInGamePlayer(name = UNDER_THE_GUN, strategy = strategy, stack = stack, cards = cards)
         return this
     }
     fun middle(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                     strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
-        players[MIDDLE_POS] = InGamePlayer(Player(MIDDLE, strategy), stack, cards)
+        players[MIDDLE_POS] = anInGamePlayer(name = MIDDLE, strategy = strategy, stack = stack, cards = cards)
         return this
     }
     fun late(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                     strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
-        players[LATE_POS] = InGamePlayer(Player(LATE, strategy), stack, cards)
+        players[LATE_POS] = anInGamePlayer(name = LATE, strategy = strategy, stack = stack, cards = cards)
         return this
     }
 

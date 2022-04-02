@@ -29,8 +29,8 @@ class PlayersTest {
     @Test
     @DisplayName("Player's status is CALL -> player has not fold")
     fun ifPlayerStatusIsCallHasFoldedIsFalse() {
-        val player = InGamePlayer(alex, 1000u, aPlayerCardsSet())
-        player.status = CALL
+        val player = anInGamePlayer(status = CALL)
+
         assertThat(player.hasFolded()).isFalse()
     }
 
@@ -47,30 +47,34 @@ class PlayersTest {
     @Test
     @DisplayName("Player's status is RAISE -> player can take part to the game")
     fun ifPlayerStatusIsRaiseIsActive() {
-        val player = InGamePlayer(alex, 1000u, aPlayerCardsSet())
-        player.status = RAISE
+        val player = anInGamePlayer(status = RAISE)
+
         assertThat(player.isActive()).isTrue()
     }
 
     @Test
     @DisplayName("Player with a stack of 1000 receive 200 -> player have a stack of 1200")
     fun playerReceiveAPositiveAmount() {
-        val player = InGamePlayer(alex, 1000u, aPlayerCardsSet())
+        val player = anInGamePlayer(stack = 1000u)
+
         player.receive(200u)
+
         assertThat(player.stack).isEqualTo(1200u)
     }
     @Test
     @DisplayName("Player with a stack of 1000 receive 0 -> player have a stack of 1000")
     fun playerReceiveAZeroAmount() {
-        val player = InGamePlayer(alex, 1000u, aPlayerCardsSet())
+        val player = anInGamePlayer(stack = 1000u)
+
         player.receive(0u)
+
         assertThat(player.stack).isEqualTo(1000u)
     }
     @Test
     @DisplayName("Player created with no cards -> raise and Exception")
     fun playerCreatedWithNoCardsRaisesAnException() {
         val failure = assertThat {
-            InGamePlayer(alex, 1000u, emptySet())
+            InGamePlayerImpl(sittingPlayer = aSittingPlayer(), cards = emptySet())
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Must hold two cards, received 0")
@@ -79,7 +83,7 @@ class PlayersTest {
     @DisplayName("Player created with one card -> raise and Exception")
     fun playerCreatedWithOneCardRaisesAnException() {
         val failure = assertThat {
-            InGamePlayer(alex, 1000u, setOf( card("7h") ))
+            InGamePlayerImpl(sittingPlayer = aSittingPlayer(), cards = setOf( card("7h") ))
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Must hold two cards, received 1")
@@ -88,37 +92,37 @@ class PlayersTest {
     @DisplayName("Player created with three cards -> raise and Exception")
     fun playerCreatedWithThreeCardsRaisesAnException() {
         val failure = assertThat {
-            InGamePlayer(alex, 1000u, setOf( card("7h"), card("Ah"), card("7s") ))
+            InGamePlayerImpl(sittingPlayer = aSittingPlayer(), cards = setOf( card("7h"), card("Ah"), card("7s") ))
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Must hold two cards, received 3")
     }
 
     @Test
-    @DisplayName("Player with a stack of 200 pays 500 -> effective payment is 200 player have a stack of 0 and is " +
-            "ALL-IN")
+    @DisplayName("""Player with a stack of 200 pays 500 -> effective payment is 200 player have a stack of 0 and is 
+        |ALL-IN""")
     fun playerPayAPositiveAmountGreaterThanStack() {
-        val player = InGamePlayer(alex, 200u, aPlayerCardsSet())
+        val player = anInGamePlayer(stack = 200u)
         val payed = player.pay(500u)
         assertThat(player.stack).isEqualTo(0u)
         assertThat(player.status).isEqualTo(ALL_IN)
         assertThat(payed).isEqualTo(200u)
     }
     @Test
-    @DisplayName("Player with a stack of 500 pays 500 -> effective payment is 500 player have a stack of 0 and is " +
-            "ALL-IN")
+    @DisplayName("""Player with a stack of 500 pays 500 -> effective payment is 500 player have a stack of 0 and is 
+        |ALL-IN""")
     fun playerPayAPositiveAmountEqualToStack() {
-        val player = InGamePlayer(alex, 500u, aPlayerCardsSet())
+        val player = anInGamePlayer(stack = 500u)
         val payed = player.pay(500u)
         assertThat(player.stack).isEqualTo(0u)
         assertThat(player.status).isEqualTo(ALL_IN)
         assertThat(payed).isEqualTo(500u)
     }
     @Test
-    @DisplayName("Player with a stack of 1000 pays 500 -> effective payment is 500 player have a stack of 500, the " +
-            "status doesn't change")
+    @DisplayName("""Player with a stack of 1000 pays 500 -> effective payment is 500 player have a stack of 500, the 
+        |status doesn't change""")
     fun playerPayAPositiveAmountLessThanStack() {
-        val player = InGamePlayer(alex, 1000u, aPlayerCardsSet())
+        val player = anInGamePlayer(stack = 1000u)
         assertThat(player.status).isEqualTo(NONE)
         val payed = player.pay(500u)
         assertThat(player.stack).isEqualTo(500u)
@@ -130,8 +134,8 @@ class PlayersTest {
     @DisplayName("call to Player's act -> the Action from strategy")
     fun actReturnsActionFromStrategy() {
         val strategy = strategyMock( call() )
-        val player = InGamePlayer(Player("Alex",strategy), 1000u, aPlayerCardsSet())
-        assertThat(player(player heroIn aContext())).isEqualTo( call() )
+        val player = anInGamePlayer(strategy = strategy)
+        assertThat( player.act(player.asOwnPlayer(),aGameContext()) ).isEqualTo( call() )
     }
 
     @Test
@@ -162,9 +166,9 @@ class PlayersTest {
                 anInGamePlayer()
         )
         assertThat(players).extracting { it.name }
-                .containsExactly("FoldedPlayer", "AllInPlayer", "CallingPlayer", "RaisingPlayer", "APlayer")
+                .containsExactly("FoldedPlayer", "AllInPlayer", "CallingPlayer", "RaisingPlayer", "aName")
         assertThat(players.getActive()).extracting { it.name }
-                .containsExactly("CallingPlayer", "RaisingPlayer", "APlayer")
+                .containsExactly("CallingPlayer", "RaisingPlayer", "aName")
     }
 
     @Test

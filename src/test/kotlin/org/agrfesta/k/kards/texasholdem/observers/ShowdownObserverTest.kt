@@ -18,7 +18,9 @@ import org.agrfesta.k.cards.playingcards.suits.NINE
 import org.agrfesta.k.cards.playingcards.suits.TEN
 import org.agrfesta.k.cards.playingcards.suits.frenchCardsSet
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluatorBaseImpl
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.CALL
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.FOLD
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.RAISE
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.ShowdownImpl
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.anInGamePlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.board
@@ -39,9 +41,9 @@ class ShowdownObserverTest {
         val result = slot<Collection<ShowdownPlayerResult>>()
         val observerMock = mockk<ShowdownObserver>()
         every { observerMock.notifyResult(capture(result)) } just Runs
-        val alex = anInGamePlayer("Alex", 1000u, PlayerStatus.RAISE, frenchCardsSet("Ad","Ts"))
-        val poly = anInGamePlayer("Poly", 1000u, PlayerStatus.CALL,  frenchCardsSet("Jd","7c"))
-        val jane = anInGamePlayer("Jane", 1000u, PlayerStatus.CALL,  frenchCardsSet("9d","9c"))
+        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = RAISE, cards = frenchCardsSet("Ad","Ts"))
+        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL, cards = frenchCardsSet("Jd","7c"))
+        val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL, cards = frenchCardsSet("9d","9c"))
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -52,10 +54,10 @@ class ShowdownObserverTest {
 
         verify(exactly = 1) { observerMock.notifyResult(any()) }
         assertThat(result.isCaptured).isTrue()
-        assertThat(result.captured).extracting({it.player.player},{it.evaluation},{it.prize})
-                .containsOnly(Triple(alex.player, PairHand(ACE, JACK,TEN,NINE), 400u),
-                              Triple(poly.player, PairHand(JACK, ACE,NINE,EIGHT), null),
-                              Triple(jane.player, ThreeOfAKindHand(NINE, ACE,JACK), 300u)
+        assertThat(result.captured).extracting({it.player},{it.evaluation},{it.prize})
+                .containsOnly(Triple(alex, PairHand(ACE, JACK,TEN,NINE), 400u),
+                              Triple(poly, PairHand(JACK, ACE,NINE,EIGHT), null),
+                              Triple(jane, ThreeOfAKindHand(NINE, ACE,JACK), 300u)
                         )
 
     }
@@ -82,10 +84,10 @@ class ShowdownObserverTest {
         val result = slot<Collection<ShowdownPlayerResult>>()
         val observerMock = mockk<ShowdownObserver>()
         every { observerMock.notifyResult(capture(result)) } just Runs
-        val alex = anInGamePlayer("Alex", 2000u, PlayerStatus.CALL, frenchCardsSet("Ad","9h"))
-        val poly = anInGamePlayer("Poly", 2000u, PlayerStatus.CALL, frenchCardsSet("As","9d"))
-        val jane = anInGamePlayer("Jane", 2000u, PlayerStatus.CALL, frenchCardsSet("Ah","Jc"))
-        val dave = anInGamePlayer("Dave", 1000u, PlayerStatus.FOLD, frenchCardsSet("Qh","Qc"))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, status = CALL, cards = frenchCardsSet("Ad","9h"))
+        val poly = anInGamePlayer(name = "Poly", stack = 2000u, status = CALL, cards = frenchCardsSet("As","9d"))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, status = CALL, cards = frenchCardsSet("Ah","Jc"))
+        val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = FOLD, cards = frenchCardsSet("Qh","Qc"))
         val pot = buildMutablePot()
         pot[alex] = 225u
         pot[poly] = 225u
@@ -97,11 +99,11 @@ class ShowdownObserverTest {
 
         verify(exactly = 1) { observerMock.notifyResult(any()) }
         assertThat(result.isCaptured).isTrue()
-        assertThat(result.captured).extracting({it.player.player},{it.evaluation},{it.prize})
+        assertThat(result.captured).extracting({it.player},{it.evaluation},{it.prize})
             .containsOnly(
-                Triple(alex.player, TwoPairHand(ACE,NINE, JACK), null),
-                Triple(poly.player, TwoPairHand(ACE,NINE, JACK), null),
-                Triple(jane.player, TwoPairHand(ACE,JACK, NINE), 700u)
+                Triple(alex, TwoPairHand(ACE,NINE, JACK), null),
+                Triple(poly, TwoPairHand(ACE,NINE, JACK), null),
+                Triple(jane, TwoPairHand(ACE,JACK, NINE), 700u)
             )
 
     }

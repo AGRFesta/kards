@@ -1,61 +1,167 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
 import org.agrfesta.k.cards.playingcards.cards.Card
+import java.util.*
 
-typealias PlayerStrategyInterface = (HeroGameContextImpl<OwnPlayer>) -> Action
+typealias PlayerStrategyInterface = (OwnPlayer, GameContext) -> Action
 
-interface SeatName {
+/**
+ * Represents a player identity.
+ * Used to identify any player model through the uuid.
+ */
+interface PlayerIdentity {
+    val uuid: UUID
     val name: String
+    override fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
 }
-interface SeatNameStack: SeatName {
+class PlayerIdentityImpl(
+    override val uuid: UUID = UUID.randomUUID(),
+    override val name: String): PlayerIdentity {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is PlayerIdentity) return false
+        if (uuid != other.uuid) return false
+        return true
+    }
+
+    override fun hashCode(): Int = uuid.hashCode()
+
+    override fun toString(): String = "$name($uuid)"
+}
+
+/**
+ * Creates a player identity binding the name with the uuid.
+ */
+infix fun UUID.identifies(name: String): PlayerIdentity = PlayerIdentityImpl(this, name)
+
+/**
+ * Represents a player with its strategy.
+ */
+interface Player: PlayerIdentity {
+    /**
+     * Returns the chosen [Action] based on [hero] and [context].
+     */
+    fun act(hero: OwnPlayer, context: GameContext): Action
+}
+class PlayerImpl(identity: PlayerIdentity, private val strategy: PlayerStrategyInterface):
+    Player, PlayerIdentity by identity {
+    override fun act(hero: OwnPlayer, context: GameContext): Action = strategy(hero, context)
+    override fun toString(): String = name
+}
+
+/**
+ * Creates a [Player] defining the [strategy] of and identified player.
+ */
+infix fun PlayerIdentity.playingAs(strategy: PlayerStrategyInterface): Player = PlayerImpl(this, strategy)
+
+/**
+ * Represents the public information of a player sitting with a stack at the table.
+ */
+interface PublicSittingPlayer: PlayerIdentity {
     val stack: UInt
 }
-
-data class Player(override val name: String, val strategy: PlayerStrategyInterface): SeatName {
-    override fun toString() = "$name{$strategy}"
+class PublicSittingPlayerImpl(
+    player: PlayerIdentity,
+    override val stack: UInt
+): PublicSittingPlayer, PlayerIdentity by player {
+    override fun toString(): String = "$name($stack)"
 }
 
-class Opponent(override val name: String, override val stack: UInt, val status: PlayerStatus): SeatNameStack {
-    override fun toString() = "$name[$stack]"
+/**
+ * Represents the public information of a player in game.
+ */
+interface PublicInGamePlayer: PublicSittingPlayer {
+    val status: PlayerStatus
 }
-data class PlayerStack(val player: Player, override val stack: UInt): SeatNameStack {
-    override val name: String = player.name
-    override fun toString() = "${player.name}[$stack]"
+class PublicInGamePlayerImpl(
+    player: PublicSittingPlayer,
+    override val status: PlayerStatus = PlayerStatus.NONE
+): PublicInGamePlayer, PublicSittingPlayer by player {
+    override fun toString(): String = "$name($stack)[$status]"
 }
-infix fun Player.owns(stack: UInt) = PlayerStack(this, stack)
-fun Collection<PlayerStack>.toRanking() = sortedByDescending { it.stack }
 
-class OwnPlayer(
-    override val name: String,
-    val cards: Set<Card>,
-    override val stack: UInt,
-    val amountToCall: UInt)
-    : SeatNameStack
+/**
+ * Represents a player sitting with a stack at the table.
+ */
+interface SittingPlayer: Player {
+    val stack: UInt
+    fun asIdentity(): PlayerIdentity
+    fun asPublicSittingPlayer(): PublicSittingPlayer
+}
+class SittingPlayerImpl(player: Player, override val stack: UInt): SittingPlayer, Player by player {
+    override fun asIdentity(): PlayerIdentity = PlayerIdentityImpl(uuid, name)
+    override fun asPublicSittingPlayer(): PublicSittingPlayer = PublicSittingPlayerImpl(asIdentity(), stack)
+    override fun toString(): String = "$name($stack)"
+}
 
-class OpponentHero(override val name: String, override val stack: UInt, val cards: Set<Card>? = null): SeatNameStack
+/**
+ * Creates a [SittingPlayer] from a [Player] sitting with [stack].
+ */
+infix fun Player.sittingWith(stack: UInt): SittingPlayer = SittingPlayerImpl(this, stack)
 
-class InGamePlayer(val player: Player, override var stack: UInt, val cards: Set<Card>)
-    : PlayerStrategyInterface by player.strategy, SeatNameStack {
-    override val name = player.name
+infix fun Player.owns(stack: UInt): SittingPlayer = SittingPlayerImpl(this, stack)
+fun Collection<SittingPlayer>.toRanking() = map { it.asPublicSittingPlayer() }
+    .sortedByDescending { it.stack }
 
-    var status: PlayerStatus = PlayerStatus.NONE
+/**
+ * Represents own player information.
+ */
+interface OwnPlayer: PublicInGamePlayer {
+    val cards: Set<Card>
+}
+class OwnPlayerImpl(
+    publicPlayer: PublicInGamePlayer,
+    override val cards: Set<Card>
+): OwnPlayer, PublicInGamePlayer by publicPlayer
+
+/**
+ * Represents an in game player.
+ */
+interface InGamePlayer: SittingPlayer {
+    val cards: Set<Card>
+    override var stack: UInt
+    var status: PlayerStatus
+
+    fun hasFolded(): Boolean
+    fun isActive(): Boolean
+
+    fun pay(amount: UInt): UInt
+    fun receive(amount: UInt)
+
+    fun asPlayer(): Player
+    fun asSittingPlayer(): SittingPlayer
+    fun asPublicInGamePlayer(): PublicInGamePlayer
+    fun asOwnPlayer(): OwnPlayer
+
+    fun calculateAmountToCall(pot: InGamePot): UInt
+}
+class InGamePlayerImpl(
+    sittingPlayer: SittingPlayer,
+    override var status: PlayerStatus = PlayerStatus.NONE,
+    override val cards: Set<Card>): InGamePlayer, SittingPlayer by sittingPlayer {
+    override var stack: UInt = sittingPlayer.stack
 
     init {
         require(cards.size == 2) { "Must hold two cards, received ${cards.size}" }
     }
 
     /// A Player that is out of the Game
-    fun hasFolded(): Boolean = status == PlayerStatus.FOLD
+    override fun hasFolded(): Boolean = status == PlayerStatus.FOLD
 
     /// A Player that can still take part to the Game
-    fun isActive(): Boolean = status!=PlayerStatus.FOLD && status!=PlayerStatus.ALL_IN
+    override fun isActive(): Boolean = status!=PlayerStatus.FOLD && status!=PlayerStatus.ALL_IN
 
-    fun receive(amount: UInt) { stack += amount }
+    override fun asPlayer(): Player = PlayerImpl(asIdentity(), this::act)
+    override fun asSittingPlayer(): SittingPlayer = SittingPlayerImpl(asPlayer(), stack)
+    override fun asPublicSittingPlayer(): PublicSittingPlayer = PublicSittingPlayerImpl(asIdentity(), stack)
+    override fun asPublicInGamePlayer(): PublicInGamePlayer = PublicInGamePlayerImpl(asPublicSittingPlayer(), status)
+    override fun asOwnPlayer(): OwnPlayer = OwnPlayerImpl(asPublicInGamePlayer(), cards)
 
-    fun asOpponent(): Opponent = Opponent(name, stack, status)
-    fun asPlayerStack(): PlayerStack = PlayerStack(player, stack)
+    override fun receive(amount: UInt) { stack += amount }
 
-    fun pay(amount: UInt): UInt {
+    override fun pay(amount: UInt): UInt {
         val effectiveAmount = amount.coerceAtMost(stack)
         stack -= effectiveAmount
         if (stack == 0u) {
@@ -64,12 +170,8 @@ class InGamePlayer(val player: Player, override var stack: UInt, val cards: Set<
         return effectiveAmount
     }
 
-    fun asOwnPlayer(actualPot: InGamePot) = OwnPlayer(name, cards, stack, calculateAmountToCall(actualPot))
-
-    fun calculateAmountToCall(pot: InGamePot): UInt = (pot.maxContribution()?.amount ?: 0u) - pot.payedBy(this)
-
-    override fun toString(): String = "$player ($stack)"
-
+    override fun calculateAmountToCall(pot: InGamePot): UInt =
+        (pot.maxContribution()?.amount ?: 0u) - pot.payedBy(this)
 }
 
 enum class PlayerStatus {
@@ -87,7 +189,5 @@ fun List<InGamePlayer>.findWinner(): InGamePlayer? {
     return if (notFoldedPlayers.size == 1) notFoldedPlayers[0]
     else null
 }
-
-fun List<InGamePlayer>.toPlayerStack(): List<PlayerStack> = map { it.player owns it.stack }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -8,12 +8,13 @@ import org.agrfesta.k.kards.texasholdem.observers.GameResult
 import org.agrfesta.k.kards.texasholdem.observers.ShowdownObserver
 import org.agrfesta.k.kards.texasholdem.observers.dealerBroadcasterFor
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluatorBaseImpl
+import org.agrfesta.k.kards.texasholdem.utils.DistinctList
 import org.agrfesta.k.kards.texasholdem.utils.UuidProvider
 import java.util.*
 
 interface Game {
     val uuid: UUID
-    fun play(): List<PlayerStack>
+    fun play(): DistinctList<SittingPlayer>
 }
 
 /**
@@ -38,7 +39,7 @@ class GameConfig(
 class GameImpl(
     uuid: UUID? = null,
     payments: GamePayments,
-    table: Table<PlayerStack>,
+    table: Table<SittingPlayer>,
     deck: Deck = FRENCH.createDeck(),
     private val observer: GameObserver? = null,
     private val config: GameConfig = GameConfig()
@@ -48,7 +49,8 @@ class GameImpl(
     private var context: MutableGameContextImpl
 
     init {
-        val inGameTable = table.map { InGamePlayer(it.player, it.stack, deck.draw(2).toSet()) }
+        val inGameTable: Table<InGamePlayer> = table
+            .map { InGamePlayerImpl(sittingPlayer = it, cards = deck.draw(2).toSet()) }
         val phasePots = emptyPhasePots<InGamePlayer, MutableMap<InGamePlayer, UInt>> { mutableMapOf() }
         context = MutableGameContextImpl(
             uuid = this.uuid,
@@ -58,7 +60,7 @@ class GameImpl(
             phasePots = phasePots)
     }
 
-    override fun play(): List<PlayerStack> {
+    override fun play(): DistinctList<SittingPlayer> {
         // Pre-Flop
         findPreFlopWinner() ?:
 
@@ -74,7 +76,7 @@ class GameImpl(
         // Showdown
         showdown.execute(context.getGlobalPot(), context.board)
 
-        return context.table.players.toPlayerStack()
+        return context.table.players.map { it.asSittingPlayer() }
     }
 
     private fun findWinner(players: List<InGamePlayer>): InGamePlayer? {
@@ -82,7 +84,7 @@ class GameImpl(
         if (winner != null) {
             winner.receive(context.getGlobalPot().amount())
             observer?.notifyWinner(
-                GameResult(winner.player, context.getGlobalPot().amount(), players.toPlayerStack() )
+                GameResult(winner, context.getGlobalPot().amount(), players.map { it.asPublicInGamePlayer() } )
             )
         }
         return winner

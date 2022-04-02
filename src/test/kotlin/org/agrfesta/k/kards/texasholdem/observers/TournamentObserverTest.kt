@@ -2,12 +2,12 @@ package org.agrfesta.k.kards.texasholdem.observers
 
 import io.mockk.mockk
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Player
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStack
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.PublicSittingPlayer
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 class TournamentObserverTest {
-    private val ranking: List<PlayerStack> = mockk(relaxed = true)
+    private val ranking: List<PublicSittingPlayer> = mockk(relaxed = true)
     private val losers: List<Set<Player>> = mockk(relaxed = true)
 
     @Test

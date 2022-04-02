@@ -32,11 +32,11 @@ class GameTest {
     @DisplayName("play(): at Pre-Flop, everyone fold -> game ends at Pre-Flop, Big Blind wins the pot")
     fun playTest000() {
         val observerMock: GameObserver = mockk(relaxed = true)
-        val table: Table<PlayerStack> = buildTestTable {
+        val table: Table<SittingPlayer> = buildTestTable {
             button(stack = 100u, strategy = folder() )
             smallBlind(stack = 100u, strategy = folder() )
             bigBlind(stack = 100u, strategy = folder() )
-        }.map { it.asPlayerStack() }
+        }.map { it.asSittingPlayer() }
         val game = GameImpl( payments = blinds(5u, 10u), table = table, observer = observerMock )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
@@ -60,11 +60,11 @@ class GameTest {
     @DisplayName("play(): at Pre-Flop, everyone fold, no observer -> " +
             "game ends at Pre-Flop, Big Blind wins the pot, no observer notification")
     fun playTest005() {
-        val table: Table<PlayerStack> = buildTestTable {
+        val table: Table<SittingPlayer> = buildTestTable {
             button(stack = 100u, strategy = folder() )
             smallBlind(stack = 100u, strategy = folder() )
             bigBlind(stack = 100u, strategy = folder() )
-        }.map { it.asPlayerStack() }
+        }.map { it.asSittingPlayer() }
         val game = GameImpl( payments = blinds(5u, 10u), table = table )
 
         val players = game.play()
@@ -78,11 +78,11 @@ class GameTest {
             game ends at Flop, Button wins the pot""")
     fun playTest001() {
         val observerMock: GameObserver = mockk(relaxed = true)
-        val table: Table<PlayerStack> = buildTestTable {
+        val table: Table<SittingPlayer> = buildTestTable {
             button(stack = 100u, strategy = strategyMock(call(), fold()) )
             smallBlind(stack = 100u, strategy = strategyMock(call(), fold()) )
             bigBlind(stack = 100u, strategy = strategyMock(call(), fold()) )
-        }.map { it.asPlayerStack() }
+        }.map { it.asSittingPlayer() }
         val game = GameImpl( payments = blinds(5u, 10u), table = table, observer = observerMock )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
@@ -106,11 +106,11 @@ class GameTest {
     @DisplayName("""play(): at Pre-Flop, everyone call, at Flop everyone fold, no observer -> 
             game ends at Flop, Button wins the pot, no observer notified""")
     fun playTest006() {
-        val table: Table<PlayerStack> = buildTestTable {
+        val table: Table<SittingPlayer> = buildTestTable {
             button(stack = 100u, strategy = strategyMock(call(), fold()) )
             smallBlind(stack = 100u, strategy = strategyMock(call(), fold()) )
             bigBlind(stack = 100u, strategy = strategyMock(call(), fold()) )
-        }.map { it.asPlayerStack() }
+        }.map { it.asSittingPlayer() }
         val game = GameImpl( payments = blinds(5u, 10u), table = table )
 
         val players = game.play()
@@ -124,11 +124,11 @@ class GameTest {
             game ends at Turn, Button wins the pot""")
     fun playTest002() {
         val observerMock: GameObserver = mockk(relaxed = true)
-        val table: Table<PlayerStack> = buildTestTable {
+        val table: Table<SittingPlayer> = buildTestTable {
             button(stack = 100u, strategy = strategyMock(call(), call(), fold()) )
             smallBlind(stack = 100u, strategy = strategyMock(call(), call(), fold()) )
             bigBlind(stack = 100u, strategy = strategyMock(call(), call(), fold()) )
-        }.map { it.asPlayerStack() }
+        }.map { it.asSittingPlayer() }
         val game = GameImpl( payments = blinds(5u, 10u), table = table, observer = observerMock )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
@@ -153,11 +153,11 @@ class GameTest {
         at River everyone fold -> game ends at River, Button wins the pot""")
     fun playTest003() {
         val observerMock: GameObserver = mockk(relaxed = true)
-        val table: Table<PlayerStack> = buildTestTable {
+        val table: Table<SittingPlayer> = buildTestTable {
             button(stack = 100u, strategy = strategyMock(call(), call(), call(), fold()) )
             smallBlind(stack = 100u, strategy = strategyMock(call(), call(), call(), fold()) )
             bigBlind(stack = 100u, strategy = strategyMock(call(), call(), call(), fold()) )
-        }.map { it.asPlayerStack() }
+        }.map { it.asSittingPlayer() }
         val game = GameImpl( payments = blinds(5u, 10u), table = table, observer = observerMock )
         val contexts: MutableList<GameContextImpl> = mutableListOf()
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
@@ -181,11 +181,11 @@ class GameTest {
     @DisplayName("""play(): at every phase everyone call -> game ends at Showdown, Button wins the pot""")
     fun playTest004() {
         val observerMock: GameObserver = mockk(relaxed = true)
-        val table: Table<PlayerStack> = buildTestTable {
+        val table: Table<SittingPlayer> = buildTestTable {
             button(stack = 100u, strategy = limper())
             smallBlind(stack = 100u, strategy = limper())
             bigBlind(stack = 100u, strategy = limper())
-        }.map { it.asPlayerStack() }
+        }.map { it.asSittingPlayer() }
         val showdownMock: Showdown = mockk()
         val game = GameImpl( payments = blinds(5u, 10u), table = table, observer = observerMock,
             config = GameConfig(createShowdown = {showdownMock}) )

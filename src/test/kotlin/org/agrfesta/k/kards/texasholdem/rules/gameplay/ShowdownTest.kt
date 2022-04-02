@@ -19,8 +19,8 @@ class ShowdownTest {
     @Test
     @DisplayName("Showdown story: Alex wins all the pot")
     fun showdownStory000() {
-        val alex = anInGamePlayer("Alex", 1000u, RAISE, frenchCardsSet("Ad","Ts"))
-        val poly = anInGamePlayer("Poly", 1000u, CALL,  frenchCardsSet("Jd","7c"))
+        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = RAISE, cards = frenchCardsSet("Ad","Ts"))
+        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jd","7c"))
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -34,9 +34,9 @@ class ShowdownTest {
     @Test
     @DisplayName("Showdown story: Jane wins, Alex wins the remaining pot")
     fun showdownStory001() {
-        val alex = anInGamePlayer("Alex", 1000u, RAISE, frenchCardsSet("Ad","Ts"))
-        val poly = anInGamePlayer("Poly", 1000u, CALL,  frenchCardsSet("Jd","7c"))
-        val jane = anInGamePlayer("Jane", 1000u, CALL,  frenchCardsSet("9d","9c"))
+        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = RAISE, cards = frenchCardsSet("Ad","Ts"))
+        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jd","7c"))
+        val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL,  cards = frenchCardsSet("9d","9c"))
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -52,10 +52,10 @@ class ShowdownTest {
     @Test
     @DisplayName("Showdown story: Jane wins, Dave wins the second pot, Alex wins the remaining pot")
     fun showdownStory002() {
-        val alex = anInGamePlayer("Alex", 1000u, RAISE, frenchCardsSet("Ad","Ts"))
-        val poly = anInGamePlayer("Poly", 1000u, CALL,  frenchCardsSet("Jd","7c"))
-        val jane = anInGamePlayer("Jane", 1000u, CALL,  frenchCardsSet("9d","9c"))
-        val dave = anInGamePlayer("Dave", 1000u, CALL,  frenchCardsSet("Jc","9h"))
+        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = RAISE, cards = frenchCardsSet("Ad","Ts"))
+        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jd","7c"))
+        val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL,  cards = frenchCardsSet("9d","9c"))
+        val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jc","9h"))
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -73,10 +73,10 @@ class ShowdownTest {
     @Test
     @DisplayName("Showdown story: Alex and Poly win")
     fun showdownStory003() {
-        val alex = anInGamePlayer("Alex", 1000u, CALL,  frenchCardsSet("Ad","Ts"))
-        val poly = anInGamePlayer("Poly", 1000u, CALL,  frenchCardsSet("As","Td"))
-        val jane = anInGamePlayer("Jane", 1000u, CALL,  frenchCardsSet("9d","Tc"))
-        val dave = anInGamePlayer("Dave", 1000u, CALL,  frenchCardsSet("Jc","7h"))
+        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = CALL,  cards = frenchCardsSet("Ad","Ts"))
+        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL,  cards = frenchCardsSet("As","Td"))
+        val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL,  cards = frenchCardsSet("9d","Tc"))
+        val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jc","7h"))
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -94,10 +94,10 @@ class ShowdownTest {
     @Test
     @DisplayName("Showdown story: Jane and Dave win, Alex and Poly share the rest")
     fun showdownStory004() {
-        val alex = anInGamePlayer("Alex", 1000u, CALL,  frenchCardsSet("Ad","Ts"))
-        val poly = anInGamePlayer("Poly", 1000u, CALL,  frenchCardsSet("As","Td"))
-        val jane = anInGamePlayer("Jane", 1000u, CALL,  frenchCardsSet("Jd","9c"))
-        val dave = anInGamePlayer("Dave", 1000u, CALL,  frenchCardsSet("Jh","9d"))
+        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = CALL,  cards = frenchCardsSet("Ad","Ts"))
+        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL,  cards = frenchCardsSet("As","Td"))
+        val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jd","9c"))
+        val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jh","9d"))
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -115,10 +115,10 @@ class ShowdownTest {
     @Test
     @DisplayName("Showdown story: All win")
     fun showdownStory005() {
-        val alex = anInGamePlayer("Alex", 1000u, CALL,  frenchCardsSet("Ad","Ts"))
-        val poly = anInGamePlayer("Poly", 1000u, CALL,  frenchCardsSet("As","Td"))
-        val jane = anInGamePlayer("Jane", 1000u, CALL,  frenchCardsSet("Jd","9c"))
-        val dave = anInGamePlayer("Dave", 1000u, CALL,  frenchCardsSet("Jh","9d"))
+        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = CALL,  cards = frenchCardsSet("Ad","Ts"))
+        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL,  cards = frenchCardsSet("As","Td"))
+        val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jd","9c"))
+        val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jh","9d"))
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -136,10 +136,10 @@ class ShowdownTest {
     @Test
     @DisplayName("Showdown story: Jane wins but folded, Dave wins, Alex and Poly share the rest")
     fun showdownStory006() {
-        val alex = anInGamePlayer("Alex", 1000u, RAISE,  frenchCardsSet("Ad","Ts"))
-        val poly = anInGamePlayer("Poly", 1000u, ALL_IN, frenchCardsSet("As","Td"))
-        val jane = anInGamePlayer("Jane", 1000u, FOLD,   frenchCardsSet("Jd","9c"))
-        val dave = anInGamePlayer("Dave", 1000u, CALL,   frenchCardsSet("Jh","9d"))
+        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = RAISE,  cards = frenchCardsSet("Ad","Ts"))
+        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = ALL_IN, cards = frenchCardsSet("As","Td"))
+        val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = FOLD,   cards = frenchCardsSet("Jd","9c"))
+        val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = CALL,   cards = frenchCardsSet("Jh","9d"))
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -157,9 +157,9 @@ class ShowdownTest {
     @Test
     @DisplayName("Showdown story: Poly wins, Jane wins second but folded, Alex take the rest")
     fun showdownStory007() {
-        val alex = anInGamePlayer("Alex", 1000u, RAISE,  frenchCardsSet("Ad","Ts"))
-        val poly = anInGamePlayer("Poly", 1000u, ALL_IN, frenchCardsSet("As","9d"))
-        val jane = anInGamePlayer("Jane", 1000u, FOLD,   frenchCardsSet("Ah","Qc"))
+        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = RAISE,  cards = frenchCardsSet("Ad","Ts"))
+        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = ALL_IN, cards = frenchCardsSet("As","9d"))
+        val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = FOLD,   cards = frenchCardsSet("Ah","Qc"))
         val pot = buildMutablePot()
         pot[alex] = 500u
         pot[poly] = 50u
@@ -175,9 +175,9 @@ class ShowdownTest {
     @Test
     @DisplayName("Showdown story: Poly wins, Jane wins second, Alex take the rest")
     fun showdownStory008() {
-        val alex = anInGamePlayer("Alex", 1000u, NONE,   frenchCardsSet("Ad","Ts"))
-        val poly = anInGamePlayer("Poly", 1000u, ALL_IN, frenchCardsSet("As","9d"))
-        val jane = anInGamePlayer("Jane", 1000u, ALL_IN, frenchCardsSet("Ah","Qc"))
+        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = NONE,   cards = frenchCardsSet("Ad","Ts"))
+        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = ALL_IN, cards = frenchCardsSet("As","9d"))
+        val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = ALL_IN, cards = frenchCardsSet("Ah","Qc"))
         val pot = buildMutablePot()
         pot[alex] = 200u
         pot[poly] = 50u
@@ -193,10 +193,10 @@ class ShowdownTest {
     @Test
     @DisplayName("Showdown story: Alex, Poly and Jane win and share a pot of 400, 133 each")
     fun showdownStory009() {
-        val alex = anInGamePlayer("Alex", 1000u, CALL, frenchCardsSet("Ad","9h"))
-        val poly = anInGamePlayer("Poly", 1000u, CALL, frenchCardsSet("As","9d"))
-        val jane = anInGamePlayer("Jane", 1000u, CALL, frenchCardsSet("Ah","9c"))
-        val dave = anInGamePlayer("Dave", 1000u, FOLD, frenchCardsSet("Qh","Qc"))
+        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = CALL, cards = frenchCardsSet("Ad","9h"))
+        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL, cards = frenchCardsSet("As","9d"))
+        val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL, cards = frenchCardsSet("Ah","9c"))
+        val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = FOLD, cards = frenchCardsSet("Qh","Qc"))
         val pot = buildMutablePot()
         pot[alex] = 100u
         pot[poly] = 100u
@@ -214,10 +214,10 @@ class ShowdownTest {
     @Test
     @DisplayName("Showdown story: Alex, Poly and Jane win and share a pot of 800, 266 each")
     fun showdownStory010() {
-        val alex = anInGamePlayer("Alex", 1000u, CALL, frenchCardsSet("Ad","9h"))
-        val poly = anInGamePlayer("Poly", 1000u, CALL, frenchCardsSet("As","9d"))
-        val jane = anInGamePlayer("Jane", 1000u, CALL, frenchCardsSet("Ah","9c"))
-        val dave = anInGamePlayer("Dave", 1000u, FOLD, frenchCardsSet("Qh","Qc"))
+        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = CALL, cards = frenchCardsSet("Ad","9h"))
+        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL, cards = frenchCardsSet("As","9d"))
+        val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL, cards = frenchCardsSet("Ah","9c"))
+        val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = FOLD, cards = frenchCardsSet("Qh","Qc"))
         val pot = buildMutablePot()
         pot[alex] = 200u
         pot[poly] = 200u

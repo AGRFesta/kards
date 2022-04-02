@@ -2,9 +2,9 @@ package org.agrfesta.k.kards.texasholdem.observers
 
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.GameContext
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.GamePhase
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.Player
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerAction
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStack
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerIdentity
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.PublicSittingPlayer
 
 /**
  * Object used to notify an information to all its subscribers.
@@ -90,7 +90,7 @@ class TournamentBroadcaster(
         gameBroadcaster.subscribe(subscriber)
     }
 
-    override fun notifyTournamentRanking(ranking: List<PlayerStack>, losers: List<Set<Player>>) {
+    override fun notifyTournamentRanking(ranking: List<PublicSittingPlayer>, losers: List<Set<PlayerIdentity>>) {
         notify { it.notifyTournamentRanking(ranking, losers) }
     }
 

@@ -25,7 +25,7 @@ class ShowdownImpl(
         pot.decompose().forEach { process(it,playersHands) }
         observer?.notifyResult(
                 playersHands.entries
-                        .map { ShowdownPlayerResult( it.key, playersPrizes[it.key.player], it.value) }
+                        .map { ShowdownPlayerResult( it.key, playersPrizes[it.key], it.value) }
         )
     }
 
@@ -38,7 +38,7 @@ class ShowdownImpl(
                     val prize = pot.amount() / winners.size.toUInt()
                     winners.forEach {
                         it.receive(prize)
-                        playersPrizes[it.player] = (playersPrizes[it.player]?:0u) + prize
+                        playersPrizes[it] = (playersPrizes[it]?:0u) + prize
                     }
                 }
     }

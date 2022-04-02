@@ -39,8 +39,8 @@ class DealersTest {
     @Test
     @DisplayName("Post flop (10/20) story: Alex calls, Jane raises 100, Alex folds")
     fun postFlopStory000() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(call(), fold()))
-        val jane = anInGamePlayer("Jane", 2000u, strategyMock(raise(100u)))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(call(), fold()))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(raise(100u)))
         val table = TableImpl(distinctListOf(alex, jane), 0u)
         val context = aContext(table, blinds(10u, 20u))
         val dealer = PostFlopDealer(context)
@@ -60,8 +60,8 @@ class DealersTest {
         Alex paid 200 and Jane 200
     """)
     fun collectPotTest004() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(call(), raise(200u)))
-        val jane = anInGamePlayer("Jane", 2000u, strategyMock(raise(100u), call()))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(call(), raise(200u)))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(raise(100u), call()))
         val table = TableImpl(distinctListOf(alex, jane), 0u)
         val context = aContext(table, blinds(10u, 20u))
         val dealer = PostFlopDealer(context)
@@ -79,8 +79,8 @@ class DealersTest {
     @Test
     @DisplayName("Post flop (10/20) story: Alex calls, Jane raises Int.MAX_VALUE, Alex calls")
     fun postFlopStory003() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(call(), call()))
-        val jane = anInGamePlayer("Jane", 2000u, strategyMock(raise(UInt.MAX_VALUE)))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(call(), call()))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(raise(UInt.MAX_VALUE)))
         val table = TableImpl(distinctListOf(alex, jane), 0u)
         val context = aContext(table, blinds(10u, 20u))
         val dealer = PostFlopDealer(context)
@@ -98,9 +98,9 @@ class DealersTest {
     @Test
     @DisplayName("Post flop (10/20) story: Alex raises 175, Jane calls, Dave all-in, Alex calls, Jane calls")
     fun postFlopStory004() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(raise(175u), call()))
-        val jane = anInGamePlayer("Jane", 2000u, strategyMock(call(), call()))
-        val dave = anInGamePlayer("Dave", 200u, strategyMock(raise(200u)))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(raise(175u), call()))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(call(), call()))
+        val dave = anInGamePlayer(name = "Dave", stack = 200u, strategy = strategyMock(raise(200u)))
         val table = TableImpl(distinctListOf(alex, jane, dave), 2u)
         val context = aContext(table, blinds(10u, 20u))
         val dealer = PostFlopDealer(context)
@@ -123,9 +123,9 @@ class DealersTest {
         Dave calls -> Alex paid 200 and Jane 200
     """)
     fun collectPotTest005() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(raise(175u), raise(400u)))
-        val jane = anInGamePlayer("Jane", 200u, strategyMock(raise(200u)))
-        val dave = anInGamePlayer("Dave", 2000u, strategyMock(raise(300u), call()))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(raise(175u), raise(400u)))
+        val jane = anInGamePlayer(name = "Jane", stack = 200u, strategy = strategyMock(raise(200u)))
+        val dave = anInGamePlayer(name = "Dave", stack = 2000u, strategy = strategyMock(raise(300u), call()))
         val table = TableImpl(distinctListOf(alex, jane, dave), 2u)
         val context = aContext(table, blinds(25u, 50u))
         val dealer = PostFlopDealer(context)
@@ -146,12 +146,12 @@ class DealersTest {
     @Test
     @DisplayName("Post flop (110/220) story: Dave folds")
     fun postFlopStory008() {
-        val alex = anInGamePlayer("Alex", 0u, ALL_IN, strategyMock(call()))
-        val juno = anInGamePlayer("Juno", 20u, FOLD, strategyMock(call()))
-        val dave = anInGamePlayer("Dave", 2000u, CALL, strategyMock(fold()))
-        val jane = anInGamePlayer("Jane", 2000u, CALL, strategyMock(fold()))
-        val eric = anInGamePlayer("Eric", 0u, ALL_IN, strategyMock(call()))
-        val sara = anInGamePlayer("Sara", 8880u, FOLD, strategyMock(call()))
+        val alex = anInGamePlayer(name = "Alex", stack = 0u, status = ALL_IN, strategy = strategyMock(call()))
+        val juno = anInGamePlayer(name = "Juno", stack = 20u, status = FOLD, strategy = strategyMock(call()))
+        val dave = anInGamePlayer(name = "Dave", stack = 2000u, status = CALL, strategy = strategyMock(fold()))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, status = CALL, strategy = strategyMock(fold()))
+        val eric = anInGamePlayer(name = "Eric", stack = 0u, status = ALL_IN, strategy = strategyMock(call()))
+        val sara = anInGamePlayer(name = "Sara", stack = 8880u, status = FOLD, strategy = strategyMock(call()))
 
         val table = TableImpl(distinctListOf(alex, juno, dave, jane, eric, sara), 5u)
         val context = aContext(table, blinds(110u, 220u))
@@ -178,8 +178,8 @@ class DealersTest {
     @DisplayName("Post flop (10/20) story: In previous phase both Alex and Jane call 20. " +
             "Alex calls, Jane raises 100, Alex folds")
     fun postFlopStory009() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(call(), fold()))
-        val jane = anInGamePlayer("Jane", 2000u, strategyMock(raise(100u)))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(call(), fold()))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(raise(100u)))
         val table = TableImpl(distinctListOf(alex, jane), 0u)
 
         val prevPot = buildMutablePot()
@@ -202,9 +202,9 @@ class DealersTest {
     @Test
     @DisplayName("Pre flop (50/100) story: Dave calls, Alex calls, Jane calls")
     fun preFlopStory000() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(call()))
-        val jane = anInGamePlayer("Jane", 2000u, strategyMock(call()))
-        val dave = anInGamePlayer("Dave", 2000u, strategyMock(call()))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(call()))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(call()))
+        val dave = anInGamePlayer(name = "Dave", stack = 2000u, strategy = strategyMock(call()))
         val table = TableImpl(distinctListOf(alex, jane, dave), 2u)
         val context = aContext(table, blinds(50u, 100u))
         val dealer = PreFlopDealer(context)
@@ -227,9 +227,9 @@ class DealersTest {
         Alex paid 250, Jane 250, Dave 250 
     """)
     fun collectPotTest001() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(raise(200u)))
-        val jane = anInGamePlayer("Jane", 2000u, strategyMock(call()))
-        val dave = anInGamePlayer("Dave", 2000u, strategyMock(call(), call()))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(raise(200u)))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(call()))
+        val dave = anInGamePlayer(name = "Dave", stack = 2000u, strategy = strategyMock(call(), call()))
         val table = TableImpl(distinctListOf(alex, jane, dave), 2u)
         val context = aContext(table, blinds(50u, 100u))
         val dealer = PreFlopDealer(context)
@@ -252,9 +252,9 @@ class DealersTest {
         Alex paid 300, Jane 100, Dave 300 
     """)
     fun collectPotTest002() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(call()))
-        val jane = anInGamePlayer("Jane", 2000u, strategyMock(fold()))
-        val dave = anInGamePlayer("Dave", 2000u, strategyMock(raise(300u)))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(call()))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(fold()))
+        val dave = anInGamePlayer(name = "Dave", stack = 2000u, strategy = strategyMock(raise(300u)))
         val table = TableImpl(distinctListOf(alex, jane, dave), 2u)
         val context = aContext(table, blinds(50u, 100u))
         val dealer = PreFlopDealer(context)
@@ -277,9 +277,9 @@ class DealersTest {
         Alex paid 650, Jane 50, Dave 650 
     """)
     fun collectPotTest003() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(raise(600u)))
-        val jane = anInGamePlayer("Jane", 50u, strategyMock())
-        val dave = anInGamePlayer("Dave", 2000u, strategyMock(raise(300u), call()))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(raise(600u)))
+        val jane = anInGamePlayer(name = "Jane", stack = 50u, strategy = strategyMock())
+        val dave = anInGamePlayer(name = "Dave", stack = 2000u, strategy = strategyMock(raise(300u), call()))
         val table = TableImpl(distinctListOf(alex, jane, dave), 2u)
         val context = aContext(table, blinds(50u, 100u))
         val dealer = PreFlopDealer(context)
@@ -300,8 +300,8 @@ class DealersTest {
     @Test
     @DisplayName("Pre flop (50/100) story: Alex calls, Jane raises 300, Alex folds")
     fun preFlopStory004() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(call(), fold()))
-        val jane = anInGamePlayer("Jane", 2000u, strategyMock(raise(300u)))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(call(), fold()))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(raise(300u)))
         val table = TableImpl(distinctListOf(alex, jane), 0u)
         val context = aContext(table, blinds(50u, 100u))
         val dealer = PreFlopDealer(context)
@@ -319,11 +319,11 @@ class DealersTest {
     @Test
     @DisplayName("Pre flop (50/100) story: Dave folds, Jane calls, Eric all-in, Alex calls, Juno folds, Jane calls")
     fun preFlopStory005() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(call()))
-        val juno = anInGamePlayer("Juno", 2000u, strategyMock(fold()))
-        val dave = anInGamePlayer("Dave", 2000u, strategyMock(fold()))
-        val jane = anInGamePlayer("Jane", 2000u, strategyMock(call(), call()))
-        val eric = anInGamePlayer("Eric", 2000u, strategyMock(raise(2000u)))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(call()))
+        val juno = anInGamePlayer(name = "Juno", stack = 2000u, strategy = strategyMock(fold()))
+        val dave = anInGamePlayer(name = "Dave", stack = 2000u, strategy = strategyMock(fold()))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(call(), call()))
+        val eric = anInGamePlayer(name = "Eric", stack = 2000u, strategy = strategyMock(raise(2000u)))
         val table = TableImpl(distinctListOf(alex, juno, dave, jane, eric), 4u)
         val context = aContext(table, blinds(50u, 100u))
         val dealer = PreFlopDealer(context)
@@ -350,9 +350,9 @@ class DealersTest {
     @Test
     @DisplayName("Pre flop (50/100) story: Dave folds, Alex folds")
     fun preFlopStory006() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(fold()))
-        val jane = anInGamePlayer("Jane", 2000u, strategyMock(fold()))
-        val dave = anInGamePlayer("Dave", 2000u, strategyMock(fold()))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(fold()))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(fold()))
+        val dave = anInGamePlayer(name = "Dave", stack = 2000u, strategy = strategyMock(fold()))
         val table = TableImpl(distinctListOf(alex, jane, dave), 2u)
         val context = aContext(table, blinds(50u, 100u))
         val dealer = PreFlopDealer(context)
@@ -397,9 +397,9 @@ class DealersTest {
     @Test
     @DisplayName("Pre flop (100/200) story: Dave calls, Alex folds")
     fun preFlopStory008() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(fold()))
-        val jane = anInGamePlayer("Jane", 50u, strategyMock(fold()))
-        val dave = anInGamePlayer("Dave", 40u, strategyMock(call()))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(fold()))
+        val jane = anInGamePlayer(name = "Jane", stack = 50u, strategy = strategyMock(fold()))
+        val dave = anInGamePlayer(name = "Dave", stack = 40u, strategy = strategyMock(call()))
         val table = TableImpl(distinctListOf(alex, jane, dave), 2u)
         val context = aContext(table, blinds(100u, 200u))
         val dealer = PreFlopDealer(context)
@@ -420,9 +420,9 @@ class DealersTest {
     @Test
     @DisplayName("collectPot(): Alex raises 70, Jane folds, Dave calls -> Alex paid 70, Jane 10 and Dave 70")
     fun collectPotTest010() {
-        val alex = anInGamePlayer("Alex", 2000u, strategyMock(raise(70u)))
-        val jane = anInGamePlayer("Jane", 2000u, strategyMock(fold()))
-        val dave = anInGamePlayer("Dave", 2000u, strategyMock(call()))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(raise(70u)))
+        val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(fold()))
+        val dave = anInGamePlayer(name = "Dave", stack = 2000u, strategy = strategyMock(call()))
         val table = TableImpl(distinctListOf(alex, jane, dave), 0u)
         val context = aContext(table, blinds(10u, 20u))
         val dealer = PreFlopDealer(context)
@@ -446,8 +446,8 @@ class DealersTest {
         val table: Table<InGamePlayer> = buildTestTable {
             underTheGun(stack = 1000u, strategy = strategyMock(raise(30u), call()) )
             button(stack = 1000u, strategy = strategyMock(raise(90u)) )
-            smallBlind(stack = 1000u) { fold() }
-            bigBlind(stack = 1000u) { fold() }
+            smallBlind(stack = 1000u) { _,_ -> fold() }
+            bigBlind(stack = 1000u) { _,_ -> fold() }
         }
         val context = aContext(table, blinds(5u, 10u))
         val observer: DealerObserver = mockk(relaxed = true)
@@ -457,7 +457,7 @@ class DealersTest {
 
         dealer.collectPot()
 
-        assertThat(actions).extracting({ it.playerName }, { it.action })
+        assertThat(actions).extracting({ it.player.name }, { it.action })
             .containsExactly(
                 UNDER_THE_GUN to raise(30u),
                 BUTTON to raise(90u),
@@ -475,12 +475,12 @@ class DealersTest {
     @DisplayName("collectPot(): raising less tha requested previous bet -> raise will be treated as call")
     fun collectPotTest011() {
         val table: Table<InGamePlayer> = buildTestTable {
-            underTheGun(stack = 2000u)  { fold() }
-            middle(stack = 2000u) { raise(175u) }
-            late(stack = 2000u) { raise(150u) }
-            button(stack = 2000u) { fold() }
-            smallBlind(stack = 2000u) { call() }
-            bigBlind(stack = 2000u) { call() }
+            underTheGun(stack = 2000u)  { _,_ -> fold() }
+            middle(stack = 2000u) { _,_ -> raise(175u) }
+            late(stack = 2000u) { _,_ -> raise(150u) }
+            button(stack = 2000u) { _,_ -> fold() }
+            smallBlind(stack = 2000u) { _,_ -> call() }
+            bigBlind(stack = 2000u) { _,_ -> call() }
         }
         val context = aContext(table, blinds(25u, 50u))
         val observer: DealerObserver = mockk(relaxed = true)
@@ -490,7 +490,7 @@ class DealersTest {
 
         dealer.collectPot()
 
-        assertThat(actions).extracting({ it.playerName }, { it.action })
+        assertThat(actions).extracting({ it.player.name }, { it.action })
             .containsExactly(
                 UNDER_THE_GUN to fold(),
                 MIDDLE to raise(175u),
@@ -517,7 +517,7 @@ class DealersTest {
 
         dealer.collectPot()
 
-        assertThat(actions).extracting({ it.playerName }, { it.action })
+        assertThat(actions).extracting({ it.player.name }, { it.action })
             .containsExactly(
                 SMALL_BLIND to raise(175u),
                 BIG_BLIND to call(),
@@ -541,10 +541,10 @@ class DealersTest {
     @DisplayName("collectPot(): raising less than requested to play -> raise will be treated as call")
     fun collectPotTest013() {
         val table: Table<InGamePlayer> = buildTestTable {
-            underTheGun(stack = 2000u)  { raise(1u) }
-            button(stack = 2000u) { fold() }
-            smallBlind(stack = 2000u) { call() }
-            bigBlind(stack = 2000u) { call() }
+            underTheGun(stack = 2000u)  { _,_ -> raise(1u) }
+            button(stack = 2000u) { _,_ -> fold() }
+            smallBlind(stack = 2000u) { _,_ -> call() }
+            bigBlind(stack = 2000u) { _,_ -> call() }
         }
         val context = aContext(table, blinds(25u, 50u))
         val observer: DealerObserver = mockk(relaxed = true)
@@ -554,7 +554,7 @@ class DealersTest {
 
         dealer.collectPot()
 
-        assertThat(actions).extracting({ it.playerName }, { it.action })
+        assertThat(actions).extracting({ it.player.name }, { it.action })
             .containsExactly(
                 UNDER_THE_GUN to call(),
                 BUTTON to fold(),
@@ -567,10 +567,10 @@ class DealersTest {
     @DisplayName("collectPot(): raising as last raise -> raise will be treated as call")
     fun collectPotTest014() {
         val table: Table<InGamePlayer> = buildTestTable {
-            underTheGun(stack = 2000u)  { raise(150u) }
-            button(stack = 2000u) { raise(150u) }
-            smallBlind(stack = 2000u) { fold() }
-            bigBlind(stack = 2000u) { fold() }
+            underTheGun(stack = 2000u)  { _,_ -> raise(150u) }
+            button(stack = 2000u) { _,_ -> raise(150u) }
+            smallBlind(stack = 2000u) { _,_ -> fold() }
+            bigBlind(stack = 2000u) { _,_ -> fold() }
         }
         val context = aContext(table, blinds(25u, 50u))
         val observer: DealerObserver = mockk(relaxed = true)
@@ -580,7 +580,7 @@ class DealersTest {
 
         dealer.collectPot()
 
-        assertThat(actions).extracting({ it.playerName }, { it.action })
+        assertThat(actions).extracting({ it.player.name }, { it.action })
             .containsExactly(
                 UNDER_THE_GUN to raise(150u),
                 BUTTON to call(),
@@ -593,10 +593,10 @@ class DealersTest {
     @DisplayName("collectPot(): raising as last raise -> raise will be treated as call")
     fun collectPotTest015() {
         val table: Table<InGamePlayer> = buildTestTable {
-            underTheGun(stack = 2000u)  { raise(175u) }
-            button(stack = 2000u) { call() }
-            smallBlind(stack = 2000u) { fold() }
-            bigBlind(stack = 2000u) { raise(150u) }
+            underTheGun(stack = 2000u)  { _,_ -> raise(175u) }
+            button(stack = 2000u) { _,_ -> call() }
+            smallBlind(stack = 2000u) { _,_ -> fold() }
+            bigBlind(stack = 2000u) { _,_ -> raise(150u) }
         }
         val context = aContext(table, blinds(25u, 50u))
         val observer: DealerObserver = mockk(relaxed = true)
@@ -606,7 +606,7 @@ class DealersTest {
 
         dealer.collectPot()
 
-        assertThat(actions).extracting({ it.playerName }, { it.action })
+        assertThat(actions).extracting({ it.player.name }, { it.action })
             .containsExactly(
                 UNDER_THE_GUN to raise(175u),
                 BUTTON to call(),
@@ -620,20 +620,21 @@ class DealersTest {
     fun collectPotTest016() {
         val strategyMock: PlayerStrategyInterface = mockk()
         val table: Table<InGamePlayer> = buildTestTable {
-            underTheGun(stack = 2000u)  { raise(175u) }
-            button(stack = 2000u) { call() }
-            smallBlind(stack = 2000u) { fold() }
+            underTheGun(stack = 2000u)  { _,_ -> raise(175u) }
+            button(stack = 2000u) { _,_ -> call() }
+            smallBlind(stack = 2000u) { _,_ -> fold() }
             bigBlind(stack = 2000u, strategy = strategyMock)
         }
         val context = aContext(table, blinds(25u, 50u))
-        val bigBlindContext: CapturingSlot<HeroGameContextImpl<OwnPlayer>> = slot()
-        every { strategyMock.invoke(capture(bigBlindContext)) } answers { call() }
+        val ownPlayer: CapturingSlot<OwnPlayer> = slot()
+        val bigBlindContext: CapturingSlot<GameContext> = slot()
+        every { strategyMock.invoke(capture(ownPlayer),capture(bigBlindContext)) } answers { call() }
         val dealer = PreFlopDealer(context)
 
         dealer.collectPot()
 
         val captured = bigBlindContext.captured
-        assertThat(captured.hero.name).isEqualTo(BIG_BLIND)
+        assertThat(ownPlayer.captured.name).isEqualTo(BIG_BLIND)
         val preFlopHistory = captured.history[GamePhase.PRE_FLOP]
         assertThat(preFlopHistory).isNotNull()
         assertThat(preFlopHistory!!).extracting { it.action }

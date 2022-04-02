@@ -48,14 +48,14 @@ abstract class AbstractDealer(
         while (someoneHaveToAct(pot)) {
             val player = iterator.next()
             if (context.hadToAct(player, pot)) {
-                val action = player( player heroIn context )
+                val action = player.act(player.asOwnPlayer(), context.toGameContext())
                 val effectiveAction: Action = when (action.type) {
                     ActionType.Call -> callEffect(player, pot)
                     ActionType.Raise -> raiseEffect(player, action, pot)
                     else -> foldEffect(player)
                 }
                 context.addPlayerActionToPhaseHistory(player does effectiveAction)
-                observer?.notifyAction(player statsWith context, player does effectiveAction)
+                observer?.notifyAction(context.toGameContext(), player does effectiveAction)
             }
         }
         observer?.notifyActions(context.board.phase, context.getPhaseHistory())

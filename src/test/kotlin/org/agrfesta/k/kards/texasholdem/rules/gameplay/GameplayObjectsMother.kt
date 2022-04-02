@@ -14,13 +14,15 @@ import org.agrfesta.k.kards.texasholdem.utils.DistinctList
 import java.util.*
 
 fun aDeck(): Deck = DeckListImpl(listOf())
-fun aTable(): Table<InGamePlayer> = TableImpl(DistinctList.distinctListOf(anInGamePlayer("A"), anInGamePlayer("B")), 0u)
-fun aPlayerStackTable(): Table<PlayerStack> = TableImpl(
+fun aTable(): Table<InGamePlayer> =
+    TableImpl(DistinctList.distinctListOf(anInGamePlayer(name = "A"), anInGamePlayer(name = "B")), 0u)
+fun aPlayerStackTable(): Table<SittingPlayer> = TableImpl(
     DistinctList.distinctListOf(
-        aPlayerStack(alex),
-        aPlayerStack(poly)
+        aSittingPlayer(alex),
+        aSittingPlayer(poly)
     ), 0u)
-fun anOpponentsTable(): Table<Opponent> = TableImpl(DistinctList.distinctListOf(anOpponent("A"), anOpponent("B")))
+fun aPublicInGamePlayerTable(): Table<PublicInGamePlayer> =
+    TableImpl(DistinctList.distinctListOf(aPublicInGamePlayer(name = "A"), aPublicInGamePlayer(name = "B")))
 
 fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGamePayments())
     : MutableGameContextImpl  {
@@ -32,11 +34,11 @@ fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGa
 fun aGameContext(): GameContext = aGameContextImplWith()
 fun aGameContextImplWith(
     uuid: UUID = UUID.randomUUID(),
-    table: Table<Opponent> = anOpponentsTable(),
+    table: Table<PublicInGamePlayer> = aPublicInGamePlayerTable(),
     payments: GamePayments = aGamePayments(),
     board: Board = board(),
     history: Map<GamePhase, List<PlayerAction>> = emptyMap(),
-    phasePots: Map<GamePhase, Pot<SeatName>> = emptyMap()
+    phasePots: Map<GamePhase, Pot<PlayerIdentity>> = emptyMap()
 ) = GameContextImpl(uuid, table, payments, board, history, phasePots)
 fun aGameResult() = GameResult(aPlayer(), 2000u, emptyList())
 fun aShowdownPlayerResult() = ShowdownPlayerResult(anInGamePlayer(), null, aCardsEvaluation())
