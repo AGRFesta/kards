@@ -3,8 +3,10 @@ package org.agrfesta.k.cards.playingcards.suits
 import org.agrfesta.k.cards.playingcards.cards.Card
 import org.agrfesta.k.cards.playingcards.cards.cardOf
 import org.agrfesta.k.cards.playingcards.deck.Deck
-import org.agrfesta.k.cards.playingcards.deck.DeckBuilder
+import org.agrfesta.k.cards.playingcards.deck.buildDeck
 import org.agrfesta.k.cards.playingcards.utils.simpleShuffler
+import org.agrfesta.k.cards.playingcards.utils.simpleShufflerWith
+import kotlin.random.Random
 
 /**
  * Enum representing all playing card suits
@@ -15,11 +17,12 @@ enum class Suit(val cards: Set<Card>) {
 
     /**
      * Creates and returns a complete [Deck] of the specific [Suit].
+     * It is possible to specify a [Random] to obtain a predictable shuffled sequence of cards.
      */
-    fun createDeck(): Deck =
-            DeckBuilder(simpleShuffler)
-                    .withCards(cards)
-                    .build()
+    fun createDeck(random: Random? = null): Deck = buildDeck {
+            withCards(cards)
+            shuffleWith(random?.let { simpleShufflerWith(it) } ?: simpleShuffler)
+        }
 
 }
 
