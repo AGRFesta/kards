@@ -1,5 +1,6 @@
 package org.agrfesta.k.kards.texasholdem.tournaments
 
+import org.agrfesta.k.cards.playingcards.suits.Suit
 import org.agrfesta.k.cards.playingcards.utils.SimpleRandomGenerator
 import org.agrfesta.k.cards.playingcards.utils.circularIndexMapping
 import org.agrfesta.k.kards.texasholdem.observers.GameObserver
@@ -14,17 +15,18 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.owns
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.toRanking
 import org.agrfesta.k.kards.texasholdem.utils.DistinctList.Companion.distinctListOf
 import java.util.*
+import kotlin.random.Random
 
 typealias GameProvider = (IncreasingGamePayments, Table<SittingPlayer>, GameObserver?) -> Game
 
 interface TournamentDescriptor {
     val initialStack: UInt
-    val payments: IncreasingGamePayments
+    val paymentsDefinition: IncreasingGamePaymentsDefinition
 }
 
 data class TournamentDescriptorImpl(
     override val initialStack: UInt,
-    override val payments: IncreasingGamePayments
+    override val paymentsDefinition: IncreasingGamePaymentsDefinition
 ): TournamentDescriptor
 
 interface Tournament: TournamentDescriptor {
@@ -34,6 +36,10 @@ interface Tournament: TournamentDescriptor {
 
 private val defaultGameProvider: GameProvider = { payments, table, observer ->
     GameImpl(payments = payments, table = table, observer = observer)
+}
+
+fun gameProviderRandomBased(random: Random): GameProvider = { payments, table, observer ->
+    GameImpl(payments = payments, table = table, observer = observer, deck = Suit.FRENCH.createDeck(random))
 }
 
 class TournamentImpl(
@@ -46,6 +52,7 @@ class TournamentImpl(
 ): Tournament, TournamentDescriptor by descriptor {
     private val losers: MutableList<Set<Player>> = mutableListOf()
     private var players: List<SittingPlayer>
+    private val payments = descriptor.paymentsDefinition.generatePayments()
 
     init {
         check(subscriptions.isNotEmpty()) { "Unable to create a tournament with zero players!" }

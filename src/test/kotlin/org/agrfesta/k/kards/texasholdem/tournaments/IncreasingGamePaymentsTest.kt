@@ -19,7 +19,7 @@ class IncreasingGamePaymentsTest {
     @DisplayName("Create it with an empty structure -> raises an exception")
     fun emptyStructureRaisesException() {
         val failure = assertThat {
-            IncreasingGamePayments(listOf(), 10u)
+            IncreasingGamePaymentsDefinition(listOf(), 10u)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Unable to create an IncreasingGamePayments from an empty structure")
@@ -29,7 +29,7 @@ class IncreasingGamePaymentsTest {
     @DisplayName("Create it with gamesPerLevel equals to 0 -> raises an exception")
     fun gamesPerLevelEqualsToZeroRaisesException() {
         val failure = assertThat {
-            IncreasingGamePayments(listOf(level0), 0u)
+            IncreasingGamePaymentsDefinition(listOf(level0), 0u)
         }.isFailure()
         failure.hasClass(IllegalArgumentException::class)
         failure.hasMessage("Unable to create an IncreasingGamePayments, gamesPerLevel=0")
@@ -38,7 +38,8 @@ class IncreasingGamePaymentsTest {
     @Test
     @DisplayName("Payments with two level and 3 games per each: After 3 games -> Returns payments for the second level")
     fun afterThreeGamesReturnsSecondLevelPayments() {
-        val payments = IncreasingGamePayments(listOf(level0,level1), 3u)
+        val definition = IncreasingGamePaymentsDefinition(listOf(level0,level1), 3u)
+        val payments = IncreasingGamePayments(definition)
         assertThat(payments).hasLevel(level0)
         payments.nextGame()
         assertThat(payments).hasLevel(level0)

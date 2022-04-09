@@ -4,24 +4,26 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.GamePayments
 
 // info: https://pokersoup.com/tool/blindStructureCalculator
 
-class IncreasingGamePayments(private val structure: List<LevelPayments>, private val gamesPerLevel: UInt): GamePayments {
+data class LevelPayments(val sb: UInt, val bb: UInt, val ante: UInt? = null)
 
+data class IncreasingGamePaymentsDefinition(val structure: List<LevelPayments>, val gamesPerLevel: UInt) {
     init {
         require(gamesPerLevel >= 1u) { "Unable to create an IncreasingGamePayments, gamesPerLevel=$gamesPerLevel" }
         require(structure.isNotEmpty()) { "Unable to create an IncreasingGamePayments from an empty structure" }
     }
 
-    private var games = 0u
-
-    override fun sb(): UInt = structure[level()].sb
-    override fun bb(): UInt = structure[level()].bb
-    override fun ante(): UInt? = structure[level()].ante
-
-    private fun level(): Int = (games.toInt() / gamesPerLevel.toInt()).coerceAtMost(structure.size-1)
-
-    fun nextGame() {
-        games++
-    }
+    fun generatePayments() = IncreasingGamePayments(this)
 }
 
-data class LevelPayments(val sb: UInt, val bb: UInt, val ante: UInt? = null)
+class IncreasingGamePayments(private val definition: IncreasingGamePaymentsDefinition): GamePayments {
+    private var games = 0
+
+    override fun sb(): UInt = definition.structure[level()].sb
+    override fun bb(): UInt = definition.structure[level()].bb
+    override fun ante(): UInt? = definition.structure[level()].ante
+
+    private fun level(): Int = (games / definition.gamesPerLevel.toInt())
+        .coerceAtMost(definition.structure.size-1)
+
+    fun nextGame() { games++ }
+}

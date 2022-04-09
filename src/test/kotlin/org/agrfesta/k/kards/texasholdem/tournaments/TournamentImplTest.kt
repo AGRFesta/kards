@@ -18,7 +18,7 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.SittingPlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Table
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aPlayerCardsSet
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.alex
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.anIncreasingGamePayments
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.anIncreasingGamePaymentsDef
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.dave
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.isSittingOn
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.jane
@@ -37,6 +37,8 @@ class TournamentImplTest {
     fun tournamentStory000() {
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
+        val paymentsDefinition = mockk<IncreasingGamePaymentsDefinition>(relaxed = true)
+        every { paymentsDefinition.generatePayments() } answers { payments }
         val mockedGames = listOf(
                 aMockGameWithResult(poly owns 100u, jane owns 100u, alex owns 100u, dave owns 100u),
                 aMockGameWithResult(poly owns 100u, jane owns 100u, alex owns 100u, dave owns 100u),
@@ -47,7 +49,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = TournamentImpl(
-            descriptor = TournamentDescriptorImpl(2000u, payments),
+            descriptor = TournamentDescriptorImpl(2000u, paymentsDefinition),
             subscriptions = setOf(poly, jane, alex, dave),
             buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
@@ -74,6 +76,8 @@ class TournamentImplTest {
     fun tournamentStory001() {
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
+        val paymentsDefinition = mockk<IncreasingGamePaymentsDefinition>(relaxed = true)
+        every { paymentsDefinition.generatePayments() } answers { payments }
         val mockedGames = listOf(
                 aMockGameWithResult(poly owns 100u, jane owns 100u, alex owns 0u),
                 aMockGameWithResult(poly owns 0u, jane owns 100u)
@@ -81,7 +85,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = TournamentImpl(
-            descriptor = TournamentDescriptorImpl(2000u, payments),
+            descriptor = TournamentDescriptorImpl(2000u, paymentsDefinition),
             subscriptions = setOf(poly, jane, alex),
             buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
@@ -106,6 +110,8 @@ class TournamentImplTest {
     fun tournamentStory002() {
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
+        val paymentsDefinition = mockk<IncreasingGamePaymentsDefinition>(relaxed = true)
+        every { paymentsDefinition.generatePayments() } answers { payments }
         val mockedGames = listOf(
                 aMockGameWithResult(poly owns 100u, jane owns 1000u, alex owns 1500u),
                 aMockGameWithResult(poly owns 100u, jane owns 0u, alex owns 0u)
@@ -113,7 +119,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = TournamentImpl(
-            descriptor = TournamentDescriptorImpl(2000u, payments),
+            descriptor = TournamentDescriptorImpl(2000u, paymentsDefinition),
             subscriptions = setOf(poly, jane, alex),
             buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
@@ -136,6 +142,8 @@ class TournamentImplTest {
     fun tournamentStory003() {
         var counter = 0
         val payments = mockk<IncreasingGamePayments>(relaxed = true)
+        val paymentsDefinition = mockk<IncreasingGamePaymentsDefinition>(relaxed = true)
+        every { paymentsDefinition.generatePayments() } answers { payments }
         val mockedGames = listOf(
                 aMockGameWithResult(poly owns 100u, jane owns 1000u, alex owns 1000u),
                 aMockGameWithResult(poly owns 100u, jane owns 0u, alex owns 0u)
@@ -143,7 +151,7 @@ class TournamentImplTest {
         val tables = mutableListOf<Table<InGamePlayer>>()
 
         val result = TournamentImpl(
-            descriptor = TournamentDescriptorImpl(2000u, payments),
+            descriptor = TournamentDescriptorImpl(2000u, paymentsDefinition),
             subscriptions = setOf(poly, jane, alex),
             buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
@@ -164,7 +172,7 @@ class TournamentImplTest {
     fun constructor_aTournamentWithNoSubscribers_raisesAnException() {
         val failure = assertThat {
             TournamentImpl(
-                descriptor = TournamentDescriptorImpl(2000u, anIncreasingGamePayments()),
+                descriptor = TournamentDescriptorImpl(2000u, anIncreasingGamePaymentsDef()),
                 subscriptions = emptySet() )
         }.isFailure()
         failure.hasClass(IllegalStateException::class)
@@ -176,7 +184,7 @@ class TournamentImplTest {
     fun constructor_aTournamentWithASingleSubscriber_raisesAnException() {
         val failure = assertThat {
             TournamentImpl(
-                descriptor = TournamentDescriptorImpl(2000u, anIncreasingGamePayments()),
+                descriptor = TournamentDescriptorImpl(2000u, anIncreasingGamePaymentsDef()),
                 subscriptions = setOf(alex) )
         }.isFailure()
         failure.hasClass(IllegalStateException::class)
