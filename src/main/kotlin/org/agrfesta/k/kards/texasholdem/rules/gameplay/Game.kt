@@ -74,7 +74,7 @@ class GameImpl(
         findWinner() ?:
 
         // Showdown
-        showdown.execute(context.getGlobalPot(), context.board)
+        showdown.execute(context.getGlobalPot(), context.board, context.table)
 
         return context.table.players.map { it.asSittingPlayer() }
     }

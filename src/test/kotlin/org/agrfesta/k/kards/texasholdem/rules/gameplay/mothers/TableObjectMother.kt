@@ -29,25 +29,40 @@ class TestTableBuilder {
 
     fun button(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
-        players[BUTTON_POS] = anInGamePlayer(name = BUTTON, strategy = strategy, stack = stack, cards = cards)
+        return button(anInGamePlayer(name = BUTTON, strategy = strategy, stack = stack, cards = cards))
+    }
+    fun button(player: InGamePlayer): TestTableBuilder {
+        players[BUTTON_POS] = player
         return this
     }
+
     fun smallBlind(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                    strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
-        players[SMALL_BLIND_POS] = anInGamePlayer(name = SMALL_BLIND, strategy = strategy, stack = stack, cards = cards)
+        return smallBlind(anInGamePlayer(name = SMALL_BLIND, strategy = strategy, stack = stack, cards = cards))
+    }
+    fun smallBlind(player: InGamePlayer): TestTableBuilder {
+        players[SMALL_BLIND_POS] = player
         return this
     }
+
     fun bigBlind(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                  strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
-        players[BIG_BLIND_POS] = anInGamePlayer(name = BIG_BLIND, strategy = strategy, stack = stack, cards = cards)
+        return bigBlind(anInGamePlayer(name = BIG_BLIND, strategy = strategy, stack = stack, cards = cards))
+    }
+    fun bigBlind(player: InGamePlayer): TestTableBuilder {
+        players[BIG_BLIND_POS] = player
         return this
     }
+
     fun underTheGun(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                     strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
-        players[UNDER_THE_GUN_POS] =
-            anInGamePlayer(name = UNDER_THE_GUN, strategy = strategy, stack = stack, cards = cards)
+        return underTheGun(anInGamePlayer(name = UNDER_THE_GUN, strategy = strategy, stack = stack, cards = cards))
+    }
+    fun underTheGun(player: InGamePlayer): TestTableBuilder {
+        players[UNDER_THE_GUN_POS] = player
         return this
     }
+
     fun middle(stack: UInt = 100u, cards: Set<Card> = aPlayerCardsSet(),
                     strategy: PlayerStrategyInterface = aStrategy()): TestTableBuilder {
         players[MIDDLE_POS] = anInGamePlayer(name = MIDDLE, strategy = strategy, stack = stack, cards = cards)

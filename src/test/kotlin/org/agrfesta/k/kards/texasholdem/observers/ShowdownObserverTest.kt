@@ -22,9 +22,11 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.FOLD
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.RAISE
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.ShowdownImpl
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.aTable
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.anInGamePlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.board
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.buildMutablePot
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.mothers.buildTestTable
 import org.agrfesta.k.kards.texasholdem.rules.hands.PairHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.ThreeOfAKindHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.TwoPairHand
@@ -44,13 +46,18 @@ class ShowdownObserverTest {
         val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = RAISE, cards = frenchCardsSet("Ad","Ts"))
         val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL, cards = frenchCardsSet("Jd","7c"))
         val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL, cards = frenchCardsSet("9d","9c"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+        }.map { it.asIdentity() }
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
         pot[jane] = 100u
         val board = board("Ac","Js","9s", "8c", "3d")
 
-        ShowdownImpl(CardsEvaluatorBaseImpl(),observerMock).execute(pot,board)
+        ShowdownImpl(CardsEvaluatorBaseImpl(),observerMock).execute(pot,board,table)
 
         verify(exactly = 1) { observerMock.notifyResult(any()) }
         assertThat(result.isCaptured).isTrue()
@@ -71,7 +78,7 @@ class ShowdownObserverTest {
         val pot = buildMutablePot()
         val board = board("Ac","Js","9s", "8c", "3d")
 
-        ShowdownImpl(CardsEvaluatorBaseImpl(),observerMock).execute(pot,board)
+        ShowdownImpl(CardsEvaluatorBaseImpl(),observerMock).execute(pot, board, aTable().map { it.asIdentity() })
 
         verify(exactly = 1) { observerMock.notifyResult(any()) }
         assertThat(result.isCaptured).isTrue()
@@ -88,6 +95,12 @@ class ShowdownObserverTest {
         val poly = anInGamePlayer(name = "Poly", stack = 2000u, status = CALL, cards = frenchCardsSet("As","9d"))
         val jane = anInGamePlayer(name = "Jane", stack = 2000u, status = CALL, cards = frenchCardsSet("Ah","Jc"))
         val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = FOLD, cards = frenchCardsSet("Qh","Qc"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+            underTheGun(dave)
+        }.map { it.asIdentity() }
         val pot = buildMutablePot()
         pot[alex] = 225u
         pot[poly] = 225u
@@ -95,7 +108,7 @@ class ShowdownObserverTest {
         pot[dave] = 25u
         val board = board("Ac","Js","9s", "8c", "3h")
 
-        ShowdownImpl(CardsEvaluatorBaseImpl(),observerMock).execute(pot,board)
+        ShowdownImpl(CardsEvaluatorBaseImpl(),observerMock).execute(pot,board,table)
 
         verify(exactly = 1) { observerMock.notifyResult(any()) }
         assertThat(result.isCaptured).isTrue()

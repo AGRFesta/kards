@@ -9,6 +9,7 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.FOLD
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.NONE
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.RAISE
+import org.agrfesta.k.kards.texasholdem.rules.gameplay.mothers.buildTestTable
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -21,12 +22,16 @@ class ShowdownTest {
     fun showdownStory000() {
         val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = RAISE, cards = frenchCardsSet("Ad","Ts"))
         val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jd","7c"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+        }
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
         val board = board("Ac","Js","9s", "8c", "3d")
 
-        showdown.execute(pot,board)
+        showdown.execute(pot,board,table)
 
         assertThat(alex.stack).isEqualTo(1600u)
         assertThat(poly.stack).isEqualTo(1000u)
@@ -37,13 +42,18 @@ class ShowdownTest {
         val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = RAISE, cards = frenchCardsSet("Ad","Ts"))
         val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jd","7c"))
         val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL,  cards = frenchCardsSet("9d","9c"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+        }
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
         pot[jane] = 100u
         val board = board("Ac","Js","9s", "8c", "3d")
 
-        showdown.execute(pot,board)
+        showdown.execute(pot,board,table)
 
         assertThat(alex.stack).isEqualTo(1400u)
         assertThat(poly.stack).isEqualTo(1000u)
@@ -56,6 +66,12 @@ class ShowdownTest {
         val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jd","7c"))
         val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL,  cards = frenchCardsSet("9d","9c"))
         val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jc","9h"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+            underTheGun(dave)
+        }
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -63,7 +79,7 @@ class ShowdownTest {
         pot[dave] = 200u
         val board = board("Ac","Js","9s", "8c", "3d")
 
-        showdown.execute(pot,board)
+        showdown.execute(pot,board,table)
 
         assertThat(alex.stack).isEqualTo(1200u)
         assertThat(poly.stack).isEqualTo(1000u)
@@ -77,6 +93,12 @@ class ShowdownTest {
         val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL,  cards = frenchCardsSet("As","Td"))
         val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL,  cards = frenchCardsSet("9d","Tc"))
         val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jc","7h"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+            underTheGun(dave)
+        }
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -84,7 +106,7 @@ class ShowdownTest {
         pot[dave] = 200u
         val board = board("Ac","Js","9s", "8c", "3d")
 
-        showdown.execute(pot,board)
+        showdown.execute(pot,board,table)
 
         assertThat(alex.stack).isEqualTo(1450u)
         assertThat(poly.stack).isEqualTo(1450u)
@@ -98,6 +120,12 @@ class ShowdownTest {
         val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL,  cards = frenchCardsSet("As","Td"))
         val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jd","9c"))
         val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jh","9d"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+            underTheGun(dave)
+        }
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -105,7 +133,7 @@ class ShowdownTest {
         pot[dave] = 200u
         val board = board("Ac","Js","9s", "8c", "3d")
 
-        showdown.execute(pot,board)
+        showdown.execute(pot,board,table)
 
         assertThat(alex.stack).isEqualTo(1100u)
         assertThat(poly.stack).isEqualTo(1100u)
@@ -119,6 +147,12 @@ class ShowdownTest {
         val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL,  cards = frenchCardsSet("As","Td"))
         val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jd","9c"))
         val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = CALL,  cards = frenchCardsSet("Jh","9d"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+            underTheGun(dave)
+        }
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -126,7 +160,7 @@ class ShowdownTest {
         pot[dave] = 200u
         val board = board("Ac","Jc","Qc", "Kc", "Tc")
 
-        showdown.execute(pot,board)
+        showdown.execute(pot,board,table)
 
         assertThat(alex.stack).isEqualTo(1300u)
         assertThat(poly.stack).isEqualTo(1300u)
@@ -140,6 +174,12 @@ class ShowdownTest {
         val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = ALL_IN, cards = frenchCardsSet("As","Td"))
         val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = FOLD,   cards = frenchCardsSet("Jd","9c"))
         val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = CALL,   cards = frenchCardsSet("Jh","9d"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+            underTheGun(dave)
+        }
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -147,7 +187,7 @@ class ShowdownTest {
         pot[dave] = 200u
         val board = board("Ac","Js","9s", "8c", "3h")
 
-        showdown.execute(pot,board)
+        showdown.execute(pot,board,table)
 
         assertThat(alex.stack).isEqualTo(1100u)
         assertThat(poly.stack).isEqualTo(1100u)
@@ -160,13 +200,18 @@ class ShowdownTest {
         val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = RAISE,  cards = frenchCardsSet("Ad","Ts"))
         val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = ALL_IN, cards = frenchCardsSet("As","9d"))
         val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = FOLD,   cards = frenchCardsSet("Ah","Qc"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+        }
         val pot = buildMutablePot()
         pot[alex] = 500u
         pot[poly] = 50u
         pot[jane] = 120u
         val board = board("Ac","Js","9s", "8c", "3h")
 
-        showdown.execute(pot,board)
+        showdown.execute(pot,board,table)
 
         assertThat(alex.stack).isEqualTo(1520u)
         assertThat(poly.stack).isEqualTo(1150u)
@@ -178,13 +223,18 @@ class ShowdownTest {
         val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = NONE,   cards = frenchCardsSet("Ad","Ts"))
         val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = ALL_IN, cards = frenchCardsSet("As","9d"))
         val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = ALL_IN, cards = frenchCardsSet("Ah","Qc"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+        }
         val pot = buildMutablePot()
         pot[alex] = 200u
         pot[poly] = 50u
         pot[jane] = 120u
         val board = board("Ac","Js","9s", "8c", "3h")
 
-        showdown.execute(pot,board)
+        showdown.execute(pot,board,table)
 
         assertThat(alex.stack).isEqualTo(1080u)
         assertThat(poly.stack).isEqualTo(1150u)
@@ -197,6 +247,12 @@ class ShowdownTest {
         val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL, cards = frenchCardsSet("As","9d"))
         val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL, cards = frenchCardsSet("Ah","9c"))
         val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = FOLD, cards = frenchCardsSet("Qh","Qc"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+            underTheGun(dave)
+        }
         val pot = buildMutablePot()
         pot[alex] = 100u
         pot[poly] = 100u
@@ -204,10 +260,10 @@ class ShowdownTest {
         pot[dave] = 100u
         val board = board("Ac","Js","9s", "8c", "3h")
 
-        showdown.execute(pot,board)
+        showdown.execute(pot,board,table)
 
         assertThat(alex.stack).isEqualTo(1133u)
-        assertThat(poly.stack).isEqualTo(1133u)
+        assertThat(poly.stack).isEqualTo(1134u)
         assertThat(jane.stack).isEqualTo(1133u)
         assertThat(dave.stack).isEqualTo(1000u)
     }
@@ -218,6 +274,12 @@ class ShowdownTest {
         val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL, cards = frenchCardsSet("As","9d"))
         val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL, cards = frenchCardsSet("Ah","9c"))
         val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = FOLD, cards = frenchCardsSet("Qh","Qc"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+            underTheGun(dave)
+        }
         val pot = buildMutablePot()
         pot[alex] = 200u
         pot[poly] = 200u
@@ -225,12 +287,128 @@ class ShowdownTest {
         pot[dave] = 200u
         val board = board("Ac","Js","9s", "8c", "3h")
 
-        showdown.execute(pot,board)
+        showdown.execute(pot,board,table)
 
         assertThat(alex.stack).isEqualTo(1266u)
-        assertThat(poly.stack).isEqualTo(1266u)
+        assertThat(poly.stack).isEqualTo(1268u)
         assertThat(jane.stack).isEqualTo(1266u)
         assertThat(dave.stack).isEqualTo(1000u)
+    }
+
+    @Test
+    @DisplayName("""execute(): share winning pot has a spare chip -> 
+        |spare chip is assigned to the first winner at button left""")
+    fun execute_shareWinningPotHasASpareChip_spareChipIsAssignedToTheFirstWinnerAtButtonLeft() {
+        val alex = anInGamePlayer(name = "Alex", stack = 0u, cards = frenchCardsSet("Ad","9h"))
+        val poly = anInGamePlayer(name = "Poly", stack = 0u, cards = frenchCardsSet("As","9d"))
+        val jane = anInGamePlayer(name = "Jane", stack = 0u, cards = frenchCardsSet("Ah","9c"))
+        val dave = anInGamePlayer(name = "Dave", stack = 0u, cards = frenchCardsSet("Qh","Qc"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+            underTheGun(dave)
+        }
+        val pot = buildMutablePot()
+        pot[alex] = 10u
+        pot[poly] = 10u
+        pot[jane] = 10u
+        pot[dave] = 1u
+        val board = board("Ac","Js","9s", "8c", "3h")
+
+        showdown.execute(pot, board, table)
+
+        assertThat(alex.stack).isEqualTo(10u)
+        assertThat(poly.stack).isEqualTo(11u)
+        assertThat(jane.stack).isEqualTo(10u)
+        assertThat(dave.stack).isEqualTo(0u)
+    }
+
+    @Test
+    @DisplayName("""execute(): share winning pot has two spare chips -> 
+        |spare chip is assigned to the first winner at button left""")
+    fun execute_shareWinningPotHasTwoSpareChips_spareChipIsAssignedToTheFirstWinnerAtButtonLeft() {
+        val alex = anInGamePlayer(name = "Alex", stack = 0u, cards = frenchCardsSet("Ad","9h"))
+        val poly = anInGamePlayer(name = "Poly", stack = 0u, cards = frenchCardsSet("As","9d"))
+        val jane = anInGamePlayer(name = "Jane", stack = 0u, cards = frenchCardsSet("Ah","9c"))
+        val dave = anInGamePlayer(name = "Dave", stack = 0u, cards = frenchCardsSet("Qh","Qc"))
+        val table = buildTestTable {
+            button(alex)
+            smallBlind(poly)
+            bigBlind(jane)
+            underTheGun(dave)
+        }
+        val pot = buildMutablePot()
+        pot[alex] = 10u
+        pot[poly] = 10u
+        pot[jane] = 10u
+        pot[dave] = 2u
+        val board = board("Ac","Js","9s", "8c", "3h")
+
+        showdown.execute(pot, board, table)
+
+        assertThat(alex.stack).isEqualTo(10u)
+        assertThat(poly.stack).isEqualTo(12u)
+        assertThat(jane.stack).isEqualTo(10u)
+        assertThat(dave.stack).isEqualTo(0u)
+    }
+
+    @Test
+    @DisplayName("""execute(): first player at button left is not a winner -> 
+        |spare chips are assigned to the first winner at button left""")
+    fun execute_firstPlayerAtButtonLeftIsNotAWinner_spareChipsAreAssignedToTheFirstWinnerAtButtonLeft() {
+        val alex = anInGamePlayer(name = "Alex", stack = 0u, cards = frenchCardsSet("Ad","9h"))
+        val poly = anInGamePlayer(name = "Poly", stack = 0u, cards = frenchCardsSet("As","9d"))
+        val jane = anInGamePlayer(name = "Jane", stack = 0u, cards = frenchCardsSet("Ah","9c"))
+        val dave = anInGamePlayer(name = "Dave", stack = 0u, cards = frenchCardsSet("Qh","Qc"))
+        val table = buildTestTable {
+            bigBlind(jane)
+            smallBlind(dave)
+            button(alex)
+            underTheGun(poly)
+        }
+        val pot = buildMutablePot()
+        pot[alex] = 10u
+        pot[poly] = 10u
+        pot[jane] = 10u
+        pot[dave] = 2u
+        val board = board("Ac","Js","9s", "8c", "3h")
+
+        showdown.execute(pot, board, table)
+
+        assertThat(alex.stack).isEqualTo(10u)
+        assertThat(poly.stack).isEqualTo(10u)
+        assertThat(jane.stack).isEqualTo(12u)
+        assertThat(dave.stack).isEqualTo(0u)
+    }
+
+    // This case should never happen but can be easily detected comparing total amount of chips pre- and post-game,
+    // they must be equal..
+    @Test
+    @DisplayName("""execute(): a winner is not present in the table -> spare chips are not assigned""")
+    fun execute_aWinnerIsNotPresentInTheTable_spareChipsAreNotAssigned() {
+        val alex = anInGamePlayer(name = "Alex", stack = 0u, cards = frenchCardsSet("Ad","9h"))
+        val poly = anInGamePlayer(name = "Poly", stack = 0u, cards = frenchCardsSet("As","9d"))
+        val jane = anInGamePlayer(name = "Jane", stack = 0u, cards = frenchCardsSet("Ah","9c"))
+        val dave = anInGamePlayer(name = "Dave", stack = 0u, cards = frenchCardsSet("Qh","Qc"))
+        val table = buildTestTable {
+            bigBlind(jane)
+            smallBlind(dave)
+            button(alex)
+        }
+        val pot = buildMutablePot()
+        pot[alex] = 10u
+        pot[poly] = 10u
+        pot[jane] = 10u
+        pot[dave] = 2u
+        val board = board("Ac","Js","9s", "8c", "3h")
+
+        showdown.execute(pot, board, table)
+
+        assertThat(alex.stack).isEqualTo(10u)
+        assertThat(poly.stack).isEqualTo(10u)
+        assertThat(jane.stack).isEqualTo(10u)
+        assertThat(dave.stack).isEqualTo(0u)
     }
 
 }

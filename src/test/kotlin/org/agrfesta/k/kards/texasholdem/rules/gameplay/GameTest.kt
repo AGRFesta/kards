@@ -193,7 +193,7 @@ class GameTest {
         every { observerMock.notifyStartingPhase(capture(contexts)) } just Runs
         val showdownInitialPot: CapturingSlot<InGamePot> = slot()
         val showdownBoard: CapturingSlot<Board> = slot()
-        every { showdownMock.execute(capture(showdownInitialPot), capture(showdownBoard)) } just Runs
+        every { showdownMock.execute(capture(showdownInitialPot), capture(showdownBoard), any()) } just Runs
 
         val players = game.play()
 
