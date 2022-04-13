@@ -135,7 +135,7 @@ interface InGamePlayer: SittingPlayer {
     fun asPublicInGamePlayer(): PublicInGamePlayer
     fun asOwnPlayer(): OwnPlayer
 
-    fun calculateAmountToCall(pot: InGamePot): UInt
+    fun calculateAmountToCall(pot: Pot): UInt
 }
 class InGamePlayerImpl(
     sittingPlayer: SittingPlayer,
@@ -170,7 +170,7 @@ class InGamePlayerImpl(
         return effectiveAmount
     }
 
-    override fun calculateAmountToCall(pot: InGamePot): UInt =
+    override fun calculateAmountToCall(pot: Pot): UInt =
         (pot.maxContribution()?.amount ?: 0u) - pot.payedBy(this)
 }
 

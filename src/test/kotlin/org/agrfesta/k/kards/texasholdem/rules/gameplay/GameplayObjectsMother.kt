@@ -27,7 +27,7 @@ fun aPublicInGamePlayerTable(): Table<PublicInGamePlayer> =
 
 fun aContext(table: Table<InGamePlayer> = aTable(), payments: GamePayments = aGamePayments())
     : MutableGameContextImpl  {
-    val phasePots = emptyPhasePots<InGamePlayer, MutableMap<InGamePlayer, UInt>> { mutableMapOf() }
+    val phasePots = emptyPhasePots { mutableMapOf() }
     return MutableGameContextImpl(uuid = UUID.randomUUID(), table =  table, payments = payments,
         board = EmptyBoard(aDeck()) as BoardInSequence, phasePots = phasePots)
 }
@@ -39,7 +39,7 @@ fun aGameContextImplWith(
     payments: GamePayments = aGamePayments(),
     board: Board = board(),
     history: Map<GamePhase, List<PlayerAction>> = emptyMap(),
-    phasePots: Map<GamePhase, Pot<PlayerIdentity>> = emptyMap()
+    phasePots: Map<GamePhase, MutablePot> = emptyMap()
 ) = GameContextImpl(uuid, table, payments, board, history, phasePots)
 fun aGameResult() = GameResult(aPlayer(), 2000u, emptyList())
 fun aShowdownPlayerResult() = ShowdownPlayerResult(anInGamePlayer(), null, aCardsEvaluation())

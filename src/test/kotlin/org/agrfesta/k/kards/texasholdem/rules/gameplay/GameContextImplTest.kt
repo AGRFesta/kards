@@ -25,7 +25,7 @@ class GameContextImplTest {
     @DisplayName("getGlobalPot(): getting global pot when there is an empty one only -> returns empty pot")
     fun getGlobalPot_gettingGlobalPotWhenThereIsAnEmptyOneOnly_returnsEmptyPot() {
         val gameContext = aGameContextImplWith(phasePots = mapOf(
-            PRE_FLOP to emptyMap()
+            PRE_FLOP to mutableMapOf()
         ))
 
         val result = gameContext.getGlobalPot()
@@ -37,7 +37,7 @@ class GameContextImplTest {
     @DisplayName("getGlobalPot(): getting global pot when there is one -> returns that pot")
     fun getGlobalPot_gettingGlobalPotWhenThereIsOne_returnsThatPot() {
         val gameContext = aGameContextImplWith(phasePots = mapOf(
-            PRE_FLOP to mapOf(alex to 50u, poly to 77u)
+            PRE_FLOP to mutableMapOf(alex to 50u, poly to 77u)
         ))
 
         val result = gameContext.getGlobalPot()
@@ -50,8 +50,8 @@ class GameContextImplTest {
         |entries""")
     fun getGlobalPot_gettingGlobalPotWhenThereAreMoreThanOne_returnsPotAccumulatingAllEntries() {
         val gameContext = aGameContextImplWith(phasePots = mapOf(
-            PRE_FLOP to mapOf(alex to 50u, poly to 77u),
-            FLOP to mapOf(alex to 50u, jane to 1u)
+            PRE_FLOP to mutableMapOf(alex to 50u, poly to 77u),
+            FLOP to mutableMapOf(alex to 50u, jane to 1u)
         ))
 
         val result = gameContext.getGlobalPot()

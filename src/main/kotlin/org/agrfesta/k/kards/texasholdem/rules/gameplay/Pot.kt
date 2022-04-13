@@ -1,27 +1,28 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
-typealias Pot<P> = Map<P, UInt>
-typealias MutablePot<P> = MutableMap<P, UInt>
-typealias InGamePot = MutablePot<InGamePlayer>
+typealias Pot = Map<PlayerIdentity, UInt>
+typealias MutablePot = MutableMap<PlayerIdentity, UInt>
 
-fun buildMutablePot() = mutableMapOf<InGamePlayer,UInt>()
+fun buildMutablePot() = mutableMapOf<PlayerIdentity,UInt>()
 
-fun <T: PlayerIdentity> Pot<T>.amount(): UInt = values.sum()
-fun <T: PlayerIdentity> Pot<T>.players(): Set<T> = keys.toSet()
-fun <T: PlayerIdentity> Pot<T>.payedBy(player: T): UInt = this[player] ?: 0u
+fun Pot.amount(): UInt = values.sum()
+fun Pot.players(): Set<PlayerIdentity> = keys.toSet()
+fun Pot.payedBy(player: PlayerIdentity): UInt = this[player] ?: 0u
+fun Pot.toMutablePot(): MutablePot = this.toMutableMap()
 
-operator fun <T: PlayerIdentity> Pot<T>.plus(increment: Pot<T>): Pot<T> =
+operator fun MutablePot.plus(increment: MutablePot): MutablePot =
     (entries.toList() + increment.entries.toList())
         .groupingBy { it.key }
         .foldTo(mutableMapOf(), 0u) { acc, element -> acc + element.value }
 
-fun InGamePot.receiveFrom(player: InGamePlayer, amount: UInt): UInt {
+fun MutablePot.receiveFrom(player: InGamePlayer, amount: UInt): UInt {
     if (amount == 0u) return 0u
     val effAmount = player.pay(amount)
     this[player] = payedBy(player) + effAmount
     return effAmount
 }
-private fun InGamePot.removeFrom(player: InGamePlayer, amount: UInt) {
+
+private fun MutablePot.removeFrom(player: PlayerIdentity, amount: UInt) {
     val newAmount = (this[player] ?: 0u) - amount
     if (newAmount == 0u) {
         remove(player)
@@ -30,7 +31,7 @@ private fun InGamePot.removeFrom(player: InGamePlayer, amount: UInt) {
     }
 }
 
-fun InGamePot.extractBalancedPot(): InGamePot {
+fun MutablePot.extractBalancedPot(): MutablePot {
     val min: UInt? = values.minOrNull()
     val pot = buildMutablePot()
     min?.let { m -> players().forEach {
@@ -40,14 +41,14 @@ fun InGamePot.extractBalancedPot(): InGamePot {
     return pot
 }
 
-fun InGamePot.decompose(): Collection<InGamePot> {
-    val pots = mutableListOf<InGamePot>()
+fun MutablePot.decompose(): Collection<MutablePot> {
+    val pots = mutableListOf<MutablePot>()
     while (isNotEmpty()) { pots += extractBalancedPot() }
     return pots
 }
 
 class Contribution(val player: PlayerIdentity, val amount: UInt)
 
-fun <T: PlayerIdentity> Pot<T>.maxContribution(): Contribution? = entries
-        .map { Contribution(it.key,it.value) }
-        .maxByOrNull { it.amount }
+fun Pot.maxContribution(): Contribution? = entries
+    .map { Contribution(it.key,it.value) }
+    .maxByOrNull { it.amount }

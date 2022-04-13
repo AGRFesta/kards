@@ -382,33 +382,4 @@ class ShowdownTest {
         assertThat(dave.stack).isEqualTo(0u)
     }
 
-    // This case should never happen but can be easily detected comparing total amount of chips pre- and post-game,
-    // they must be equal..
-    @Test
-    @DisplayName("""execute(): a winner is not present in the table -> spare chips are not assigned""")
-    fun execute_aWinnerIsNotPresentInTheTable_spareChipsAreNotAssigned() {
-        val alex = anInGamePlayer(name = "Alex", stack = 0u, cards = frenchCardsSet("Ad","9h"))
-        val poly = anInGamePlayer(name = "Poly", stack = 0u, cards = frenchCardsSet("As","9d"))
-        val jane = anInGamePlayer(name = "Jane", stack = 0u, cards = frenchCardsSet("Ah","9c"))
-        val dave = anInGamePlayer(name = "Dave", stack = 0u, cards = frenchCardsSet("Qh","Qc"))
-        val table = buildTestTable {
-            bigBlind(jane)
-            smallBlind(dave)
-            button(alex)
-        }
-        val pot = buildMutablePot()
-        pot[alex] = 10u
-        pot[poly] = 10u
-        pot[jane] = 10u
-        pot[dave] = 2u
-        val board = board("Ac","Js","9s", "8c", "3h")
-
-        showdown.execute(pot, board, table)
-
-        assertThat(alex.stack).isEqualTo(10u)
-        assertThat(poly.stack).isEqualTo(10u)
-        assertThat(jane.stack).isEqualTo(10u)
-        assertThat(dave.stack).isEqualTo(0u)
-    }
-
 }
