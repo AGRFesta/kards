@@ -30,6 +30,7 @@ class PlayerIdentityImpl(
 
     override fun toString(): String = "$name($uuid)"
 }
+fun PlayerIdentity.calculateAmountToCall(pot: Pot): UInt = (pot.maxContribution()?.amount ?: 0u) - pot.payedBy(this)
 
 /**
  * Creates a player identity binding the name with the uuid.
@@ -134,8 +135,6 @@ interface InGamePlayer: SittingPlayer {
     fun asSittingPlayer(): SittingPlayer
     fun asPublicInGamePlayer(): PublicInGamePlayer
     fun asOwnPlayer(): OwnPlayer
-
-    fun calculateAmountToCall(pot: Pot): UInt
 }
 class InGamePlayerImpl(
     sittingPlayer: SittingPlayer,
@@ -169,9 +168,6 @@ class InGamePlayerImpl(
         }
         return effectiveAmount
     }
-
-    override fun calculateAmountToCall(pot: Pot): UInt =
-        (pot.maxContribution()?.amount ?: 0u) - pot.payedBy(this)
 }
 
 enum class PlayerStatus {
