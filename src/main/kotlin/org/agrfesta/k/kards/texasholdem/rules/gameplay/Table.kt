@@ -13,6 +13,7 @@ interface Table<T: PlayerIdentity> {
     fun getPlayerFrom(position: Position): T
     fun iterateFrom(position: Position): CircularIterator<T>
     fun findPlayerByName(name: String): T?
+    fun position(player: PlayerIdentity): UInt
 }
 
 class TableImpl<T: PlayerIdentity>(
@@ -25,7 +26,7 @@ class TableImpl<T: PlayerIdentity>(
     }
 
     override fun getPlayerFrom(position: Position): T = players[getIndexFromPosition(position).toInt()]
-    fun position(player: PlayerIdentity): UInt = players.indexOf(player)
+    override fun position(player: PlayerIdentity): UInt = players.indexOf(player)
         .let {
             if (it == -1) throw IllegalArgumentException("Player ${player.name} is not sitting at the table")
             else it.toUInt()

@@ -12,6 +12,7 @@ interface GameContext {
 
     fun getPhaseHistory(): List<PlayerAction>
     fun getGlobalPot(): Pot
+    fun getPhasePot(): Pot
 }
 class GameContextImpl(
     override val uuid: UUID,
@@ -26,6 +27,8 @@ class GameContextImpl(
     override fun getGlobalPot(): Pot = phasePots.values
         .map { it.toMutablePot() }
         .reduceOrNull { a, b -> a + b } ?: emptyMap()
+    override fun getPhasePot() = phasePots[board.phase]
+        ?: throw IllegalStateException("Pot not initialized at ${board.phase}")
 
 }
 
