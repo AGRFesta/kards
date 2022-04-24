@@ -80,12 +80,12 @@ abstract class AbstractDealer(
 
     private fun isRaiseAmountLessThanRequired(amount: UInt): Boolean {
         return (raisingPlayer != null && (amount <= amountRequired))
-                || amount <= context.payments.bb()
+                || amount <= context.payments.bb
     }
 
     private fun raiseEffect(player: InGamePlayer, action: Action, pot: MutablePot): Action {
         val payed: UInt = pot.payedBy(player)
-        val minimumRaise = context.payments.bb()
+        val minimumRaise = context.payments.bb
         val limitedAmount = action.amount?.coerceAtMost(player.stack) ?: 0u
         return if (isRaiseAmountLessThanRequired(limitedAmount)) {
             callEffect(player, pot)
@@ -125,10 +125,10 @@ class PreFlopDealer(
     observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
     override fun initPot(pot: MutablePot) {
-        pot.receiveFrom(context.table.getPlayerFrom(SMALL_BLIND), context.payments.sb())
-        pot.receiveFrom(context.table.getPlayerFrom(BIG_BLIND), context.payments.bb())
-        context.payments.ante()?.let { ante -> context.table.players.forEach { pot.receiveFrom(it, ante) } }
-        amountRequired = context.payments.bb()
+        pot.receiveFrom(context.table.getPlayerFrom(SMALL_BLIND), context.payments.sb)
+        pot.receiveFrom(context.table.getPlayerFrom(BIG_BLIND), context.payments.bb)
+        context.payments.ante?.let { ante -> context.table.players.forEach { pot.receiveFrom(it, ante) } }
+        amountRequired = context.payments.bb
     }
     override fun playersIterator(): CircularIterator<InGamePlayer> = context.table.iterateFrom(UNDER_THE_GUN)
 }
