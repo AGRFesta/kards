@@ -7,7 +7,7 @@ import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluator
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Position.SMALL_BLIND
 
 interface Showdown {
-    fun execute(pot: InGamePot, board: Board, table: Table<out PlayerIdentity>)
+    fun execute(pot: MutablePot, board: Board, table: Table<out InGamePlayer>)
 }
 
 class ShowdownImpl(
@@ -18,8 +18,8 @@ class ShowdownImpl(
 
     private val playersPrizes: MutableMap<Player,UInt?> = mutableMapOf()
 
-    override fun execute(pot: InGamePot, board: Board, table: Table<out PlayerIdentity>) {
-        val playersHands = pot.players()
+    override fun execute(pot: MutablePot, board: Board, table: Table<out InGamePlayer>) {
+        val playersHands = table.players
             .filter { !it.hasFolded() }
             .associateWith { evaluator.evaluate(it.cards + board.cards) }
 
@@ -30,7 +30,7 @@ class ShowdownImpl(
         )
     }
 
-    private fun process(pot: InGamePot,
+    private fun process(pot: Pot,
                         playersHands: Map<InGamePlayer, CardsEvaluation>,
                         table: Table<out PlayerIdentity>) {
         playersHands.entries
@@ -51,7 +51,7 @@ class ShowdownImpl(
 
     // Eventual spare chips are assigned to the first winner at button left.
     private fun assignSpareChips(spareChips: UInt, winners: List<InGamePlayer>, table: Table<out PlayerIdentity>) {
-        if (spareChips > 0u && table.players.containsAll(winners)) {
+        if (spareChips > 0u) {
             var receiver: InGamePlayer? = null
             val iterator = table.iterateFrom(SMALL_BLIND)
             while (receiver == null) {

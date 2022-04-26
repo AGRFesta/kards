@@ -37,9 +37,9 @@ import org.junit.jupiter.api.Test
 class DealersTest {
 
     @Test
-    @DisplayName("Post flop (10/20) story: Alex calls, Jane raises 100, Alex folds")
+    @DisplayName("Post flop (10/20) story: Alex checks, Jane raises 100, Alex folds")
     fun postFlopStory000() {
-        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(call(), fold()))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(check(), fold()))
         val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(raise(100u)))
         val table = TableImpl(distinctListOf(alex, jane), 0u)
         val context = aContext(table, blinds(10u, 20u))
@@ -77,9 +77,9 @@ class DealersTest {
     }
 
     @Test
-    @DisplayName("Post flop (10/20) story: Alex calls, Jane raises Int.MAX_VALUE, Alex calls")
+    @DisplayName("Post flop (10/20) story: Alex checks, Jane raises Int.MAX_VALUE, Alex calls")
     fun postFlopStory003() {
-        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(call(), call()))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(check(), call()))
         val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(raise(UInt.MAX_VALUE)))
         val table = TableImpl(distinctListOf(alex, jane), 0u)
         val context = aContext(table, blinds(10u, 20u))
@@ -176,9 +176,9 @@ class DealersTest {
 
     @Test
     @DisplayName("Post flop (10/20) story: In previous phase both Alex and Jane call 20. " +
-            "Alex calls, Jane raises 100, Alex folds")
+            "Alex checks, Jane raises 100, Alex folds")
     fun postFlopStory009() {
-        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(call(), fold()))
+        val alex = anInGamePlayer(name = "Alex", stack = 2000u, strategy = strategyMock(check(), fold()))
         val jane = anInGamePlayer(name = "Jane", stack = 2000u, strategy = strategyMock(raise(100u)))
         val table = TableImpl(distinctListOf(alex, jane), 0u)
 

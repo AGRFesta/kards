@@ -1,15 +1,9 @@
 package org.agrfesta.k.kards.texasholdem.rules.gameplay
 
 interface GamePayments {
-    fun sb(): UInt
-    fun bb(): UInt
-    fun ante(): UInt?
+    val sb: UInt
+    val bb: UInt
+    val ante: UInt?
 }
 
-class GamePaymentsFixedImpl(private val sb: UInt, private val bb: UInt, private val ante: UInt?) : GamePayments {
-    constructor(sb: UInt, bb: UInt): this(sb,bb,null)
-
-    override fun sb(): UInt = sb
-    override fun bb(): UInt = bb
-    override fun ante(): UInt? = ante
-}
+class GamePaymentsFixedImpl(override val sb: UInt, override val bb: UInt, override val ante: UInt? = null): GamePayments

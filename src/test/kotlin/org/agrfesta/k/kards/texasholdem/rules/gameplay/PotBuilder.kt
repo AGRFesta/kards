@@ -8,5 +8,5 @@ class PotBuilder {
         return this
     }
 
-    fun build(): InGamePot = pot
+    fun build(): MutablePot = pot
 }

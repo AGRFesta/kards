@@ -8,10 +8,11 @@ interface GameContext {
     val payments: GamePayments
     val board: Board
     val history: Map<GamePhase, List<PlayerAction>>
-    val phasePots: Map<GamePhase, Pot<PlayerIdentity>>
+    val phasePots: Map<GamePhase, Pot>
 
     fun getPhaseHistory(): List<PlayerAction>
-    fun getGlobalPot(): Pot<PlayerIdentity>
+    fun getGlobalPot(): Pot
+    fun getPhasePot(): Pot
 }
 class GameContextImpl(
     override val uuid: UUID,
@@ -19,12 +20,15 @@ class GameContextImpl(
     override val payments: GamePayments,
     override val board: Board,
     override val history: Map<GamePhase, List<PlayerAction>>,
-    override val phasePots: Map<GamePhase, Pot<PlayerIdentity>>
+    override val phasePots: Map<GamePhase, Pot>
 ): GameContext {
 
     override fun getPhaseHistory(): List<PlayerAction> = history[board.phase] ?: emptyList()
-    override fun getGlobalPot(): Pot<PlayerIdentity> = phasePots.values
+    override fun getGlobalPot(): Pot = phasePots.values
+        .map { it.toMutablePot() }
         .reduceOrNull { a, b -> a + b } ?: emptyMap()
+    override fun getPhasePot() = phasePots[board.phase]
+        ?: throw IllegalStateException("Pot not initialized at ${board.phase}")
 
 }
 
@@ -39,9 +43,9 @@ class MutableGameContextImpl(
         GamePhase.TURN to mutableListOf(),
         GamePhase.RIVER to mutableListOf()
     ),
-    val phasePots: Map<GamePhase, InGamePot>
+    val phasePots: Map<GamePhase, MutablePot>
 ) {
-    fun getGlobalPot(): InGamePot = phasePots.values.reduce { a, b -> (a + b) as InGamePot }
+    fun getGlobalPot(): MutablePot = phasePots.values.reduce { a, b -> (a + b) }
     fun getPhasePot() = phasePots[board.phase]
         ?: throw IllegalStateException("Pot not initialized at ${board.phase}")
     fun getPhaseHistory(): List<PlayerAction> = history[board.phase]
@@ -57,27 +61,16 @@ class MutableGameContextImpl(
         payments = payments,
         board = board as Board,
         history = history.mapValues { (_, history) -> history.toList() },
-        phasePots = phasePots.mapValues { (_, pot) -> pot.mapKeys {
-                (player, _) -> player }
-        }
+        phasePots = phasePots
     )
 }
-
-//class HeroGameContextImpl<H: SeatNameStack>(
-//    val hero: H, context: GameContext
-//): GameContext by context
-
-//infix fun InGamePlayer.heroIn(context: MutableGameContextImpl) =
-//    HeroGameContextImpl(asOwnPlayer(context.getPhasePot()), context.toGameContext())
-//infix fun InGamePlayer.statsWith(context: MutableGameContextImpl) =
-//    HeroGameContextImpl(OpponentHero(name, stack), context.toGameContext())
 
 data class PlayerAction(val player: PlayerIdentity, val action: Action) {
     override fun toString() = "${player.name} $action"
 }
 infix fun PlayerIdentity.does(action: Action) = PlayerAction(this, action)
 
-fun <T: PlayerIdentity, P: Pot<T>> emptyPhasePots(initialPotSupplier: () -> P): Map<GamePhase, P> = mapOf(
+fun emptyPhasePots(initialPotSupplier: () -> MutablePot): Map<GamePhase, MutablePot> = mapOf(
     GamePhase.PRE_FLOP to initialPotSupplier(),
     GamePhase.FLOP to initialPotSupplier(),
     GamePhase.TURN to initialPotSupplier(),

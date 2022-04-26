@@ -16,4 +16,5 @@ data class ActionImpl(
 }
 fun fold() = ActionImpl(ActionType.Fold)
 fun call() = ActionImpl(ActionType.Call)
+fun check() = ActionImpl(ActionType.Call)
 fun raise(amount: UInt) = ActionImpl(ActionType.Raise, amount)

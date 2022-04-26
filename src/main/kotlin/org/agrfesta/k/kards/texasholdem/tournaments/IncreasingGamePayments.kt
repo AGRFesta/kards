@@ -18,9 +18,12 @@ data class IncreasingGamePaymentsDefinition(val structure: List<LevelPayments>, 
 class IncreasingGamePayments(private val definition: IncreasingGamePaymentsDefinition): GamePayments {
     private var games = 0
 
-    override fun sb(): UInt = definition.structure[level()].sb
-    override fun bb(): UInt = definition.structure[level()].bb
-    override fun ante(): UInt? = definition.structure[level()].ante
+    override val sb: UInt
+        get() = definition.structure[level()].sb
+    override val bb: UInt
+        get() = definition.structure[level()].bb
+    override val ante: UInt?
+        get() = definition.structure[level()].ante
 
     private fun level(): Int = (games / definition.gamesPerLevel.toInt())
         .coerceAtMost(definition.structure.size-1)

@@ -3,7 +3,6 @@ package org.agrfesta.k.kards.texasholdem.observers
 import assertk.assertThat
 import assertk.assertions.containsOnly
 import assertk.assertions.extracting
-import assertk.assertions.isEmpty
 import assertk.assertions.isTrue
 import io.mockk.Runs
 import io.mockk.every
@@ -22,7 +21,6 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.FOLD
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.RAISE
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.ShowdownImpl
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.aTable
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.anInGamePlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.board
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.buildMutablePot
@@ -50,7 +48,7 @@ class ShowdownObserverTest {
             button(alex)
             smallBlind(poly)
             bigBlind(jane)
-        }.map { it.asIdentity() }
+        }
         val pot = buildMutablePot()
         pot[alex] = 300u
         pot[poly] = 300u
@@ -70,22 +68,6 @@ class ShowdownObserverTest {
     }
 
     @Test
-    @DisplayName("A Showdown on an empty Pot will notify the Observer with an empty list")
-    fun showdownObserverStory001() {
-        val result = slot<Collection<ShowdownPlayerResult>>()
-        val observerMock = mockk<ShowdownObserver>()
-        every { observerMock.notifyResult(capture(result)) } just Runs
-        val pot = buildMutablePot()
-        val board = board("Ac","Js","9s", "8c", "3d")
-
-        ShowdownImpl(CardsEvaluatorBaseImpl(),observerMock).execute(pot, board, aTable().map { it.asIdentity() })
-
-        verify(exactly = 1) { observerMock.notifyResult(any()) }
-        assertThat(result.isCaptured).isTrue()
-        assertThat(result.captured).isEmpty()
-    }
-
-    @Test
     @DisplayName("notify(): Showdown with single winner -> observer is notified with winner and prize")
     fun notifyTest002() {
         val result = slot<Collection<ShowdownPlayerResult>>()
@@ -100,7 +82,7 @@ class ShowdownObserverTest {
             smallBlind(poly)
             bigBlind(jane)
             underTheGun(dave)
-        }.map { it.asIdentity() }
+        }
         val pot = buildMutablePot()
         pot[alex] = 225u
         pot[poly] = 225u

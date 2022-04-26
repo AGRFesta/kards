@@ -38,7 +38,7 @@ abstract class AbstractDealer(
     protected var amountRequired: UInt = 0u
     private var raisingPlayer: InGamePlayer? = null
 
-    protected abstract fun initPot(pot: InGamePot)
+    protected abstract fun initPot(pot: MutablePot)
     protected abstract fun playersIterator(): CircularIterator<InGamePlayer>
 
     override fun collectPot() {
@@ -61,12 +61,12 @@ abstract class AbstractDealer(
         observer?.notifyActions(context.board.phase, context.getPhaseHistory())
     }
 
-    private fun someoneHaveToAct(pot: InGamePot): Boolean = hadToAct(pot).isNotEmpty()
-    private fun hadToAct(pot: InGamePot): List<InGamePlayer> {
+    private fun someoneHaveToAct(pot: Pot): Boolean = hadToAct(pot).isNotEmpty()
+    private fun hadToAct(pot: Pot): List<InGamePlayer> {
         return context.table.players.filter { context.hadToAct(it, pot) }
     }
 
-    private fun callEffect(player: InGamePlayer, pot: InGamePot): Action {
+    private fun callEffect(player: InGamePlayer, pot: MutablePot): Action {
         val payed: UInt = pot.payedBy(player)
         player.status = PlayerStatus.CALL
         pot.receiveFrom(player, amountRequired - payed)
@@ -80,12 +80,12 @@ abstract class AbstractDealer(
 
     private fun isRaiseAmountLessThanRequired(amount: UInt): Boolean {
         return (raisingPlayer != null && (amount <= amountRequired))
-                || amount <= context.payments.bb()
+                || amount <= context.payments.bb
     }
 
-    private fun raiseEffect(player: InGamePlayer, action: Action, pot: InGamePot): Action {
+    private fun raiseEffect(player: InGamePlayer, action: Action, pot: MutablePot): Action {
         val payed: UInt = pot.payedBy(player)
-        val minimumRaise = context.payments.bb()
+        val minimumRaise = context.payments.bb
         val limitedAmount = action.amount?.coerceAtMost(player.stack) ?: 0u
         return if (isRaiseAmountLessThanRequired(limitedAmount)) {
             callEffect(player, pot)
@@ -101,7 +101,7 @@ abstract class AbstractDealer(
     }
 }
 
-private fun MutableGameContextImpl.hadToAct(player: InGamePlayer, pot: InGamePot): Boolean {
+private fun MutableGameContextImpl.hadToAct(player: InGamePlayer, pot: Pot): Boolean {
     val hadToPay = player.calculateAmountToCall(pot) > 0u
     return player.isActive()
             && (!theOnlyActive(player) || hadToPay)
@@ -116,7 +116,7 @@ class PostFlopDealer(
     private val context: MutableGameContextImpl,
     observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
-    override fun initPot(pot: InGamePot) {/**/}
+    override fun initPot(pot: MutablePot) {/**/}
     override fun playersIterator(): CircularIterator<InGamePlayer> = context.table.iterateFrom(SMALL_BLIND)
 }
 
@@ -124,11 +124,11 @@ class PreFlopDealer(
     private val context: MutableGameContextImpl,
     observer: DealerObserver? = null )
     : AbstractDealer(context, observer) {
-    override fun initPot(pot: InGamePot) {
-        pot.receiveFrom(context.table.getPlayerFrom(SMALL_BLIND), context.payments.sb())
-        pot.receiveFrom(context.table.getPlayerFrom(BIG_BLIND), context.payments.bb())
-        context.payments.ante()?.let { ante -> context.table.players.forEach { pot.receiveFrom(it, ante) } }
-        amountRequired = context.payments.bb()
+    override fun initPot(pot: MutablePot) {
+        pot.receiveFrom(context.table.getPlayerFrom(SMALL_BLIND), context.payments.sb)
+        pot.receiveFrom(context.table.getPlayerFrom(BIG_BLIND), context.payments.bb)
+        context.payments.ante?.let { ante -> context.table.players.forEach { pot.receiveFrom(it, ante) } }
+        amountRequired = context.payments.bb
     }
     override fun playersIterator(): CircularIterator<InGamePlayer> = context.table.iterateFrom(UNDER_THE_GUN)
 }
