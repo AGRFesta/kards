@@ -2,9 +2,9 @@ import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.6.10"
-    id("org.jetbrains.dokka") version "1.6.10"
-    id("io.gitlab.arturbosch.detekt").version("1.19.0")
+    id("org.jetbrains.kotlin.jvm") version Versions.kotlin
+    id("org.jetbrains.dokka") version Versions.dokka
+    id("io.gitlab.arturbosch.detekt") version Versions.detekt
     jacoco
     `java-library`
     `maven-publish`
@@ -13,8 +13,8 @@ plugins {
 val myMavenRepoReadUrl: String by project
 val myMavenRepoWriteUrl: String by project
 
-group = "org.agrfesta.k.kards"
-version = "0.3.0"
+group = LibConfig.group
+version = LibConfig.version
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -33,14 +33,16 @@ configurations.all {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+    implementation(Dependencies.kotlinxCollectionsImmutable)
 
-    api("org.agrfesta.k.kards:k-playing-cards:1.1.0")
+    api(Dependencies.playingCards)
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
-    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
-    testImplementation("io.mockk:mockk:1.12.3")
+    testImplementation(Dependencies.junitJupiterApi)
+    testRuntimeOnly(Dependencies.junitJupiterEngine)
+    testImplementation(Dependencies.assertk)
+    testImplementation(Dependencies.mockk)
+
+    testImplementation(project(":texas-holdem-nl-testing"))
 }
 
 tasks.withType<KotlinCompile> {
