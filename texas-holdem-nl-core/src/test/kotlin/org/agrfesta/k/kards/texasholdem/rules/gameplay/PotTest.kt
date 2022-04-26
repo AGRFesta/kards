@@ -7,6 +7,11 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
+import org.agrfesta.k.kards.texasholdem.testing.mothers.allInPlayer
+import org.agrfesta.k.kards.texasholdem.testing.mothers.anInGamePlayer
+import org.agrfesta.k.kards.texasholdem.testing.mothers.callingPlayer
+import org.agrfesta.k.kards.texasholdem.testing.mothers.foldedPlayer
+import org.agrfesta.k.kards.texasholdem.testing.mothers.raisingPlayer
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -41,10 +46,10 @@ class PotTest {
     fun playersReturnsASetOfAllInvolvedPlayers() {
         val pot = buildMutablePot()
         val player = anInGamePlayer()
-        val foldedPlayer = foldedPlayer()
-        val callingPlayer = callingPlayer()
-        val allInPlayer = allInPlayer()
-        val raisingPlayer = raisingPlayer()
+        val foldedPlayer = foldedPlayer
+        val callingPlayer = callingPlayer
+        val allInPlayer = allInPlayer
+        val raisingPlayer = raisingPlayer
         pot[player] = 1u
         pot[foldedPlayer] = 3u
         pot[callingPlayer] = 5u

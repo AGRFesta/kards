@@ -4,12 +4,12 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.GamePhase
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerAction
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.aGameContext
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aGameResult
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.aPlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.aShowdownPlayerResult
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.call
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.does
+import org.agrfesta.k.kards.texasholdem.testing.mothers.aGameContext
+import org.agrfesta.k.kards.texasholdem.testing.mothers.aPlayer
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 

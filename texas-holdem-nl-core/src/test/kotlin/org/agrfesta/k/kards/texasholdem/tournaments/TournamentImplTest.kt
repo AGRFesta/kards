@@ -16,14 +16,14 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.InGamePlayerImpl
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Position
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.SittingPlayer
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.Table
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.aPlayerCardsSet
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.alex
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.anIncreasingGamePaymentsDef
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.dave
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.isSittingOn
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.jane
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.owns
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.poly
+import org.agrfesta.k.kards.texasholdem.testing.mothers.aPlayerCardsSet
+import org.agrfesta.k.kards.texasholdem.testing.mothers.alex
+import org.agrfesta.k.kards.texasholdem.testing.mothers.anIncreasingGamePaymentsDef
+import org.agrfesta.k.kards.texasholdem.testing.mothers.dave
+import org.agrfesta.k.kards.texasholdem.testing.mothers.jane
+import org.agrfesta.k.kards.texasholdem.testing.mothers.poly
 import org.agrfesta.k.kards.texasholdem.utils.DistinctList.Companion.distinctListOf
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -53,7 +53,7 @@ class TournamentImplTest {
             subscriptions = setOf(poly, jane, alex, dave),
             buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
-                val inGameTable: Table<InGamePlayer> = table.map { InGamePlayerImpl(it, cards = aPlayerCardsSet()) }
+                val inGameTable: Table<InGamePlayer> = table.map { InGamePlayerImpl(it, cards = aPlayerCardsSet) }
                 assertThat(igp === payments).isTrue()
                 tables.add(inGameTable)
                 mockedGames[counter++]
@@ -89,7 +89,7 @@ class TournamentImplTest {
             subscriptions = setOf(poly, jane, alex),
             buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
-                val inGameTable: Table<InGamePlayer> = table.map { InGamePlayerImpl(it, cards = aPlayerCardsSet()) }
+                val inGameTable: Table<InGamePlayer> = table.map { InGamePlayerImpl(it, cards = aPlayerCardsSet) }
                 assertThat(igp === payments).isTrue()
                 tables.add(inGameTable)
                 mockedGames[counter++]
@@ -123,7 +123,7 @@ class TournamentImplTest {
             subscriptions = setOf(poly, jane, alex),
             buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
-                val inGameTable: Table<InGamePlayer> = table.map { InGamePlayerImpl(it, cards = aPlayerCardsSet()) }
+                val inGameTable: Table<InGamePlayer> = table.map { InGamePlayerImpl(it, cards = aPlayerCardsSet) }
                 assertThat(igp === payments).isTrue()
                 tables.add(inGameTable)
                 mockedGames[counter++]
@@ -155,7 +155,7 @@ class TournamentImplTest {
             subscriptions = setOf(poly, jane, alex),
             buttonProvider = { 2u }, // button of first game in position 2
             gameProvider = { igp, table, _ ->
-                val inGameTable: Table<InGamePlayer> = table.map { InGamePlayerImpl(it, cards = aPlayerCardsSet()) }
+                val inGameTable: Table<InGamePlayer> = table.map { InGamePlayerImpl(it, cards = aPlayerCardsSet) }
                 assertThat(igp === payments).isTrue()
                 tables.add(inGameTable)
                 mockedGames[counter++]
@@ -172,7 +172,7 @@ class TournamentImplTest {
     fun constructor_aTournamentWithNoSubscribers_raisesAnException() {
         val failure = assertThat {
             TournamentImpl(
-                descriptor = TournamentDescriptorImpl(2000u, anIncreasingGamePaymentsDef()),
+                descriptor = TournamentDescriptorImpl(2000u, anIncreasingGamePaymentsDef),
                 subscriptions = emptySet() )
         }.isFailure()
         failure.hasClass(IllegalStateException::class)
@@ -184,7 +184,7 @@ class TournamentImplTest {
     fun constructor_aTournamentWithASingleSubscriber_raisesAnException() {
         val failure = assertThat {
             TournamentImpl(
-                descriptor = TournamentDescriptorImpl(2000u, anIncreasingGamePaymentsDef()),
+                descriptor = TournamentDescriptorImpl(2000u, anIncreasingGamePaymentsDef),
                 subscriptions = setOf(alex) )
         }.isFailure()
         failure.hasClass(IllegalStateException::class)

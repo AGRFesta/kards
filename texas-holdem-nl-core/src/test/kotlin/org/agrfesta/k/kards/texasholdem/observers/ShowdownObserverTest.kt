@@ -21,13 +21,17 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.FOLD
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.RAISE
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.ShowdownImpl
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.anInGamePlayer
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.board
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.buildMutablePot
-import org.agrfesta.k.kards.texasholdem.rules.gameplay.mothers.buildTestTable
 import org.agrfesta.k.kards.texasholdem.rules.hands.PairHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.ThreeOfAKindHand
 import org.agrfesta.k.kards.texasholdem.rules.hands.TwoPairHand
+import org.agrfesta.k.kards.texasholdem.testing.mothers.anInGamePlayer
+import org.agrfesta.k.kards.texasholdem.testing.mothers.board
+import org.agrfesta.k.kards.texasholdem.testing.mothers.tables.aTenInGamePlayerTable
+import org.agrfesta.k.kards.texasholdem.testing.mothers.tables.bigB
+import org.agrfesta.k.kards.texasholdem.testing.mothers.tables.button
+import org.agrfesta.k.kards.texasholdem.testing.mothers.tables.smallB
+import org.agrfesta.k.kards.texasholdem.testing.mothers.tables.utg
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import kotlin.collections.set
@@ -41,18 +45,15 @@ class ShowdownObserverTest {
         val result = slot<Collection<ShowdownPlayerResult>>()
         val observerMock = mockk<ShowdownObserver>()
         every { observerMock.notifyResult(capture(result)) } just Runs
-        val alex = anInGamePlayer(name = "Alex", stack = 1000u, status = RAISE, cards = frenchCardsSet("Ad","Ts"))
-        val poly = anInGamePlayer(name = "Poly", stack = 1000u, status = CALL, cards = frenchCardsSet("Jd","7c"))
-        val jane = anInGamePlayer(name = "Jane", stack = 1000u, status = CALL, cards = frenchCardsSet("9d","9c"))
-        val table = buildTestTable {
-            button(alex)
-            smallBlind(poly)
-            bigBlind(jane)
+        val table = aTenInGamePlayerTable {
+            button with { anInGamePlayer(it, stack = 1000u, status = RAISE, cards = frenchCardsSet("Ad","Ts")) }
+            smallB with { anInGamePlayer(it, stack = 1000u, status = CALL, cards = frenchCardsSet("Jd","7c")) }
+            bigB with { anInGamePlayer(it, stack = 1000u, status = CALL, cards = frenchCardsSet("9d","9c")) }
         }
         val pot = buildMutablePot()
-        pot[alex] = 300u
-        pot[poly] = 300u
-        pot[jane] = 100u
+        pot[button] = 300u
+        pot[smallB] = 300u
+        pot[bigB] = 100u
         val board = board("Ac","Js","9s", "8c", "3d")
 
         ShowdownImpl(CardsEvaluatorBaseImpl(),observerMock).execute(pot,board,table)
@@ -60,9 +61,9 @@ class ShowdownObserverTest {
         verify(exactly = 1) { observerMock.notifyResult(any()) }
         assertThat(result.isCaptured).isTrue()
         assertThat(result.captured).extracting({it.player},{it.evaluation},{it.prize})
-                .containsOnly(Triple(alex, PairHand(ACE, JACK,TEN,NINE), 400u),
-                              Triple(poly, PairHand(JACK, ACE,NINE,EIGHT), null),
-                              Triple(jane, ThreeOfAKindHand(NINE, ACE,JACK), 300u)
+                .containsOnly(Triple(button, PairHand(ACE, JACK,TEN,NINE), 400u),
+                              Triple(smallB, PairHand(JACK, ACE,NINE,EIGHT), null),
+                              Triple(bigB, ThreeOfAKindHand(NINE, ACE,JACK), 300u)
                         )
 
     }
@@ -73,21 +74,17 @@ class ShowdownObserverTest {
         val result = slot<Collection<ShowdownPlayerResult>>()
         val observerMock = mockk<ShowdownObserver>()
         every { observerMock.notifyResult(capture(result)) } just Runs
-        val alex = anInGamePlayer(name = "Alex", stack = 2000u, status = CALL, cards = frenchCardsSet("Ad","9h"))
-        val poly = anInGamePlayer(name = "Poly", stack = 2000u, status = CALL, cards = frenchCardsSet("As","9d"))
-        val jane = anInGamePlayer(name = "Jane", stack = 2000u, status = CALL, cards = frenchCardsSet("Ah","Jc"))
-        val dave = anInGamePlayer(name = "Dave", stack = 1000u, status = FOLD, cards = frenchCardsSet("Qh","Qc"))
-        val table = buildTestTable {
-            button(alex)
-            smallBlind(poly)
-            bigBlind(jane)
-            underTheGun(dave)
+        val table = aTenInGamePlayerTable {
+            button with { anInGamePlayer(it, stack = 2000u, status = CALL, cards = frenchCardsSet("Ad","9h")) }
+            smallB with { anInGamePlayer(it, stack = 2000u, status = CALL, cards = frenchCardsSet("As","9d")) }
+            bigB with { anInGamePlayer(it, stack = 2000u, status = CALL, cards = frenchCardsSet("Ah","Jc")) }
+            utg with { anInGamePlayer(it, stack = 1000u, status = FOLD, cards = frenchCardsSet("Qh","Qc")) }
         }
         val pot = buildMutablePot()
-        pot[alex] = 225u
-        pot[poly] = 225u
-        pot[jane] = 225u
-        pot[dave] = 25u
+        pot[button] = 225u
+        pot[smallB] = 225u
+        pot[bigB] = 225u
+        pot[utg] = 25u
         val board = board("Ac","Js","9s", "8c", "3h")
 
         ShowdownImpl(CardsEvaluatorBaseImpl(),observerMock).execute(pot,board,table)
@@ -96,9 +93,9 @@ class ShowdownObserverTest {
         assertThat(result.isCaptured).isTrue()
         assertThat(result.captured).extracting({it.player},{it.evaluation},{it.prize})
             .containsOnly(
-                Triple(alex, TwoPairHand(ACE,NINE, JACK), null),
-                Triple(poly, TwoPairHand(ACE,NINE, JACK), null),
-                Triple(jane, TwoPairHand(ACE,JACK, NINE), 700u)
+                Triple(button, TwoPairHand(ACE,NINE, JACK), null),
+                Triple(smallB, TwoPairHand(ACE,NINE, JACK), null),
+                Triple(bigB, TwoPairHand(ACE,JACK, NINE), 700u)
             )
 
     }

@@ -15,6 +15,15 @@ import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.CALL
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.FOLD
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.NONE
 import org.agrfesta.k.kards.texasholdem.rules.gameplay.PlayerStatus.RAISE
+import org.agrfesta.k.kards.texasholdem.testing.mothers.CircularStrategy.Companion.aStrategy
+import org.agrfesta.k.kards.texasholdem.testing.mothers.aGameContext
+import org.agrfesta.k.kards.texasholdem.testing.mothers.aSittingPlayer
+import org.agrfesta.k.kards.texasholdem.testing.mothers.allInPlayer
+import org.agrfesta.k.kards.texasholdem.testing.mothers.anInGamePlayer
+import org.agrfesta.k.kards.texasholdem.testing.mothers.callingPlayer
+import org.agrfesta.k.kards.texasholdem.testing.mothers.card
+import org.agrfesta.k.kards.texasholdem.testing.mothers.foldedPlayer
+import org.agrfesta.k.kards.texasholdem.testing.mothers.raisingPlayer
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -24,7 +33,7 @@ class PlayersTest {
     @Test
     @DisplayName("Player's status is FOLD -> player has fold")
     fun ifPlayerStatusIsFoldHasFoldedIsTrue() {
-        assertThat( foldedPlayer().hasFolded() ).isTrue()
+        assertThat( foldedPlayer.hasFolded() ).isTrue()
     }
     @Test
     @DisplayName("Player's status is CALL -> player has not fold")
@@ -37,12 +46,12 @@ class PlayersTest {
     @Test
     @DisplayName("Player's status is FOLD -> player can't take part to the game")
     fun ifPlayerStatusIsFoldIsNotActive() {
-        assertThat( foldedPlayer().isActive() ).isFalse()
+        assertThat( foldedPlayer.isActive() ).isFalse()
     }
     @Test
     @DisplayName("Player's status is ALL-IN -> player can't take part to the game")
     fun ifPlayerStatusIsAllInIsNotActive() {
-        assertThat( allInPlayer().isActive() ).isFalse()
+        assertThat( allInPlayer.isActive() ).isFalse()
     }
     @Test
     @DisplayName("Player's status is RAISE -> player can take part to the game")
@@ -122,7 +131,7 @@ class PlayersTest {
     @DisplayName("""Player with a stack of 1000 pays 500 -> effective payment is 500 player have a stack of 500, the 
         |status doesn't change""")
     fun playerPayAPositiveAmountLessThanStack() {
-        val player = anInGamePlayer(stack = 1000u)
+        val player = anInGamePlayer(stack = 1000u, status = NONE)
         assertThat(player.status).isEqualTo(NONE)
         val payed = player.pay(500u)
         assertThat(player.stack).isEqualTo(500u)
@@ -133,20 +142,20 @@ class PlayersTest {
     @Test
     @DisplayName("call to Player's act -> the Action from strategy")
     fun actReturnsActionFromStrategy() {
-        val strategy = strategyMock( call() )
+        val strategy = aStrategy( call() )
         val player = anInGamePlayer(strategy = strategy)
-        assertThat( player.act(player.asOwnPlayer(),aGameContext()) ).isEqualTo( call() )
+        assertThat( player.act(player.asOwnPlayer(), aGameContext()) ).isEqualTo( call() )
     }
 
     @Test
     @DisplayName("Resetting state of all possible player's states -> only the one not active are reset to NONE")
     fun resetAllActivePlayersState() {
         val players = listOf(
-                foldedPlayer(),
-                allInPlayer(),
-                callingPlayer(),
-                raisingPlayer(),
-                anInGamePlayer()
+                foldedPlayer,
+                allInPlayer,
+                callingPlayer,
+                raisingPlayer,
+                anInGamePlayer(status = NONE)
         )
         assertThat(players).extracting { it.status }
                 .containsExactly(FOLD, ALL_IN, CALL, RAISE, NONE)
@@ -158,23 +167,22 @@ class PlayersTest {
     @Test
     @DisplayName("Filtering active players from all possible player's states -> return only the one not active")
     fun getActivePlayersOnly() {
+        val waitingPlayer = anInGamePlayer(status = NONE)
         val players = listOf(
-                foldedPlayer(),
-                allInPlayer(),
-                callingPlayer(),
-                raisingPlayer(),
-                anInGamePlayer()
+                foldedPlayer,
+                allInPlayer,
+                callingPlayer,
+                raisingPlayer,
+            waitingPlayer
         )
-        assertThat(players).extracting { it.name }
-                .containsExactly("FoldedPlayer", "AllInPlayer", "CallingPlayer", "RaisingPlayer", "aName")
-        assertThat(players.getActive()).extracting { it.name }
-                .containsExactly("CallingPlayer", "RaisingPlayer", "aName")
+        assertThat(players.getActive())
+                .containsExactly(callingPlayer, raisingPlayer, waitingPlayer)
     }
 
     @Test
     @DisplayName("List of one player -> a winner")
     fun ifTheListHasOnlyOnePlayerReturnsItHasWinner() {
-        val player = anInGamePlayer()
+        val player = anInGamePlayer(status = NONE)
         val players = listOf(player)
         assertThat(players.findWinner()).isEqualTo(player)
     }
@@ -193,8 +201,8 @@ class PlayersTest {
     @Test
     @DisplayName("List of a player not folded and another folded -> a winner (the not folded)")
     fun aListWithAPlayerNotFoldedAndAnotherFoldedReturnsAWinner() {
-        val player = anInGamePlayer()
-        val players = listOf(player, foldedPlayer())
+        val player = anInGamePlayer(status = NONE)
+        val players = listOf(player, foldedPlayer)
         assertThat(players.findWinner()).isEqualTo(player)
     }
 }
