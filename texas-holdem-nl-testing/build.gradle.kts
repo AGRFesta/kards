@@ -35,7 +35,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation(Dependencies.kotlinxCollectionsImmutable)
 
-    implementation(project(":texas-holdem-nl-core"))
+    implementation(project(":texas-holdem-nl"))
 
     testImplementation(Dependencies.junitJupiterApi)
     testRuntimeOnly(Dependencies.junitJupiterEngine)
