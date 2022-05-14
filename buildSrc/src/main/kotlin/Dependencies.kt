@@ -22,7 +22,6 @@ object BuildPlugins {
 object Dependencies {
     val kotlinxCollectionsImmutable by lazy {
         "org.jetbrains.kotlinx:kotlinx-collections-immutable:${Versions.kotlinxCollectionsImmutable}" }
-    val playingCards by lazy { "org.agrfesta.k.kards:k-playing-cards:${Versions.playingCards}" }
     val junitJupiterApi by lazy { "org.junit.jupiter:junit-jupiter-api:${Versions.jUnit}" }
     val junitJupiterEngine by lazy { "org.junit.jupiter:junit-jupiter-engine:${Versions.jUnit}" }
     val assertk by lazy { "com.willowtreeapps.assertk:assertk-jvm:${Versions.assertk}" }

@@ -26,6 +26,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.4")
     implementation("com.github.ajalt:mordant:1.2.1")
 
+    implementation(project(":playing-cards"))
     implementation(project(":texas-holdem-nl"))
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")

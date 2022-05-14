@@ -35,7 +35,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation(Dependencies.kotlinxCollectionsImmutable)
 
-    api(Dependencies.playingCards)
+    implementation(project(":playing-cards"))
 
     testImplementation(Dependencies.junitJupiterApi)
     testRuntimeOnly(Dependencies.junitJupiterEngine)
