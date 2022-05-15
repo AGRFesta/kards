@@ -1,26 +1,45 @@
-## K-TexasHoldem [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.6.10-violet.svg?style=flat&logo=kotlin&logoColor=violet)](http://kotlinlang.org)
+## texas-holdem-nl
 
-### How to create a Player
-A Player is defined by its name and strategy.
-
+---
+### How to play a single table tournament
+First you need to define the tournament through the *TournamentDescriptor* specifying the players initial stack and the
+"increasing" payments structure as follows:
 ```kotlin
-val player = Player("name", strategy)
+val paymentsStructure = listOf(
+    LevelPayments(sb = 20u, bb = 40u),
+    LevelPayments(sb = 100u, bb = 200u),
+    LevelPayments(sb = 100u, bb = 200u, ante = 10u)
+)
+val paymentsDefinition = IncreasingGamePaymentsDefinition(structure = paymentsStructure, gamesPerLevel = 10u)
+val tournamentDescriptor = TournamentDescriptorImpl(initialStack = 2000u, paymentsDefinition = paymentsDefinition)
+```
+Surprisingly you'll need at least two players to instantiate your tournament:
+```kotlin
+val players = setOf(maria, alex)
+val tournament = TournamentImpl(descriptor = tournamentDescriptor, subscriptions = players)
+```
+That's all, now you can start the tournament invoking the method *play()*, when the tournament is over will return the
+final result.
+```kotlin
+val result = tournament.play()
+```
+---
+### How to set up a player
+There are multiples way to represent a player depending on the context but in all cases is identified by a UUID.  
+So you first need to define the identity of player choosing a UUID (the default is a random UUID) and a name:
+```kotlin
+val playerIdentity = PlayerIdentityImpl(name = "PlayerName") // the UUID has a random value
+```
+During a game the dealer will interact with players querying them for an action, when is their turn, using the *Player* 
+function:  
+```kotlin
+fun act(hero: OwnPlayer, context: GameContext): Action
+```
+So this function's implementation represents the player's strategy.
+You can finally instantiate a *Player* simply providing the strategy:  
+```kotlin
+val strategy: (OwnPlayer, GameContext) -> Action // player's strategy definition
+val player = playerIdentity playingAs strategy
 ```
 
-### How to create a Table
-You can create a Table just providing the players, in this case the button will be in the first position.
-Each Player's name must be unique.
-
-```kotlin
-val table = Table(players = listOf(poly, alex, jane))
-```
-
-### How to create a Game
-The only implementation of Game interface is GameImpl.
-
-```kotlin
-val game = GameImpl( 
-    payments = blinds(100, 200), 
-    table = aTable)
-```
+---
