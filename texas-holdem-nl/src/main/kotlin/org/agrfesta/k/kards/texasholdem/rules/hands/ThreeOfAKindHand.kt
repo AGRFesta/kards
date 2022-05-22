@@ -1,6 +1,5 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
-import kotlinx.collections.immutable.toImmutableList
 import org.agrfesta.k.cards.playingcards.cards.Card
 import org.agrfesta.k.cards.playingcards.cards.Rank
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
@@ -23,7 +22,6 @@ class ThreeOfAKindHand(
 
     val kickers = listOf(firstKicker, secondKicker)
             .sorted().reversed()
-            .toImmutableList()
 
     override fun innerCompareTo(ce: CardsEvaluation): Int {
         require(ce is ThreeOfAKindHand) { "Comparable only to an instance of ThreeOfAKindHand" }
