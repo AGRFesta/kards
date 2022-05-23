@@ -1,7 +1,6 @@
 package org.agrfesta.k.kards.texasholdem.rules.hands
 
 import org.agrfesta.k.cards.playingcards.cards.Rank
-import kotlinx.collections.immutable.toImmutableList
 import org.agrfesta.k.kards.texasholdem.rules.CardsEvaluation
 import org.agrfesta.k.kards.texasholdem.rules.OrderedRankListComparator
 import org.agrfesta.k.kards.texasholdem.utils.COUNT_THREE
@@ -19,7 +18,6 @@ class PairHand(
 
     val kickers = listOf(firstKicker, secondKicker, thirdKicker)
             .sorted().reversed()
-            .toImmutableList()
 
     override fun innerCompareTo(ce: CardsEvaluation): Int {
         require(ce is PairHand) { "Comparable only to an instance of PairHand" }
